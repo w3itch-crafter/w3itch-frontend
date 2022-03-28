@@ -28,6 +28,8 @@
     "eslint-config-next": "12.1.1",
     "eslint-config-xo": "^0.40.0",
     "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "sass": "^1.49.9",
     "typescript": "4.6.3"
   }
