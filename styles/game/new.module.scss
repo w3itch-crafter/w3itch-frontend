@@ -1,0 +1,254 @@
+.tabbed_header_widget {
+  .header_breadcrumbs {
+    background-color: #f4f4f4;
+    padding: 10px var(--itchio-gutter_width, 40px);
+    font-size: 16px;
+    color: #858585;
+    border-bottom: 1px solid;
+    border-color: #dadada;
+    border-radius: 3px 3px 0 0;
+    .trail {
+      color: #606060;
+      font-weight: bold;
+      text-decoration: none;
+    }
+  }
+}
+
+.stat_header_widget {
+  border-bottom: 1px solid;
+  border-color: #dadada;
+  min-height: 80px;
+  position: relative;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  gap: 20px;
+  padding: 0 var(--itchio-gutter_width, 40px);
+  h2 {
+    margin: 0;
+    font-weight: 900;
+    color: #434343;
+    font-size: 20px;
+  }
+}
+
+.edit_game_page {
+  .payment_warning {
+    background: #fffdbd;
+    border-bottom: 1px solid #dbd994;
+    font-size: 14px;
+    padding: 10px 40px;
+    color: #59583b;
+    strong {
+      margin-right: 10px;
+    }
+    a {
+      margin-left: 10px;
+      color: var(--itchio_link_color, #da2c49);
+    }
+    .input_row {
+      margin-bottom: 25px;
+    }
+  }
+  .form_loader {
+    display: none;
+    margin: 0 10px;
+  }
+  .content_guidelines {
+    font-size: 14px;
+    line-height: 1.5;
+    border-left: 4px solid;
+    border-color: #dadada;
+    padding: 4px 15px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #767676;
+    strong {
+      color: #222;
+    }
+    a {
+      color: var(--itchio_link_color, #da2c49);
+    }
+  }
+  p.sub {
+    color: #606060;
+    margin: 5px 0;
+    font-weight: normal;
+  }
+  .hint {
+    font-style: italic;
+    color: #606060;
+    margin-top: 15px;
+    &:before {
+      content: attr(data-label);
+      background: #b3b3b3;
+      color: white;
+      font-style: normal;
+      font-size: 12px;
+      padding: 2px 4px;
+      border-radius: 2px;
+      text-transform: uppercase;
+      display: inline-block;
+      vertical-align: top;
+      margin-right: 8px;
+      white-space: nowrap;
+      font-weight: bold;
+    }
+  }
+  .butler_tip {
+    margin: 10px 0 20px 0;
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    & > div {
+      line-height: 1.5;
+    }
+    a {
+      color: var(--itchio_link_color, #da2c49);
+    }
+  }
+  .upload_editor {
+    .upload_limit {
+      color: #606060;
+      font-size: 14px;
+      a {
+        color: inherit;
+      }
+    }
+    p {
+      line-height: 1.4;
+    }
+    .upload_buttons {
+      display: flex;
+      align-items: center;
+      color: #606060;
+      .external_file_buttons {
+        flex: 1;
+        display: flex;
+        -webkit-align-items: center;
+        align-items: center;
+        text-align: right;
+        a {
+          flex: 1;
+          color: #606060;
+        }
+        & > * {
+          margin-right: 8px;
+        }
+        & > *:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  .game_edit_form {
+    h2 {
+      margin-top: 40px;
+    }
+  }
+
+  .video_editor {
+    margin-top: 20px;
+  }
+
+  .screenshot_editor {
+    margin-top: 20px;
+    .screenshot_list {
+      margin: 10px 0;
+      overflow: hidden;
+      height: 0;
+    }
+  }
+}
+
+.page_widget {
+  .padded {
+    padding: 30px var(--itchio-gutter_width, 40px);
+  }
+  h2 {
+    margin-bottom: 20px;
+  }
+}
+
+.columns {
+  font-size: 0;
+  .left_col {
+    display: inline-block;
+    vertical-align: top;
+    font-size: 13px;
+    width: 542px;
+    margin-right: 20px;
+  }
+  .right_col {
+    display: inline-block;
+    vertical-align: top;
+    font-size: 13px;
+    width: 317px;
+    // margin-right: 20px;
+  }
+  &.right_col:last-child,
+  &.right_col.last {
+    margin-right: 0;
+  }
+}
+
+.form {
+  .buttons {
+    margin-top: 20px;
+    color: #858585;
+    .button {
+      margin-right: 10px;
+    }
+  }
+  .input_row {
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  .label {
+    color: #434343;
+    font-weight: bold;
+    .sub {
+      font-weight: normal;
+      color: #606060;
+      a {
+        color: #434343;
+      }
+    }
+  }
+}
+
+.loader {
+  display: inline-block;
+  background-image: url(/images/loader.gif);
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+}
+
+.game_edit_cover_uploader_widget {
+  .upload_container {
+    border: 1px dashed;
+    border-color: #cdcdcd;
+    width: 315px;
+    height: 250px;
+    position: relative;
+    .file_tools {
+      transition: opacity 0.2s ease;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: -webkit-flex;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+  }
+  p.sub.instructions {
+    margin: 10px 0 0 0;
+  }
+}
