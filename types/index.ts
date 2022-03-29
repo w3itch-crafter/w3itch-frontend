@@ -1,5 +1,5 @@
-import { NextPage } from "next";
-import React from "react";
+import { NextPage } from 'next'
+import React from 'react'
 
 export declare type PerPageLayout = {
   getLayout(page: React.ReactElement): React.ReactNode

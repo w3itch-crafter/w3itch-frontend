@@ -33,10 +33,20 @@ const Login: NextPage = () => {
   return (
     <Container>
       <PageCard>
-        <StatHeader title='Log in to your w3itch.io account' />
+        <StatHeader title="Log in to your w3itch.io account" />
         <Padded>
-          <ConnectButton icon={<MetaMaskIcon size={40} />} name='MetaMask' desc='Connect to your MetaMask wallet' onClick={handleConnectMetaMask} />
-          <ConnectButton icon={<WalletConnectIcon size={40} />} name='Wallet Connect' desc='Scan with WalletConnect to connect' onClick={handleConnectWalletConnect} />
+          <ConnectButton
+            icon={<MetaMaskIcon size={40} />}
+            name="MetaMask"
+            desc="Connect to your MetaMask wallet"
+            onClick={handleConnectMetaMask}
+          />
+          <ConnectButton
+            icon={<WalletConnectIcon size={40} />}
+            name="Wallet Connect"
+            desc="Scan with WalletConnect to connect"
+            onClick={handleConnectWalletConnect}
+          />
         </Padded>
       </PageCard>
     </Container>
