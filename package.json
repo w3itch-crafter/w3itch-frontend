@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "format": "prettier '**/*.{ts,tsx}' --write",
+    "lint": "yarn lint:eslint && yarn lint:next",
+    "lint:eslint": "eslint '**/*.{ts,tsx}' --fix",
+    "lint:next": "next lint --fix",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@emotion/react": "^11.8.2",
@@ -19,6 +23,7 @@
     "next": "12.1.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "use-wallet": "0.13.1",
     "yarn": "^1.22.18"
   },
   "devDependencies": {
@@ -33,6 +38,7 @@
     "eslint-config-next": "12.1.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-config-xo": "^0.40.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
