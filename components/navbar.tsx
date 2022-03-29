@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-
+import { Fragment } from 'react'
 import UserPanel from './userPanel'
 
 declare type NavLinks = { href: string; name: string }[]
@@ -12,7 +12,7 @@ const navLinks: NavLinks = [
 
 export default function Navbar() {
   const router = useRouter()
-  const isActive = (href: string) => router.route === href
+  const isHref = (href: string) => router.route === href
 
   return (
     <HeaderWidget>
@@ -22,17 +22,14 @@ export default function Navbar() {
             <HeaderLogo>W3itch.io</HeaderLogo>
           </Link>
         </HeaderTitle>
-        <HeaderButtons>
-          {navLinks.map(({ href, name }) => (
-            <NavLink
-              href={href}
-              name={name}
-              active={isActive(href)}
-              key={href}
-            />
-          ))}
-        </HeaderButtons>
-        <UserPanel />
+        {!isHref('/login') && (
+          <Fragment>
+            <HeaderButtons>
+              {navLinks.map(({href, name}) => (<NavLink href={href} name={name} active={isHref(href)} key={href} />))}
+            </HeaderButtons>
+            <UserPanel />
+          </Fragment>
+        )}
       </PrimaryHeader>
     </HeaderWidget>
   )
@@ -44,18 +41,19 @@ const HeaderWidget = styled.nav`
 `
 
 const PrimaryHeader = styled.div`
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  font-size: 16px;
-  // background-color: var(--itchio_ui_bg, #40434E);
-  background-color: white;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
-  padding: 0 20px;
-  color: #222;
-  height: 50px;
-  position: relative;
-  z-index: 100;
+box-sizing: border-box;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 16px;
+// background-color: var(--itchio_ui_bg, #40434E);
+background-color: white;
+box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+padding: 0 20px;
+color: #222;
+height: 50px;
+position: relative;
+z-index: 100;
 `
 
 const HeaderTitle = styled.h1`
@@ -63,15 +61,16 @@ const HeaderTitle = styled.h1`
 `
 
 const HeaderLogo = styled.a`
-  // background-image: url(images/logo-black-new.svg);
-  background-size: auto 100%;
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  display: block;
-  width: 117px;
-  height: 30px;
-  margin: 0;
-  text-decoration: none;
+// background-image: url(images/logo-black-new.svg);
+background-size: auto 100%;
+background-position: 50% 50%;
+background-repeat: no-repeat;
+display: block;
+width: 117px;
+height: 30px;
+margin: 0;
+text-decoration: none;
+color: inherit;
 `
 
 const HeaderButtons = styled.div`
