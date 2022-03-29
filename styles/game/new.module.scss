@@ -186,11 +186,11 @@
     vertical-align: top;
     font-size: 13px;
     width: 317px;
-    // margin-right: 20px;
-  }
-  &.right_col:last-child,
-  &.right_col.last {
-    margin-right: 0;
+    margin-right: 20px;
+    &:last-child,
+    &.last {
+      margin-right: 0;
+    }
   }
 }
 

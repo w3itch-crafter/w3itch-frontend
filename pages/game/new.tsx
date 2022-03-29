@@ -116,18 +116,15 @@ const GameNew: NextPage = () => {
 
                   <div className={styles.input_row}>
                     <FormControl fullWidth>
-                      <TextField
-                        id="outlined-basic"
-                        label="Title"
-                        variant="outlined"
-                      />
+                      <FormLabel id="form-title">Title</FormLabel>
+                      <TextField id="form-title" variant="outlined" />
                     </FormControl>
                   </div>
                   <div className={styles.input_row}>
                     <FormControl fullWidth>
+                      <FormLabel id="form-projectUrl">Project URL</FormLabel>
                       <TextField
-                        id="outlined-basic"
-                        label="Project URL"
+                        id="form-projectUrl"
                         variant="outlined"
                         placeholder="https://xxxx.itch.io/Project URL"
                       />
@@ -136,27 +133,28 @@ const GameNew: NextPage = () => {
 
                   <div className={styles.input_row}>
                     <FormControl fullWidth>
+                      <FormLabel id="form-shortDescriptionOrTagline">
+                        Short description or tagline
+                      </FormLabel>
+                      <p className={styles.sub}>
+                        {
+                          "Shown when we link to your project. Avoid duplicating your project's title"
+                        }
+                      </p>
                       <TextField
-                        id="outlined-basic"
-                        label="Short description or tagline"
-                        variant="outlined"
+                        id="form-shortDescriptionOrTagline"
                         placeholder="Optional"
                       />
                     </FormControl>
-                    <p className={styles.sub}>
-                      {
-                        "Shown when we link to your project. Avoid duplicating your project's title"
-                      }
-                    </p>
                   </div>
                   <div className={styles.input_row}>
                     <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">
+                      <FormLabel id="form-classification">
                         Classification
-                      </InputLabel>
+                      </FormLabel>
+                      <p className={styles.sub}>{'What are you uploading?'}</p>
                       <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
+                        id="form-classification"
                         value={age}
                         label="outlined"
                         onChange={handleChange}
@@ -217,19 +215,71 @@ const GameNew: NextPage = () => {
                         <MenuItem value={'other'}>Other</MenuItem>
                       </Select>
                     </FormControl>
-                    <p className={styles.sub}>{'What are you uploading?'}</p>
                   </div>
 
                   <div className={styles.input_row}>
                     <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">
+                      <FormLabel id="form-kindOfProject">
                         Kind of project
-                      </InputLabel>
+                      </FormLabel>
                       <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
+                        id="form-kindOfProject"
                         value={age}
-                        label="outlined"
+                        onChange={handleChange}
+                      >
+                        <MenuItem value={'default'}>
+                          Downloadable{' '}
+                          <span className="sub">
+                            {' '}
+                            — You only have files to be downloaded
+                          </span>
+                        </MenuItem>
+                        <MenuItem value={'html'}>
+                          HTML{' '}
+                          <span className="sub">
+                            {' '}
+                            — You have a ZIP or HTML file that will be played in
+                            the browser
+                          </span>
+                        </MenuItem>
+                        <MenuItem value={'flash'}>
+                          Flash{' '}
+                          <span className="sub">
+                            {' '}
+                            — You have an SWF that will be played in the browser
+                          </span>
+                        </MenuItem>
+                        <MenuItem value={'java'}>
+                          Java applet{' '}
+                          <span className="sub">
+                            {' '}
+                            — You have a JAR that will be played in the browser
+                          </span>
+                        </MenuItem>
+                        <MenuItem value={'unity'}>
+                          Unity ≤ 5.3{' '}
+                          <span className="sub">
+                            {' '}
+                            — You have a Unity3d file that will be played in the
+                            browser
+                          </span>
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                    <div data-label="Tip" className={styles.hint}>
+                      You can add additional downloadable files for any of the
+                      types above
+                    </div>
+                  </div>
+
+                  <div className={styles.input_row}>
+                    <FormControl fullWidth>
+                      <FormLabel id="form-releaseStatus">
+                        Release status
+                      </FormLabel>
+                      <Select
+                        id="form-releaseStatus"
+                        value={age}
                         onChange={handleChange}
                       >
                         <MenuItem value={'default'}>
@@ -280,12 +330,10 @@ const GameNew: NextPage = () => {
                   <div className="price_picker">
                     <div className="payment_modes">
                       <FormControl fullWidth>
-                        <FormLabel id="demo-row-radio-buttons-group-label">
-                          Gender
-                        </FormLabel>
+                        <FormLabel id="form-pricing">Pricing</FormLabel>
                         <RadioGroup
                           row
-                          aria-labelledby="demo-row-radio-buttons-group-label"
+                          aria-labelledby="form-pricing"
                           name="row-radio-buttons-group"
                         >
                           <FormControlLabel

@@ -10,8 +10,8 @@ const Editor = () => {
     <ToastUiEditor
       initialValue="hello react editor world!"
       previewStyle="vertical"
-      height="542px"
-      initialEditType="markdown"
+      height="400px"
+      initialEditType="wysiwyg"
       useCommandShortcut={true}
       ref={editorRef}
     />
