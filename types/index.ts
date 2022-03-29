@@ -6,3 +6,10 @@ export declare type PerPageLayout = {
 }
 
 export declare type NextPageWithLayout = NextPage & Partial<PerPageLayout>
+
+export declare type RegisterData = {
+  address: string
+  username: string
+  gamer: boolean
+  developer: boolean
+}
