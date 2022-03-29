@@ -28,7 +28,7 @@ const Login: NextPage = () => {
     if (wallet.isConnected()) {
       router.replace('/')
     }
-  }, [wallet])
+  }, [wallet, router])
 
   return (
     <Container>
