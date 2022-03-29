@@ -144,9 +144,6 @@ const Register: NextPage = () => {
   useEffect(() => {
     if (isConnected) {
       setRegisterData((r) => ({ ...r, address: wallet.account || '' }))
-      setInvalidData({
-        address: { message: 'Please connect wallet' },
-      })
     }
   }, [isConnected, wallet.account])
 
