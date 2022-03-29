@@ -1,10 +1,15 @@
 import '../styles/globals.css'
 
+import CssBaseline from '@material-ui/core/CssBaseline'
 import type {AppProps} from 'next/app'
+import {Fragment} from 'react'
 
 function MyApp({Component, pageProps}: AppProps) {
   return (
-    <Component {...pageProps} />
+    <Fragment>
+      <CssBaseline />
+      <Component {...pageProps} />
+    </Fragment>
   )
 }
 

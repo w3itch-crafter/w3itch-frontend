@@ -2,7 +2,7 @@ import type {NextPage} from 'next'
 import styles from 'styles/dashboard.module.scss'
 
 const Dashboard: NextPage = () => (
-  <div>
+  <div className={styles.main}>
     <div className={styles.inner_column}>
       <div id="dashboard_page_79202" className="dashboard_page page_widget">
         <div id="user_header_widget_27838" className="user_header_widget tabbed_header_widget">
