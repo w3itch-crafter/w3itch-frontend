@@ -1,21 +1,18 @@
-import HelpIcon from '@mui/icons-material/Help'
 import {
   FormControl,
   FormControlLabel,
   FormLabel,
-  IconButton,
   MenuItem,
   OutlinedInput,
   Radio,
   RadioGroup,
   TextField,
-  Tooltip,
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { useState } from 'react'
+import { MutableRefObject, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
 const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
@@ -32,6 +29,17 @@ import {
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
+import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
+import { createGame } from 'api/index'
+import UploadGame from 'components/UploadGame/index'
+import {
+  Community,
+  GameEngine,
+  Genre,
+  PaymentMode,
+  ProjectClassification,
+  ReleaseStatus,
+} from 'types/enum'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -46,9 +54,10 @@ const MenuProps = {
 
 const GameNew: NextPage = () => {
   const [formTags, setFormTags] = useState<string[]>([])
+  const [editorRef, setEditorRef] = useState<MutableRefObject<ToastUiEditor>>()
+  const [uploadGameFile, setUploadGameFile] = useState<File>()
 
   const {
-    control,
     register,
     handleSubmit,
     watch,
@@ -56,7 +65,58 @@ const GameNew: NextPage = () => {
   } = useForm<Game>({
     resolver: resolverGame,
   })
-  const onSubmit: SubmitHandler<Game> = (data) => console.log(data)
+
+  // handle create game
+  const handleCreateGame = async (game: Game) => {
+    let gameName
+    if (uploadGameFile) {
+      const name = uploadGameFile.name.split('.')[0]
+      if (name) {
+        gameName = name
+      }
+    } else {
+      alert('upload game file')
+      return
+    }
+
+    let description = ''
+    if (editorRef) {
+      description = editorRef.current?.getInstance().getMarkdown()
+    }
+
+    const gameData = {
+      title: game.title,
+      paymentMode: PaymentMode.DISABLE_PAYMENTS,
+      subtitle: game.subtitle,
+      gameName: gameName,
+      file: uploadGameFile.name,
+      classification: ProjectClassification.GAMES,
+      kind: GameEngine.RM2K3E,
+      releaseStatus: ReleaseStatus.RELEASED,
+      screenshots: [game.screenshot],
+      cover: game.cover,
+      tags: formTags,
+      appStoreLinks: [game.appStoreLink],
+      description: description,
+      community: Community.DISQUS,
+      genre: Genre.NO_GENRE,
+    }
+    console.log('file', uploadGameFile)
+    console.log('description', description)
+    console.log('gameData', gameData)
+
+    const formData = new FormData()
+    formData.append('file', uploadGameFile)
+    formData.append('game', JSON.stringify(gameData))
+
+    const result = await createGame(formData)
+    console.log('result', result)
+  }
+
+  const onSubmit: SubmitHandler<Game> = (data) => {
+    console.log(data)
+    handleCreateGame(data)
+  }
 
   console.log(watch('title'))
 
@@ -316,12 +376,13 @@ const GameNew: NextPage = () => {
                       <div
                         className={`add_file_btn_outer ${styles.upload_buttons}`}
                       >
-                        <div
+                        {/* <div
                           data-max_size="1073741824"
                           className={`${stylesCommon.button} add_file_btn has_multi_upload`}
                         >
                           Upload file<span className="on_multi_upload">s</span>
-                        </div>
+                        </div> */}
+                        <UploadGame setFiles={setUploadGameFile} />
                         {/* <span className="button_divider">or</span>
                         <span className="dropbox_drop">
                           <a
@@ -332,7 +393,7 @@ const GameNew: NextPage = () => {
                             from Dropbox
                           </a>
                         </span> */}
-                        <div className={styles.external_file_buttons}>
+                        {/* <div className={styles.external_file_buttons}>
                           <a className={styles.external_file_btn} href="#">
                             Add External file
                           </a>
@@ -341,7 +402,7 @@ const GameNew: NextPage = () => {
                               <HelpIcon />
                             </IconButton>
                           </Tooltip>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     <p className={styles.upload_limit}>
@@ -366,7 +427,7 @@ const GameNew: NextPage = () => {
                         — This will make up the content of your game page.
                       </span>
                     </div>
-                    <Editor />
+                    <Editor setRef={setEditorRef} />
                   </div>
 
                   <div className="tags_drop">
@@ -506,12 +567,7 @@ const GameNew: NextPage = () => {
                       >
                         <FormControlLabel
                           value="comments"
-                          control={
-                            <Radio
-                              size="small"
-                              disabled
-                            />
-                          }
+                          control={<Radio size="small" disabled />}
                           label={
                             <span className={styles.radio_label}>
                               Comments

@@ -1,14 +1,30 @@
 import '@toast-ui/editor/dist/toastui-editor.css'
 
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
-import { MutableRefObject, useRef } from 'react'
+import {
+  Dispatch,
+  FC,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+} from 'react'
 
-const Editor = () => {
+interface Props {
+  setRef: Dispatch<SetStateAction<MutableRefObject<ToastUiEditor> | undefined>>
+}
+
+const Editor: FC<Props> = ({ setRef }) => {
   const editorRef = useRef<ToastUiEditor>() as MutableRefObject<ToastUiEditor>
+
+  useEffect(() => {
+    setRef(editorRef)
+  }, [setRef, editorRef])
 
   return (
     <ToastUiEditor
-      initialValue="hello react editor world!"
+      initialValue=""
+      placeholder="content"
       previewStyle="vertical"
       height="400px"
       initialEditType="wysiwyg"
