@@ -13,7 +13,8 @@ import { RegisterData } from 'types'
 import { useWallet } from 'use-wallet'
 import { isEmptyObj } from 'utils'
 
-import { signup } from '../utils/account'
+import { signup } from '../api/account'
+import backend from '../api/backend'
 
 declare type InvalidData = {
   [key in keyof RegisterData]: {
@@ -120,28 +121,36 @@ const Register: NextPage = () => {
       setProfileUrl(`https://${value}.w3itch.io/`)
     }
   }
-  const checkRegisterData = () => {
+  const checkRegisterData = async () => {
     const invalid: Partial<InvalidData> = {}
     if (!registerData.address) {
       invalid.address = { message: 'Please connect wallet' }
     }
+
     if (!registerData.username) {
       invalid.username = { message: 'Username is required' }
-    }
+    } else {
+      const usernameAlreadyExists = (
+        await backend.post('/users/username/validate', {
+          username: registerData.username,
+        })
+      ).data.isExists
 
-    // if (registerData.username && api call) {
-    //   setInvalidData({
-    //     username: { message: 'Username already taken' },
-    //   })
-    // }
-    setInvalidData(invalidData)
-    return isEmptyObj(invalidData)
+      if (usernameAlreadyExists) {
+        invalid.username = { message: 'Username already exists' }
+      }
+    }
+    setInvalidData(invalid)
+    return isEmptyObj(invalid)
   }
 
   const handleRegisterSubmit = async () => {
-    if (!checkRegisterData()) return
+    if (!(await checkRegisterData())) return
     // TODO: handle user has already registered
     await signup(wallet)
+    await backend.put('/users/me/username', {
+      username: registerData.username,
+    })
     await router.replace('/games')
   }
 
