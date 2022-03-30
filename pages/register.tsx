@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { validateUsername } from 'api/users'
 import { RedButton } from 'components/buttons'
 import ConnectWallet from 'components/connectWallet'
 import InputCheckbox from 'components/inputCheckbox'
@@ -113,39 +114,28 @@ const Register: NextPage = () => {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
     const name = target.name
-    setRegisterData({
-      ...registerData,
-      [name]: value,
-    })
-    if (name === 'username') {
-      setProfileUrl(`https://${value}.w3itch.io/`)
-    }
+    setRegisterData({ ...registerData, [name]: value })
+    if (name === 'username') setProfileUrl(`https://${value}.w3itch.io/`)
   }
   const checkRegisterData = async () => {
     const invalid: Partial<InvalidData> = {}
     if (!registerData.address) {
       invalid.address = { message: 'Please connect wallet' }
     }
-
     if (!registerData.username) {
       invalid.username = { message: 'Username is required' }
-    } else {
-      const usernameAlreadyExists = (
-        await backend.post('/users/username/validate', {
-          username: registerData.username,
-        })
-      ).data.isExists
-
-      if (usernameAlreadyExists) {
-        invalid.username = { message: 'Username already exists' }
-      }
+    }
+    if (registerData.username) {
+      const isExists = await validateUsername(registerData.username)
+      if (isExists) invalid.username = { message: 'Username already exists' }
     }
     setInvalidData(invalid)
     return isEmptyObj(invalid)
   }
 
   const handleRegisterSubmit = async () => {
-    if (!(await checkRegisterData())) return
+    const check = await checkRegisterData()
+    if (!check) return
     // TODO: handle user has already registered
     await signup(wallet)
     await backend.put('/users/me/username', {
