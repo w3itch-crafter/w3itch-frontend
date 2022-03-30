@@ -23,6 +23,7 @@ import Chip from '@mui/material/Chip'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import { Theme, useTheme } from '@mui/material/styles'
 import { classification, genre, kindOfProject, releaseStatus, tags } from 'data'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -44,10 +45,28 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
   }
 }
 
+type FormState = {
+  title: string
+  projectUrl: string
+  tagline: string
+}
+
 const GameNew: NextPage = () => {
   const theme = useTheme()
   const [, setAge] = useState<string>('')
   const [personName, setPersonName] = useState<string[]>([])
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors: formErrors },
+  } = useForm<FormState>()
+  const onSubmit: SubmitHandler<FormState> = (data) => console.log(data)
+
+  console.log(watch('title'))
+
+  console.log('formErrors', formErrors)
 
   const handleChange = (event: SelectChangeEvent) => {
     setAge(event.target.value)
@@ -95,7 +114,7 @@ const GameNew: NextPage = () => {
             <form
               className={styles.game_edit_form}
               autoComplete="off"
-              method="post"
+              onSubmit={handleSubmit(onSubmit)}
             >
               <div className={styles.columns}>
                 <div className={`main ${styles.left_col} first`}>
@@ -116,7 +135,20 @@ const GameNew: NextPage = () => {
                   <div className={styles.input_row}>
                     <FormControl fullWidth>
                       <FormLabel id="form-title">Title</FormLabel>
-                      <TextField id="form-title" variant="outlined" />
+                      <TextField
+                        id="form-title"
+                        variant="outlined"
+                        aria-describedby="form-title-error-text"
+                        error={!!formErrors.title}
+                        helperText={
+                          formErrors.title && 'title length is 1 - 32'
+                        }
+                        {...register('title', {
+                          required: true,
+                          min: 1,
+                          max: 32,
+                        })}
+                      />
                     </FormControl>
                   </div>
                   <div className={styles.input_row}>
@@ -126,6 +158,10 @@ const GameNew: NextPage = () => {
                         id="form-projectUrl"
                         variant="outlined"
                         placeholder="https://xxxx.itch.io/Project URL"
+                        {...register('projectUrl', {
+                          min: 1,
+                          max: 32,
+                        })}
                       />
                     </FormControl>
                   </div>
@@ -143,6 +179,10 @@ const GameNew: NextPage = () => {
                       <TextField
                         id="form-shortDescriptionOrTagline"
                         placeholder="Optional"
+                        {...register('tagline', {
+                          min: 1,
+                          max: 32,
+                        })}
                       />
                     </FormControl>
                   </div>
