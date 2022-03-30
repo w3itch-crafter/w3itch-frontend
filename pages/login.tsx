@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useWallet } from 'use-wallet'
 
-import { login } from '../utils/account'
+import { login } from '../api/account'
 
 const Login: NextPage = () => {
   const Container = styled.div`

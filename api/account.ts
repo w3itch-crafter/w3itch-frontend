@@ -1,6 +1,6 @@
 import type { Wallet } from 'use-wallet/dist/cjs/types'
 
-import backend from '../pages/api/backend'
+import backend from './backend'
 
 const service = async (wallet: Wallet, action: 'login' | 'signup') => {
   const accounts = await wallet.ethereum.request({
