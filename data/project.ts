@@ -455,7 +455,7 @@ export const tags = [
   'kinect',
 ]
 
-export const classification = [
+export const classifications = [
   {
     value: 'GAMES',
     label: 'Games',

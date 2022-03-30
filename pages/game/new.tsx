@@ -22,9 +22,8 @@ const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
-import FormHelperText from '@mui/material/FormHelperText'
 import {
-  classification,
+  classifications,
   genres,
   kindOfProjects,
   releaseStatus,
@@ -49,6 +48,7 @@ const GameNew: NextPage = () => {
   const [formTags, setFormTags] = useState<string[]>([])
 
   const {
+    control,
     register,
     handleSubmit,
     watch,
@@ -63,7 +63,7 @@ const GameNew: NextPage = () => {
   console.log('formErrors', formErrors)
 
   const handleTagsSelectChange = (
-    event: SelectChangeEvent<typeof personName>
+    event: SelectChangeEvent<typeof formTags>
   ) => {
     const {
       target: { value },
@@ -130,6 +130,7 @@ const GameNew: NextPage = () => {
                         id="form-title"
                         variant="outlined"
                         aria-describedby="form-title-error-text"
+                        defaultValue={'title 123'}
                         error={!!formErrors.title}
                         helperText={
                           formErrors.title ? formErrors.title.message : ''
@@ -152,6 +153,7 @@ const GameNew: NextPage = () => {
                       <TextField
                         id="form-shortDescriptionOrTagline"
                         error={!!formErrors.subtitle}
+                        defaultValue={'Short description or tagline 123'}
                         helperText={
                           formErrors.subtitle ? formErrors.subtitle.message : ''
                         }
@@ -160,39 +162,36 @@ const GameNew: NextPage = () => {
                     </FormControl>
                   </div>
                   <div className={styles.input_row}>
-                    <FormControl fullWidth error={!!formErrors.classification}>
+                    <FormControl fullWidth>
                       <FormLabel id="form-classification">
                         Classification
                       </FormLabel>
                       <p className={styles.sub}>{'What are you uploading?'}</p>
                       <Select
                         id="form-classification"
-                        value={classification[0].value}
                         disabled
-                        {...register('classification')}
+                        defaultValue={classifications[0].value}
                       >
-                        {classification.map((i) => (
-                          <MenuItem value={i.value} key={i.value}>
-                            {i.label}
-                            {i.description && (
+                        {classifications.map((classification) => (
+                          <MenuItem
+                            value={classification.value}
+                            key={classification.value}
+                          >
+                            {classification.label}
+                            {classification.description && (
                               <span className="sub">
                                 {' — '}
-                                {i.description}
+                                {classification.description}
                               </span>
                             )}
                           </MenuItem>
                         ))}
                       </Select>
-                      <FormHelperText>
-                        {formErrors.classification
-                          ? formErrors.classification.message
-                          : ''}
-                      </FormHelperText>
                     </FormControl>
                   </div>
 
                   <div className={styles.input_row}>
-                    <FormControl fullWidth error={!!formErrors.kind}>
+                    <FormControl fullWidth>
                       <FormLabel id="form-kindOfProject">
                         Kind of project
                       </FormLabel>
@@ -200,7 +199,6 @@ const GameNew: NextPage = () => {
                         id="form-kindOfProject"
                         value={kindOfProjects[0].value}
                         disabled
-                        {...register('kind')}
                       >
                         {kindOfProjects.map((kind) => (
                           <MenuItem value={kind.value} key={kind.value}>
@@ -214,9 +212,6 @@ const GameNew: NextPage = () => {
                           </MenuItem>
                         ))}
                       </Select>
-                      <FormHelperText>
-                        {formErrors.kind ? formErrors.kind.message : ''}
-                      </FormHelperText>
                     </FormControl>
                     <div data-label="Tip" className={styles.hint}>
                       You can add additional downloadable files for any of the
@@ -225,14 +220,14 @@ const GameNew: NextPage = () => {
                   </div>
 
                   <div className={styles.input_row}>
-                    <FormControl fullWidth error={!!formErrors.releaseStatus}>
+                    <FormControl fullWidth>
                       <FormLabel id="form-releaseStatus">
                         Release status
                       </FormLabel>
                       <Select
                         id="form-releaseStatus"
                         value={releaseStatus[0].value}
-                        {...register('releaseStatus')}
+                        disabled
                       >
                         {releaseStatus.map((i) => (
                           <MenuItem value={i.value} key={i.value}>
@@ -246,17 +241,12 @@ const GameNew: NextPage = () => {
                           </MenuItem>
                         ))}
                       </Select>
-                      <FormHelperText>
-                        {formErrors.releaseStatus
-                          ? formErrors.releaseStatus.message
-                          : ''}
-                      </FormHelperText>
                     </FormControl>
                   </div>
 
                   <div className="price_picker">
                     <div className="payment_modes">
-                      <FormControl fullWidth error={!!formErrors.paymentMode}>
+                      <FormControl fullWidth>
                         <FormLabel id="form-pricing">Pricing</FormLabel>
                         <RadioGroup
                           row
@@ -279,11 +269,6 @@ const GameNew: NextPage = () => {
                             label="No payments"
                           />
                         </RadioGroup>
-                        <FormHelperText>
-                          {formErrors.paymentMode
-                            ? formErrors.paymentMode.message
-                            : ''}
-                        </FormHelperText>
                       </FormControl>
                     </div>
 
@@ -337,7 +322,7 @@ const GameNew: NextPage = () => {
                         >
                           Upload file<span className="on_multi_upload">s</span>
                         </div>
-                        <span className="button_divider">or</span>
+                        {/* <span className="button_divider">or</span>
                         <span className="dropbox_drop">
                           <a
                             href="#"
@@ -346,7 +331,7 @@ const GameNew: NextPage = () => {
                             <span className="dropin-btn-status"></span>Choose
                             from Dropbox
                           </a>
-                        </span>
+                        </span> */}
                         <div className={styles.external_file_buttons}>
                           <a className={styles.external_file_btn} href="#">
                             Add External file
@@ -387,29 +372,19 @@ const GameNew: NextPage = () => {
                   <div className="tags_drop">
                     <div className="game_edit_game_tags_widget">
                       <div className={`${styles.input_row}`}>
-                        <FormControl
-                          fullWidth
-                          error={!!formErrors.classification}
-                        >
+                        <FormControl fullWidth>
                           <FormLabel id="form-genre">Genre</FormLabel>
                           <p className={styles.sub}>
                             Select the category that best describes your game.
                             You can pick additional genres with tags below
                           </p>
-                          <Select
-                            id="form-genre"
-                            value={genres[0]}
-                            {...register('genre')}
-                          >
+                          <Select id="form-genre" value={genres[0]}>
                             {genres.map((genre) => (
                               <MenuItem value={genre} key={genre}>
                                 {genre}
                               </MenuItem>
                             ))}
                           </Select>
-                          <FormHelperText>
-                            {formErrors.genre ? formErrors.genre.message : ''}
-                          </FormHelperText>
                         </FormControl>
                       </div>
                       <div className={`${styles.input_row} tags_input_row`}>
@@ -485,6 +460,7 @@ const GameNew: NextPage = () => {
                             variant="outlined"
                             error={!!formErrors.appStoreLink}
                             placeholder="eg. http(s)://"
+                            defaultValue="https://store.steampowered.com/publisher/sekaiproject/sale/publishersale_sekai22"
                             helperText={
                               formErrors.appStoreLink
                                 ? formErrors.appStoreLink.message
@@ -530,7 +506,12 @@ const GameNew: NextPage = () => {
                       >
                         <FormControlLabel
                           value="comments"
-                          control={<Radio size="small" disabled />}
+                          control={
+                            <Radio
+                              size="small"
+                              disabled
+                            />
+                          }
                           label={
                             <span className={styles.radio_label}>
                               Comments
@@ -649,24 +630,43 @@ const GameNew: NextPage = () => {
                         (Minimum: 315x250, Recommended: 630x500)
                       </p>
                     </div>
-                  </div>
-
-                  <section className={styles.video_editor}>
-                    <div className={styles.label}>
-                      Gameplay video or trailer
-                    </div>
-                    <p className={styles.sub}>
-                      Provide a link to YouTube or Vimeo.
-                    </p>
                     <FormControl fullWidth>
+                      <FormLabel id="form-cover">Cover</FormLabel>
                       <TextField
-                        id="outlined-basic"
-                        label="URL"
+                        id="form-cover"
                         variant="outlined"
-                        placeholder="eg. https://www.youtube.com/watch?v=5JEaA47sPjQ"
+                        aria-describedby="form-cover-error-text"
+                        error={!!formErrors.cover}
+                        defaultValue="https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa"
+                        helperText={
+                          formErrors.cover ? formErrors.cover.message : ''
+                        }
+                        {...register('cover')}
                       />
                     </FormControl>
-                  </section>
+                  </div>
+
+                  {/* <section className={styles.video_editor}>
+                    <FormControl fullWidth>
+                      <FormLabel id="form-cover">
+                        Gameplay video or trailer
+                      </FormLabel>
+                      <p className={styles.sub}>
+                        Provide a link to YouTube or Vimeo.
+                      </p>
+                      <TextField
+                        id="form-cover"
+                        variant="outlined"
+                        aria-describedby="form-cover-error-text"
+                        error={!!formErrors.cover}
+                        placeholder="eg. https://www.youtube.com/watch?v=5JEaA47sPjQ"
+                        helperText={
+                          formErrors.cover ? formErrors.cover.message : ''
+                        }
+                        {...register('cover')}
+                      />
+                    </FormControl>
+                  </section> */}
 
                   <section className={styles.screenshot_editor}>
                     <div className={styles.label}>Screenshots</div>
@@ -690,6 +690,23 @@ const GameNew: NextPage = () => {
                       </button>
                     </div>
                   </section>
+
+                  <FormControl fullWidth>
+                    <FormLabel id="form-screenshot">Screenshot</FormLabel>
+                    <TextField
+                      id="form-screenshot"
+                      variant="outlined"
+                      aria-describedby="form-screenshot-error-text"
+                      error={!!formErrors.screenshot}
+                      defaultValue="https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa"
+                      helperText={
+                        formErrors.screenshot
+                          ? formErrors.screenshot.message
+                          : ''
+                      }
+                      {...register('screenshot')}
+                    />
+                  </FormControl>
                 </div>
               </div>
               <div className={styles.buttons}>
