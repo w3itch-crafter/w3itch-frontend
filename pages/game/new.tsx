@@ -4,7 +4,6 @@ import {
   FormControlLabel,
   FormLabel,
   IconButton,
-  InputLabel,
   MenuItem,
   Radio,
   RadioGroup,
@@ -23,7 +22,7 @@ import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import { Theme, useTheme } from '@mui/material/styles'
-import { tags } from 'data'
+import { classification, genre, kindOfProject, releaseStatus, tags } from 'data'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -47,7 +46,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 
 const GameNew: NextPage = () => {
   const theme = useTheme()
-  const [age, setAge] = useState<string>('')
+  const [, setAge] = useState<string>('')
   const [personName, setPersonName] = useState<string[]>([])
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -155,64 +154,21 @@ const GameNew: NextPage = () => {
                       <p className={styles.sub}>{'What are you uploading?'}</p>
                       <Select
                         id="form-classification"
-                        value={age}
+                        value={classification[0].value}
                         label="outlined"
                         onChange={handleChange}
                       >
-                        <MenuItem value={'game'}>
-                          Games{' '}
-                          <span className="sub">
-                            {' '}
-                            — A piece of software you can play
-                          </span>
-                        </MenuItem>
-                        <MenuItem value={'assets'}>
-                          Game assets{' '}
-                          <span className="sub">
-                            {' '}
-                            — Graphics, fonts, music, sounds one may combine
-                            into something else
-                          </span>
-                        </MenuItem>
-                        <MenuItem value={'game_mod'}>
-                          Game mods{' '}
-                          <span className="sub">
-                            {' '}
-                            — An alteration of the content of a game
-                          </span>
-                        </MenuItem>
-                        <MenuItem value={'physical_game'}>
-                          Physical games{' '}
-                          <span className="sub">
-                            {' '}
-                            — One you can play without devices (e.g. board game,
-                            print & play)
-                          </span>
-                        </MenuItem>
-                        <MenuItem value={'soundtrack'}>
-                          Soundtracks{' '}
-                          <span className="sub"> — A collection of music</span>
-                        </MenuItem>
-                        <MenuItem value={'tool'}>
-                          Tools{' '}
-                          <span className="sub"> — A software utility</span>
-                        </MenuItem>
-                        <MenuItem value={'comic'}>
-                          Comics{' '}
-                          <span className="sub">
-                            {' '}
-                            — A story told through drawings
-                          </span>
-                        </MenuItem>
-
-                        <MenuItem value={'book'}>
-                          Books{' '}
-                          <span className="sub">
-                            {' '}
-                            — A story told through words
-                          </span>
-                        </MenuItem>
-                        <MenuItem value={'other'}>Other</MenuItem>
+                        {classification.map((i) => (
+                          <MenuItem value={i.value} key={i.value}>
+                            {i.label}
+                            {i.description && (
+                              <span className="sub">
+                                {' — '}
+                                {i.description}
+                              </span>
+                            )}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                   </div>
@@ -224,46 +180,20 @@ const GameNew: NextPage = () => {
                       </FormLabel>
                       <Select
                         id="form-kindOfProject"
-                        value={age}
+                        value={kindOfProject[0].value}
                         onChange={handleChange}
                       >
-                        <MenuItem value={'default'}>
-                          Downloadable{' '}
-                          <span className="sub">
-                            {' '}
-                            — You only have files to be downloaded
-                          </span>
-                        </MenuItem>
-                        <MenuItem value={'html'}>
-                          HTML{' '}
-                          <span className="sub">
-                            {' '}
-                            — You have a ZIP or HTML file that will be played in
-                            the browser
-                          </span>
-                        </MenuItem>
-                        <MenuItem value={'flash'}>
-                          Flash{' '}
-                          <span className="sub">
-                            {' '}
-                            — You have an SWF that will be played in the browser
-                          </span>
-                        </MenuItem>
-                        <MenuItem value={'java'}>
-                          Java applet{' '}
-                          <span className="sub">
-                            {' '}
-                            — You have a JAR that will be played in the browser
-                          </span>
-                        </MenuItem>
-                        <MenuItem value={'unity'}>
-                          Unity ≤ 5.3{' '}
-                          <span className="sub">
-                            {' '}
-                            — You have a Unity3d file that will be played in the
-                            browser
-                          </span>
-                        </MenuItem>
+                        {kindOfProject.map((i) => (
+                          <MenuItem value={i.value} key={i.value}>
+                            {i.label}
+                            {i.description && (
+                              <span className="sub">
+                                {' — '}
+                                {i.description}
+                              </span>
+                            )}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                     <div data-label="Tip" className={styles.hint}>
@@ -279,52 +209,22 @@ const GameNew: NextPage = () => {
                       </FormLabel>
                       <Select
                         id="form-releaseStatus"
-                        value={age}
+                        value={releaseStatus[0].value}
                         onChange={handleChange}
                       >
-                        <MenuItem value={'default'}>
-                          Downloadable{' '}
-                          <span className="sub">
-                            {' '}
-                            — You only have files to be downloaded
-                          </span>
-                        </MenuItem>
-                        <MenuItem value={'html'}>
-                          HTML{' '}
-                          <span className="sub">
-                            {' '}
-                            — You have a ZIP or HTML file that will be played in
-                            the browser
-                          </span>
-                        </MenuItem>
-                        <MenuItem value={'flash'}>
-                          Flash{' '}
-                          <span className="sub">
-                            {' '}
-                            — You have an SWF that will be played in the browser
-                          </span>
-                        </MenuItem>
-                        <MenuItem value={'java'}>
-                          Java applet{' '}
-                          <span className="sub">
-                            {' '}
-                            — You have a JAR that will be played in the browser
-                          </span>
-                        </MenuItem>
-                        <MenuItem value={'unity'}>
-                          Unity ≤ 5.3{' '}
-                          <span className="sub">
-                            {' '}
-                            — You have a Unity3d file that will be played in the
-                            browser
-                          </span>
-                        </MenuItem>
+                        {releaseStatus.map((i) => (
+                          <MenuItem value={i.value} key={i.value}>
+                            {i.label}
+                            {i.description && (
+                              <span className="sub">
+                                {' — '}
+                                {i.description}
+                              </span>
+                            )}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
-                    <div data-label="Tip" className={styles.hint}>
-                      You can add additional downloadable files for any of the
-                      types above
-                    </div>
                   </div>
 
                   <div className="price_picker">
@@ -334,20 +234,20 @@ const GameNew: NextPage = () => {
                         <RadioGroup
                           row
                           aria-labelledby="form-pricing"
-                          name="row-radio-buttons-group"
+                          defaultValue="no_payments"
                         >
                           <FormControlLabel
-                            value="female"
+                            value="donate"
                             control={<Radio />}
                             label="$0 or donate"
                           />
                           <FormControlLabel
-                            value="male"
+                            value="paid"
                             control={<Radio />}
                             label="Paid"
                           />
                           <FormControlLabel
-                            value="other"
+                            value="no_payments"
                             control={<Radio />}
                             label="No payments"
                           />
@@ -355,7 +255,7 @@ const GameNew: NextPage = () => {
                       </FormControl>
                     </div>
 
-                    <div className="mode_free">
+                    {/* <div className="mode_free">
                       <p className={styles.sub}>
                         Someone downloading your project will be asked for a
                         donation before getting access. They can skip to
@@ -373,7 +273,13 @@ const GameNew: NextPage = () => {
                           </FormControl>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
+
+                    <p className={styles.sub}>
+                      {
+                        "The project's files will be freely available and no donations can be made"
+                      }
+                    </p>
                   </div>
 
                   <div className={styles.upload_editor}>
@@ -448,6 +354,51 @@ const GameNew: NextPage = () => {
 
                   <div className="tags_drop">
                     <div className="game_edit_game_tags_widget">
+                      <div className={`${styles.input_row}`}>
+                        <FormControl sx={{ m: 1 }} fullWidth>
+                          <FormLabel id="form-genre">Genre</FormLabel>
+                          <p className={styles.sub}>
+                            Select the category that best describes your game.
+                            You can pick additional genres with tags below
+                          </p>
+                          <Select
+                            id="form-genre"
+                            multiple
+                            value={personName}
+                            onChange={handleTagsSelectChange}
+                            input={
+                              <OutlinedInput
+                                id="select-multiple-chip"
+                                label="Chip"
+                              />
+                            }
+                            renderValue={(selected) => (
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  flexWrap: 'wrap',
+                                  gap: 0.5,
+                                }}
+                              >
+                                {selected.map((value) => (
+                                  <Chip key={value} label={value} />
+                                ))}
+                              </Box>
+                            )}
+                            MenuProps={MenuProps}
+                          >
+                            {genre.map((name) => (
+                              <MenuItem
+                                key={name}
+                                value={name}
+                                style={getStyles(name, personName, theme)}
+                              >
+                                {name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
                       <div className={`${styles.input_row} tags_input_row`}>
                         <div className={styles.label}>
                           Tags
@@ -470,12 +421,9 @@ const GameNew: NextPage = () => {
                           above.
                         </p>
                         <FormControl sx={{ m: 1 }} fullWidth>
-                          <InputLabel id="demo-multiple-chip-label">
-                            Tags
-                          </InputLabel>
+                          <FormLabel id="form-tags">Tags</FormLabel>
                           <Select
-                            labelId="demo-multiple-chip-label"
-                            id="demo-multiple-chip"
+                            id="form-tags"
                             multiple
                             value={personName}
                             onChange={handleTagsSelectChange}
@@ -534,23 +482,19 @@ const GameNew: NextPage = () => {
 
                   <div className={styles.input_row}>
                     <FormControl fullWidth>
-                      <TextField
-                        id="outlined-basic"
-                        label="Custom noun"
-                        variant="outlined"
-                        placeholder="Optional"
-                      />
+                      <FormLabel id="form-customNoun">Custom noun</FormLabel>
+                      <p className={styles.sub}>
+                        {
+                          'You can change how itch.io refers to your project by providing a custom noun.'
+                        }
+                      </p>
+                      <p className={styles.sub}>
+                        {" Leave blank to default to: '"}
+                        <span className="user_classification_noun">mod</span>
+                        {"'"}.
+                      </p>
+                      <TextField id="form-customNoun" placeholder="Optional" />
                     </FormControl>
-                    <p className={styles.sub}>
-                      {
-                        'You can change how itch.io refers to your project by providing a custom noun.'
-                      }
-                    </p>
-                    <p className={styles.sub}>
-                      {" Leave blank to default to: '"}
-                      <span className="user_classification_noun">mod</span>
-                      {"'"}.
-                    </p>
                   </div>
 
                   <div className={styles.input_row}>

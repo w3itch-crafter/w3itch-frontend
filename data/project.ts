@@ -451,3 +451,133 @@ export const tags = [
   'ciphers',
   'kinect',
 ]
+
+export const classification = [
+  {
+    value: 'game',
+    label: 'Game',
+    description: 'A piece of software you can play',
+  },
+  {
+    value: 'assets',
+    label: 'Game assets',
+    description:
+      'Graphics, fonts, music, sounds one may combine into something else',
+  },
+  {
+    value: 'game_mod',
+    label: 'Game mods',
+    description: 'An alteration of the content of a game',
+  },
+  {
+    value: 'physical_game',
+    label: 'Physical games',
+    description:
+      'One you can play without devices (e.g. board game, print & play)',
+  },
+  {
+    value: 'soundtrack',
+    label: 'Soundtracks',
+    description: 'A collection of music',
+  },
+  {
+    value: 'tool',
+    label: 'Tools',
+    description: 'A software utility',
+  },
+  {
+    value: 'comic',
+    label: 'Comics',
+    description: 'A story told through drawings',
+  },
+  {
+    value: 'book',
+    label: 'Books',
+    description: 'A story told through words',
+  },
+  {
+    value: 'Other',
+    label: 'Other',
+    description: '',
+  },
+]
+
+export const kindOfProject = [
+  {
+    value: 'default',
+    label: 'Downloadable',
+    description: 'You only have files to be downloaded',
+  },
+  {
+    value: 'html',
+    label: 'HTML',
+    description:
+      'You have a ZIP or HTML file that will be played in the browser',
+  },
+  {
+    value: 'flash',
+    label: 'Flash',
+    description: 'You have an SWF that will be played in the browser',
+  },
+  {
+    value: 'java',
+    label: 'Java applet',
+    description: 'You have a JAR that will be played in the browser',
+  },
+  {
+    value: 'unity',
+    label: 'Unity ≤ 5.3',
+    description: 'You have a Unity3d file that will be played in the browser',
+  },
+]
+
+export const releaseStatus = [
+  {
+    value: 'released',
+    label: 'Released',
+    description: 'Project is complete, but might receive some updates',
+  },
+  {
+    value: 'in_development',
+    label: 'In development',
+    description: 'Project is in active development (or in early access)',
+  },
+  {
+    value: 'on_hold',
+    label: 'On hold',
+    description: 'Development is paused for now',
+  },
+  {
+    value: 'canceled',
+    label: 'Canceled',
+    description: 'Development has stopped indefinitely',
+  },
+  {
+    value: 'prototype',
+    label: 'Prototype',
+    description:
+      'An early prototype for testing an idea out, fate of project unknown',
+  },
+]
+
+export const genre = [
+  'No genre',
+  'Action',
+  'Adventure',
+  'Card Game',
+  'Educational',
+  'Fighting',
+  'Interactive Fiction',
+  'Platformer',
+  'Puzzle',
+  'Racing',
+  'Rhythm',
+  'Role Playing',
+  'Shooter',
+  'Simulation',
+  'Sports',
+  'Strategy',
+  'Survival',
+  'Visual Novel',
+  'Other',
+]
