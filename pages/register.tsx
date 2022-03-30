@@ -7,10 +7,13 @@ import PageCard from 'components/pageCard'
 import StatHeader from 'components/statHeader'
 import { NextPage } from 'next'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import React, { Fragment, useEffect, useState } from 'react'
 import { RegisterData } from 'types'
 import { useWallet } from 'use-wallet'
 import { isEmptyObj } from 'utils'
+
+import { signup } from '../utils/account'
 
 declare type InvalidData = {
   [key in keyof RegisterData]: {
@@ -92,6 +95,7 @@ const Register: NextPage = () => {
     color: #434343;
   `
   const wallet = useWallet()
+  const router = useRouter()
   const isConnected = wallet.isConnected()
   const defaultData: RegisterData = {
     address: '',
@@ -117,28 +121,28 @@ const Register: NextPage = () => {
     }
   }
   const checkRegisterData = () => {
-    setInvalidData({}) // clean old first // TODO: bug when click submit
+    const invalid: Partial<InvalidData> = {}
     if (!registerData.address) {
-      setInvalidData({
-        address: { message: 'Please connect wallet' },
-      })
+      invalid.address = { message: 'Please connect wallet' }
     }
     if (!registerData.username) {
-      setInvalidData({
-        username: { message: 'Username is required' },
-      })
+      invalid.username = { message: 'Username is required' }
     }
+
     // if (registerData.username && api call) {
     //   setInvalidData({
     //     username: { message: 'Username already taken' },
     //   })
     // }
+    setInvalidData(invalidData)
     return isEmptyObj(invalidData)
   }
-  const handleRegisterSubmit = () => {
-    // TODO: logic here
-    console.log(registerData)
+
+  const handleRegisterSubmit = async () => {
     if (!checkRegisterData()) return
+    // TODO: handle user has already registered
+    await signup(wallet)
+    await router.replace('/games')
   }
 
   useEffect(() => {
@@ -217,7 +221,7 @@ const Register: NextPage = () => {
               </p>
             </UserConfigurator>
             <Buttons>
-              <RedButton onClick={handleRegisterSubmit}>
+              <RedButton onClick={() => handleRegisterSubmit()}>
                 Create account
               </RedButton>
               <LoginMessage>
