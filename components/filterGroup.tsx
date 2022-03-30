@@ -97,7 +97,7 @@ export function FilterGroupItem({ icon, name, href }: FilterGroupItemProps) {
     overflow: hidden;
     display: flex;
     align-items: center;
-    & > *:first-child {
+    & > *:first-of-type {
       flex: 1;
       padding-left: 28px;
     }
