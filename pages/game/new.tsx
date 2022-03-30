@@ -5,6 +5,7 @@ import {
   FormLabel,
   IconButton,
   MenuItem,
+  OutlinedInput,
   Radio,
   RadioGroup,
   TextField,
@@ -18,12 +19,20 @@ import { useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
 const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
+import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
-import OutlinedInput from '@mui/material/OutlinedInput'
-import { Theme, useTheme } from '@mui/material/styles'
-import { classification, genre, kindOfProject, releaseStatus, tags } from 'data'
+import FormHelperText from '@mui/material/FormHelperText'
+import {
+  classification,
+  genres,
+  kindOfProjects,
+  releaseStatus,
+  tags,
+} from 'data'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { Game } from 'utils/validator'
+const resolverGame = classValidatorResolver(Game)
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -36,48 +45,30 @@ const MenuProps = {
   },
 }
 
-function getStyles(name: string, personName: readonly string[], theme: Theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  }
-}
-
-type FormState = {
-  title: string
-  projectUrl: string
-  tagline: string
-}
-
 const GameNew: NextPage = () => {
-  const theme = useTheme()
-  const [, setAge] = useState<string>('')
-  const [personName, setPersonName] = useState<string[]>([])
+  const [formTags, setFormTags] = useState<string[]>([])
 
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors: formErrors },
-  } = useForm<FormState>()
-  const onSubmit: SubmitHandler<FormState> = (data) => console.log(data)
+  } = useForm<Game>({
+    resolver: resolverGame,
+  })
+  const onSubmit: SubmitHandler<Game> = (data) => console.log(data)
 
   console.log(watch('title'))
 
   console.log('formErrors', formErrors)
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value)
-  }
   const handleTagsSelectChange = (
     event: SelectChangeEvent<typeof personName>
   ) => {
     const {
       target: { value },
     } = event
-    setPersonName(
+    setFormTags(
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value
     )
@@ -141,27 +132,9 @@ const GameNew: NextPage = () => {
                         aria-describedby="form-title-error-text"
                         error={!!formErrors.title}
                         helperText={
-                          formErrors.title && 'title length is 1 - 32'
+                          formErrors.title ? formErrors.title.message : ''
                         }
-                        {...register('title', {
-                          required: true,
-                          min: 1,
-                          max: 32,
-                        })}
-                      />
-                    </FormControl>
-                  </div>
-                  <div className={styles.input_row}>
-                    <FormControl fullWidth>
-                      <FormLabel id="form-projectUrl">Project URL</FormLabel>
-                      <TextField
-                        id="form-projectUrl"
-                        variant="outlined"
-                        placeholder="https://xxxx.itch.io/Project URL"
-                        {...register('projectUrl', {
-                          min: 1,
-                          max: 32,
-                        })}
+                        {...register('title')}
                       />
                     </FormControl>
                   </div>
@@ -178,16 +151,16 @@ const GameNew: NextPage = () => {
                       </p>
                       <TextField
                         id="form-shortDescriptionOrTagline"
-                        placeholder="Optional"
-                        {...register('tagline', {
-                          min: 1,
-                          max: 32,
-                        })}
+                        error={!!formErrors.subtitle}
+                        helperText={
+                          formErrors.subtitle ? formErrors.subtitle.message : ''
+                        }
+                        {...register('subtitle')}
                       />
                     </FormControl>
                   </div>
                   <div className={styles.input_row}>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth error={!!formErrors.classification}>
                       <FormLabel id="form-classification">
                         Classification
                       </FormLabel>
@@ -195,8 +168,8 @@ const GameNew: NextPage = () => {
                       <Select
                         id="form-classification"
                         value={classification[0].value}
-                        label="outlined"
-                        onChange={handleChange}
+                        disabled
+                        {...register('classification')}
                       >
                         {classification.map((i) => (
                           <MenuItem value={i.value} key={i.value}>
@@ -210,31 +183,40 @@ const GameNew: NextPage = () => {
                           </MenuItem>
                         ))}
                       </Select>
+                      <FormHelperText>
+                        {formErrors.classification
+                          ? formErrors.classification.message
+                          : ''}
+                      </FormHelperText>
                     </FormControl>
                   </div>
 
                   <div className={styles.input_row}>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth error={!!formErrors.kind}>
                       <FormLabel id="form-kindOfProject">
                         Kind of project
                       </FormLabel>
                       <Select
                         id="form-kindOfProject"
-                        value={kindOfProject[0].value}
-                        onChange={handleChange}
+                        value={kindOfProjects[0].value}
+                        disabled
+                        {...register('kind')}
                       >
-                        {kindOfProject.map((i) => (
-                          <MenuItem value={i.value} key={i.value}>
-                            {i.label}
-                            {i.description && (
+                        {kindOfProjects.map((kind) => (
+                          <MenuItem value={kind.value} key={kind.value}>
+                            {kind.label}
+                            {kind.description && (
                               <span className="sub">
                                 {' — '}
-                                {i.description}
+                                {kind.description}
                               </span>
                             )}
                           </MenuItem>
                         ))}
                       </Select>
+                      <FormHelperText>
+                        {formErrors.kind ? formErrors.kind.message : ''}
+                      </FormHelperText>
                     </FormControl>
                     <div data-label="Tip" className={styles.hint}>
                       You can add additional downloadable files for any of the
@@ -243,14 +225,14 @@ const GameNew: NextPage = () => {
                   </div>
 
                   <div className={styles.input_row}>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth error={!!formErrors.releaseStatus}>
                       <FormLabel id="form-releaseStatus">
                         Release status
                       </FormLabel>
                       <Select
                         id="form-releaseStatus"
                         value={releaseStatus[0].value}
-                        onChange={handleChange}
+                        {...register('releaseStatus')}
                       >
                         {releaseStatus.map((i) => (
                           <MenuItem value={i.value} key={i.value}>
@@ -264,34 +246,44 @@ const GameNew: NextPage = () => {
                           </MenuItem>
                         ))}
                       </Select>
+                      <FormHelperText>
+                        {formErrors.releaseStatus
+                          ? formErrors.releaseStatus.message
+                          : ''}
+                      </FormHelperText>
                     </FormControl>
                   </div>
 
                   <div className="price_picker">
                     <div className="payment_modes">
-                      <FormControl fullWidth>
+                      <FormControl fullWidth error={!!formErrors.paymentMode}>
                         <FormLabel id="form-pricing">Pricing</FormLabel>
                         <RadioGroup
                           row
                           aria-labelledby="form-pricing"
-                          defaultValue="no_payments"
+                          defaultValue="DISABLE_PAYMENTS"
                         >
                           <FormControlLabel
-                            value="donate"
-                            control={<Radio />}
+                            value="FREE"
+                            control={<Radio disabled />}
                             label="$0 or donate"
                           />
                           <FormControlLabel
-                            value="paid"
-                            control={<Radio />}
+                            value="PAID"
+                            control={<Radio disabled />}
                             label="Paid"
                           />
                           <FormControlLabel
-                            value="no_payments"
+                            value="DISABLE_PAYMENTS"
                             control={<Radio />}
                             label="No payments"
                           />
                         </RadioGroup>
+                        <FormHelperText>
+                          {formErrors.paymentMode
+                            ? formErrors.paymentMode.message
+                            : ''}
+                        </FormHelperText>
                       </FormControl>
                     </div>
 
@@ -395,7 +387,10 @@ const GameNew: NextPage = () => {
                   <div className="tags_drop">
                     <div className="game_edit_game_tags_widget">
                       <div className={`${styles.input_row}`}>
-                        <FormControl sx={{ m: 1 }} fullWidth>
+                        <FormControl
+                          fullWidth
+                          error={!!formErrors.classification}
+                        >
                           <FormLabel id="form-genre">Genre</FormLabel>
                           <p className={styles.sub}>
                             Select the category that best describes your game.
@@ -403,77 +398,49 @@ const GameNew: NextPage = () => {
                           </p>
                           <Select
                             id="form-genre"
-                            multiple
-                            value={personName}
-                            onChange={handleTagsSelectChange}
-                            input={
-                              <OutlinedInput
-                                id="select-multiple-chip"
-                                label="Chip"
-                              />
-                            }
-                            renderValue={(selected) => (
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  flexWrap: 'wrap',
-                                  gap: 0.5,
-                                }}
-                              >
-                                {selected.map((value) => (
-                                  <Chip key={value} label={value} />
-                                ))}
-                              </Box>
-                            )}
-                            MenuProps={MenuProps}
+                            value={genres[0]}
+                            {...register('genre')}
                           >
-                            {genre.map((name) => (
-                              <MenuItem
-                                key={name}
-                                value={name}
-                                style={getStyles(name, personName, theme)}
-                              >
-                                {name}
+                            {genres.map((genre) => (
+                              <MenuItem value={genre} key={genre}>
+                                {genre}
                               </MenuItem>
                             ))}
                           </Select>
+                          <FormHelperText>
+                            {formErrors.genre ? formErrors.genre.message : ''}
+                          </FormHelperText>
                         </FormControl>
                       </div>
                       <div className={`${styles.input_row} tags_input_row`}>
-                        <div className={styles.label}>
-                          Tags
-                          <span className={styles.sub}>
-                            —{' '}
-                            <a
-                              href="/docs/creators/quality-guidelines#tags"
-                              target="blank"
-                            >
-                              Tips for choosing tags
-                            </a>
-                          </span>
-                        </div>
-                        <p className="sub">
-                          Any other keywords someone might search to find your
-                          game. Max of 10.
-                        </p>
-                        <p className="sub">
-                          Avoid duplicating any platforms provided on files
-                          above.
-                        </p>
-                        <FormControl sx={{ m: 1 }} fullWidth>
-                          <FormLabel id="form-tags">Tags</FormLabel>
+                        <FormControl fullWidth>
+                          <FormLabel id="form-tags">
+                            Tags
+                            <span className={styles.tags_sub}>
+                              —{' '}
+                              <a
+                                href="/docs/creators/quality-guidelines#tags"
+                                target="blank"
+                              >
+                                Tips for choosing tags
+                              </a>
+                            </span>
+                          </FormLabel>
+                          <p className={styles.tags_description_sub}>
+                            Any other keywords someone might search to find your
+                            game. Max of 10.
+                          </p>
+                          <p className={styles.tags_description_sub}>
+                            Avoid duplicating any platforms provided on files
+                            above.
+                          </p>
                           <Select
                             id="form-tags"
                             multiple
-                            value={personName}
+                            value={formTags}
                             onChange={handleTagsSelectChange}
-                            input={
-                              <OutlinedInput
-                                id="select-multiple-chip"
-                                label="Chip"
-                              />
-                            }
-                            renderValue={(selected) => (
+                            input={<OutlinedInput />}
+                            renderValue={(selected: string[]) => (
                               <Box
                                 sx={{
                                   display: 'flex',
@@ -489,11 +456,7 @@ const GameNew: NextPage = () => {
                             MenuProps={MenuProps}
                           >
                             {tags.map((name) => (
-                              <MenuItem
-                                key={name}
-                                value={name}
-                                style={getStyles(name, personName, theme)}
-                              >
+                              <MenuItem key={name} value={name}>
                                 {name}
                               </MenuItem>
                             ))}
@@ -508,14 +471,28 @@ const GameNew: NextPage = () => {
                       <div
                         className={`${styles.input_row} app_store_links_row`}
                       >
-                        <div className={styles.label}>
-                          App store links
+                        <FormControl fullWidth>
+                          <FormLabel id="form-appStoreLink">
+                            App store links
+                          </FormLabel>
                           <p className={styles.sub}>
                             {
                               "If your project is available on any other stores we'll link to it."
                             }
                           </p>
-                        </div>
+                          <TextField
+                            id="form-appStoreLink"
+                            variant="outlined"
+                            error={!!formErrors.appStoreLink}
+                            placeholder="eg. http(s)://"
+                            helperText={
+                              formErrors.appStoreLink
+                                ? formErrors.appStoreLink.message
+                                : ''
+                            }
+                            {...register('appStoreLink')}
+                          />
+                        </FormControl>
                       </div>
                     </div>
                   </div>
@@ -548,21 +525,16 @@ const GameNew: NextPage = () => {
                       </p>
                       <RadioGroup
                         aria-labelledby="demo-radio-buttons-group-label"
-                        defaultValue="female"
+                        defaultValue="discussionBoard"
                         name="radio-buttons-group"
                       >
                         <FormControlLabel
-                          value="disabled"
-                          control={<Radio />}
-                          label="Disabled"
-                        />
-                        <FormControlLabel
                           value="comments"
-                          control={<Radio />}
+                          control={<Radio size="small" disabled />}
                           label={
-                            <span>
+                            <span className={styles.radio_label}>
                               Comments
-                              <span className={styles.sub}>
+                              <span className={styles.radio_sub}>
                                 {' '}
                                 — Add a nested comment thread to the bottom of
                                 the project page
@@ -572,11 +544,11 @@ const GameNew: NextPage = () => {
                         />
                         <FormControlLabel
                           value="discussionBoard"
-                          control={<Radio />}
+                          control={<Radio size="small" />}
                           label={
-                            <span>
+                            <span className={styles.radio_label}>
                               Discussion board
-                              <span className={styles.sub}>
+                              <span className={styles.radio_sub}>
                                 {' '}
                                 — Add a dedicated community page with
                                 categories, threads, replies &amp; more
@@ -587,7 +559,7 @@ const GameNew: NextPage = () => {
                       </RadioGroup>
                     </FormControl>
                   </div>
-                  <div className={styles.input_row}>
+                  {/* <div className={styles.input_row}>
                     <FormControl>
                       <FormLabel id="demo-radio-buttons-group-label">
                         Visibility & access
@@ -654,7 +626,7 @@ const GameNew: NextPage = () => {
                         ></FormControlLabel>
                       </RadioGroup>
                     </FormControl>
-                  </div>
+                  </div> */}
                 </div>
                 <div className={`misc ${styles.right_col}`}>
                   <div className="cover_uploader_drop">

@@ -1,3 +1,6 @@
+import { Genre } from 'types/enum'
+import { word } from 'utils/word'
+
 export const tags = [
   'horror',
   '3d',
@@ -454,6 +457,11 @@ export const tags = [
 
 export const classification = [
   {
+    value: 'GAMES',
+    label: 'Games',
+    description: 'A piece of software you can play',
+  },
+  {
     value: 'game',
     label: 'Game',
     description: 'A piece of software you can play',
@@ -502,7 +510,12 @@ export const classification = [
   },
 ]
 
-export const kindOfProject = [
+export const kindOfProjects = [
+  {
+    value: 'rm2k3e',
+    label: 'RPG MAKER',
+    description: 'RPG MAKER 2000/2003',
+  },
   {
     value: 'default',
     label: 'Downloadable',
@@ -533,51 +546,53 @@ export const kindOfProject = [
 
 export const releaseStatus = [
   {
-    value: 'released',
+    value: 'RELEASED',
     label: 'Released',
     description: 'Project is complete, but might receive some updates',
   },
   {
-    value: 'in_development',
+    value: 'IN_DEVELOPMENT',
     label: 'In development',
     description: 'Project is in active development (or in early access)',
   },
   {
-    value: 'on_hold',
+    value: 'ON_HOLD',
     label: 'On hold',
     description: 'Development is paused for now',
   },
   {
-    value: 'canceled',
+    value: 'CANCELLED',
     label: 'Canceled',
     description: 'Development has stopped indefinitely',
   },
   {
-    value: 'prototype',
+    value: 'PROTOTYPE',
     label: 'Prototype',
     description:
       'An early prototype for testing an idea out, fate of project unknown',
   },
 ]
 
-export const genre = [
-  'No genre',
-  'Action',
-  'Adventure',
-  'Card Game',
-  'Educational',
-  'Fighting',
-  'Interactive Fiction',
-  'Platformer',
-  'Puzzle',
-  'Racing',
-  'Rhythm',
-  'Role Playing',
-  'Shooter',
-  'Simulation',
-  'Sports',
-  'Strategy',
-  'Survival',
-  'Visual Novel',
-  'Other',
-]
+// export const genre = [
+//   'No genre',
+//   'Action',
+//   'Adventure',
+//   'Card Game',
+//   'Educational',
+//   'Fighting',
+//   'Interactive Fiction',
+//   'Platformer',
+//   'Puzzle',
+//   'Racing',
+//   'Rhythm',
+//   'Role Playing',
+//   'Shooter',
+//   'Simulation',
+//   'Sports',
+//   'Strategy',
+//   'Survival',
+//   'Visual Novel',
+//   'Other',
+// ]
+
+export const genres = word(Object.values(Genre))

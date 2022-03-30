@@ -209,13 +209,29 @@
   .label {
     color: #434343;
     font-weight: bold;
-    .sub {
-      font-weight: normal;
-      color: #606060;
-      a {
-        color: #434343;
-      }
+  }
+  .radio_label {
+    color: #000;
+  }
+  .radio_sub {
+    font-weight: normal;
+    color: #606060;
+    font-size: 14px;
+  }
+  .tags_sub {
+    font-weight: normal;
+    color: #606060;
+    font-size: 14px;
+    a {
+      color: #434343;
     }
+  }
+  .tags_description_sub {
+    color: #606060;
+    margin: 5px 0;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 1.2;
   }
 }
 
