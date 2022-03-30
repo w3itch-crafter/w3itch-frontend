@@ -5,7 +5,7 @@ import PageCard from 'components/pageCard'
 import StatHeader from 'components/statHeader'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useWallet } from 'use-wallet'
 
 import { login } from '../api/account'
@@ -21,17 +21,18 @@ const Login: NextPage = () => {
   const wallet = useWallet()
   const router = useRouter()
   const [hasStarted, setHasStarted] = useState(false)
+  const isConnected = wallet.isConnected()
+  const startLogin = useCallback(async () => {
+    await login(wallet)
+    await router.replace('/games')
+  }, [])
 
   useEffect(() => {
-    if (wallet.isConnected() && !hasStarted) {
+    if (isConnected && !hasStarted) {
       setHasStarted(true)
-      const startLogin = async () => {
-        await login(wallet)
-        await router.replace('/games')
-      }
       startLogin()
     }
-  }, [wallet])
+  }, [isConnected])
 
   return (
     <Container>
