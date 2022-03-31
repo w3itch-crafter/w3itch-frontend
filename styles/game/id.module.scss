@@ -117,3 +117,46 @@
     width: 367px;
   }
 }
+
+.iframe_wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  .iframe_wrapper_close {
+  }
+  .iframe_wrapper_open {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 99998;
+  }
+  .full_close {
+    width: 30px;
+    height: 30px;
+    background-color: #fff;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+  .full_open {
+    width: 30px;
+    height: 30px;
+    background-color: #fff;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 99999;
+  }
+}

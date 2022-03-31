@@ -5,6 +5,10 @@ import {
   IsUrl,
   Length,
 } from 'class-validator'
+class ScreenshotDTO {
+  @IsUrl()
+  value: string
+}
 
 export class Game {
   @Length(1, 50)
@@ -60,11 +64,8 @@ export class Game {
   @IsNotEmpty()
   cover: string
 
-  // @IsUrl({ each: true })
-  // @IsOptional()
-  // screenshots: string[]
-
-  @IsUrl()
+  // @ValidateNested({ each: true })
+  // @Type(() => ScreenshotDTO)
   @IsOptional()
-  screenshot: string
+  screenshots: ScreenshotDTO[]
 }

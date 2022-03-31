@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Dispatch, FC, SetStateAction, useCallback, useEffect } from 'react'
+import { Dispatch, FC, SetStateAction, useCallback } from 'react'
 import { FileWithPath, useDropzone } from 'react-dropzone'
 
 const Wrapper = styled.section``
@@ -20,14 +20,20 @@ const WrapperDrap = styled.section`
 `
 
 interface Props {
-  setFiles: Dispatch<SetStateAction<File | undefined>>
+  setFile: Dispatch<SetStateAction<File | undefined>>
 }
 
-const UploadGame: FC<Props> = ({ setFiles }) => {
-  const onDrop = useCallback((acceptedFiles) => {
-    // Do something with the files
-    console.log('acceptedFiles', acceptedFiles)
-  }, [])
+const UploadGame: FC<Props> = ({ setFile }) => {
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      // Do something with the files
+      console.log('acceptedFiles', acceptedFiles)
+      if (acceptedFiles.length) {
+        setFile(acceptedFiles[0])
+      }
+    },
+    [setFile]
+  )
 
   const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
     useDropzone({
@@ -42,12 +48,6 @@ const UploadGame: FC<Props> = ({ setFiles }) => {
       <b>{file.name}</b> - {file.size} bytes
     </li>
   ))
-
-  useEffect(() => {
-    if (acceptedFiles.length) {
-      setFiles(acceptedFiles[0])
-    }
-  }, [setFiles, acceptedFiles])
 
   return (
     <Wrapper>

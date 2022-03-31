@@ -1,6 +1,7 @@
 import {
   FormControl,
   FormControlLabel,
+  FormHelperText,
   FormLabel,
   MenuItem,
   OutlinedInput,
@@ -26,12 +27,15 @@ import {
   releaseStatus,
   tags,
 } from 'data'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
 import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
-import { createGame } from 'api/index'
+import { createGame, storagesUploadToIPFS } from 'api/index'
 import UploadGame from 'components/UploadGame/index'
+import UploadGameCover from 'components/UploadGameCover/index'
+import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
+import { useRouter } from 'next/router'
 import {
   Community,
   GameEngine,
@@ -40,7 +44,7 @@ import {
   ProjectClassification,
   ReleaseStatus,
 } from 'types/enum'
-
+import { fileUrl, parseUrl } from 'utils'
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
 const MenuProps = {
@@ -53,18 +57,65 @@ const MenuProps = {
 }
 
 const GameNew: NextPage = () => {
+  const router = useRouter()
   const [formTags, setFormTags] = useState<string[]>([])
   const [editorRef, setEditorRef] = useState<MutableRefObject<ToastUiEditor>>()
   const [uploadGameFile, setUploadGameFile] = useState<File>()
+  const [coverFileFile, setCoverFileFile] = useState<File>()
+  const [screenshotsFiles, setScreenshotsFiles] = useState<File[]>()
 
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
+    control,
     formState: { errors: formErrors },
   } = useForm<Game>({
     resolver: resolverGame,
+    defaultValues: {
+      screenshots: [],
+    },
   })
+  const { fields: fieldsScreenshots } = useFieldArray({
+    control,
+    name: 'screenshots',
+  })
+
+  console.log('fieldsScreenshots', fieldsScreenshots)
+
+  const handleAllImages = async () => {
+    const promiseArray = []
+
+    // cover
+    if (coverFileFile) {
+      const formDataCover = new FormData()
+      formDataCover.append('file', coverFileFile)
+
+      promiseArray.push(storagesUploadToIPFS(formDataCover))
+    }
+
+    // screenshots
+    screenshotsFiles?.forEach((screenshotsFile) => {
+      const formDataScreenshot = new FormData()
+      formDataScreenshot.append('file', screenshotsFile)
+
+      promiseArray.push(storagesUploadToIPFS(formDataScreenshot))
+    })
+
+    const resultAllImages = await Promise.all(promiseArray)
+
+    console.log('resultAllImages', resultAllImages)
+
+    return {
+      cover: coverFileFile ? resultAllImages[0].data.publicUrl : '',
+      screenshots: screenshotsFiles?.length
+        ? coverFileFile
+          ? resultAllImages.slice(1).map((i) => i.data.publicUrl)
+          : resultAllImages.map((i) => i.data.publicUrl)
+        : [],
+    }
+  }
 
   // handle create game
   const handleCreateGame = async (game: Game) => {
@@ -84,6 +135,8 @@ const GameNew: NextPage = () => {
       description = editorRef.current?.getInstance().getMarkdown()
     }
 
+    const allImages = await handleAllImages()
+
     const gameData = {
       title: game.title,
       paymentMode: PaymentMode.DISABLE_PAYMENTS,
@@ -93,8 +146,8 @@ const GameNew: NextPage = () => {
       classification: ProjectClassification.GAMES,
       kind: GameEngine.RM2K3E,
       releaseStatus: ReleaseStatus.RELEASED,
-      screenshots: [game.screenshot],
-      cover: game.cover,
+      screenshots: allImages.screenshots,
+      cover: allImages.cover,
       tags: formTags,
       appStoreLinks: [game.appStoreLink],
       description: description,
@@ -109,13 +162,24 @@ const GameNew: NextPage = () => {
     formData.append('file', uploadGameFile)
     formData.append('game', JSON.stringify(gameData))
 
-    const result = await createGame(formData)
-    console.log('result', result)
+    const createGameResult = await createGame(formData)
+    console.log('createGameResult', createGameResult)
+
+    // @TODO 409
+    if (createGameResult.status === 201) {
+      alert('successful')
+      router.push('/dashboard')
+    } else if (createGameResult.status === 409) {
+      alert('The name of the game is repeated, please modify it.')
+    }
   }
 
-  const onSubmit: SubmitHandler<Game> = (data) => {
+  const onSubmit: SubmitHandler<Game> = async (data) => {
     console.log(data)
     handleCreateGame(data)
+    // const result = await handleAllImages()
+
+    // console.log('aaa', result)
   }
 
   console.log(watch('title'))
@@ -132,6 +196,12 @@ const GameNew: NextPage = () => {
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value
     )
+  }
+
+  const handleCoverValue = (file: File) => {
+    setCoverFileFile(file)
+    console.log('ccc', parseUrl(fileUrl(file)), file)
+    setValue('cover', parseUrl(fileUrl(file)))
   }
 
   return (
@@ -382,7 +452,7 @@ const GameNew: NextPage = () => {
                         >
                           Upload file<span className="on_multi_upload">s</span>
                         </div> */}
-                        <UploadGame setFiles={setUploadGameFile} />
+                        <UploadGame setFile={setUploadGameFile} />
                         {/* <span className="button_divider">or</span>
                         <span className="dropbox_drop">
                           <a
@@ -439,7 +509,7 @@ const GameNew: NextPage = () => {
                             Select the category that best describes your game.
                             You can pick additional genres with tags below
                           </p>
-                          <Select id="form-genre" value={genres[0]}>
+                          <Select id="form-genre" disabled>
                             {genres.map((genre) => (
                               <MenuItem value={genre} key={genre}>
                                 {genre}
@@ -475,6 +545,7 @@ const GameNew: NextPage = () => {
                             multiple
                             value={formTags}
                             onChange={handleTagsSelectChange}
+                            disabled
                             input={<OutlinedInput />}
                             renderValue={(selected: string[]) => (
                               <Box
@@ -534,7 +605,7 @@ const GameNew: NextPage = () => {
                     </div>
                   </div>
 
-                  <div className={styles.input_row}>
+                  {/* <div className={styles.input_row}>
                     <FormControl fullWidth>
                       <FormLabel id="form-customNoun">Custom noun</FormLabel>
                       <p className={styles.sub}>
@@ -547,9 +618,13 @@ const GameNew: NextPage = () => {
                         <span className="user_classification_noun">mod</span>
                         {"'"}.
                       </p>
-                      <TextField id="form-customNoun" placeholder="Optional" />
+                      <TextField
+                        id="form-customNoun"
+                        placeholder="Optional"
+                        disabled
+                      />
                     </FormControl>
-                  </div>
+                  </div> */}
 
                   <div className={styles.input_row}>
                     <FormControl>
@@ -569,14 +644,7 @@ const GameNew: NextPage = () => {
                           value="comments"
                           control={<Radio size="small" disabled />}
                           label={
-                            <span className={styles.radio_label}>
-                              Comments
-                              <span className={styles.radio_sub}>
-                                {' '}
-                                — Add a nested comment thread to the bottom of
-                                the project page
-                              </span>
-                            </span>
+                            <span className={styles.radio_label}>Disabled</span>
                           }
                         />
                         <FormControlLabel
@@ -668,40 +736,25 @@ const GameNew: NextPage = () => {
                 <div className={`misc ${styles.right_col}`}>
                   <div className="cover_uploader_drop">
                     <div className={styles.game_edit_cover_uploader_widget}>
-                      <div className={styles.upload_container}>
-                        <div className={styles.file_tools}>
-                          <input
-                            type="hidden"
-                            name="game[cover_image_id]"
-                            value=""
-                          />
-                          <button className={stylesCommon.button} type="button">
-                            Upload Cover Image
-                          </button>
-                        </div>
-                      </div>
+                      <UploadGameCover
+                        setFile={(file) => handleCoverValue(file as File)}
+                      />
                       <p className={`${styles.sub} instructions`}>
                         The cover image is used whenever itch.io wants to link
                         to your project from another part of the site. Required
                         (Minimum: 315x250, Recommended: 630x500)
                       </p>
                     </div>
-                    <FormControl fullWidth>
-                      <FormLabel id="form-cover">Cover</FormLabel>
+                    <FormControl fullWidth error={!!formErrors.cover}>
                       <TextField
-                        id="form-cover"
-                        variant="outlined"
-                        aria-describedby="form-cover-error-text"
-                        error={!!formErrors.cover}
-                        defaultValue="https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa"
-                        helperText={
-                          formErrors.cover ? formErrors.cover.message : ''
-                        }
                         {...register('cover')}
+                        style={{ display: 'none' }}
                       />
+                      <FormHelperText>
+                        {formErrors.cover ? formErrors.cover.message : ''}
+                      </FormHelperText>
                     </FormControl>
                   </div>
-
                   {/* <section className={styles.video_editor}>
                     <FormControl fullWidth>
                       <FormLabel id="form-cover">
@@ -723,7 +776,6 @@ const GameNew: NextPage = () => {
                       />
                     </FormControl>
                   </section> */}
-
                   <section className={styles.screenshot_editor}>
                     <div className={styles.label}>Screenshots</div>
                     <p className={styles.sub}>
@@ -733,36 +785,20 @@ const GameNew: NextPage = () => {
                       Optional but highly recommended. Upload 3 to 5 for best
                       results.
                     </p>
-                    <div className={styles.screenshot_list}></div>
-                    <div className="screenshot_queue"></div>
-                    <div>
-                      <button
-                        data-max_size="3145728"
-                        data-accept=".png,.gif,.jpg,.jpeg"
-                        type="button"
-                        className={`${stylesCommon.button} add_screenshot_btn has_multi_upload`}
-                      >
-                        Add screenshots
-                      </button>
-                    </div>
+                    <UploadGameScreenshots setFiles={setScreenshotsFiles} />
                   </section>
-
-                  <FormControl fullWidth>
-                    <FormLabel id="form-screenshot">Screenshot</FormLabel>
-                    <TextField
-                      id="form-screenshot"
-                      variant="outlined"
-                      aria-describedby="form-screenshot-error-text"
-                      error={!!formErrors.screenshot}
-                      defaultValue="https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa"
-                      helperText={
-                        formErrors.screenshot
-                          ? formErrors.screenshot.message
-                          : ''
-                      }
-                      {...register('screenshot')}
-                    />
-                  </FormControl>
+                  {fieldsScreenshots.map((field, index) => (
+                    <div key={field.id}>
+                      <div>
+                        <input
+                          {...register(`screenshots.${index}.value` as const)}
+                        />
+                      </div>
+                      {formErrors.screenshots && (
+                        <p>{JSON.stringify(formErrors.screenshots[index])}</p>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className={styles.buttons}>
