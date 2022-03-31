@@ -1,6 +1,10 @@
+import { AxiosResponse } from 'axios'
+
 import backend from './backend'
 
-export const createGame = async (data: FormData) => {
+export const createGame = async (
+  data: FormData
+): Promise<AxiosResponse<unknown>> => {
   return await backend({
     url: '/game-projects',
     method: 'POST',

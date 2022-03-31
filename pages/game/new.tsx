@@ -31,10 +31,11 @@ import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
 import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
-import { createGame } from 'api/index'
+import { createGame, storagesUploadToIPFS } from 'api/index'
 import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
+import { useRouter } from 'next/router'
 import {
   Community,
   GameEngine,
@@ -44,7 +45,6 @@ import {
   ReleaseStatus,
 } from 'types/enum'
 import { fileUrl, parseUrl } from 'utils'
-
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
 const MenuProps = {
@@ -57,11 +57,12 @@ const MenuProps = {
 }
 
 const GameNew: NextPage = () => {
+  const router = useRouter()
   const [formTags, setFormTags] = useState<string[]>([])
   const [editorRef, setEditorRef] = useState<MutableRefObject<ToastUiEditor>>()
   const [uploadGameFile, setUploadGameFile] = useState<File>()
-  const [screenshotsFiles, setScreenshotsFiles] = useState<File[]>()
   const [coverFileFile, setCoverFileFile] = useState<File>()
+  const [screenshotsFiles, setScreenshotsFiles] = useState<File[]>()
 
   const {
     register,
@@ -76,20 +77,45 @@ const GameNew: NextPage = () => {
       screenshots: [],
     },
   })
-  const {
-    fields: fieldsScreenshots,
-    append,
-    prepend,
-    remove,
-    swap,
-    move,
-    insert,
-  } = useFieldArray({
+  const { fields: fieldsScreenshots } = useFieldArray({
     control,
     name: 'screenshots',
   })
 
   console.log('fieldsScreenshots', fieldsScreenshots)
+
+  const handleAllImages = async () => {
+    const promiseArray = []
+
+    // cover
+    if (coverFileFile) {
+      const formDataCover = new FormData()
+      formDataCover.append('file', coverFileFile)
+
+      promiseArray.push(storagesUploadToIPFS(formDataCover))
+    }
+
+    // screenshots
+    screenshotsFiles?.forEach((screenshotsFile) => {
+      const formDataScreenshot = new FormData()
+      formDataScreenshot.append('file', screenshotsFile)
+
+      promiseArray.push(storagesUploadToIPFS(formDataScreenshot))
+    })
+
+    const resultAllImages = await Promise.all(promiseArray)
+
+    console.log('resultAllImages', resultAllImages)
+
+    return {
+      cover: coverFileFile ? resultAllImages[0].data.publicUrl : '',
+      screenshots: screenshotsFiles?.length
+        ? coverFileFile
+          ? resultAllImages.slice(1).map((i) => i.data.publicUrl)
+          : resultAllImages.map((i) => i.data.publicUrl)
+        : [],
+    }
+  }
 
   // handle create game
   const handleCreateGame = async (game: Game) => {
@@ -109,6 +135,8 @@ const GameNew: NextPage = () => {
       description = editorRef.current?.getInstance().getMarkdown()
     }
 
+    const allImages = await handleAllImages()
+
     const gameData = {
       title: game.title,
       paymentMode: PaymentMode.DISABLE_PAYMENTS,
@@ -118,8 +146,8 @@ const GameNew: NextPage = () => {
       classification: ProjectClassification.GAMES,
       kind: GameEngine.RM2K3E,
       releaseStatus: ReleaseStatus.RELEASED,
-      screenshots: [game.screenshot],
-      cover: game.cover,
+      screenshots: allImages.screenshots,
+      cover: allImages.cover,
       tags: formTags,
       appStoreLinks: [game.appStoreLink],
       description: description,
@@ -134,13 +162,24 @@ const GameNew: NextPage = () => {
     formData.append('file', uploadGameFile)
     formData.append('game', JSON.stringify(gameData))
 
-    const result = await createGame(formData)
-    console.log('result', result)
+    const createGameResult = await createGame(formData)
+    console.log('createGameResult', createGameResult)
+
+    // @TODO 409
+    if (createGameResult.status === 201) {
+      alert('successful')
+      router.push('/dashboard')
+    } else if (createGameResult.status === 409) {
+      alert('The name of the game is repeated, please modify it.')
+    }
   }
 
-  const onSubmit: SubmitHandler<Game> = (data) => {
+  const onSubmit: SubmitHandler<Game> = async (data) => {
     console.log(data)
-    // handleCreateGame(data)
+    handleCreateGame(data)
+    // const result = await handleAllImages()
+
+    // console.log('aaa', result)
   }
 
   console.log(watch('title'))
