@@ -95,8 +95,6 @@ const Games: NextPage<GamesProps> = ({ genres, tags, gameData, pageMeta }) => {
     }
   }, [gameData])
 
-  console.log(games.length)
-
   return (
     <Container>
       <FilterColumn>
