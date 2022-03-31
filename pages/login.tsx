@@ -7,6 +7,7 @@ import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import { useWallet } from 'use-wallet'
+import { Wallet } from 'use-wallet/dist/cjs/types'
 
 import { login } from '../api/account'
 
@@ -22,7 +23,7 @@ const Login: NextPage = () => {
   const router = useRouter()
   const [hasStarted, setHasStarted] = useState(false)
   const isConnected = wallet.isConnected()
-  const startLogin = useCallback(async () => {
+  const startLogin = useCallback(async (wallet: Wallet) => {
     await login(wallet)
     await router.replace('/games')
   }, [])
@@ -30,7 +31,7 @@ const Login: NextPage = () => {
   useEffect(() => {
     if (isConnected && !hasStarted) {
       setHasStarted(true)
-      startLogin()
+      startLogin(wallet)
     }
   }, [isConnected])
 

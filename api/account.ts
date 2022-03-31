@@ -3,11 +3,7 @@ import type { Wallet } from 'use-wallet/dist/cjs/types'
 import backend from './backend'
 
 const service = async (wallet: Wallet, action: 'login' | 'signup') => {
-  const accounts = await wallet.ethereum.request({
-    method: 'eth_requestAccounts',
-  })
-  const account = accounts[0]
-
+  const account = wallet.account
   const code = (
     await backend.post('/accounts/metamask/verification-code', {
       key: account,
