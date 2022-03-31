@@ -1,3 +1,5 @@
+import styled from '@emotion/styled'
+import clsx from 'clsx'
 import Image from 'next/image'
 
 export declare interface IconProps {
@@ -24,4 +26,14 @@ export function WalletConnectIcon({ size }: IconProps) {
       height={`${size}px`}
     />
   )
+}
+
+export declare interface IcoMoonIconProps {
+  name: string
+}
+
+export function IcoMoonIcon({ name }: IcoMoonIconProps) {
+  const Icon = styled.span``
+
+  return <Icon className={clsx('icon', `icon-${name}`)} />
 }
