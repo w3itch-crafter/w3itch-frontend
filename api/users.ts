@@ -1,3 +1,5 @@
+import { UserEntity } from 'types'
+
 import backend from './backend'
 
 export async function validateUsername(username: string): Promise<boolean> {
@@ -6,4 +8,13 @@ export async function validateUsername(username: string): Promise<boolean> {
     { username }
   )
   return res.data.isExists
+}
+
+export async function getMe(): Promise<UserEntity | boolean> {
+  try {
+    const res = await backend.get<UserEntity>('/users/me')
+    return res.data
+  } catch (e) {
+    return false
+  }
 }
