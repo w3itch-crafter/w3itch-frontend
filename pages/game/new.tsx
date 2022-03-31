@@ -27,13 +27,14 @@ import {
   releaseStatus,
   tags,
 } from 'data'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
 import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { createGame } from 'api/index'
 import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
+import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
 import {
   Community,
   GameEngine,
@@ -59,6 +60,7 @@ const GameNew: NextPage = () => {
   const [formTags, setFormTags] = useState<string[]>([])
   const [editorRef, setEditorRef] = useState<MutableRefObject<ToastUiEditor>>()
   const [uploadGameFile, setUploadGameFile] = useState<File>()
+  const [screenshotsFiles, setScreenshotsFiles] = useState<File[]>()
   const [coverFileFile, setCoverFileFile] = useState<File>()
 
   const {
@@ -66,10 +68,28 @@ const GameNew: NextPage = () => {
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors: formErrors },
   } = useForm<Game>({
     resolver: resolverGame,
+    defaultValues: {
+      screenshots: [],
+    },
   })
+  const {
+    fields: fieldsScreenshots,
+    append,
+    prepend,
+    remove,
+    swap,
+    move,
+    insert,
+  } = useFieldArray({
+    control,
+    name: 'screenshots',
+  })
+
+  console.log('fieldsScreenshots', fieldsScreenshots)
 
   // handle create game
   const handleCreateGame = async (game: Game) => {
@@ -450,7 +470,7 @@ const GameNew: NextPage = () => {
                             Select the category that best describes your game.
                             You can pick additional genres with tags below
                           </p>
-                          <Select id="form-genre" value={genres[0]}>
+                          <Select id="form-genre" disabled>
                             {genres.map((genre) => (
                               <MenuItem value={genre} key={genre}>
                                 {genre}
@@ -486,6 +506,7 @@ const GameNew: NextPage = () => {
                             multiple
                             value={formTags}
                             onChange={handleTagsSelectChange}
+                            disabled
                             input={<OutlinedInput />}
                             renderValue={(selected: string[]) => (
                               <Box
@@ -545,7 +566,7 @@ const GameNew: NextPage = () => {
                     </div>
                   </div>
 
-                  <div className={styles.input_row}>
+                  {/* <div className={styles.input_row}>
                     <FormControl fullWidth>
                       <FormLabel id="form-customNoun">Custom noun</FormLabel>
                       <p className={styles.sub}>
@@ -558,9 +579,13 @@ const GameNew: NextPage = () => {
                         <span className="user_classification_noun">mod</span>
                         {"'"}.
                       </p>
-                      <TextField id="form-customNoun" placeholder="Optional" />
+                      <TextField
+                        id="form-customNoun"
+                        placeholder="Optional"
+                        disabled
+                      />
                     </FormControl>
-                  </div>
+                  </div> */}
 
                   <div className={styles.input_row}>
                     <FormControl>
@@ -580,14 +605,7 @@ const GameNew: NextPage = () => {
                           value="comments"
                           control={<Radio size="small" disabled />}
                           label={
-                            <span className={styles.radio_label}>
-                              Comments
-                              <span className={styles.radio_sub}>
-                                {' '}
-                                — Add a nested comment thread to the bottom of
-                                the project page
-                              </span>
-                            </span>
+                            <span className={styles.radio_label}>Disabled</span>
                           }
                         />
                         <FormControlLabel
@@ -698,7 +716,6 @@ const GameNew: NextPage = () => {
                       </FormHelperText>
                     </FormControl>
                   </div>
-
                   {/* <section className={styles.video_editor}>
                     <FormControl fullWidth>
                       <FormLabel id="form-cover">
@@ -720,7 +737,6 @@ const GameNew: NextPage = () => {
                       />
                     </FormControl>
                   </section> */}
-
                   <section className={styles.screenshot_editor}>
                     <div className={styles.label}>Screenshots</div>
                     <p className={styles.sub}>
@@ -730,36 +746,20 @@ const GameNew: NextPage = () => {
                       Optional but highly recommended. Upload 3 to 5 for best
                       results.
                     </p>
-                    <div className={styles.screenshot_list}></div>
-                    <div className="screenshot_queue"></div>
-                    <div>
-                      <button
-                        data-max_size="3145728"
-                        data-accept=".png,.gif,.jpg,.jpeg"
-                        type="button"
-                        className={`${stylesCommon.button} add_screenshot_btn has_multi_upload`}
-                      >
-                        Add screenshots
-                      </button>
-                    </div>
+                    <UploadGameScreenshots setFiles={setScreenshotsFiles} />
                   </section>
-
-                  <FormControl fullWidth>
-                    <FormLabel id="form-screenshot">Screenshot</FormLabel>
-                    <TextField
-                      id="form-screenshot"
-                      variant="outlined"
-                      aria-describedby="form-screenshot-error-text"
-                      error={!!formErrors.screenshot}
-                      defaultValue="https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa"
-                      helperText={
-                        formErrors.screenshot
-                          ? formErrors.screenshot.message
-                          : ''
-                      }
-                      {...register('screenshot')}
-                    />
-                  </FormControl>
+                  {fieldsScreenshots.map((field, index) => (
+                    <div key={field.id}>
+                      <div>
+                        <input
+                          {...register(`screenshots.${index}.value` as const)}
+                        />
+                      </div>
+                      {formErrors.screenshots && (
+                        <p>{JSON.stringify(formErrors.screenshots[index])}</p>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className={styles.buttons}>
