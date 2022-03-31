@@ -1,52 +1,34 @@
 import styled from '@emotion/styled'
+import { getGames } from 'api'
 import FilterGroup, { FilterGroupItem } from 'components/filterGroup'
+import GameCell from 'components/gameCell'
 import RelatedTags, { TagOption } from 'components/relatedTags'
 import SearchDescription from 'components/searchDescription'
 import SortOptions, { SortOptionItem } from 'components/sortOptions'
+import { genres } from 'data'
 import { GetServerSideProps, NextPage } from 'next'
-
-const genreList = [
-  'Action',
-  'Adventure',
-  'Card Game',
-  'Educational',
-  'Fighting',
-  'Interactive Fiction',
-  'Platformer',
-  'Puzzle',
-  'Racing',
-  'Rhythm',
-  'Role Playing',
-  'Shooter',
-  'Simulation',
-  'Sports',
-  'Strategy',
-  'Survival',
-  'Visual Novel',
-  'Other',
-]
-const tagList: TagOption[] = [
-  { label: '16-bit', value: '16-bit' },
-  { label: '1-bit', value: '1-bit' },
-  { label: '1GAM', value: '1gam' },
-  { label: '2D', value: '2d' },
-  { label: '3D', value: '2d' },
-]
-
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import InfiniteScroll from 'react-infinite-scroller'
+import { GameInfo, PaginationMeta } from 'types'
 declare interface GamesProps {
-  genres: string[] // TODO: need to change by backend api type
+  genres: string[]
   tags: TagOption[]
+  gameData: GameInfo[]
+  pageMeta: PaginationMeta
 }
 
-const Games: NextPage<GamesProps> = ({ genres, tags }) => {
+const Games: NextPage<GamesProps> = ({ genres, tags, gameData, pageMeta }) => {
   const Container = styled.div`
     margin: 0 auto;
+    width: 100%;
     max-width: 1920px;
     display: flex;
   `
   const FilterColumn = styled.section`
     box-sizing: border-box;
     width: 260px;
+    flex-shrink: 0;
   `
   const FilterHeader = styled.div`
     padding: 20px 20px 0 20px;
@@ -85,6 +67,35 @@ const Games: NextPage<GamesProps> = ({ genres, tags }) => {
   const StyledSortOptions = styled(SortOptions)`
     margin-bottom: 10px;
   `
+  const GameGrid = styled.div`
+    padding: 20px 20px 40px 20px;
+    font-size: 16px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px 10px;
+    & .game-cell {
+      margin: 0;
+    }
+  `
+  const [games, setGames] = useState<GameInfo[]>([])
+  const router = useRouter()
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const hasMore = pageMeta.currentPage < pageMeta.totalPages!
+  const handleLoadMore = () => {
+    router.push({
+      pathname: router.pathname,
+      query: { page: pageMeta.currentPage + 1 },
+    })
+  }
+
+  useEffect(() => {
+    if (gameData) {
+      setGames((g) => g.concat(gameData))
+    }
+  }, [gameData])
+
+  console.log(games.length)
 
   return (
     <Container>
@@ -137,6 +148,17 @@ const Games: NextPage<GamesProps> = ({ genres, tags }) => {
           <RelatedTags tags={tags} placeholder="Select a tag..."></RelatedTags>
           <SearchDescription />
         </BrowseHeader>
+        <InfiniteScroll
+          hasMore={hasMore}
+          loadMore={handleLoadMore}
+          initialLoad={false}
+        >
+          <GameGrid>
+            {games.map((game, index) => (
+              <GameCell key={`${game.id}-${index}`} game={game} />
+            ))}
+          </GameGrid>
+        </InfiniteScroll>
       </GridColumn>
     </Container>
   )
@@ -145,9 +167,20 @@ const Games: NextPage<GamesProps> = ({ genres, tags }) => {
 export const getServerSideProps: GetServerSideProps<GamesProps> = async (
   ctx
 ) => {
-  console.log(ctx.req.headers.cookie) // aaa=bbb
-  console.log(ctx.query) // { platform: 'windows' }
-  return { props: { genres: genreList, tags: tagList } }
+  const tagList: TagOption[] = [
+    { label: '16-bit', value: '16-bit' },
+    { label: '1-bit', value: '1-bit' },
+    { label: '1GAM', value: '1gam' },
+    { label: '2D', value: '2d' },
+    { label: '3D', value: '2d' },
+  ]
+  const page = ctx.query.page ? Number(ctx.query.page) : 1
+  const gameRes = await getGames(page)
+  const gameData: GameInfo[] = gameRes.items.map((g) => ({
+    ...g,
+    link: `/game/${g.id}`,
+  }))
+  return { props: { genres, tags: tagList, gameData, pageMeta: gameRes.meta } }
 }
 
 export default Games
