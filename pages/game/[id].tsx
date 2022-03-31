@@ -59,13 +59,9 @@ const GameId: NextPage<GameProps> = ({ gameProject }) => {
                           gameName: gameProject.gameName,
                           kind: gameProject.kind,
                         })}
-                        msallowfullscreen
                         scrolling="no"
-                        mozallowfullscreen
                         allowFullScreen
-                        webkitallowfullscreen
                         id="game_drop"
-                        allowtransparency
                       ></iframe>
                       <div
                         className={`${
@@ -144,7 +140,7 @@ const GameId: NextPage<GameProps> = ({ gameProject }) => {
                             <tr>
                               <td>Published</td>
                               <td>
-                                <abbr title={gameProject.createdAt}>
+                                <abbr>
                                   <span className="icon icon-stopwatch"></span>{' '}
                                   {gameProject.createdAt}
                                 </abbr>
@@ -196,13 +192,18 @@ const GameId: NextPage<GameProps> = ({ gameProject }) => {
                             <tr>
                               <td>Links</td>
                               <td>
-                                <a
-                                  rel="nofollow noopener noreferrer"
-                                  href={gameProject.appStoreLinks}
-                                  target="_blank"
-                                >
-                                  appStoreLinks
-                                </a>
+                                {gameProject.appStoreLinks.map(
+                                  (appStoreLink) => (
+                                    <a
+                                      key={appStoreLink}
+                                      rel="nofollow noopener noreferrer"
+                                      target="_blank"
+                                      href={appStoreLink}
+                                    >
+                                      Links
+                                    </a>
+                                  )
+                                )}
                               </td>
                             </tr>
                           </tbody>
