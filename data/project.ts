@@ -1,5 +1,5 @@
 import { Genre } from 'types/enum'
-import { word } from 'utils/word'
+import { enumWords } from 'utils/word'
 
 export const tags = [
   'horror',
@@ -595,4 +595,4 @@ export const releaseStatus = [
 //   'Other',
 // ]
 
-export const genres = word(Object.values(Genre))
+export const genres = enumWords(Object.values(Genre))
