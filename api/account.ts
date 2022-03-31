@@ -1,3 +1,4 @@
+import { UserEntity } from 'types'
 import type { Wallet } from 'use-wallet/dist/cjs/types'
 
 import backend from './backend'
@@ -27,4 +28,17 @@ export const signup = async (wallet: Wallet) => {
 
 export const login = async (wallet: Wallet) => {
   await service(wallet, 'login')
+}
+
+export async function refresh(): Promise<UserEntity | boolean> {
+  try {
+    const res = await backend.patch<UserEntity>('/accounts/tokens')
+    return res.data
+  } catch (e) {
+    return false
+  }
+}
+
+export async function logout(): Promise<void> {
+  await backend.delete('/accounts/tokens')
 }
