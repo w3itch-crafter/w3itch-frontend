@@ -11,6 +11,11 @@ export async function getGames(page = 1): Promise<Pagination<GameEntity>> {
   return res.data
 }
 
+/**
+ * create game
+ * @param data
+ * @returns
+ */
 export const createGame = async (
   data: FormData
 ): Promise<AxiosResponse<unknown>> => {
@@ -23,3 +28,28 @@ export const createGame = async (
     data,
   })
 }
+
+/**
+ * game project detail by id
+ * @param id
+ * @returns
+ */
+export const gameProjectByID = async (
+  id: number
+): Promise<AxiosResponse<GameEntity>> => {
+  return await backend.get(`/game-projects/${id}`)
+}
+
+/**
+ * game project player
+ * @param param
+ * @returns
+ */
+export const gameProjectPlayer = ({
+  gameName,
+  kind,
+}: {
+  gameName: string
+  kind: string
+}) =>
+  `${process.env.NEXT_PUBLIC_API_URL}/player?game=${gameName}&engine=${kind}`
