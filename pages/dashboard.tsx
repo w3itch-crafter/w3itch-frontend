@@ -5,8 +5,8 @@ import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/dashboard.module.scss'
 
 const Dashboard: NextPage = () => (
-  <div className={styles.main}>
-    <div className={styles.inner_column}>
+  <div className={stylesCommon.main}>
+    <div className={stylesCommon.inner_column}>
       <div
         id="dashboard_page_79202"
         className={`${styles.dashboard_page} ${styles.page_widget}`}
