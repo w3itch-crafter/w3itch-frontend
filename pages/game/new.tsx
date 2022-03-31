@@ -1,6 +1,7 @@
 import {
   FormControl,
   FormControlLabel,
+  FormHelperText,
   FormLabel,
   MenuItem,
   OutlinedInput,
@@ -32,6 +33,7 @@ const resolverGame = classValidatorResolver(Game)
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { createGame } from 'api/index'
 import UploadGame from 'components/UploadGame/index'
+import UploadGameCover from 'components/UploadGameCover/index'
 import {
   Community,
   GameEngine,
@@ -40,6 +42,7 @@ import {
   ProjectClassification,
   ReleaseStatus,
 } from 'types/enum'
+import { fileUrl, parseUrl } from 'utils'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -56,10 +59,12 @@ const GameNew: NextPage = () => {
   const [formTags, setFormTags] = useState<string[]>([])
   const [editorRef, setEditorRef] = useState<MutableRefObject<ToastUiEditor>>()
   const [uploadGameFile, setUploadGameFile] = useState<File>()
+  const [coverFileFile, setCoverFileFile] = useState<File>()
 
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors: formErrors },
   } = useForm<Game>({
@@ -115,7 +120,7 @@ const GameNew: NextPage = () => {
 
   const onSubmit: SubmitHandler<Game> = (data) => {
     console.log(data)
-    handleCreateGame(data)
+    // handleCreateGame(data)
   }
 
   console.log(watch('title'))
@@ -132,6 +137,12 @@ const GameNew: NextPage = () => {
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value
     )
+  }
+
+  const handleCoverValue = (file: File) => {
+    setCoverFileFile(file)
+    console.log('ccc', parseUrl(fileUrl(file)), file)
+    setValue('cover', parseUrl(fileUrl(file)))
   }
 
   return (
@@ -382,7 +393,7 @@ const GameNew: NextPage = () => {
                         >
                           Upload file<span className="on_multi_upload">s</span>
                         </div> */}
-                        <UploadGame setFiles={setUploadGameFile} />
+                        <UploadGame setFile={setUploadGameFile} />
                         {/* <span className="button_divider">or</span>
                         <span className="dropbox_drop">
                           <a
@@ -668,37 +679,23 @@ const GameNew: NextPage = () => {
                 <div className={`misc ${styles.right_col}`}>
                   <div className="cover_uploader_drop">
                     <div className={styles.game_edit_cover_uploader_widget}>
-                      <div className={styles.upload_container}>
-                        <div className={styles.file_tools}>
-                          <input
-                            type="hidden"
-                            name="game[cover_image_id]"
-                            value=""
-                          />
-                          <button className={stylesCommon.button} type="button">
-                            Upload Cover Image
-                          </button>
-                        </div>
-                      </div>
+                      <UploadGameCover
+                        setFile={(file) => handleCoverValue(file as File)}
+                      />
                       <p className={`${styles.sub} instructions`}>
                         The cover image is used whenever itch.io wants to link
                         to your project from another part of the site. Required
                         (Minimum: 315x250, Recommended: 630x500)
                       </p>
                     </div>
-                    <FormControl fullWidth>
-                      <FormLabel id="form-cover">Cover</FormLabel>
+                    <FormControl fullWidth error={!!formErrors.cover}>
                       <TextField
-                        id="form-cover"
-                        variant="outlined"
-                        aria-describedby="form-cover-error-text"
-                        error={!!formErrors.cover}
-                        defaultValue="https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa"
-                        helperText={
-                          formErrors.cover ? formErrors.cover.message : ''
-                        }
                         {...register('cover')}
+                        style={{ display: 'none' }}
                       />
+                      <FormHelperText>
+                        {formErrors.cover ? formErrors.cover.message : ''}
+                      </FormHelperText>
                     </FormControl>
                   </div>
 
