@@ -5,10 +5,6 @@ import {
   IsUrl,
   Length,
 } from 'class-validator'
-class ScreenshotDTO {
-  @IsUrl()
-  value: string
-}
 
 export class Game {
   @Length(1, 50)
@@ -60,12 +56,11 @@ export class Game {
   // @IsInt()
   // tokenId: number
 
-  @IsUrl()
+  @IsUrl({ require_protocol: true })
   @IsNotEmpty()
   cover: string
 
-  // @ValidateNested({ each: true })
-  // @Type(() => ScreenshotDTO)
+  @IsUrl({ require_protocol: true }, { each: true })
   @IsOptional()
-  screenshots: ScreenshotDTO[]
+  screenshots: string[]
 }

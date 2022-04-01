@@ -7,34 +7,34 @@ const routersItems = [
     url: '/dashboard',
     name: 'Projects',
   },
-  {
-    url: '/dashboard/purchases',
-    name: 'Payments',
-  },
-  {
-    url: '/dashboard/analytics',
-    name: 'Analytics',
-  },
-  {
-    url: '/dashboard/sales',
-    name: 'Sales &amp; bundles',
-  },
-  {
-    url: '/dashboard/bundles',
-    name: 'Co-op bundles',
-  },
-  {
-    url: '/dashboard/jams',
-    name: 'Game jams',
-  },
-  {
-    url: '/dashboard/payouts',
-    name: 'Payouts',
-  },
-  {
-    url: '/post-a-job',
-    name: 'Jobs',
-  },
+  // {
+  //   url: '/dashboard/purchases',
+  //   name: 'Payments',
+  // },
+  // {
+  //   url: '/dashboard/analytics',
+  //   name: 'Analytics',
+  // },
+  // {
+  //   url: '/dashboard/sales',
+  //   name: 'Sales &amp; bundles',
+  // },
+  // {
+  //   url: '/dashboard/bundles',
+  //   name: 'Co-op bundles',
+  // },
+  // {
+  //   url: '/dashboard/jams',
+  //   name: 'Game jams',
+  // },
+  // {
+  //   url: '/dashboard/payouts',
+  //   name: 'Payouts',
+  // },
+  // {
+  //   url: '/post-a-job',
+  //   name: 'Jobs',
+  // },
 ]
 
 const Navigation = () => {

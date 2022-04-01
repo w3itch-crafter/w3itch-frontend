@@ -13,7 +13,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { MutableRefObject, useState } from 'react'
+import { MutableRefObject, useCallback, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
 const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
@@ -27,7 +27,7 @@ import {
   releaseStatus,
   tags,
 } from 'data'
-import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
@@ -69,20 +69,11 @@ const GameNew: NextPage = () => {
     handleSubmit,
     setValue,
     watch,
-    control,
     formState: { errors: formErrors },
   } = useForm<Game>({
     resolver: resolverGame,
-    defaultValues: {
-      screenshots: [],
-    },
+    defaultValues: {},
   })
-  const { fields: fieldsScreenshots } = useFieldArray({
-    control,
-    name: 'screenshots',
-  })
-
-  console.log('fieldsScreenshots', fieldsScreenshots)
 
   const handleAllImages = async () => {
     const promiseArray = []
@@ -176,7 +167,7 @@ const GameNew: NextPage = () => {
 
   const onSubmit: SubmitHandler<Game> = async (data) => {
     console.log(data)
-    handleCreateGame(data)
+    // handleCreateGame(data)
     // const result = await handleAllImages()
 
     // console.log('aaa', result)
@@ -198,11 +189,28 @@ const GameNew: NextPage = () => {
     )
   }
 
+  // handle cover
   const handleCoverValue = (file: File) => {
     setCoverFileFile(file)
     console.log('ccc', parseUrl(fileUrl(file)), file)
     setValue('cover', parseUrl(fileUrl(file)))
   }
+
+  // handle screenshots
+  const handleScreenshots = useCallback(
+    (files: File[] | undefined) => {
+      setScreenshotsFiles(files)
+
+      const screenshotsUrls = files
+        ? files.map((file) => parseUrl(fileUrl(file)))
+        : []
+
+      console.log('screenshotsUrls', screenshotsUrls)
+
+      setValue('screenshots', screenshotsUrls)
+    },
+    [setValue]
+  )
 
   return (
     <div className={stylesCommon.main}>
@@ -745,15 +753,9 @@ const GameNew: NextPage = () => {
                         (Minimum: 315x250, Recommended: 630x500)
                       </p>
                     </div>
-                    <FormControl fullWidth error={!!formErrors.cover}>
-                      <TextField
-                        {...register('cover')}
-                        style={{ display: 'none' }}
-                      />
-                      <FormHelperText>
-                        {formErrors.cover ? formErrors.cover.message : ''}
-                      </FormHelperText>
-                    </FormControl>
+                    <FormHelperText error={!!formErrors.cover}>
+                      {formErrors.cover?.message}
+                    </FormHelperText>
                   </div>
                   {/* <section className={styles.video_editor}>
                     <FormControl fullWidth>
@@ -785,20 +787,15 @@ const GameNew: NextPage = () => {
                       Optional but highly recommended. Upload 3 to 5 for best
                       results.
                     </p>
-                    <UploadGameScreenshots setFiles={setScreenshotsFiles} />
+                    <FormHelperText error={!!formErrors.screenshots}>
+                      {formErrors.screenshots?.message}
+                    </FormHelperText>
+                    <UploadGameScreenshots
+                      setFiles={(files) => {
+                        handleScreenshots(files as File[] | undefined)
+                      }}
+                    />
                   </section>
-                  {fieldsScreenshots.map((field, index) => (
-                    <div key={field.id}>
-                      <div>
-                        <input
-                          {...register(`screenshots.${index}.value` as const)}
-                        />
-                      </div>
-                      {formErrors.screenshots && (
-                        <p>{JSON.stringify(formErrors.screenshots[index])}</p>
-                      )}
-                    </div>
-                  ))}
                 </div>
               </div>
               <div className={styles.buttons}>
