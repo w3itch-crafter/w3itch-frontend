@@ -2,9 +2,11 @@ import styled from '@emotion/styled'
 
 export declare interface InputCheckboxProps {
   label: string
+  className?: string
 }
 export default function InputCheckbox({
   label,
+  className,
   ...inputProps
 }: InputCheckboxProps & React.InputHTMLAttributes<HTMLInputElement>) {
   const Container = styled.div`
@@ -18,7 +20,7 @@ export default function InputCheckbox({
   `
 
   return (
-    <Container>
+    <Container className={className}>
       <label>
         <Input type="checkbox" {...inputProps} />
         {label}
