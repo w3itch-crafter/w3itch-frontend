@@ -3,10 +3,12 @@ import { GameEntity, Pagination } from 'types'
 
 import backend from './backend'
 
-export async function getGames(page = 1): Promise<Pagination<GameEntity>> {
-  const params = new URLSearchParams({ page: page.toString(), limit: '20' })
+export async function getGames(
+  params: Api.GameProjectsParams
+): Promise<Pagination<GameEntity>> {
+  console.log('params', params)
   const res = await backend.get<Pagination<GameEntity>>('/game-projects', {
-    params,
+    params: params,
   })
   return res.data
 }

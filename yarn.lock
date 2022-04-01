@@ -13111,6 +13111,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"swr@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "swr@npm:1.2.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fswr%2F-%2Fswr-1.2.2.tgz"
+  peerDependencies:
+    react: ^16.11.0 || ^17.0.0 || ^18.0.0
+  checksum: 723747c7c263536d8c9ee8b38039462395ba09a7925508f22c8fc940a1ae72e1f05ef678767b2197ce337e170f4812563281bc4b5f9ad7e4eec895cd7139fb8e
+  languageName: node
+  linkType: hard
+
 "tape@npm:^4.4.0, tape@npm:^4.6.3":
   version: 4.15.0
   resolution: "tape@npm:4.15.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Ftape%2F-%2Ftape-4.15.0.tgz"
@@ -14009,6 +14018,7 @@ __metadata:
     react-infinite-scroller: ^1.2.5
     react-select: ^5.2.2
     sass: ^1.49.9
+    swr: ^1.2.2
     typescript: 4.6.3
     use-wallet: 0.13.1
     yarn: ^1.22.18

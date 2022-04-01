@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroller'
 import { GameInfo, PaginationMeta } from 'types'
 declare interface GamesProps {
-  genres: string[]
+  genres: { label: string; value: string }[]
   tags: TagOption[]
   gameData: GameInfo[]
   pageMeta: PaginationMeta
@@ -128,7 +128,12 @@ const Games: NextPage<GamesProps> = ({ genres, tags, gameData, pageMeta }) => {
           </FilterGroup>
           <FilterGroup label="Genre">
             {genres.map((t) => (
-              <FilterGroupItem icon="tag" href="#" name={t} key={t} />
+              <FilterGroupItem
+                icon="tag"
+                href="#"
+                name={t.label}
+                key={t.value}
+              />
             ))}
           </FilterGroup>
         </FilterPickers>
@@ -173,7 +178,10 @@ export const getServerSideProps: GetServerSideProps<GamesProps> = async (
     { label: '3D', value: '2d' },
   ]
   const page = ctx.query.page ? Number(ctx.query.page) : 1
-  const gameRes = await getGames(page)
+  const gameRes = await getGames({
+    page: page,
+    limit: 20,
+  })
   const gameData: GameInfo[] = gameRes.items.map((g) => ({
     ...g,
     link: `/game/${g.id}`,

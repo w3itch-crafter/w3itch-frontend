@@ -69,13 +69,12 @@ const GameNew: NextPage = () => {
     register,
     handleSubmit,
     setValue,
-    watch,
     control,
     formState: { errors: formErrors },
   } = useForm<Game>({
     resolver: resolverGame,
     defaultValues: {
-      cover: 'http://127.0.0.1:3000/game/new',
+      // cover: 'http://127.0.0.1:3000/game/new',
       paymentMode: PaymentMode.DISABLE_PAYMENTS,
       community: Community.DISABLED,
       genre: Genre.NO_GENRE,
@@ -140,7 +139,6 @@ const GameNew: NextPage = () => {
       paymentMode: game.paymentMode,
       subtitle: game.subtitle,
       gameName: gameName,
-      file: uploadGameFile.name,
       classification: ProjectClassification.GAMES,
       kind: GameEngine.RM2K3E,
       releaseStatus: ReleaseStatus.RELEASED,
@@ -151,6 +149,7 @@ const GameNew: NextPage = () => {
       description: description,
       community: game.community,
       genre: Genre.NO_GENRE,
+      tokenId: 0,
     }
     console.log('file', uploadGameFile)
     console.log('description', description)
@@ -174,13 +173,11 @@ const GameNew: NextPage = () => {
 
   const onSubmit: SubmitHandler<Game> = async (data) => {
     console.log(data)
-    // handleCreateGame(data)
+    handleCreateGame(data)
     // const result = await handleAllImages()
 
-    // console.log('aaa', result)
+    // console.log('result', result)
   }
-
-  console.log(watch('title'))
 
   console.log('formErrors', formErrors)
 
@@ -199,7 +196,6 @@ const GameNew: NextPage = () => {
   // handle cover
   const handleCoverValue = (file: File) => {
     setCoverFileFile(file)
-    console.log('ccc', parseUrl(fileUrl(file)), file)
     setValue('cover', parseUrl(fileUrl(file)))
   }
 
@@ -211,8 +207,6 @@ const GameNew: NextPage = () => {
       const screenshotsUrls = files
         ? files.map((file) => parseUrl(fileUrl(file)))
         : []
-
-      console.log('screenshotsUrls', screenshotsUrls)
 
       setValue('screenshots', screenshotsUrls)
     },
