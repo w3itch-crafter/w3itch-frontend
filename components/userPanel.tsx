@@ -73,7 +73,7 @@ export default function UserPanel() {
     }
   `
   const user = useRefresh()
-  const profile = `https://${user?.username}.w3itch.io`
+  const profile = `https://${user?.username?.toLowerCase()}.w3itch.io`
 
   return (
     <UserPanelWidget>
@@ -92,7 +92,7 @@ export default function UserPanel() {
           <Link href={profile} passHref>
             <MyProfile>
               <UserAvatar src={user.avatar} alt="User avatar" />
-              <UserName>{user.username}</UserName>
+              <UserName>{user?.nickname || user.username}</UserName>
             </MyProfile>
           </Link>
           <DropMenu>

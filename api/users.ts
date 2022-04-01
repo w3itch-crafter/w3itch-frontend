@@ -1,4 +1,4 @@
-import { UserEntity } from 'types'
+import { BackendErrorResponse, UserEntity } from 'types'
 
 import backend from './backend'
 
@@ -17,4 +17,19 @@ export async function getMe(): Promise<UserEntity | boolean> {
   } catch (e) {
     return false
   }
+}
+
+export async function updateMe(
+  user: Partial<UserEntity>
+): Promise<UserEntity | BackendErrorResponse> {
+  const res = await backend.patch<UserEntity | BackendErrorResponse>(
+    '/users/me',
+    user,
+    {
+      validateStatus: () => true,
+    }
+  )
+  const { status } = res
+  if (status === 200) return res.data
+  return res.data as BackendErrorResponse
 }

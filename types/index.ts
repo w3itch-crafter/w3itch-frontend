@@ -13,7 +13,7 @@ import {
 export declare type PerPageLayout = {
   getLayout(page: React.ReactElement): React.ReactNode
 }
-export declare type NextPageWithLayout = NextPage & Partial<PerPageLayout>
+export declare type NextPageWithLayout = NextPage & PerPageLayout
 
 export declare type RegisterData = {
   address: string
@@ -50,6 +50,15 @@ export declare type Pagination<T> = {
   meta: PaginationMeta
   /** associated links */
   links?: PaginationLinks
+}
+
+export declare type BackendErrorResponse = {
+  message: string
+  statusCode: number
+}
+export function isBackendError(obj: unknown): obj is BackendErrorResponse {
+  if ((obj as BackendErrorResponse).message) return true
+  return false
 }
 
 declare type BaseEntity = {
