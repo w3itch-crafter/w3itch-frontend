@@ -77,6 +77,7 @@ const GameNew: NextPage = () => {
     defaultValues: {
       cover: 'http://127.0.0.1:3000/game/new',
       community: Community.DISABLED,
+      genre: Genre.NO_GENRE,
     },
   })
 
@@ -516,20 +517,36 @@ const GameNew: NextPage = () => {
                   <div className="tags_drop">
                     <div className="game_edit_game_tags_widget">
                       <div className={`${styles.input_row}`}>
-                        <FormControl fullWidth>
-                          <FormLabel id="form-genre">Genre</FormLabel>
-                          <p className={styles.sub}>
-                            Select the category that best describes your game.
-                            You can pick additional genres with tags below
-                          </p>
-                          <Select id="form-genre" disabled>
-                            {genres.map((genre) => (
-                              <MenuItem value={genre} key={genre}>
-                                {genre}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
+                        <Controller
+                          control={control}
+                          name="genre"
+                          render={({ field }) => (
+                            <FormControl
+                              fullWidth
+                              error={Boolean(formErrors.genre)}
+                            >
+                              <FormLabel id="form-genre">Genre</FormLabel>
+                              <p className={styles.sub}>
+                                Select the category that best describes your
+                                game. You can pick additional genres with tags
+                                below
+                              </p>
+                              <Select id="form-genre" {...field}>
+                                {genres.map((genre) => (
+                                  <MenuItem
+                                    value={genre.value}
+                                    key={genre.value}
+                                  >
+                                    {genre.label}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              <FormHelperText>
+                                {formErrors?.genre?.message}
+                              </FormHelperText>
+                            </FormControl>
+                          )}
+                        />
                       </div>
                       <div className={`${styles.input_row} tags_input_row`}>
                         <FormControl fullWidth>
@@ -644,7 +661,10 @@ const GameNew: NextPage = () => {
                       control={control}
                       name="community"
                       render={({ field }) => (
-                        <FormControl error={Boolean(formErrors.community)}>
+                        <FormControl
+                          error={Boolean(formErrors.community)}
+                          fullWidth
+                        >
                           <FormLabel id="demo-radio-buttons-group-label">
                             Community
                           </FormLabel>
