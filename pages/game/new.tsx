@@ -13,7 +13,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { MutableRefObject, useState } from 'react'
+import { MutableRefObject, useCallback, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
 const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
@@ -27,7 +27,7 @@ import {
   releaseStatus,
   tags,
 } from 'data'
-import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
+import { Controller, FieldError, SubmitHandler, useForm } from 'react-hook-form'
 import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
@@ -45,6 +45,7 @@ import {
   ReleaseStatus,
 } from 'types/enum'
 import { fileUrl, parseUrl } from 'utils'
+
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
 const MenuProps = {
@@ -68,21 +69,17 @@ const GameNew: NextPage = () => {
     register,
     handleSubmit,
     setValue,
-    watch,
     control,
     formState: { errors: formErrors },
   } = useForm<Game>({
     resolver: resolverGame,
     defaultValues: {
-      screenshots: [],
+      // cover: 'http://127.0.0.1:3000/game/new',
+      paymentMode: PaymentMode.DISABLE_PAYMENTS,
+      community: Community.DISABLED,
+      genre: Genre.NO_GENRE,
     },
   })
-  const { fields: fieldsScreenshots } = useFieldArray({
-    control,
-    name: 'screenshots',
-  })
-
-  console.log('fieldsScreenshots', fieldsScreenshots)
 
   const handleAllImages = async () => {
     const promiseArray = []
@@ -139,10 +136,9 @@ const GameNew: NextPage = () => {
 
     const gameData = {
       title: game.title,
-      paymentMode: PaymentMode.DISABLE_PAYMENTS,
+      paymentMode: game.paymentMode,
       subtitle: game.subtitle,
       gameName: gameName,
-      file: uploadGameFile.name,
       classification: ProjectClassification.GAMES,
       kind: GameEngine.RM2K3E,
       releaseStatus: ReleaseStatus.RELEASED,
@@ -151,11 +147,11 @@ const GameNew: NextPage = () => {
       tags: formTags,
       appStoreLinks: [game.appStoreLink],
       description: description,
-      community: Community.DISQUS,
+      community: game.community,
       genre: Genre.NO_GENRE,
+      tokenId: 0,
     }
     console.log('file', uploadGameFile)
-    console.log('description', description)
     console.log('gameData', gameData)
 
     const formData = new FormData()
@@ -179,10 +175,8 @@ const GameNew: NextPage = () => {
     handleCreateGame(data)
     // const result = await handleAllImages()
 
-    // console.log('aaa', result)
+    // console.log('result', result)
   }
-
-  console.log(watch('title'))
 
   console.log('formErrors', formErrors)
 
@@ -198,11 +192,25 @@ const GameNew: NextPage = () => {
     )
   }
 
+  // handle cover
   const handleCoverValue = (file: File) => {
     setCoverFileFile(file)
-    console.log('ccc', parseUrl(fileUrl(file)), file)
     setValue('cover', parseUrl(fileUrl(file)))
   }
+
+  // handle screenshots
+  const handleScreenshots = useCallback(
+    (files: File[] | undefined) => {
+      setScreenshotsFiles(files)
+
+      const screenshotsUrls = files
+        ? files.map((file) => parseUrl(fileUrl(file)))
+        : []
+
+      setValue('screenshots', screenshotsUrls)
+    },
+    [setValue]
+  )
 
   return (
     <div className={stylesCommon.main}>
@@ -376,30 +384,43 @@ const GameNew: NextPage = () => {
 
                   <div className="price_picker">
                     <div className="payment_modes">
-                      <FormControl fullWidth>
-                        <FormLabel id="form-pricing">Pricing</FormLabel>
-                        <RadioGroup
-                          row
-                          aria-labelledby="form-pricing"
-                          defaultValue="DISABLE_PAYMENTS"
-                        >
-                          <FormControlLabel
-                            value="FREE"
-                            control={<Radio disabled />}
-                            label="$0 or donate"
-                          />
-                          <FormControlLabel
-                            value="PAID"
-                            control={<Radio disabled />}
-                            label="Paid"
-                          />
-                          <FormControlLabel
-                            value="DISABLE_PAYMENTS"
-                            control={<Radio />}
-                            label="No payments"
-                          />
-                        </RadioGroup>
-                      </FormControl>
+                      <Controller
+                        control={control}
+                        name="paymentMode"
+                        render={({ field }) => (
+                          <FormControl
+                            fullWidth
+                            error={Boolean(formErrors.paymentMode)}
+                          >
+                            <FormLabel id="form-pricing">Pricing</FormLabel>
+                            <RadioGroup
+                              {...field}
+                              row
+                              aria-labelledby="form-pricing"
+                              defaultValue="DISABLE_PAYMENTS"
+                            >
+                              <FormControlLabel
+                                value="FREE"
+                                control={<Radio disabled />}
+                                label="$0 or donate"
+                              />
+                              <FormControlLabel
+                                value="PAID"
+                                control={<Radio disabled />}
+                                label="Paid"
+                              />
+                              <FormControlLabel
+                                value="DISABLE_PAYMENTS"
+                                control={<Radio />}
+                                label="No payments"
+                              />
+                            </RadioGroup>
+                            <FormHelperText>
+                              {formErrors?.paymentMode?.message}
+                            </FormHelperText>
+                          </FormControl>
+                        )}
+                      />
                     </div>
 
                     {/* <div className="mode_free">
@@ -503,20 +524,36 @@ const GameNew: NextPage = () => {
                   <div className="tags_drop">
                     <div className="game_edit_game_tags_widget">
                       <div className={`${styles.input_row}`}>
-                        <FormControl fullWidth>
-                          <FormLabel id="form-genre">Genre</FormLabel>
-                          <p className={styles.sub}>
-                            Select the category that best describes your game.
-                            You can pick additional genres with tags below
-                          </p>
-                          <Select id="form-genre" disabled>
-                            {genres.map((genre) => (
-                              <MenuItem value={genre} key={genre}>
-                                {genre}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
+                        <Controller
+                          control={control}
+                          name="genre"
+                          render={({ field }) => (
+                            <FormControl
+                              fullWidth
+                              error={Boolean(formErrors.genre)}
+                            >
+                              <FormLabel id="form-genre">Genre</FormLabel>
+                              <p className={styles.sub}>
+                                Select the category that best describes your
+                                game. You can pick additional genres with tags
+                                below
+                              </p>
+                              <Select id="form-genre" {...field}>
+                                {genres.map((genre) => (
+                                  <MenuItem
+                                    value={genre.value}
+                                    key={genre.value}
+                                  >
+                                    {genre.label}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              <FormHelperText>
+                                {formErrors?.genre?.message}
+                              </FormHelperText>
+                            </FormControl>
+                          )}
+                        />
                       </div>
                       <div className={`${styles.input_row} tags_input_row`}>
                         <FormControl fullWidth>
@@ -627,42 +664,52 @@ const GameNew: NextPage = () => {
                   </div> */}
 
                   <div className={styles.input_row}>
-                    <FormControl>
-                      <FormLabel id="demo-radio-buttons-group-label">
-                        Community
-                      </FormLabel>
-                      <p className={styles.sub}>
-                        Build a community for your project by letting people
-                        post to your page.
-                      </p>
-                      <RadioGroup
-                        aria-labelledby="demo-radio-buttons-group-label"
-                        defaultValue="discussionBoard"
-                        name="radio-buttons-group"
-                      >
-                        <FormControlLabel
-                          value="comments"
-                          control={<Radio size="small" disabled />}
-                          label={
-                            <span className={styles.radio_label}>Disabled</span>
-                          }
-                        />
-                        <FormControlLabel
-                          value="discussionBoard"
-                          control={<Radio size="small" />}
-                          label={
-                            <span className={styles.radio_label}>
-                              Discussion board
-                              <span className={styles.radio_sub}>
-                                {' '}
-                                — Add a dedicated community page with
-                                categories, threads, replies &amp; more
-                              </span>
-                            </span>
-                          }
-                        ></FormControlLabel>
-                      </RadioGroup>
-                    </FormControl>
+                    <Controller
+                      control={control}
+                      name="community"
+                      render={({ field }) => (
+                        <FormControl
+                          error={Boolean(formErrors.community)}
+                          fullWidth
+                        >
+                          <FormLabel id="demo-radio-buttons-group-label">
+                            Community
+                          </FormLabel>
+                          <p className={styles.sub}>
+                            Build a community for your project by letting people
+                            post to your page.
+                          </p>
+                          <RadioGroup {...field}>
+                            <FormControlLabel
+                              value="DISABLED"
+                              control={<Radio size="small" />}
+                              label={
+                                <span className={styles.radio_label}>
+                                  Disabled
+                                </span>
+                              }
+                            />
+                            <FormControlLabel
+                              value="DISQUS"
+                              control={<Radio size="small" />}
+                              label={
+                                <span className={styles.radio_label}>
+                                  Discussion board
+                                  <span className={styles.radio_sub}>
+                                    {' '}
+                                    — Add a dedicated community page with
+                                    categories, threads, replies &amp; more
+                                  </span>
+                                </span>
+                              }
+                            ></FormControlLabel>
+                          </RadioGroup>
+                          <FormHelperText>
+                            {formErrors?.community?.message}
+                          </FormHelperText>
+                        </FormControl>
+                      )}
+                    />
                   </div>
                   {/* <div className={styles.input_row}>
                     <FormControl>
@@ -745,15 +792,9 @@ const GameNew: NextPage = () => {
                         (Minimum: 315x250, Recommended: 630x500)
                       </p>
                     </div>
-                    <FormControl fullWidth error={!!formErrors.cover}>
-                      <TextField
-                        {...register('cover')}
-                        style={{ display: 'none' }}
-                      />
-                      <FormHelperText>
-                        {formErrors.cover ? formErrors.cover.message : ''}
-                      </FormHelperText>
-                    </FormControl>
+                    <FormHelperText error={Boolean(formErrors.cover)}>
+                      {formErrors?.cover?.message}
+                    </FormHelperText>
                   </div>
                   {/* <section className={styles.video_editor}>
                     <FormControl fullWidth>
@@ -785,20 +826,18 @@ const GameNew: NextPage = () => {
                       Optional but highly recommended. Upload 3 to 5 for best
                       results.
                     </p>
-                    <UploadGameScreenshots setFiles={setScreenshotsFiles} />
+                    <FormHelperText error={Boolean(formErrors?.screenshots)}>
+                      {
+                        (formErrors?.screenshots as unknown as FieldError)
+                          ?.message
+                      }
+                    </FormHelperText>
+                    <UploadGameScreenshots
+                      setFiles={(files) => {
+                        handleScreenshots(files as File[] | undefined)
+                      }}
+                    />
                   </section>
-                  {fieldsScreenshots.map((field, index) => (
-                    <div key={field.id}>
-                      <div>
-                        <input
-                          {...register(`screenshots.${index}.value` as const)}
-                        />
-                      </div>
-                      {formErrors.screenshots && (
-                        <p>{JSON.stringify(formErrors.screenshots[index])}</p>
-                      )}
-                    </div>
-                  ))}
                 </div>
               </div>
               <div className={styles.buttons}>

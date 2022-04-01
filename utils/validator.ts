@@ -1,14 +1,14 @@
 import {
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsUrl,
   Length,
 } from 'class-validator'
-class ScreenshotDTO {
-  @IsUrl()
-  value: string
-}
+// @TODO Property 'message' does not exist on type 'FieldError[]'
+// import { NestedValue } from 'react-hook-form'
+import { Community, Genre, PaymentMode } from 'types/enum'
 
 export class Game {
   @Length(1, 50)
@@ -31,21 +31,21 @@ export class Game {
   // @IsEnum(ReleaseStatus)
   // releaseStatus: ReleaseStatus
 
-  // @IsEnum(PaymentMode)
-  // @IsNotEmpty()
-  // paymentMode: PaymentMode
+  @IsEnum(PaymentMode)
+  @IsNotEmpty()
+  paymentMode: PaymentMode
 
   // @IsString()
   // @IsNotEmpty()
   // description: string
 
-  // @IsEnum(Community)
-  // @IsNotEmpty()
-  // community: Community
+  @IsEnum(Community)
+  @IsNotEmpty()
+  community: Community
 
-  // @IsEnum(Genre)
-  // @IsNotEmpty()
-  // genre: Genre
+  @IsEnum(Genre)
+  @IsNotEmpty()
+  genre: Genre
 
   tags: string[]
 
@@ -60,12 +60,11 @@ export class Game {
   // @IsInt()
   // tokenId: number
 
-  @IsUrl()
+  @IsUrl({ require_protocol: true })
   @IsNotEmpty()
   cover: string
 
-  // @ValidateNested({ each: true })
-  // @Type(() => ScreenshotDTO)
+  @IsUrl({ require_protocol: true }, { each: true })
   @IsOptional()
-  screenshots: ScreenshotDTO[]
+  screenshots: string[]
 }

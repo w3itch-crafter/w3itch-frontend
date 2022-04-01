@@ -1,5 +1,5 @@
 import { Genre } from 'types/enum'
-import { enumWords } from 'utils/word'
+import { enumWord } from 'utils/word'
 
 export const tags = [
   'horror',
@@ -573,26 +573,7 @@ export const releaseStatus = [
   },
 ]
 
-// export const genre = [
-//   'No genre',
-//   'Action',
-//   'Adventure',
-//   'Card Game',
-//   'Educational',
-//   'Fighting',
-//   'Interactive Fiction',
-//   'Platformer',
-//   'Puzzle',
-//   'Racing',
-//   'Rhythm',
-//   'Role Playing',
-//   'Shooter',
-//   'Simulation',
-//   'Sports',
-//   'Strategy',
-//   'Survival',
-//   'Visual Novel',
-//   'Other',
-// ]
-
-export const genres = enumWords(Object.values(Genre))
+export const genres = Object.values(Genre).map((genre) => ({
+  value: genre,
+  label: enumWord(genre),
+}))

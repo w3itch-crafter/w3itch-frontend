@@ -119,3 +119,110 @@
 
 .header_notification {
 }
+
+.dashboard_columns {
+  display: flex;
+  gap: 20px;
+  .left_col {
+    flex: 1;
+    min-width: 0;
+  }
+  .right_col {
+    width: 430px;
+    // display: none;
+  }
+
+  .social_nag {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    color: #858585;
+    a {
+      color: var(--itchio_link_color, #da2c49);
+    }
+  }
+}
+
+.game_list {
+  .game_row {
+    margin-bottom: 10px;
+    padding: 1px;
+    border: 1px solid;
+    border-color: #dadada;
+    display: flex;
+    border-radius: 2px;
+  }
+  .cover_link {
+    display: block;
+    height: 83px;
+    width: 105px;
+    text-decoration: none;
+    border-right: 1px solid;
+    border-color: white;
+    background-color: #f4f4f4;
+    box-shadow: inset -1px 0 0 rgb(0 0 0 / 10%);
+  }
+  .game_details {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .game_title {
+    padding: 0 10px;
+    white-space: nowrap;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    .game_link {
+      display: block;
+      color: #434343;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  }
+  .game_links {
+    background-color: #f4f4f4;
+    color: #858585;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    height: 33px;
+    .publish_status {
+      margin-left: auto;
+      margin-right: 0;
+      min-width: 90px;
+      & > * {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+      }
+    }
+  }
+  .tag_bubble {
+    vertical-align: middle;
+    display: inline-block;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    height: 20px;
+    padding: 0 6px;
+    line-height: 20px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    a {
+      text-decoration: none;
+      color: white !important;
+    }
+    &.green {
+      background: #90ce59;
+    }
+  }
+}

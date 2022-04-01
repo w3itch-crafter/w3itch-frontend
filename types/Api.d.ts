@@ -6,4 +6,10 @@ declare namespace Api {
     bucket: string
     publicUrl: string
   }
+
+  type GameProjectsParams = {
+    username?: string
+    limit?: number
+    page?: number
+  }
 }
