@@ -41,6 +41,7 @@ const Settings: NextPageWithLayout = () => {
   const userData = useUser()
   const [user, setUser] = useState<Partial<UserEntity> | undefined>({})
   const [uploading, setUploading] = useState<boolean>(false)
+  const submitButton = useRef<HTMLButtonElement>(null)
   const [popoverState, setPopoverState] = useState<PopoverState>({
     anchor: null,
     open: false,
@@ -71,16 +72,13 @@ const Settings: NextPageWithLayout = () => {
     }
     setUploading(false)
   }
-  const handleSubmitProfile = async (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.persist()
+  const handleSubmitProfile = async () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const state = await updateMe(user!)
     if (isBackendError(state)) {
       return setPopoverState((s) => ({
         ...s,
-        anchor: event.currentTarget,
+        anchor: submitButton.current,
         open: true,
         color: 'error',
         message: state.message,
@@ -88,7 +86,7 @@ const Settings: NextPageWithLayout = () => {
     } else {
       setPopoverState((s) => ({
         ...s,
-        anchor: event.currentTarget,
+        anchor: submitButton.current,
         open: true,
       }))
     }
@@ -152,7 +150,9 @@ const Settings: NextPageWithLayout = () => {
         />
       </InputRow>
       <Buttons>
-        <RedButton onClick={handleSubmitProfile}>Save</RedButton>
+        <RedButton ref={submitButton} onClick={handleSubmitProfile}>
+          Save
+        </RedButton>
         <Popover
           id={popoverState.id}
           open={popoverState.open}
