@@ -76,6 +76,7 @@ const GameNew: NextPage = () => {
     resolver: resolverGame,
     defaultValues: {
       cover: 'http://127.0.0.1:3000/game/new',
+      paymentMode: PaymentMode.DISABLE_PAYMENTS,
       community: Community.DISABLED,
       genre: Genre.NO_GENRE,
     },
@@ -136,7 +137,7 @@ const GameNew: NextPage = () => {
 
     const gameData = {
       title: game.title,
-      paymentMode: PaymentMode.DISABLE_PAYMENTS,
+      paymentMode: game.paymentMode,
       subtitle: game.subtitle,
       gameName: gameName,
       file: uploadGameFile.name,
@@ -390,30 +391,43 @@ const GameNew: NextPage = () => {
 
                   <div className="price_picker">
                     <div className="payment_modes">
-                      <FormControl fullWidth>
-                        <FormLabel id="form-pricing">Pricing</FormLabel>
-                        <RadioGroup
-                          row
-                          aria-labelledby="form-pricing"
-                          defaultValue="DISABLE_PAYMENTS"
-                        >
-                          <FormControlLabel
-                            value="FREE"
-                            control={<Radio disabled />}
-                            label="$0 or donate"
-                          />
-                          <FormControlLabel
-                            value="PAID"
-                            control={<Radio disabled />}
-                            label="Paid"
-                          />
-                          <FormControlLabel
-                            value="DISABLE_PAYMENTS"
-                            control={<Radio />}
-                            label="No payments"
-                          />
-                        </RadioGroup>
-                      </FormControl>
+                      <Controller
+                        control={control}
+                        name="paymentMode"
+                        render={({ field }) => (
+                          <FormControl
+                            fullWidth
+                            error={Boolean(formErrors.paymentMode)}
+                          >
+                            <FormLabel id="form-pricing">Pricing</FormLabel>
+                            <RadioGroup
+                              {...field}
+                              row
+                              aria-labelledby="form-pricing"
+                              defaultValue="DISABLE_PAYMENTS"
+                            >
+                              <FormControlLabel
+                                value="FREE"
+                                control={<Radio disabled />}
+                                label="$0 or donate"
+                              />
+                              <FormControlLabel
+                                value="PAID"
+                                control={<Radio disabled />}
+                                label="Paid"
+                              />
+                              <FormControlLabel
+                                value="DISABLE_PAYMENTS"
+                                control={<Radio />}
+                                label="No payments"
+                              />
+                            </RadioGroup>
+                            <FormHelperText>
+                              {formErrors?.paymentMode?.message}
+                            </FormHelperText>
+                          </FormControl>
+                        )}
+                      />
                     </div>
 
                     {/* <div className="mode_free">
