@@ -15,7 +15,6 @@ import { useWallet } from 'use-wallet'
 import { isEmptyObj } from 'utils'
 
 import { signup } from '../api/account'
-import backend from '../api/backend'
 
 declare type InvalidData = {
   [key in keyof RegisterData]: {
@@ -137,11 +136,7 @@ const Register: NextPage = () => {
   const handleRegisterSubmit = async () => {
     const check = await checkRegisterData()
     if (!check) return
-    // TODO: handle user has already registered
-    await signup(wallet)
-    await backend.put('/users/me/username', {
-      username: registerData.username,
-    })
+    await signup(wallet, registerData.username)
     await router.replace('/games')
   }
 

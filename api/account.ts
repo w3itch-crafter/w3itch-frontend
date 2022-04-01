@@ -3,7 +3,11 @@ import type { Wallet } from 'use-wallet/dist/cjs/types'
 
 import backend from './backend'
 
-const service = async (wallet: Wallet, action: 'login' | 'signup') => {
+const service = async (
+  wallet: Wallet,
+  action: 'login' | 'signup',
+  username?: string
+) => {
   const account = wallet.account
   const code = (
     await backend.post('/accounts/metamask/verification-code', {
@@ -19,11 +23,12 @@ const service = async (wallet: Wallet, action: 'login' | 'signup') => {
   await backend.post(`/accounts/metamask/${action}`, {
     account,
     signature,
+    username,
   })
 }
 
-export const signup = async (wallet: Wallet) => {
-  await service(wallet, 'signup')
+export const signup = async (wallet: Wallet, username: string) => {
+  await service(wallet, 'signup', username)
 }
 
 export const login = async (wallet: Wallet) => {
