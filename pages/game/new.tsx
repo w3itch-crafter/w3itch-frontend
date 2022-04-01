@@ -152,7 +152,6 @@ const GameNew: NextPage = () => {
       tokenId: 0,
     }
     console.log('file', uploadGameFile)
-    console.log('description', description)
     console.log('gameData', gameData)
 
     const formData = new FormData()

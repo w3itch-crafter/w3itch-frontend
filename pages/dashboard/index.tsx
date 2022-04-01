@@ -1,18 +1,23 @@
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import Pagination from '@mui/material/Pagination'
 import { getGames } from 'api'
 import Navigation from 'components/Dashboard/Navigation'
 import type { NextPage } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { FC } from 'react'
+import type { FC } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/dashboard.module.scss'
 import useSWR from 'swr'
-import { GameEntity } from 'types'
+import { GameEntity, PaginationMeta } from 'types'
 
 interface HasGameProjectProps {
   items: GameEntity[]
+  meta: PaginationMeta
+  page: number
+  setPage: Dispatch<SetStateAction<number>>
 }
 
 const EmptyGameProject = () => {
@@ -31,7 +36,12 @@ const EmptyGameProject = () => {
   )
 }
 
-const HasGameProject: FC<HasGameProjectProps> = ({ items }) => {
+const HasGameProject: FC<HasGameProjectProps> = ({
+  items,
+  meta,
+  page,
+  setPage,
+}) => {
   return (
     <div className={styles.dashboard_columns}>
       <div className={styles.left_col}>
@@ -61,8 +71,17 @@ const HasGameProject: FC<HasGameProjectProps> = ({ items }) => {
               </div>
             </div>
           ))}
+          <Pagination
+            onChange={(event, page) => {
+              setPage(page)
+            }}
+            count={meta.totalPages}
+            page={page}
+            variant="outlined"
+            shape="rounded"
+          />
         </div>
-        <div className="buttons">
+        <div className="buttons" style={{ marginTop: 10 }}>
           <Link href="/game/new">
             <a className={stylesCommon.button}>Create new project</a>
           </Link>
@@ -88,7 +107,9 @@ const HasGameProject: FC<HasGameProjectProps> = ({ items }) => {
 }
 
 const Dashboard: NextPage = () => {
-  const { data, error } = useSWR({ page: 1, limit: 20 }, getGames)
+  const [page, setPage] = useState(1)
+  const [limit] = useState(5)
+  const { data, error } = useSWR({ page, limit }, getGames)
 
   console.log('data', data)
 
@@ -164,10 +185,15 @@ const Dashboard: NextPage = () => {
             </a>
           </div>
           <div className={styles.padded}>
-            {error || !data || !data.items.length ? (
+            {error || !data || (!data.meta.totalItems && !data.items.length) ? (
               <EmptyGameProject />
             ) : (
-              <HasGameProject items={data.items} />
+              <HasGameProject
+                page={page}
+                setPage={setPage}
+                meta={data.meta}
+                items={data.items}
+              />
             )}
           </div>
         </div>
