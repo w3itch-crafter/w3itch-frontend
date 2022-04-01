@@ -8,6 +8,7 @@ const nextConfig = {
       'twitter.com',
       'ipfs.fleek.co',
       'i2.hdslb.com',
+      'i.loli.net',
     ],
   },
 }

@@ -115,7 +115,8 @@ const Register: NextPage = () => {
     const value = target.type === 'checkbox' ? target.checked : target.value
     const name = target.name
     setRegisterData({ ...registerData, [name]: value })
-    if (name === 'username') setProfileUrl(`https://${value}.w3itch.io/`)
+    if (name === 'username')
+      setProfileUrl(`https://${String(value).toLowerCase()}.w3itch.io/`)
   }
   const checkRegisterData = async () => {
     const invalid: Partial<InvalidData> = {}

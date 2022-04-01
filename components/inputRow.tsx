@@ -5,15 +5,22 @@ declare type InputInvalid = {
 }
 export declare interface InputRowProps {
   label: string
+  subLabel?: string
   center?: boolean
   disabled?: boolean
   preview?: boolean
   placeholder?: string
+  valid?: boolean
   invalid?: InputInvalid
+  className?: string
+  children?: React.ReactNode
 }
 
 export default function InputRow({
   label,
+  subLabel,
+  children,
+  className,
   center,
   disabled,
   preview,
@@ -29,6 +36,10 @@ export default function InputRow({
   const Label = styled.div`
     color: #434343;
     font-weight: bold;
+  `
+  const Sub = styled.span`
+    font-weight: normal;
+    color: #606060;
   `
   const Validated = styled.div`
     position: relative;
@@ -79,24 +90,30 @@ export default function InputRow({
   `
 
   return (
-    <Container center={center}>
+    <Container className={className} center={center}>
       <label>
-        <Label>{label}</Label>
-        <Validated>
-          {invalid && (
-            <ErrorMessage disabled={disabled} invalid={invalid}>
-              {invalid.message}
-            </ErrorMessage>
-          )}
-          <Input
-            center={center}
-            disabled={disabled}
-            preview={preview}
-            placeholder={placeholder}
-            invalid={invalid}
-            {...inputProps}
-          />
-        </Validated>
+        <Label>
+          {label}
+          {subLabel && <Sub>{subLabel}</Sub>}
+        </Label>
+        {!!children && children}
+        {!children && (
+          <Validated>
+            {invalid && (
+              <ErrorMessage disabled={disabled} invalid={invalid}>
+                {invalid.message}
+              </ErrorMessage>
+            )}
+            <Input
+              center={center}
+              disabled={disabled}
+              preview={preview}
+              placeholder={placeholder}
+              invalid={invalid}
+              {...inputProps}
+            />
+          </Validated>
+        )}
       </label>
     </Container>
   )
