@@ -1,8 +1,9 @@
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import Pagination from '@mui/material/Pagination'
-import { getGames } from 'api'
+import { getGamesMine } from 'api'
 import Navigation from 'components/Dashboard/Navigation'
+import useUser from 'hooks/useUser'
 import type { NextPage } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -109,7 +110,11 @@ const HasGameProject: FC<HasGameProjectProps> = ({
 const Dashboard: NextPage = () => {
   const [page, setPage] = useState(1)
   const [limit] = useState(5)
-  const { data, error } = useSWR({ page, limit }, getGames)
+  const user = useUser()
+  const { data, error } = useSWR(
+    { page, limit, username: user?.username },
+    getGamesMine
+  )
 
   console.log('data', data)
 
@@ -185,7 +190,10 @@ const Dashboard: NextPage = () => {
             </a>
           </div>
           <div className={styles.padded}>
-            {error || !data || (!data.meta.totalItems && !data.items.length) ? (
+            {!user ||
+            error ||
+            !data ||
+            (!data.meta.totalItems && !data.items.length) ? (
               <EmptyGameProject />
             ) : (
               <HasGameProject

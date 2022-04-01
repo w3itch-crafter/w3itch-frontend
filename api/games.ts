@@ -6,7 +6,23 @@ import backend from './backend'
 export async function getGames(
   params: Api.GameProjectsParams
 ): Promise<Pagination<GameEntity>> {
-  console.log('params', params)
+  const res = await backend.get<Pagination<GameEntity>>('/game-projects', {
+    params: params,
+  })
+  return res.data
+}
+
+/**
+ * game projects mine
+ * @param params
+ * @returns
+ */
+export async function getGamesMine(
+  params: Api.GameProjectsParams
+): Promise<Pagination<GameEntity> | undefined> {
+  if (!params.username) {
+    return
+  }
   const res = await backend.get<Pagination<GameEntity>>('/game-projects', {
     params: params,
   })
