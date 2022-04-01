@@ -27,7 +27,7 @@ import {
   releaseStatus,
   tags,
 } from 'data'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { Controller, FieldError, SubmitHandler, useForm } from 'react-hook-form'
 import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
@@ -45,6 +45,7 @@ import {
   ReleaseStatus,
 } from 'types/enum'
 import { fileUrl, parseUrl } from 'utils'
+
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
 const MenuProps = {
@@ -69,10 +70,14 @@ const GameNew: NextPage = () => {
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors: formErrors },
   } = useForm<Game>({
     resolver: resolverGame,
-    defaultValues: {},
+    defaultValues: {
+      cover: 'http://127.0.0.1:3000/game/new',
+      community: Community.DISABLED,
+    },
   })
 
   const handleAllImages = async () => {
@@ -142,7 +147,7 @@ const GameNew: NextPage = () => {
       tags: formTags,
       appStoreLinks: [game.appStoreLink],
       description: description,
-      community: Community.DISQUS,
+      community: game.community,
       genre: Genre.NO_GENRE,
     }
     console.log('file', uploadGameFile)
@@ -635,42 +640,49 @@ const GameNew: NextPage = () => {
                   </div> */}
 
                   <div className={styles.input_row}>
-                    <FormControl>
-                      <FormLabel id="demo-radio-buttons-group-label">
-                        Community
-                      </FormLabel>
-                      <p className={styles.sub}>
-                        Build a community for your project by letting people
-                        post to your page.
-                      </p>
-                      <RadioGroup
-                        aria-labelledby="demo-radio-buttons-group-label"
-                        defaultValue="discussionBoard"
-                        name="radio-buttons-group"
-                      >
-                        <FormControlLabel
-                          value="comments"
-                          control={<Radio size="small" disabled />}
-                          label={
-                            <span className={styles.radio_label}>Disabled</span>
-                          }
-                        />
-                        <FormControlLabel
-                          value="discussionBoard"
-                          control={<Radio size="small" />}
-                          label={
-                            <span className={styles.radio_label}>
-                              Discussion board
-                              <span className={styles.radio_sub}>
-                                {' '}
-                                — Add a dedicated community page with
-                                categories, threads, replies &amp; more
-                              </span>
-                            </span>
-                          }
-                        ></FormControlLabel>
-                      </RadioGroup>
-                    </FormControl>
+                    <Controller
+                      control={control}
+                      name="community"
+                      render={({ field }) => (
+                        <FormControl error={Boolean(formErrors.community)}>
+                          <FormLabel id="demo-radio-buttons-group-label">
+                            Community
+                          </FormLabel>
+                          <p className={styles.sub}>
+                            Build a community for your project by letting people
+                            post to your page.
+                          </p>
+                          <RadioGroup {...field}>
+                            <FormControlLabel
+                              value="DISABLED"
+                              control={<Radio size="small" />}
+                              label={
+                                <span className={styles.radio_label}>
+                                  Disabled
+                                </span>
+                              }
+                            />
+                            <FormControlLabel
+                              value="DISQUS"
+                              control={<Radio size="small" />}
+                              label={
+                                <span className={styles.radio_label}>
+                                  Discussion board
+                                  <span className={styles.radio_sub}>
+                                    {' '}
+                                    — Add a dedicated community page with
+                                    categories, threads, replies &amp; more
+                                  </span>
+                                </span>
+                              }
+                            ></FormControlLabel>
+                          </RadioGroup>
+                          <FormHelperText>
+                            {formErrors?.community?.message}
+                          </FormHelperText>
+                        </FormControl>
+                      )}
+                    />
                   </div>
                   {/* <div className={styles.input_row}>
                     <FormControl>
@@ -753,8 +765,8 @@ const GameNew: NextPage = () => {
                         (Minimum: 315x250, Recommended: 630x500)
                       </p>
                     </div>
-                    <FormHelperText error={!!formErrors.cover}>
-                      {formErrors.cover?.message}
+                    <FormHelperText error={Boolean(formErrors.cover)}>
+                      {formErrors?.cover?.message}
                     </FormHelperText>
                   </div>
                   {/* <section className={styles.video_editor}>
@@ -787,8 +799,11 @@ const GameNew: NextPage = () => {
                       Optional but highly recommended. Upload 3 to 5 for best
                       results.
                     </p>
-                    <FormHelperText error={!!formErrors.screenshots}>
-                      {formErrors.screenshots?.message}
+                    <FormHelperText error={Boolean(formErrors?.screenshots)}>
+                      {
+                        (formErrors?.screenshots as unknown as FieldError)
+                          ?.message
+                      }
                     </FormHelperText>
                     <UploadGameScreenshots
                       setFiles={(files) => {

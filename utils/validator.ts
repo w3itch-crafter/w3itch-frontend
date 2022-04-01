@@ -1,10 +1,14 @@
 import {
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsUrl,
   Length,
 } from 'class-validator'
+// @TODO Property 'message' does not exist on type 'FieldError[]'
+// import { NestedValue } from 'react-hook-form'
+import { Community } from 'types/enum'
 
 export class Game {
   @Length(1, 50)
@@ -35,9 +39,9 @@ export class Game {
   // @IsNotEmpty()
   // description: string
 
-  // @IsEnum(Community)
-  // @IsNotEmpty()
-  // community: Community
+  @IsEnum(Community)
+  @IsNotEmpty()
+  community: Community
 
   // @IsEnum(Genre)
   // @IsNotEmpty()
