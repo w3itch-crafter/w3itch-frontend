@@ -1,4 +1,3 @@
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import Pagination from '@mui/material/Pagination'
 import { getGamesMine } from 'api'
@@ -89,15 +88,12 @@ const HasGameProject: FC<HasGameProjectProps> = ({
         </div>
         <p className={styles.social_nag}>
           <FavoriteBorderIcon sx={{ fontSize: 20 }} />
-          Follow itch.io on{' '}
-          <a data-label="social_twitter" href="https://twitter.com/itchio">
+          Follow w3itch.io on{' '}
+          <a data-label="social_twitter" href="https://twitter.com">
             Twitter
           </a>{' '}
           and{' '}
-          <a
-            data-label="social_facebook"
-            href="https://facebook.com/itchiogames"
-          >
+          <a data-label="social_facebook" href="https://facebook.com">
             Facebook
           </a>
         </p>
@@ -133,7 +129,7 @@ const Dashboard: NextPage = () => {
               <div className={styles.text_container}>
                 <h2>Creator Dashboard</h2>
               </div>
-              <div className={styles.stats_container}>
+              {/* <div className={styles.stats_container}>
                 <div className={styles.stat_box}>
                   <div className={styles.stat_value}>0</div>
                   <div className={styles.stat_label}>Views</div>
@@ -169,11 +165,11 @@ const Dashboard: NextPage = () => {
                     </div>
                   </a>
                 </Link>
-              </div>
+              </div> */}
             </div>
             <Navigation />
           </div>
-          <div className={`${styles.header_notification} ${styles.itchio_tip}`}>
+          {/* <div className={`${styles.header_notification} ${styles.itchio_tip}`}>
             <strong>itch.io tips </strong>
             <span>
               Engage with your audience · Post to your development log to share
@@ -188,7 +184,7 @@ const Dashboard: NextPage = () => {
               learn more
               <ArrowRightAltIcon />
             </a>
-          </div>
+          </div> */}
           <div className={styles.padded}>
             {!user ||
             error ||

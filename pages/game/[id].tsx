@@ -1,5 +1,4 @@
 import { gameProjectByID } from 'api'
-import EmbedWidget from 'components/Game/EmbedWidget'
 import MoreInformation from 'components/Game/MoreInformation'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
@@ -13,6 +12,9 @@ const RenderMarkdown = dynamic(
   { ssr: false }
 )
 const CommentsDisqus = dynamic(() => import('components/Game/CommentsDisqus'), {
+  ssr: false,
+})
+const EmbedWidget = dynamic(() => import('components/Game/EmbedWidget'), {
   ssr: false,
 })
 

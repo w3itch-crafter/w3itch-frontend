@@ -9,6 +9,8 @@ interface Props {
 const CommentsDisqus: FC<Props> = ({ title }) => {
   const router = useRouter()
 
+  console.log('router', router)
+
   return (
     <DiscussionEmbed
       shortname="w3itch"
