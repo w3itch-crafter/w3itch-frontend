@@ -13,7 +13,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { MutableRefObject, useCallback, useState } from 'react'
+import { MutableRefObject, useCallback, useEffect, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
 const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
@@ -32,10 +32,13 @@ import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { createGame, storagesUploadToIPFS } from 'api/index'
+import { PrimaryLoadingButton } from 'components/CustomizedButtons'
+import FormAppStoreLinks from 'components/Game/FormAppStoreLinks'
 import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
 import { useRouter } from 'next/router'
+import { useSnackbar } from 'notistack'
 import {
   Community,
   GameEngine,
@@ -56,14 +59,37 @@ const MenuProps = {
     },
   },
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let MESSAGE_SUBMIT_KEY: any
+
+const FormDefaultValues =
+  process.env.NODE_ENV === 'development'
+    ? {
+        title: 'title 123',
+        subtitle: 'subtitle 123',
+        cover:
+          'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
+        appStoreLinks: [
+          'https://store.steampowered.com/publisher/sekaiproject/sale/publishersale_sekai22',
+        ],
+        screenshots: [
+          'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
+          'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
+          'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
+        ],
+      }
+    : {}
 
 const GameNew: NextPage = () => {
   const router = useRouter()
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+
   const [formTags, setFormTags] = useState<string[]>([])
   const [editorRef, setEditorRef] = useState<MutableRefObject<ToastUiEditor>>()
   const [uploadGameFile, setUploadGameFile] = useState<File>()
   const [coverFileFile, setCoverFileFile] = useState<File>()
   const [screenshotsFiles, setScreenshotsFiles] = useState<File[]>()
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false)
 
   const {
     register,
@@ -74,7 +100,7 @@ const GameNew: NextPage = () => {
   } = useForm<Game>({
     resolver: resolverGame,
     defaultValues: {
-      // cover: 'http://127.0.0.1:3000/game/new',
+      ...FormDefaultValues,
       paymentMode: PaymentMode.DISABLE_PAYMENTS,
       community: Community.DISABLED,
       genre: Genre.NO_GENRE,
@@ -121,9 +147,24 @@ const GameNew: NextPage = () => {
       const name = uploadGameFile.name.split('.')[0]
       if (name) {
         gameName = name
+      } else {
+        enqueueSnackbar('Failed to get the game name, please modify', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'warning',
+        })
+        return
       }
     } else {
-      alert('upload game file')
+      enqueueSnackbar('Please upload game files', {
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'center',
+        },
+        variant: 'warning',
+      })
       return
     }
 
@@ -132,6 +173,17 @@ const GameNew: NextPage = () => {
       description = editorRef.current?.getInstance().getMarkdown()
     }
 
+    MESSAGE_SUBMIT_KEY = enqueueSnackbar('uploading game...', {
+      anchorOrigin: {
+        vertical: 'top',
+        horizontal: 'center',
+      },
+      variant: 'info',
+      persist: true,
+    })
+    setSubmitLoading(true)
+
+    // @TODO need message notification
     const allImages = await handleAllImages()
 
     const gameData = {
@@ -145,7 +197,7 @@ const GameNew: NextPage = () => {
       screenshots: allImages.screenshots,
       cover: allImages.cover,
       tags: formTags,
-      appStoreLinks: [game.appStoreLink],
+      appStoreLinks: game.appStoreLinks,
       description: description,
       community: game.community,
       genre: Genre.NO_GENRE,
@@ -158,15 +210,50 @@ const GameNew: NextPage = () => {
     formData.append('file', uploadGameFile)
     formData.append('game', JSON.stringify(gameData))
 
-    const createGameResult = await createGame(formData)
-    console.log('createGameResult', createGameResult)
+    try {
+      const createGameResult = await createGame(formData)
+      console.log('createGameResult', createGameResult)
 
-    // @TODO 409
-    if (createGameResult.status === 201) {
-      alert('successful')
-      router.push('/dashboard')
-    } else if (createGameResult.status === 409) {
-      alert('The name of the game is repeated, please modify it.')
+      // @TODO 409
+      if (createGameResult.status === 201) {
+        enqueueSnackbar('Uploaded successfully', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'success',
+        })
+        router.push('/dashboard')
+      } else if (createGameResult.status === 409) {
+        enqueueSnackbar('The name of the game is repeated, please modify it.', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'warning',
+        })
+      } else {
+        enqueueSnackbar('Upload failed', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'error',
+        })
+      }
+    } catch (error) {
+      // @TODO 400 404 500
+      console.error('error: ', error)
+      enqueueSnackbar('Upload failed', {
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'center',
+        },
+        variant: 'error',
+      })
+    } finally {
+      closeSnackbar(MESSAGE_SUBMIT_KEY)
+      setSubmitLoading(false)
     }
   }
 
@@ -211,6 +298,10 @@ const GameNew: NextPage = () => {
     },
     [setValue]
   )
+
+  useEffect(() => {
+    console.log('env', process.env.NODE_ENV)
+  }, [])
 
   return (
     <div className={stylesCommon.main}>
@@ -268,7 +359,6 @@ const GameNew: NextPage = () => {
                         id="form-title"
                         variant="outlined"
                         aria-describedby="form-title-error-text"
-                        defaultValue={'title 123'}
                         error={!!formErrors.title}
                         helperText={
                           formErrors.title ? formErrors.title.message : ''
@@ -291,7 +381,6 @@ const GameNew: NextPage = () => {
                       <TextField
                         id="form-shortDescriptionOrTagline"
                         error={!!formErrors.subtitle}
-                        defaultValue={'Short description or tagline 123'}
                         helperText={
                           formErrors.subtitle ? formErrors.subtitle.message : ''
                         }
@@ -615,29 +704,13 @@ const GameNew: NextPage = () => {
                       <div
                         className={`${styles.input_row} app_store_links_row`}
                       >
-                        <FormControl fullWidth>
-                          <FormLabel id="form-appStoreLink">
-                            App store links
-                          </FormLabel>
-                          <p className={styles.sub}>
-                            {
-                              "If your project is available on any other stores we'll link to it."
-                            }
-                          </p>
-                          <TextField
-                            id="form-appStoreLink"
-                            variant="outlined"
-                            error={!!formErrors.appStoreLink}
-                            placeholder="eg. http(s)://"
-                            defaultValue="https://store.steampowered.com/publisher/sekaiproject/sale/publishersale_sekai22"
-                            helperText={
-                              formErrors.appStoreLink
-                                ? formErrors.appStoreLink.message
-                                : ''
-                            }
-                            {...register('appStoreLink')}
-                          />
-                        </FormControl>
+                        <FormAppStoreLinks
+                          errors={formErrors}
+                          control={control}
+                          changeLinks={(value) => {
+                            setValue('appStoreLinks', [value])
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -841,9 +914,13 @@ const GameNew: NextPage = () => {
                 </div>
               </div>
               <div className={styles.buttons}>
-                <button className={`${stylesCommon.button} save_btn`}>
-                  Save &amp; view page
-                </button>
+                <PrimaryLoadingButton
+                  variant="contained"
+                  type="submit"
+                  loading={submitLoading}
+                >
+                  Save
+                </PrimaryLoadingButton>
                 <div className={`${styles.loader} ${styles.form_loader}`}></div>
               </div>
             </form>
