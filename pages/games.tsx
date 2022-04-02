@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import Pagination from '@mui/material/Pagination'
 import { getGames } from 'api'
 import FilterGroup, { FilterGroupItem } from 'components/filterGroup'
 import GameCell from 'components/gameCell'
@@ -7,16 +8,16 @@ import SearchDescription from 'components/searchDescription'
 import SortOptions, { SortOptionItem } from 'components/sortOptions'
 import { genres } from 'data'
 import { GetServerSideProps, NextPage } from 'next'
-import { useEffect, useState } from 'react'
-import InfiniteScroll from 'react-infinite-scroller'
-import useSWR from 'swr'
-import { BackendErrorResponse, GameEntity, GameInfo, Pagination } from 'types'
+import { useRouter } from 'next/router'
+import { GameEntity, GameInfo, PaginationMeta } from 'types'
 declare interface GamesProps {
   genres: { label: string; value: string }[]
   tags: TagOption[]
+  games: GameInfo[]
+  pageMeta: PaginationMeta<GameEntity>
 }
 
-const Games: NextPage<GamesProps> = ({ genres, tags }) => {
+const Games: NextPage<GamesProps> = ({ genres, tags, games, pageMeta }) => {
   const Container = styled.div`
     margin: 0 auto;
     width: 100%;
@@ -50,6 +51,7 @@ const Games: NextPage<GamesProps> = ({ genres, tags }) => {
     margin: 0;
     background-color: white;
     flex: 1;
+    padding-bottom: 40px;
   `
   const BrowseHeader = styled.div`
     position: relative;
@@ -61,6 +63,10 @@ const Games: NextPage<GamesProps> = ({ genres, tags }) => {
       font-weight: 900;
       color: #434343;
     }
+  `
+  const GameCount = styled.span`
+    font-weight: normal;
+    color: #858585;
   `
   const StyledSortOptions = styled(SortOptions)`
     margin-bottom: 10px;
@@ -76,27 +82,22 @@ const Games: NextPage<GamesProps> = ({ genres, tags }) => {
       margin: 0;
     }
   `
-  const [games, setGames] = useState<GameInfo[]>([])
-  const [page, setPage] = useState<number>(1)
-  const { data } = useSWR<Pagination<GameEntity>, BackendErrorResponse>(
-    { limit: 20, page },
-    getGames
-  )
-  const pageMeta = data?.meta
-  const hasMore = pageMeta && pageMeta.currentPage < pageMeta.totalPages
-  const handleLoadMore = () => {
-    pageMeta && setPage(pageMeta.currentPage + 1)
-  }
-
-  useEffect(() => {
-    if (data) {
-      const _games: GameInfo[] = data.data.map((g) => ({
-        ...g,
-        link: `/game/${g.id}`,
-      }))
-      setGames((g) => g.concat(_games))
+  const StyledPagination = styled(Pagination)`
+    display: flex;
+    justify-content: center;
+    & .Mui-selected,
+    & .Mui-selected:hover {
+      background-color: #da2c49 !important;
     }
-  }, [data])
+  `
+  const router = useRouter()
+  const { currentPage, totalPages } = pageMeta
+  const handlePaginationChange = (
+    _: React.ChangeEvent<unknown>,
+    page: number
+  ) => {
+    router.push({ pathname: router.pathname, query: { ...router.query, page } })
+  }
 
   return (
     <Container>
@@ -143,34 +144,39 @@ const Games: NextPage<GamesProps> = ({ genres, tags }) => {
       </FilterColumn>
       <GridColumn>
         <BrowseHeader>
-          <h2>Top Games</h2>
-          <StyledSortOptions sortKey="sort">
+          <h2>
+            Top Games<GameCount> ({games.length} results)</GameCount>
+          </h2>
+          <StyledSortOptions sortKey="sortBy">
             <SortOptionItem name="Popular" />
             <SortOptionItem value="new" name="New & Popular" />
             <SortOptionItem value="sellers" name="Top sellers" />
-            <SortOptionItem value="rated" name="Top rated" />
-            <SortOptionItem value="newest" name="Most Recent" />
+            <SortOptionItem value="rating" name="Top rated" />
+            <SortOptionItem value="updatedAt" name="Most Recent" />
           </StyledSortOptions>
           <RelatedTags tags={tags} placeholder="Select a tag..."></RelatedTags>
           <SearchDescription />
         </BrowseHeader>
-        <InfiniteScroll
-          hasMore={hasMore}
-          loadMore={handleLoadMore}
-          initialLoad={false}
-        >
-          <GameGrid>
-            {games.map((game, index) => (
-              <GameCell key={`${game.id}-${index}`} game={game} />
-            ))}
-          </GameGrid>
-        </InfiniteScroll>
+        <GameGrid>
+          {games.map((game, index) => (
+            <GameCell key={`${game.id}-${index}`} game={game} />
+          ))}
+        </GameGrid>
+        <StyledPagination
+          shape="rounded"
+          color="primary"
+          page={currentPage}
+          count={totalPages}
+          onChange={handlePaginationChange}
+        />
       </GridColumn>
     </Container>
   )
 }
 
-export const getServerSideProps: GetServerSideProps<GamesProps> = async () => {
+export const getServerSideProps: GetServerSideProps<GamesProps> = async (
+  context
+) => {
   const tagList: TagOption[] = [
     { label: '16-bit', value: '16-bit' },
     { label: '1-bit', value: '1-bit' },
@@ -178,7 +184,13 @@ export const getServerSideProps: GetServerSideProps<GamesProps> = async () => {
     { label: '2D', value: '2d' },
     { label: '3D', value: '2d' },
   ]
-  return { props: { genres, tags: tagList } }
+  const { query } = context
+  const { data, meta } = await getGames({ ...query, limit: 20, order: 'DESC' })
+  const games: GameInfo[] = data.map((g) => ({
+    ...g,
+    link: `/game/${g.id}`,
+  }))
+  return { props: { genres, tags: tagList, games, pageMeta: meta } }
 }
 
 export default Games
