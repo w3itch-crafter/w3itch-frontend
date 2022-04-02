@@ -10,12 +10,12 @@ import { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroller'
-import { GameInfo, PaginationMeta } from 'types'
+import { GameEntity, GameInfo, PaginationMeta } from 'types'
 declare interface GamesProps {
   genres: { label: string; value: string }[]
   tags: TagOption[]
   gameData: GameInfo[]
-  pageMeta: PaginationMeta
+  pageMeta: PaginationMeta<GameEntity>
 }
 
 const Games: NextPage<GamesProps> = ({ genres, tags, gameData, pageMeta }) => {
@@ -178,11 +178,8 @@ export const getServerSideProps: GetServerSideProps<GamesProps> = async (
     { label: '3D', value: '2d' },
   ]
   const page = ctx.query.page ? Number(ctx.query.page) : 1
-  const gameRes = await getGames({
-    page: page,
-    limit: 20,
-  })
-  const gameData: GameInfo[] = gameRes.items.map((g) => ({
+  const gameRes = await getGames({ page: page, limit: 20 })
+  const gameData: GameInfo[] = gameRes.data.map((g) => ({
     ...g,
     link: `/game/${g.id}`,
   }))
