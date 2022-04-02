@@ -3,6 +3,7 @@ import '../styles/globals.css'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Layout from 'components/layout'
 import type { AppProps } from 'next/app'
+import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
 import { NextPageWithLayout } from 'types'
 import { UseWalletProvider } from 'use-wallet'
@@ -12,7 +13,13 @@ type AppPropsWithLayout = AppProps & {
 }
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>)
+  const getLayout =
+    Component.getLayout ??
+    ((page) => (
+      <SnackbarProvider maxSnack={3}>
+        <Layout>{page}</Layout>
+      </SnackbarProvider>
+    ))
   return (
     <UseWalletProvider
       connectors={{

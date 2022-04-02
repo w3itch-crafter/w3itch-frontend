@@ -49,13 +49,9 @@ export class Game {
 
   tags: string[]
 
-  // @Length(1, 120)
-  // @IsString({ each: true })
-  // @IsEmpty()
-  // appStoreLinks: string[]
-
-  @Length(1, 120)
-  appStoreLink: string
+  @Length(1, 120, { each: true })
+  @IsUrl({ require_protocol: true }, { each: true })
+  appStoreLinks: string[]
 
   // @IsInt()
   // tokenId: number

@@ -91,17 +91,46 @@
     margin: 0 20px 20px 20px;
   }
 }
+
+.info_panel_wrapper {
+  background: rgba(229, 229, 229, 1);
+  padding: 10px;
+  .time {
+    display: flex;
+    align-items: center;
+  }
+  a {
+    color: #fa5c5c;
+  }
+  td:first-child {
+    font-weight: bold;
+    text-align: right;
+    min-width: 100px;
+    font-size: 90%;
+    opacity: 0.7;
+  }
+}
+.toggle_row {
+  margin-bottom: 10px;
+}
+.toggle_info_btn {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+
 .user_formatted {
   word-wrap: break-word;
 }
 .game_comments_widget {
+  padding: 0 20px;
   margin-top: 40px;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
   h2 {
     font-family: inherit;
     font-weight: 900;
     color: inherit;
-    margin: 1.6em 20px 0.8em;
+    margin: 1.6em 0 0.8em;
   }
 }
 .columns {
