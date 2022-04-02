@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios'
 import { GameEntity, Pagination } from 'types'
+import { Api } from 'types/Api'
 
 import backend from './backend'
 
