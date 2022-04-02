@@ -15,10 +15,10 @@ const CommentsDisqus: FC<Props> = ({ title }) => {
     <DiscussionEmbed
       shortname="w3itch"
       config={{
-        url: 'https://w3itch.io' + router.pathname,
+        url: `${process.env.NEXT_PUBLIC_URL}/${window.location.pathname}`,
         identifier: String(router.query.id),
         title: title,
-        language: 'zh_TW', //e.g. for Traditional Chinese (Taiwan)
+        language: 'en',
       }}
     />
   )

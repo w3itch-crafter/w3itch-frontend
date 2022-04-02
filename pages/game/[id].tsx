@@ -83,8 +83,6 @@ const GameId: NextPage<GameProps> = ({ gameProject }) => {
                         rel="noreferrer"
                       >
                         <Image
-                          data-screenshot_id="8534146"
-                          // srcSet="https://img.itch.zone/aW1hZ2UvMTQ2MjE2Ny84NTM0MTQ2LnBuZw==/347x500/oi9XNx.png 1x, https://img.itch.zone/aW1hZ2UvMTQ2MjE2Ny84NTM0MTQ2LnBuZw==/794x1000/pbHLWw.png 2x"
                           className="screenshot"
                           src={screenshot}
                           alt="screenshot"
