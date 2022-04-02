@@ -11,6 +11,15 @@ const nextConfig = {
       'i.loli.net',
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/games',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig

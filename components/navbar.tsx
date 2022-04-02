@@ -60,7 +60,7 @@ export default function Navbar() {
     <HeaderWidget>
       <PrimaryHeader>
         <HeaderTitle>
-          <Link href="/" passHref>
+          <Link href="/games" passHref>
             <HeaderLogo>W3itch.io</HeaderLogo>
           </Link>
         </HeaderTitle>

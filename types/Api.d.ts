@@ -1,3 +1,5 @@
+import type { GamesListSortBy } from './enum'
+
 declare namespace Api {
   type UploadToIPFS = {
     hash: string
@@ -11,5 +13,7 @@ declare namespace Api {
     username?: string
     limit?: number
     page?: number
+    sortBy?: GamesListSortBy
+    order?: 'ASC' | 'DESC'
   }
 }

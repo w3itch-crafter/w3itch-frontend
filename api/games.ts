@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios'
 import { GameEntity, Pagination } from 'types'
+import { Api } from 'types/Api'
 
 import backend from './backend'
 
@@ -21,6 +22,7 @@ export async function getGamesMine(
   params: Required<Pick<Api.GameProjectsParams, 'username'>> &
     Omit<Api.GameProjectsParams, 'username'>
 ): Promise<Pagination<GameEntity> | undefined> {
+  if (!params.username) return
   const res = await backend.get<Pagination<GameEntity>>('/game-projects', {
     params,
   })

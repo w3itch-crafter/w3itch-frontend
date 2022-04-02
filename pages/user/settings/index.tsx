@@ -40,6 +40,7 @@ const Settings: NextPageWithLayout = () => {
   `
   const userData = useUser()
   const [user, setUser] = useState<Partial<UserEntity> | undefined>({})
+  const [updateUser, setUpdateUser] = useState<Partial<UserEntity>>({})
   const [uploading, setUploading] = useState<boolean>(false)
   const submitButton = useRef<HTMLButtonElement>(null)
   const [popoverState, setPopoverState] = useState<PopoverState>({
@@ -54,8 +55,9 @@ const Settings: NextPageWithLayout = () => {
     const value = target.type === 'checkbox' ? target.checked : target.value
     const name = target.name
     setUser((u) => ({ ...u, [name]: value }))
+    setUpdateUser((u) => ({ ...u, [name]: value }))
   }
-  const handleChangeFile = async (
+  const handleChangeAvatar = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     event.stopPropagation()
@@ -69,12 +71,13 @@ const Settings: NextPageWithLayout = () => {
       const res = await storagesUploadToIPFS(avatar)
       const { publicUrl } = res.data
       setUser((u) => ({ ...u, avatar: publicUrl }))
+      setUpdateUser((u) => ({ ...u, avatar: publicUrl }))
     }
     setUploading(false)
   }
   const handleSubmitProfile = async () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const state = await updateMe(user!)
+    const state = await updateMe(updateUser)
     if (isBackendError(state)) {
       return setPopoverState((s) => ({
         ...s,
@@ -84,6 +87,7 @@ const Settings: NextPageWithLayout = () => {
         message: state.message,
       }))
     } else {
+      setUser(state)
       setPopoverState((s) => ({
         ...s,
         anchor: submitButton.current,
@@ -122,7 +126,7 @@ const Settings: NextPageWithLayout = () => {
         <AvatarUploader
           avatar={user?.avatar}
           uploading={uploading}
-          onChangeFile={handleChangeFile}
+          onChangeFile={handleChangeAvatar}
         />
       </InputRow>
       <InputRow
