@@ -7,18 +7,16 @@ import SearchDescription from 'components/searchDescription'
 import SortOptions, { SortOptionItem } from 'components/sortOptions'
 import { genres } from 'data'
 import { GetServerSideProps, NextPage } from 'next'
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroller'
-import { GameEntity, GameInfo, PaginationMeta } from 'types'
+import useSWR from 'swr'
+import { BackendErrorResponse, GameEntity, GameInfo, Pagination } from 'types'
 declare interface GamesProps {
   genres: { label: string; value: string }[]
   tags: TagOption[]
-  gameData: GameInfo[]
-  pageMeta: PaginationMeta<GameEntity>
 }
 
-const Games: NextPage<GamesProps> = ({ genres, tags, gameData, pageMeta }) => {
+const Games: NextPage<GamesProps> = ({ genres, tags }) => {
   const Container = styled.div`
     margin: 0 auto;
     width: 100%;
@@ -79,21 +77,26 @@ const Games: NextPage<GamesProps> = ({ genres, tags, gameData, pageMeta }) => {
     }
   `
   const [games, setGames] = useState<GameInfo[]>([])
-  const router = useRouter()
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const hasMore = pageMeta.currentPage < pageMeta.totalPages!
+  const [page, setPage] = useState<number>(1)
+  const { data } = useSWR<Pagination<GameEntity>, BackendErrorResponse>(
+    { limit: 20, page },
+    getGames
+  )
+  const pageMeta = data?.meta
+  const hasMore = pageMeta && pageMeta.currentPage < pageMeta.totalPages
   const handleLoadMore = () => {
-    router.push({
-      pathname: router.pathname,
-      query: { page: pageMeta.currentPage + 1 },
-    })
+    pageMeta && setPage(pageMeta.currentPage + 1)
   }
 
   useEffect(() => {
-    if (gameData) {
-      setGames((g) => g.concat(gameData))
+    if (data) {
+      const _games: GameInfo[] = data.data.map((g) => ({
+        ...g,
+        link: `/game/${g.id}`,
+      }))
+      setGames((g) => g.concat(_games))
     }
-  }, [gameData])
+  }, [data])
 
   return (
     <Container>
@@ -167,9 +170,7 @@ const Games: NextPage<GamesProps> = ({ genres, tags, gameData, pageMeta }) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps<GamesProps> = async (
-  ctx
-) => {
+export const getServerSideProps: GetServerSideProps<GamesProps> = async () => {
   const tagList: TagOption[] = [
     { label: '16-bit', value: '16-bit' },
     { label: '1-bit', value: '1-bit' },
@@ -177,13 +178,7 @@ export const getServerSideProps: GetServerSideProps<GamesProps> = async (
     { label: '2D', value: '2d' },
     { label: '3D', value: '2d' },
   ]
-  const page = ctx.query.page ? Number(ctx.query.page) : 1
-  const gameRes = await getGames({ page: page, limit: 20 })
-  const gameData: GameInfo[] = gameRes.data.map((g) => ({
-    ...g,
-    link: `/game/${g.id}`,
-  }))
-  return { props: { genres, tags: tagList, gameData, pageMeta: gameRes.meta } }
+  return { props: { genres, tags: tagList } }
 }
 
 export default Games
