@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios'
+import type { Api } from 'types/Api'
 
 import backend from './backend'
 
