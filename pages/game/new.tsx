@@ -322,13 +322,13 @@ const GameNew: NextPage = () => {
               </div>
             </div>
           </div>
-          <div className={styles.payment_warning}>
+          {/* <div className={styles.payment_warning}>
             <strong>{"You don't have payment configured"}</strong> If you set a
             minimum price above 0 no one will be able to download your project.{' '}
             <a target="_blank" href="/user/settings/seller">
               Edit account
             </a>
-          </div>
+          </div> */}
 
           <div className={styles.padded}>
             <form
@@ -343,8 +343,8 @@ const GameNew: NextPage = () => {
                     <br />
                     Review our{' '}
                     <a
-                      rel="noopener"
-                      href="/docs/creators/quality-guidelines"
+                      rel="noopener noreferrer"
+                      href="https://itch.io/docs/creators/quality-guidelines"
                       target="_blank"
                     >
                       quality guidelines
@@ -542,7 +542,7 @@ const GameNew: NextPage = () => {
                   <div className={styles.upload_editor}>
                     <h2>Uploads</h2>
                     <div>
-                      <section
+                      {/* <section
                         data-label="Tip"
                         className={`${styles.hint} ${styles.butler_tip}`}
                       >
@@ -552,7 +552,7 @@ const GameNew: NextPage = () => {
                           the <a href="/app">itch.io app</a>, and you can
                           automate it. <a href="/docs/butler">Get started!</a>
                         </div>
-                      </section>
+                      </section> */}
                       <div
                         className={`add_file_btn_outer ${styles.upload_buttons}`}
                       >
@@ -585,13 +585,13 @@ const GameNew: NextPage = () => {
                         </div> */}
                       </div>
                     </div>
-                    <p className={styles.upload_limit}>
+                    {/* <p className={styles.upload_limit}>
                       File size limit: 1 GB.{' '}
                       <a target="_blank" href="/support">
                         Contact us
                       </a>{' '}
                       if you need more space
-                    </p>
+                    </p> */}
                   </div>
 
                   <div
@@ -756,25 +756,12 @@ const GameNew: NextPage = () => {
                             <FormControlLabel
                               value="DISABLED"
                               control={<Radio size="small" />}
-                              label={
-                                <span className={styles.radio_label}>
-                                  Disabled
-                                </span>
-                              }
+                              label="Disabled"
                             />
                             <FormControlLabel
                               value="DISQUS"
                               control={<Radio size="small" />}
-                              label={
-                                <span className={styles.radio_label}>
-                                  Discussion board
-                                  <span className={styles.radio_sub}>
-                                    {' '}
-                                    — Add a dedicated community page with
-                                    categories, threads, replies &amp; more
-                                  </span>
-                                </span>
-                              }
+                              label="Disqus"
                             ></FormControlLabel>
                           </RadioGroup>
                           <FormHelperText>
@@ -860,7 +847,7 @@ const GameNew: NextPage = () => {
                         setFile={(file) => handleCoverValue(file as File)}
                       />
                       <p className={`${styles.sub} instructions`}>
-                        The cover image is used whenever itch.io wants to link
+                        The cover image is used whenever w3itch.io wants to link
                         to your project from another part of the site. Required
                         (Minimum: 315x250, Recommended: 630x500)
                       </p>

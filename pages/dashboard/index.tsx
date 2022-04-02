@@ -28,7 +28,7 @@ const EmptyGameProject = () => {
         <a className={stylesCommon.button}>Create new project</a>
       </Link>
       <div className={styles.sub_links}>
-        <Link href="/my-feed">
+        <Link href="/">
           <a>Nah, take me to the games feed</a>
         </Link>
       </div>
