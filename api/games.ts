@@ -7,7 +7,7 @@ export async function getGames(
   params: Api.GameProjectsParams
 ): Promise<Pagination<GameEntity>> {
   const res = await backend.get<Pagination<GameEntity>>('/game-projects', {
-    params: params,
+    params,
   })
   return res.data
 }
@@ -18,13 +18,11 @@ export async function getGames(
  * @returns
  */
 export async function getGamesMine(
-  params: Api.GameProjectsParams
+  params: Required<Pick<Api.GameProjectsParams, 'username'>> &
+    Omit<Api.GameProjectsParams, 'username'>
 ): Promise<Pagination<GameEntity> | undefined> {
-  if (!params.username) {
-    return
-  }
   const res = await backend.get<Pagination<GameEntity>>('/game-projects', {
-    params: params,
+    params,
   })
   return res.data
 }

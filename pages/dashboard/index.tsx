@@ -16,7 +16,7 @@ import { GameEntity, PaginationMeta } from 'types'
 
 interface HasGameProjectProps {
   items: GameEntity[]
-  meta: PaginationMeta
+  meta: PaginationMeta<GameEntity>
   page: number
   setPage: Dispatch<SetStateAction<number>>
 }
@@ -193,14 +193,14 @@ const Dashboard: NextPage = () => {
             {!user ||
             error ||
             !data ||
-            (!data.meta.totalItems && !data.items.length) ? (
+            (!data.meta.totalItems && !data.data.length) ? (
               <EmptyGameProject />
             ) : (
               <HasGameProject
                 page={page}
                 setPage={setPage}
                 meta={data.meta}
-                items={data.items}
+                items={data.data}
               />
             )}
           </div>
