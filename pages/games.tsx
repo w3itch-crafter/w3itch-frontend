@@ -79,7 +79,7 @@ const Games: NextPage<GamesProps> = ({ genres, tags }) => {
   const [games, setGames] = useState<GameInfo[]>([])
   const [page, setPage] = useState<number>(1)
   const { data } = useSWR<Pagination<GameEntity>, BackendErrorResponse>(
-    { limit: 5, page },
+    { limit: 20, page },
     getGames
   )
   const pageMeta = data?.meta
