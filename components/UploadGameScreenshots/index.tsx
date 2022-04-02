@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { RedButton } from 'components/buttons'
+import { cloneDeep } from 'lodash'
 import Image from 'next/image'
 import {
   Dispatch,
@@ -51,19 +52,31 @@ const UploadGameScreenshots: FC<Props> = ({ setFiles }) => {
     return screenshotsFiles?.map((i) => fileUrl(i))
   }, [screenshotsFiles])
 
+  const handleDeleteItems = useCallback(
+    (index: number) => {
+      const newFiles = cloneDeep(screenshotsFiles)
+      newFiles?.splice(index, 1)
+
+      // console.log('newFiles', newFiles)
+
+      setScreenshotsFiles(newFiles)
+      setFiles(newFiles as File[])
+    },
+    [setScreenshotsFiles, setFiles, screenshotsFiles]
+  )
+
   return (
     <section>
-      {screenshotsItems && (
+      {screenshotsItems && screenshotsItems.length ? (
         <WrapperItem>
-          {screenshotsItems?.map((i) => (
-            <div key={i}>
+          {screenshotsItems?.map((i, index) => (
+            <div key={i} style={{ marginBottom: 10 }}>
               <Image src={i} alt="screenshot" width={200} height={200} />
               <div>
                 <RedButton
                   onClick={(e) => {
                     e.stopPropagation()
-                    setScreenshotsFiles(undefined)
-                    setFiles(undefined)
+                    handleDeleteItems(index)
                   }}
                 >
                   Delete
@@ -72,7 +85,7 @@ const UploadGameScreenshots: FC<Props> = ({ setFiles }) => {
             </div>
           ))}
         </WrapperItem>
-      )}
+      ) : null}
       <section {...getRootProps()}>
         <input {...getInputProps()} />
         <RedButton type="button">Add screenshots</RedButton>

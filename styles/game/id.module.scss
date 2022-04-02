@@ -76,10 +76,11 @@
   .screenshot_list {
     margin-right: 20px;
     box-sizing: border-box;
-    img {
+    a {
       display: block;
+      width: 347px;
       margin-bottom: 10px;
-      max-width: 347px;
+      box-shadow: 0 0 1px rgb(0, 0, 0, 0.3);
     }
   }
   .formatted_description {

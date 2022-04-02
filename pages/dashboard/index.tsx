@@ -50,7 +50,13 @@ const HasGameProject: FC<HasGameProjectProps> = ({
             <div className={styles.game_row} key={item.id}>
               <Link href={`/game/${item.id}`}>
                 <a className={styles.cover_link}>
-                  <Image width={105} height={83} src={item.cover} alt="cover" />
+                  <Image
+                    width={105}
+                    height={83}
+                    objectFit="cover"
+                    src={item.cover}
+                    alt="cover"
+                  />
                 </a>
               </Link>
               <div className={styles.game_details}>
@@ -108,7 +114,12 @@ const Dashboard: NextPage = () => {
   const [limit] = useState(5)
   const user = useUser()
   const { data, error } = useSWR(
-    { page, limit, username: user?.username },
+    {
+      page,
+      limit,
+      username: user?.username,
+      order: 'DESC',
+    },
     getGamesMine
   )
 

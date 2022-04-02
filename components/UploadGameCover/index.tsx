@@ -12,7 +12,6 @@ import {
 import { FileWithPath, useDropzone } from 'react-dropzone'
 import { fileUrl } from 'utils'
 
-const Wrapper = styled.section``
 const WrapperDrap = styled.section`
   border: 1px dashed;
   border-color: #cdcdcd;
@@ -31,6 +30,7 @@ const WrapperDrapContainer = styled.section`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  overflow: hidden;
 `
 const WrapperDrapContainerBackdrop = styled.section`
   transition: opacity 0.2s ease;
@@ -89,21 +89,20 @@ const UploadGameCover: FC<Props> = ({ setFile }) => {
   })
 
   return (
-    <Wrapper>
+    <section>
       <WrapperDrap {...getRootProps()}>
         <input {...getInputProps()} />
-
         {coverUrl ? (
           <>
-            <WrapperDrapContainer>
+            <s>
               <Image
                 src={coverUrl}
-                width={'100%'}
-                height={'100%'}
-                layout="fill"
+                width={315}
+                height={250}
                 alt="Cover"
+                objectFit="cover"
               />
-            </WrapperDrapContainer>
+            </s>
             <WrapperDrapContainer>
               <WrapperDrapContainerBackdrop>
                 <RedButton type="button">Replace Cover Image</RedButton>
@@ -130,7 +129,7 @@ const UploadGameCover: FC<Props> = ({ setFile }) => {
           </WrapperDrapContainer>
         )}
       </WrapperDrap>
-    </Wrapper>
+    </section>
   )
 }
 
