@@ -22,32 +22,48 @@ export declare type RegisterData = {
   developer: boolean
 }
 
-export declare type PaginationMeta = {
-  /** the amount of items on this specific page */
-  itemCount: number
-  /** the total amount of items */
-  totalItems?: number
-  /** the amount of items that were requested per page */
+type Join<K, P> = K extends string
+  ? P extends string
+    ? `${K}${'' extends P ? '' : '.'}${P}`
+    : never
+  : never
+type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, ...0[]]
+export type Column<T, D extends number = 2> = [D] extends [never]
+  ? never
+  : T extends Record<string, unknown>
+  ? {
+      [K in keyof T]-?: K extends string
+        ? T[K] extends Date
+          ? `${K}`
+          : T[K] extends Array<infer U>
+          ? `${K}` | Join<K, Column<U, Prev[D]>>
+          : `${K}` | Join<K, Column<T[K], Prev[D]>>
+        : never
+    }[keyof T]
+  : ''
+export type Order<T> = [Column<T>, 'ASC' | 'DESC']
+export type SortBy<T> = Order<T>[]
+export declare type PaginationMeta<T> = {
   itemsPerPage: number
-  /** the total amount of pages in this paginator */
-  totalPages?: number
-  /** the current page this paginator "points" to */
+  totalItems: number
   currentPage: number
+  totalPages: number
+  sortBy: SortBy<T>
+  searchBy: Column<T>[]
+  search: string
+  filter?: { [column: string]: string | string[] }
 }
 export declare type PaginationLinks = {
-  /** a link to the "first" page */
   first?: string
-  /** a link to the "previous" page */
   previous?: string
-  /** a link to the "next" page */
+  current: string
   next?: string
-  /** a link to the "last" page */
   last?: string
 }
 export declare type Pagination<T> = {
-  items: T[]
+  data: T[]
   /** associated meta information (e.g., counts) */
-  meta: PaginationMeta
+  meta: PaginationMeta<T>
   /** associated links */
   links?: PaginationLinks
 }
