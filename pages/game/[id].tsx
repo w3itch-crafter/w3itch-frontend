@@ -1,6 +1,7 @@
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import { gameProjectByID, gameProjectPlayer } from 'api'
+import MoreInformation from 'components/Game/MoreInformation'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
@@ -8,10 +9,14 @@ import { useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
+import { Community } from 'types/enum'
 const RenderMarkdown = dynamic(
   () => import('components/RenderMarkdown/index'),
   { ssr: false }
 )
+const CommentsDisqus = dynamic(() => import('components/Game/CommentsDisqus'), {
+  ssr: false,
+})
 
 declare interface GameProps {
   gameProject: GameEntity
@@ -28,7 +33,7 @@ const GameId: NextPage<GameProps> = ({ gameProject }) => {
           <div
             className={`${stylesCommon.inner_column} ${styles.inner_column} ${styles.size_large} family_lato`}
             id="inner_column"
-            style={{ minHeight: '767' }}
+            style={{ minHeight: '767px' }}
           >
             <div
               id="view_html_game_page_667"
@@ -116,107 +121,13 @@ const GameId: NextPage<GameProps> = ({ gameProject }) => {
                   >
                     <RenderMarkdown md={gameProject.description} />
                   </div>
-                  <div className={`${styles.more_information_toggle} open`}>
-                    <div className="toggle_row">
-                      <a className="toggle_info_btn" href="javascript:void(0)">
-                        More information
-                        <svg
-                          height="6"
-                          width="12"
-                          className="svgicon icon_down_tick"
-                          role="img"
-                          aria-hidden
-                          viewBox="0 0 37 20"
-                          version="1.1"
-                        >
-                          <path d="m2.0858 0c-1.1535 0-2.0858 0.86469-2.0858 1.9331 0 0.5139 0.21354 1.0183 0.38704 1.1881l18.113 16.879 18.112-16.879c0.174-0.1696 0.388-0.674 0.388-1.1879 0-1.0684-0.932-1.9331-2.086-1.9331-0.577 0-1.111 0.23008-1.49 0.57992l-14.924 13.894-14.925-13.893c-0.3777-0.34998-0.9134-0.581-1.4902-0.581z"></path>
-                        </svg>
-                      </a>
-                    </div>
-                    <div className="info_panel_wrapper">
-                      <div className="game_info_panel_widget">
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td>Published</td>
-                              <td>
-                                <abbr>
-                                  <span className="icon icon-stopwatch"></span>{' '}
-                                  {gameProject.createdAt}
-                                </abbr>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Status</td>
-                              <td>
-                                <a href="https://itch.io/games/released">
-                                  {gameProject.releaseStatus}
-                                </a>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Platforms</td>
-                              <td>
-                                <a href="https://itch.io/games/html5">
-                                  {gameProject.kind}
-                                </a>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Author</td>
-                              <td>
-                                <a href="https://xiaotian.itch.io">
-                                  {gameProject.userId}
-                                </a>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>Genre</td>
-                              <td>
-                                <a href="https://itch.io/games/tag-educational">
-                                  {gameProject.genre}
-                                </a>
-                              </td>
-                            </tr>
-                            {/* <tr>
-                              <td>Tags</td>
-                              <td>
-
-                                <a href="https://itch.io/games/tag-2d">2D</a>,{' '}
-                                <a href="https://itch.io/games/tag-3d">3D</a>,{' '}
-                                <a href="https://itch.io/games/tag-short">
-                                  Short
-                                </a>
-                              </td>
-                            </tr> */}
-                            <tr>
-                              <td>Links</td>
-                              <td>
-                                {gameProject.appStoreLinks.map(
-                                  (appStoreLink) => (
-                                    <a
-                                      key={appStoreLink}
-                                      rel="nofollow noopener noreferrer"
-                                      target="_blank"
-                                      href={appStoreLink}
-                                    >
-                                      Links
-                                    </a>
-                                  )
-                                )}
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <div id="game_comments_react_widget_46928_Game-Comments_63837">
+                  <MoreInformation gameProject={gameProject} />
+                  {gameProject.community === Community.DISQUS && (
                     <div className={styles.game_comments_widget}>
                       <h2>Comments</h2>
-                      <div>...</div>
+                      <CommentsDisqus title={gameProject.title} />
                     </div>
-                  </div>
+                  )}
                 </div>
                 <div className={`${styles.right_col} ${styles.column}`}>
                   {/* <div className={styles.video_embed}>

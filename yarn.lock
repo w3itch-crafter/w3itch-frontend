@@ -5520,6 +5520,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"disqus-react@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "disqus-react@npm:1.1.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fdisqus-react%2F-%2Fdisqus-react-1.1.2.tgz"
+  peerDependencies:
+    react: ^15.6.1 || ^16.0.0 || ^17.0.0
+    react-dom: ^15.6.1 || ^16.0.0 || ^17.0.0
+  checksum: 2019ed20b86c7bb395c31cb25713a62babbaaf35c8307793adec01fe9bd969bc3603f89d13fae60900d399868ee3bd9add304447f0c43dd24c9148839ed8911b
+  languageName: node
+  linkType: hard
+
 "doctrine@npm:^2.1.0":
   version: 2.1.0
   resolution: "doctrine@npm:2.1.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fdoctrine%2F-%2Fdoctrine-2.1.0.tgz"
@@ -14151,6 +14161,7 @@ __metadata:
     class-transformer: ^0.5.1
     class-validator: ^0.13.2
     clsx: ^1.1.1
+    disqus-react: ^1.1.2
     eslint: ^8.12.0
     eslint-config-next: 12.1.1
     eslint-config-prettier: ^8.5.0
