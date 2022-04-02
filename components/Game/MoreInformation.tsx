@@ -59,9 +59,9 @@ const MoreInformation: FC<Props> = ({ gameProject }) => {
             <tr>
               <td>Genre</td>
               <td>
-                <a href="https://itch.io/games/tag-educational">
-                  {enumWord(gameProject.genre)}
-                </a>
+                <Link href="/">
+                  <a>{enumWord(gameProject.genre)}</a>
+                </Link>
               </td>
             </tr>
             {/* <tr>

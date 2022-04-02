@@ -79,15 +79,14 @@ const GameId: NextPage<GameProps> = ({ gameProject }) => {
                         key={screenshot}
                         href={screenshot}
                         target="_blank"
-                        data-image_lightbox="true"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                       >
                         <Image
-                          className="screenshot"
                           src={screenshot}
                           alt="screenshot"
-                          width={347}
-                          height={347}
+                          width={'100%'}
+                          height={'100%'}
+                          layout="responsive"
                         />
                       </a>
                     ))}
