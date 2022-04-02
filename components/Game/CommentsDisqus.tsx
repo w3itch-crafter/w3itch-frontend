@@ -11,9 +11,9 @@ const CommentsDisqus: FC<Props> = ({ title }) => {
 
   return (
     <DiscussionEmbed
-      shortname="example"
+      shortname="w3itch"
       config={{
-        url: 'https://w3itch-frontend.vercel.app' + router.pathname,
+        url: 'https://w3itch.io' + router.pathname,
         identifier: String(router.query.id),
         title: title,
         language: 'zh_TW', //e.g. for Traditional Chinese (Taiwan)
