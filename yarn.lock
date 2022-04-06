@@ -5304,6 +5304,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"date-fns@npm:^2.28.0":
+  version: 2.28.0
+  resolution: "date-fns@npm:2.28.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fdate-fns%2F-%2Fdate-fns-2.28.0.tgz"
+  checksum: a0516b2e4f99b8bffc6cc5193349f185f195398385bdcaf07f17c2c4a24473c99d933eb0018be4142a86a6d46cb0b06be6440ad874f15e795acbedd6fd727a1f
+  languageName: node
+  linkType: hard
+
 "debug@npm:2.6.9, debug@npm:^2.2.0, debug@npm:^2.3.3, debug@npm:^2.6.8, debug@npm:^2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fdebug%2F-%2Fdebug-2.6.9.tgz"
@@ -14825,6 +14832,7 @@ __metadata:
     class-transformer: ^0.5.1
     class-validator: ^0.13.2
     clsx: ^1.1.1
+    date-fns: ^2.28.0
     disqus-react: ^1.1.2
     eslint: ^8.12.0
     eslint-config-next: 12.1.1

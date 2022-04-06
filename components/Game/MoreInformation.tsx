@@ -1,5 +1,6 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import { format } from 'date-fns'
 import Link from 'next/link'
 import { FC } from 'react'
 import styles from 'styles/game/id.module.scss'
@@ -28,7 +29,10 @@ const MoreInformation: FC<Props> = ({ gameProject }) => {
                 <span className={styles.time}>
                   <AccessTimeIcon fontSize="small" />
                   &nbsp;
-                  {gameProject.createdAt}
+                  {format(
+                    new Date(gameProject.createdAt),
+                    'MMM d, yyyy HH:mm:ss'
+                  )}
                 </span>
               </td>
             </tr>
