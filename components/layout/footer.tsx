@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import Link from 'next/link'
 
-export default function Footer() {
+export function Footer() {
   const Container = styled.footer`
     margin: 20px 0 40px 0;
     padding: 0 20px;

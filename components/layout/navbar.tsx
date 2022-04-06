@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Fragment } from 'react'
 
-import UserPanel from './userPanel'
+import { UserPanel } from './userPanel'
 
 declare type NavLinks = { href: string; name: string }[]
 const navLinks: NavLinks = [
@@ -11,7 +11,7 @@ const navLinks: NavLinks = [
   { href: '/dashboard', name: 'Dashboard' },
 ]
 
-export default function Navbar() {
+export function Navbar() {
   const HeaderWidget = styled.nav`
     height: 50px;
     position: relative;

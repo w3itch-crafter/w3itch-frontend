@@ -2,9 +2,9 @@ import styled from '@emotion/styled'
 import { Fragment } from 'react'
 import { useWallet } from 'use-wallet'
 
-import { MetaMaskIcon, WalletConnectIcon } from './icons'
+import { MetaMaskIcon, WalletConnectIcon } from '../icons'
 
-export default function ConnectWallet() {
+export function ConnectWallet() {
   const wallet = useWallet()
   const handleConnectMetaMask = () => {
     wallet.connect('injected')

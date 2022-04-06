@@ -3,14 +3,14 @@ import Link from 'next/link'
 import { GameInfo } from 'types'
 import { enumWord } from 'utils/word'
 
-import { IcoMoonIcon } from './icons'
+import { IcoMoonIcon } from '../icons'
 
 export declare interface GameCellProps {
   game: GameInfo
   collectionLink?: string
 }
 
-export default function GameCell({ game, collectionLink }: GameCellProps) {
+export function GameCell({ game, collectionLink }: GameCellProps) {
   const Container = styled.div`
     display: inline-block;
     position: relative;
