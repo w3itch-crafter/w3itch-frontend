@@ -25,6 +25,7 @@ import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { createGame, storagesUploadToIPFS } from 'api/index'
 import { PrimaryLoadingButton } from 'components/CustomizedButtons'
 import FormAppStoreLinks from 'components/Game/FormAppStoreLinks'
+import FormCharset from 'components/Game/FormCharset'
 import FormTags from 'components/Game/FormTags'
 import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
@@ -33,6 +34,7 @@ import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import {
+  Charset,
   Community,
   GameEngine,
   Genre,
@@ -182,6 +184,7 @@ const GameNew: NextPage = () => {
       community: game.community,
       genre: Genre.NO_GENRE,
       tokenId: game.tokenId,
+      charset: game.charset === Charset.DEFAULT ? '' : game.charset,
     }
     console.log('file', uploadGameFile)
     console.log('gameData', gameData)
@@ -421,6 +424,10 @@ const GameNew: NextPage = () => {
                       You can add additional downloadable files for any of the
                       types above
                     </div>
+                  </div>
+
+                  <div className={styles.input_row}>
+                    <FormCharset register={register} />
                   </div>
 
                   <div className={styles.input_row}>

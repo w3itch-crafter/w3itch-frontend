@@ -10,7 +10,7 @@ import {
 } from 'class-validator'
 // @TODO Property 'message' does not exist on type 'FieldError[]'
 // import { NestedValue } from 'react-hook-form'
-import { Community, Genre, PaymentMode } from 'types/enum'
+import { Charset, Community, Genre, PaymentMode } from 'types/enum'
 
 export class Game {
   @Length(1, 50)
@@ -76,4 +76,7 @@ export class Game {
   @IsUrl({ require_protocol: true }, { each: true })
   @IsOptional()
   screenshots: string[]
+
+  @IsEnum(Charset)
+  charset: Charset
 }
