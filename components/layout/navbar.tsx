@@ -2,16 +2,19 @@ import styled from '@emotion/styled'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Fragment } from 'react'
+import { NavLinks } from 'types'
 
 import { UserPanel } from './userPanel'
 
-declare type NavLinks = { href: string; name: string }[]
-const navLinks: NavLinks = [
+const defaultLinks: NavLinks = [
   { href: '/games', name: 'Browse Games' },
   { href: '/dashboard', name: 'Dashboard' },
 ]
+export declare interface NavbarProps {
+  navLinks?: NavLinks
+}
 
-export function Navbar() {
+export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
   const HeaderWidget = styled.nav`
     height: 50px;
     position: relative;
@@ -53,6 +56,7 @@ export function Navbar() {
     display: flex;
     flex-wrap: wrap;
   `
+  const { NEXT_PUBLIC_URL } = process.env
   const router = useRouter()
   const isHref = (href: string) => router.route === href
 
@@ -60,7 +64,7 @@ export function Navbar() {
     <HeaderWidget>
       <PrimaryHeader>
         <HeaderTitle>
-          <Link href="/games" passHref>
+          <Link href={`${NEXT_PUBLIC_URL || ''}/games`} passHref>
             <HeaderLogo>W3itch.io</HeaderLogo>
           </Link>
         </HeaderTitle>

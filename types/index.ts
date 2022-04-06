@@ -13,7 +13,10 @@ import {
 export declare type PerPageLayout = {
   getLayout(page: React.ReactElement): React.ReactNode
 }
-export declare type NextPageWithLayout = NextPage & PerPageLayout
+export declare type NextPageWithLayout<
+  P = Record<string, unknown>,
+  IP = P
+> = NextPage<P, IP> & PerPageLayout
 
 export declare type RegisterData = {
   address: string
@@ -137,3 +140,6 @@ export declare type TagOption = {
   label: string
   value: string
 }
+
+export declare type NavLink = { href: string; name: string }
+export declare type NavLinks = NavLink[]
