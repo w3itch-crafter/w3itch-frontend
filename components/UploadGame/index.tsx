@@ -39,6 +39,7 @@ const UploadGame: FC<Props> = ({ setFile }) => {
     useDropzone({
       onDrop,
       multiple: false,
+      maxSize: 1024 * 1024 * 1024, // 1GB
       accept:
         'zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed',
     })
@@ -61,7 +62,7 @@ const UploadGame: FC<Props> = ({ setFile }) => {
       </WrapperDrap>
       {files.length ? (
         <aside>
-          <h4>Files</h4>
+          <h4>File</h4>
           <ul>{files}</ul>
         </aside>
       ) : null}
