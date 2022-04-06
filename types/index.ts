@@ -1,5 +1,6 @@
 import { NextPage } from 'next'
 import React from 'react'
+import { Api } from 'types/Api'
 
 import {
   Community,
@@ -114,7 +115,7 @@ export declare type GameEntity = BaseEntity & {
   /** Cover URL */
   cover: string
   /** Game tags */
-  tags: string[]
+  tags: Api.Tag[]
   /** Tokens to be held/paid to play this game */
   tokenId: number
   /** Links to other app stores */

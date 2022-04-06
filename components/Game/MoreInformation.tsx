@@ -64,17 +64,20 @@ const MoreInformation: FC<Props> = ({ gameProject }) => {
                 </Link>
               </td>
             </tr>
-            {/* <tr>
-            <td>Tags</td>
-            <td>
-
-              <a href="https://itch.io/games/tag-2d">2D</a>,{' '}
-              <a href="https://itch.io/games/tag-3d">3D</a>,{' '}
-              <a href="https://itch.io/games/tag-short">
-                Short
-              </a>
-            </td>
-          </tr> */}
+            <tr>
+              <td>Tags</td>
+              <td>
+                {!gameProject.tags.length && 'No Tags'}
+                {gameProject.tags.map((tag, idx) => (
+                  <>
+                    <a key={tag.name} href="#">
+                      {tag.label}
+                    </a>
+                    {idx < gameProject.tags.length - 1 && ', '}
+                  </>
+                ))}
+              </td>
+            </tr>
             <tr>
               <td>Links</td>
               <td>
