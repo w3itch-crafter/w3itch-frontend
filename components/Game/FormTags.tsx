@@ -7,6 +7,7 @@ import {
   TextField,
 } from '@mui/material'
 import { getTags } from 'api'
+import { trim } from 'lodash'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { Control, Controller, FieldError, FieldErrors } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
@@ -36,7 +37,7 @@ const FormTags: FC<Props> = ({ errors, control, changeTags }) => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTagsSelectChange = (event: any, newValue: string[] | null) => {
-    const formatTags = newValue?.map((i) => i.toLocaleLowerCase())
+    const formatTags = newValue?.map((i) => trim(i).toLocaleLowerCase())
     changeTags(formatTags || [])
   }
 

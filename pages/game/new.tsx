@@ -29,6 +29,7 @@ import FormTags from 'components/Game/FormTags'
 import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
+import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import {
@@ -141,6 +142,17 @@ const GameNew: NextPage = () => {
       description = editorRef.current?.getInstance().getMarkdown()
     }
 
+    if (!description) {
+      enqueueSnackbar('description cannot be empty', {
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'center',
+        },
+        variant: 'warning',
+      })
+      return
+    }
+
     MESSAGE_SUBMIT_KEY = enqueueSnackbar('uploading game...', {
       anchorOrigin: {
         vertical: 'top',
@@ -155,9 +167,9 @@ const GameNew: NextPage = () => {
     const allImages = await handleAllImages()
 
     const gameData = {
-      title: game.title,
+      title: trim(game.title),
       paymentMode: game.paymentMode,
-      subtitle: game.subtitle,
+      subtitle: trim(game.subtitle),
       gameName: game.gameName,
       classification: ProjectClassification.GAMES,
       kind: GameEngine.RM2K3E,
