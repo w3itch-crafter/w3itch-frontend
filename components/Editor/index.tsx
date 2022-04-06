@@ -12,7 +12,7 @@ import {
 
 interface Props {
   setRef: Dispatch<SetStateAction<MutableRefObject<ToastUiEditor> | undefined>>
-  height: string
+  height?: string
 }
 
 const Editor: FC<Props> = ({ setRef, height = '400px' }) => {
