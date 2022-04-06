@@ -1,15 +1,19 @@
 import styled from '@emotion/styled'
 import Pagination from '@mui/material/Pagination'
 import { getGames } from 'api'
-import FilterGroup, { FilterGroupItem } from 'components/filterGroup'
-import GameCell from 'components/gameCell'
-import RelatedTags, { TagOption } from 'components/relatedTags'
-import SearchDescription from 'components/searchDescription'
-import SortOptions, { SortOptionItem } from 'components/sortOptions'
+import {
+  FilterGroup,
+  FilterGroupItem,
+  GameCell,
+  RelatedTags,
+  SearchDescription,
+  SortOptionItem,
+  SortOptions,
+} from 'components/pages'
 import { genres } from 'data'
 import { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { GameEntity, GameInfo, PaginationMeta } from 'types'
+import { GameEntity, GameInfo, PaginationMeta, TagOption } from 'types'
 declare interface GamesProps {
   genres: { label: string; value: string }[]
   tags: TagOption[]

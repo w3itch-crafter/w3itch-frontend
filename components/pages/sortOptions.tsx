@@ -15,7 +15,7 @@ const SortOptionsContext = React.createContext<
   Pick<SortOptionsProps, 'sortKey'>
 >({ sortKey: '' })
 
-export default function SortOptions({
+export function SortOptions({
   sortKey,
   className,
   children,

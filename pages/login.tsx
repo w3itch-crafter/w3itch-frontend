@@ -1,8 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from '@emotion/styled'
-import ConnectWallet from 'components/connectWallet'
-import PageCard from 'components/pageCard'
-import StatHeader from 'components/statHeader'
+import { ConnectWallet, PageCard, StatHeader } from 'components/pages'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'

@@ -1,11 +1,12 @@
 import styled from '@emotion/styled'
+import { Fragment } from 'react'
 
 export declare interface StatHeaderProps {
   children?: React.ReactNode
-  title?: string
+  title?: string | React.ReactNode
 }
 
-export default function StatHeader({ children, title }: StatHeaderProps) {
+export function StatHeader({ children, title }: StatHeaderProps) {
   const Container = styled.div`
     border-bottom: 1px solid;
     border-color: #dadada;
@@ -17,6 +18,8 @@ export default function StatHeader({ children, title }: StatHeaderProps) {
     padding: 0 var(--itchio-gutter_width, 40px);
   `
   const TextContainer = styled.div`
+    display: flex;
+    align-items: center;
     flex: 1;
     min-width: 0;
   `
@@ -35,7 +38,11 @@ export default function StatHeader({ children, title }: StatHeaderProps) {
     <Container>
       {title && (
         <TextContainer>
-          <Text>{title}</Text>
+          {typeof title === 'string' ? (
+            <Text>{title}</Text>
+          ) : (
+            <Fragment>{title}</Fragment>
+          )}
         </TextContainer>
       )}
       <StatsContainer>{children}</StatsContainer>

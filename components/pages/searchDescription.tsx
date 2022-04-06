@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import Link from 'next/link'
 
-export default function SearchDescription() {
+export function SearchDescription() {
   const Container = styled.p`
     margin: 15px 20px 10px 20px;
     color: #858585;

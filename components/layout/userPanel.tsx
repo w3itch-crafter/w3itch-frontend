@@ -3,7 +3,7 @@ import useRefresh from 'hooks/useAccount'
 import Link from 'next/link'
 import { Fragment, useState } from 'react'
 
-export default function UserPanel() {
+export function UserPanel() {
   const UserPanelWidget = styled.div`
     font-size: 16px;
     position: relative;

@@ -4,7 +4,7 @@ export declare interface InputCheckboxProps {
   label: string
   className?: string
 }
-export default function InputCheckbox({
+export function InputCheckbox({
   label,
   className,
   ...inputProps

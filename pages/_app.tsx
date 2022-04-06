@@ -1,7 +1,7 @@
 import '../styles/globals.css'
 
 import CssBaseline from '@material-ui/core/CssBaseline'
-import Layout from 'components/layout'
+import { Layout } from 'components/layout'
 import type { AppProps } from 'next/app'
 import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'

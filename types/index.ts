@@ -13,7 +13,10 @@ import {
 export declare type PerPageLayout = {
   getLayout(page: React.ReactElement): React.ReactNode
 }
-export declare type NextPageWithLayout = NextPage & PerPageLayout
+export declare type NextPageWithLayout<
+  P = Record<string, unknown>,
+  IP = P
+> = NextPage<P, IP> & PerPageLayout
 
 export declare type RegisterData = {
   address: string
@@ -80,8 +83,8 @@ export function isBackendError(obj: unknown): obj is BackendErrorResponse {
 declare type BaseEntity = {
   /** Primary key */
   readonly id: number
-  readonly createdAt: Date
-  readonly updatedAt: Date
+  readonly createdAt: Date | string
+  readonly updatedAt: Date | string
 }
 export declare type UserEntity = BaseEntity & {
   username: string
@@ -132,3 +135,11 @@ export declare type GameInfo = GameEntity & {
   platform?: Array<'windows' | 'macos' | 'linux' | 'android' | 'ios' | 'web'>
   user?: UserEntity
 }
+
+export declare type TagOption = {
+  label: string
+  value: string
+}
+
+export declare type NavLink = { href: string; name: string }
+export declare type NavLinks = NavLink[]
