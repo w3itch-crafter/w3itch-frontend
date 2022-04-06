@@ -45,7 +45,7 @@ const FormTags: FC<Props> = ({ errors, control, changeTags }) => {
     <Controller
       control={control}
       name="tags"
-      render={({ field }) => (
+      render={() => (
         <FormControl fullWidth error={Boolean(errors.tags)}>
           <FormLabel id="form-tags">
             Tags
@@ -82,7 +82,6 @@ const FormTags: FC<Props> = ({ errors, control, changeTags }) => {
             }}
             renderInput={(params) => (
               <TextField
-                {...field}
                 {...params}
                 placeholder="Click to view options, type to filter or enter custom tag"
               />
