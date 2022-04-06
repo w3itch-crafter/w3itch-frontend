@@ -1,13 +1,11 @@
 import {
-  Box,
+  Autocomplete,
   Chip,
   FormControl,
   FormHelperText,
   FormLabel,
-  MenuItem,
-  OutlinedInput,
+  TextField,
 } from '@mui/material'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { getTags } from 'api'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { Control, Controller, FieldError, FieldErrors } from 'react-hook-form'
@@ -22,19 +20,7 @@ interface Props {
   changeTags: (value: string[]) => void
 }
 
-const ITEM_HEIGHT = 48
-const ITEM_PADDING_TOP = 8
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-}
-
 const FormTags: FC<Props> = ({ errors, control, changeTags }) => {
-  const [formTags, setFormTags] = useState<string[]>([])
   const [tags, setTags] = useState<Api.Tag[]>([])
 
   const fetchTags = useCallback(async () => {
@@ -48,20 +34,10 @@ const FormTags: FC<Props> = ({ errors, control, changeTags }) => {
     fetchTags()
   }, [fetchTags])
 
-  const handleTagsSelectChange = (
-    event: SelectChangeEvent<typeof formTags>
-  ) => {
-    const {
-      target: { value },
-    } = event
-
-    // console.log('value', value)
-
-    // On autofill we get a stringified value.
-    const tags = typeof value === 'string' ? value.split(',') : value
-
-    setFormTags(tags)
-    changeTags(tags)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleTagsSelectChange = (event: any, newValue: string[] | null) => {
+    const formatTags = newValue?.map((i) => i.toLocaleLowerCase())
+    changeTags(formatTags || [])
   }
 
   return (
@@ -86,34 +62,31 @@ const FormTags: FC<Props> = ({ errors, control, changeTags }) => {
           <p className={styles.tags_description_sub}>
             Avoid duplicating any platforms provided on files above.
           </p>
-          <Select
-            {...field}
-            id="form-tags"
+          <Autocomplete
             multiple
-            value={formTags}
+            id="form-tags"
+            options={tags.map((option) => option.name)}
+            freeSolo
             onChange={handleTagsSelectChange}
-            input={<OutlinedInput />}
-            renderValue={(selected: string[]) => (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: 0.5,
-                }}
-              >
-                {selected.map((value) => (
-                  <Chip key={value} label={value} />
-                ))}
-              </Box>
+            renderTags={(value: readonly string[], getTagProps) => {
+              console.log('value', value)
+              return value.map((tag: string, index: number) => (
+                // eslint-disable-next-line react/jsx-key
+                <Chip
+                  variant="outlined"
+                  label={tag}
+                  {...getTagProps({ index })}
+                />
+              ))
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...field}
+                {...params}
+                placeholder="Click to view options, type to filter or enter custom tag"
+              />
             )}
-            MenuProps={MenuProps}
-          >
-            {tags.map((tag) => (
-              <MenuItem key={tag.name} value={tag.name}>
-                {tag.label}({tag.name}) - {tag.description}
-              </MenuItem>
-            ))}
-          </Select>
+          />
           <FormHelperText>
             {(errors?.tags as unknown as FieldError)?.message}
           </FormHelperText>
