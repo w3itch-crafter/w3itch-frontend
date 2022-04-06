@@ -44,14 +44,14 @@ const MoreInformation: FC<Props> = ({ gameProject }) => {
                 </Link>
               </td>
             </tr>
-            <tr>
+            {/* <tr>
               <td>Platforms</td>
               <td>
                 <Link href="/">
                   <a>{enumWord(gameProject.kind)}</a>
                 </Link>
               </td>
-            </tr>
+            </tr> */}
             <tr>
               <td>Author</td>
               <td>
