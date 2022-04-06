@@ -16,4 +16,13 @@ declare namespace Api {
     sortBy?: GamesListSortBy
     order?: 'ASC' | 'DESC'
   }
+
+  type Tag = {
+    id: number
+    createdAt: Date
+    updatedAt: Date
+    name: string
+    label: string
+    description: string
+  }
 }

@@ -8,10 +8,11 @@ import {
   OutlinedInput,
 } from '@mui/material'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import { tags } from 'data'
-import { FC, useState } from 'react'
+import { getTags } from 'api'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { Control, Controller, FieldError, FieldErrors } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
+import { Api } from 'types/Api'
 import { Game } from 'utils/validator'
 
 interface Props {
@@ -34,6 +35,18 @@ const MenuProps = {
 
 const FormTags: FC<Props> = ({ errors, control, changeTags }) => {
   const [formTags, setFormTags] = useState<string[]>([])
+  const [tags, setTags] = useState<Api.Tag[]>([])
+
+  const fetchTags = useCallback(async () => {
+    const resultTags = await getTags()
+    if (resultTags.status === 200) {
+      setTags(resultTags.data)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchTags()
+  }, [fetchTags])
 
   const handleTagsSelectChange = (
     event: SelectChangeEvent<typeof formTags>
@@ -95,9 +108,9 @@ const FormTags: FC<Props> = ({ errors, control, changeTags }) => {
             )}
             MenuProps={MenuProps}
           >
-            {tags.map((name) => (
-              <MenuItem key={name} value={name}>
-                {name}
+            {tags.map((tag) => (
+              <MenuItem key={tag.name} value={tag.name}>
+                {tag.label}({tag.name}) - {tag.description}
               </MenuItem>
             ))}
           </Select>
