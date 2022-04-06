@@ -1,5 +1,6 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import { format } from 'date-fns'
 import Link from 'next/link'
 import { FC } from 'react'
 import styles from 'styles/game/id.module.scss'
@@ -28,7 +29,10 @@ const MoreInformation: FC<Props> = ({ gameProject }) => {
                 <span className={styles.time}>
                   <AccessTimeIcon fontSize="small" />
                   &nbsp;
-                  {gameProject.createdAt}
+                  {format(
+                    new Date(gameProject.createdAt),
+                    'MMM d, yyyy HH:mm:ss'
+                  )}
                 </span>
               </td>
             </tr>
@@ -40,14 +44,14 @@ const MoreInformation: FC<Props> = ({ gameProject }) => {
                 </Link>
               </td>
             </tr>
-            <tr>
+            {/* <tr>
               <td>Platforms</td>
               <td>
                 <Link href="/">
                   <a>{enumWord(gameProject.kind)}</a>
                 </Link>
               </td>
-            </tr>
+            </tr> */}
             <tr>
               <td>Author</td>
               <td>
@@ -64,17 +68,20 @@ const MoreInformation: FC<Props> = ({ gameProject }) => {
                 </Link>
               </td>
             </tr>
-            {/* <tr>
-            <td>Tags</td>
-            <td>
-
-              <a href="https://itch.io/games/tag-2d">2D</a>,{' '}
-              <a href="https://itch.io/games/tag-3d">3D</a>,{' '}
-              <a href="https://itch.io/games/tag-short">
-                Short
-              </a>
-            </td>
-          </tr> */}
+            <tr>
+              <td>Tags</td>
+              <td>
+                {!gameProject.tags.length && 'No Tags'}
+                {gameProject.tags.map((tag, idx) => (
+                  <>
+                    <a key={tag.name} href="#">
+                      {tag.label}
+                    </a>
+                    {idx < gameProject.tags.length - 1 && ', '}
+                  </>
+                ))}
+              </td>
+            </tr>
             <tr>
               <td>Links</td>
               <td>

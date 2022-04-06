@@ -108,6 +108,7 @@
       color: var(--itchio_link_color, #da2c49);
     }
   }
+
   .upload_editor {
     .upload_limit {
       color: #606060;
@@ -267,4 +268,8 @@
   p.sub.instructions {
     margin: 10px 0 0 0;
   }
+}
+
+.price_picker {
+  margin-bottom: 20px;
 }

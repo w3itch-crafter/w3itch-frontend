@@ -4,12 +4,11 @@ import {
   FormHelperText,
   FormLabel,
   MenuItem,
-  OutlinedInput,
   Radio,
   RadioGroup,
   TextField,
 } from '@mui/material'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
+import Select from '@mui/material/Select'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
@@ -18,15 +17,7 @@ import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
 const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import Box from '@mui/material/Box'
-import Chip from '@mui/material/Chip'
-import {
-  classifications,
-  genres,
-  kindOfProjects,
-  releaseStatus,
-  tags,
-} from 'data'
+import { classifications, genres, kindOfProjects, releaseStatus } from 'data'
 import { Controller, FieldError, SubmitHandler, useForm } from 'react-hook-form'
 import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
@@ -34,12 +25,16 @@ import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { createGame, storagesUploadToIPFS } from 'api/index'
 import { PrimaryLoadingButton } from 'components/CustomizedButtons'
 import FormAppStoreLinks from 'components/Game/FormAppStoreLinks'
+import FormCharset from 'components/Game/FormCharset'
+import FormTags from 'components/Game/FormTags'
 import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
+import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import {
+  Charset,
   Community,
   GameEngine,
   Genre,
@@ -49,16 +44,6 @@ import {
 } from 'types/enum'
 import { fileUrl, parseUrl } from 'utils'
 
-const ITEM_HEIGHT = 48
-const ITEM_PADDING_TOP = 8
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let MESSAGE_SUBMIT_KEY: any
 
@@ -84,7 +69,6 @@ const GameNew: NextPage = () => {
   const router = useRouter()
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
-  const [formTags, setFormTags] = useState<string[]>([])
   const [editorRef, setEditorRef] = useState<MutableRefObject<ToastUiEditor>>()
   const [uploadGameFile, setUploadGameFile] = useState<File>()
   const [coverFileFile, setCoverFileFile] = useState<File>()
@@ -104,6 +88,8 @@ const GameNew: NextPage = () => {
       paymentMode: PaymentMode.DISABLE_PAYMENTS,
       community: Community.DISABLED,
       genre: Genre.NO_GENRE,
+      tokenId: 0,
+      tags: [],
     },
   })
 
@@ -142,22 +128,7 @@ const GameNew: NextPage = () => {
 
   // handle create game
   const handleCreateGame = async (game: Game) => {
-    let gameName
-    if (uploadGameFile) {
-      const name = uploadGameFile.name.split('.')[0]
-      if (name) {
-        gameName = name
-      } else {
-        enqueueSnackbar('Failed to get the game name, please modify', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
-      }
-    } else {
+    if (!uploadGameFile) {
       enqueueSnackbar('Please upload game files', {
         anchorOrigin: {
           vertical: 'top',
@@ -171,6 +142,17 @@ const GameNew: NextPage = () => {
     let description = ''
     if (editorRef) {
       description = editorRef.current?.getInstance().getMarkdown()
+    }
+
+    if (!description) {
+      enqueueSnackbar('description cannot be empty', {
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'center',
+        },
+        variant: 'warning',
+      })
+      return
     }
 
     MESSAGE_SUBMIT_KEY = enqueueSnackbar('uploading game...', {
@@ -187,21 +169,22 @@ const GameNew: NextPage = () => {
     const allImages = await handleAllImages()
 
     const gameData = {
-      title: game.title,
+      title: trim(game.title),
       paymentMode: game.paymentMode,
-      subtitle: game.subtitle,
-      gameName: gameName,
+      subtitle: trim(game.subtitle),
+      gameName: game.gameName,
       classification: ProjectClassification.GAMES,
       kind: GameEngine.RM2K3E,
       releaseStatus: ReleaseStatus.RELEASED,
       screenshots: allImages.screenshots,
       cover: allImages.cover,
-      tags: formTags,
+      tags: game.tags,
       appStoreLinks: game.appStoreLinks,
       description: description,
       community: game.community,
       genre: Genre.NO_GENRE,
-      tokenId: 0,
+      tokenId: game.tokenId,
+      charset: game.charset === Charset.DEFAULT ? '' : game.charset,
     }
     console.log('file', uploadGameFile)
     console.log('gameData', gameData)
@@ -267,18 +250,6 @@ const GameNew: NextPage = () => {
 
   console.log('formErrors', formErrors)
 
-  const handleTagsSelectChange = (
-    event: SelectChangeEvent<typeof formTags>
-  ) => {
-    const {
-      target: { value },
-    } = event
-    setFormTags(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
-    )
-  }
-
   // handle cover
   const handleCoverValue = (file: File) => {
     setCoverFileFile(file)
@@ -295,6 +266,19 @@ const GameNew: NextPage = () => {
         : []
 
       setValue('screenshots', screenshotsUrls)
+    },
+    [setValue]
+  )
+
+  // handle gameFile
+  const handleGameFile = useCallback(
+    (file: File | undefined) => {
+      setUploadGameFile(file)
+
+      const name = file?.name.substring(0, file?.name.lastIndexOf('.'))
+      if (name) {
+        setValue('gameName', name)
+      }
     },
     [setValue]
   )
@@ -342,11 +326,7 @@ const GameNew: NextPage = () => {
                     <strong>Make sure everyone can find your page</strong>
                     <br />
                     Review our{' '}
-                    <a
-                      rel="noopener noreferrer"
-                      href="https://itch.io/docs/creators/quality-guidelines"
-                      target="_blank"
-                    >
+                    <a rel="noopener noreferrer" href="#" target="_blank">
                       quality guidelines
                     </a>{' '}
                     before posting your project
@@ -447,6 +427,10 @@ const GameNew: NextPage = () => {
                   </div>
 
                   <div className={styles.input_row}>
+                    <FormCharset register={register} />
+                  </div>
+
+                  <div className={styles.input_row}>
                     <FormControl fullWidth>
                       <FormLabel id="form-releaseStatus">
                         Release status
@@ -471,7 +455,7 @@ const GameNew: NextPage = () => {
                     </FormControl>
                   </div>
 
-                  <div className="price_picker">
+                  <div className={styles.price_picker}>
                     <div className="payment_modes">
                       <Controller
                         control={control}
@@ -540,58 +524,25 @@ const GameNew: NextPage = () => {
                   </div>
 
                   <div className={styles.upload_editor}>
-                    <h2>Uploads</h2>
-                    <div>
-                      {/* <section
+                    <FormControl fullWidth error={Boolean(formErrors.gameName)}>
+                      <FormLabel id="form-genre">Uploads</FormLabel>
+                      <section
                         data-label="Tip"
                         className={`${styles.hint} ${styles.butler_tip}`}
                       >
-                        <div className="align">
-                          Use <strong>butler</strong> to upload game files: it
-                          only uploads {"what's"} changed, generates patches for
-                          the <a href="/app">itch.io app</a>, and you can
-                          automate it. <a href="/docs/butler">Get started!</a>
-                        </div>
-                      </section> */}
-                      <div
-                        className={`add_file_btn_outer ${styles.upload_buttons}`}
-                      >
-                        {/* <div
-                          data-max_size="1073741824"
-                          className={`${stylesCommon.button} add_file_btn has_multi_upload`}
-                        >
-                          Upload file<span className="on_multi_upload">s</span>
-                        </div> */}
-                        <UploadGame setFile={setUploadGameFile} />
-                        {/* <span className="button_divider">or</span>
-                        <span className="dropbox_drop">
-                          <a
-                            href="#"
-                            className=" dropbox-dropin-btn dropbox-dropin-default"
-                          >
-                            <span className="dropin-btn-status"></span>Choose
-                            from Dropbox
-                          </a>
-                        </span> */}
-                        {/* <div className={styles.external_file_buttons}>
-                          <a className={styles.external_file_btn} href="#">
-                            Add External file
-                          </a>
-                          <Tooltip title="You provide a link to the file and we'll keep track of how many times it's been downloaded">
-                            <IconButton>
-                              <HelpIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </div> */}
-                      </div>
-                    </div>
-                    {/* <p className={styles.upload_limit}>
-                      File size limit: 1 GB.{' '}
-                      <a target="_blank" href="/support">
-                        Contact us
-                      </a>{' '}
-                      if you need more space
-                    </p> */}
+                        {
+                          "File size limit: 1 GB. Game name doesn't allow starts or ends with _ or -."
+                        }
+                      </section>
+                      <UploadGame
+                        setFile={(file) =>
+                          handleGameFile(file as File | undefined)
+                        }
+                      />
+                      <FormHelperText>
+                        {formErrors?.gameName?.message}
+                      </FormHelperText>
+                    </FormControl>
                   </div>
 
                   <div
@@ -600,7 +551,7 @@ const GameNew: NextPage = () => {
                     <h2>Details</h2>
                   </div>
                   <div className={`${styles.input_row}`}>
-                    <div className={styles.label}>
+                    <div className={styles.label} style={{ marginBottom: 10 }}>
                       Description
                       <span className={styles.sub}>
                         {' '}
@@ -645,56 +596,13 @@ const GameNew: NextPage = () => {
                         />
                       </div>
                       <div className={`${styles.input_row} tags_input_row`}>
-                        <FormControl fullWidth>
-                          <FormLabel id="form-tags">
-                            Tags
-                            <span className={styles.tags_sub}>
-                              —{' '}
-                              <a
-                                href="/docs/creators/quality-guidelines#tags"
-                                target="blank"
-                              >
-                                Tips for choosing tags
-                              </a>
-                            </span>
-                          </FormLabel>
-                          <p className={styles.tags_description_sub}>
-                            Any other keywords someone might search to find your
-                            game. Max of 10.
-                          </p>
-                          <p className={styles.tags_description_sub}>
-                            Avoid duplicating any platforms provided on files
-                            above.
-                          </p>
-                          <Select
-                            id="form-tags"
-                            multiple
-                            value={formTags}
-                            onChange={handleTagsSelectChange}
-                            disabled
-                            input={<OutlinedInput />}
-                            renderValue={(selected: string[]) => (
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  flexWrap: 'wrap',
-                                  gap: 0.5,
-                                }}
-                              >
-                                {selected.map((value) => (
-                                  <Chip key={value} label={value} />
-                                ))}
-                              </Box>
-                            )}
-                            MenuProps={MenuProps}
-                          >
-                            {tags.map((name) => (
-                              <MenuItem key={name} value={name}>
-                                {name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
+                        <FormTags
+                          control={control}
+                          errors={formErrors}
+                          changeTags={(tags) => {
+                            setValue('tags', tags)
+                          }}
+                        />
                       </div>
                     </div>
                   </div>

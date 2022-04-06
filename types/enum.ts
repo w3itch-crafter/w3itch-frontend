@@ -51,3 +51,8 @@ export enum Community {
   DISQUS = 'DISQUS',
   DISABLED = 'DISABLED',
 }
+
+export enum Charset {
+  DEFAULT = 'DEFAULT',
+  SHIFT_JIS = 'SHIFT_JIS',
+}
