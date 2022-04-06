@@ -600,7 +600,7 @@ const GameNew: NextPage = () => {
                     <h2>Details</h2>
                   </div>
                   <div className={`${styles.input_row}`}>
-                    <div className={styles.label}>
+                    <div className={styles.label} style={{ marginBottom: 10 }}>
                       Description
                       <span className={styles.sub}>
                         {' '}

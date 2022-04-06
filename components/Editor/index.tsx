@@ -12,9 +12,10 @@ import {
 
 interface Props {
   setRef: Dispatch<SetStateAction<MutableRefObject<ToastUiEditor> | undefined>>
+  height: string
 }
 
-const Editor: FC<Props> = ({ setRef }) => {
+const Editor: FC<Props> = ({ setRef, height = '400px' }) => {
   const editorRef = useRef<ToastUiEditor>() as MutableRefObject<ToastUiEditor>
 
   useEffect(() => {
@@ -26,10 +27,11 @@ const Editor: FC<Props> = ({ setRef }) => {
       initialValue=""
       placeholder="content"
       previewStyle="vertical"
-      height="400px"
+      height={height}
       initialEditType="wysiwyg"
       useCommandShortcut={true}
       ref={editorRef}
+      autofocus={false}
     />
   )
 }
