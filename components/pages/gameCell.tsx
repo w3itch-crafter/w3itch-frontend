@@ -3,35 +3,47 @@ import Link from 'next/link'
 import { GameInfo } from 'types'
 import { enumWord } from 'utils/word'
 
-import { IcoMoonIcon } from './icons'
+import { IcoMoonIcon } from '../icons'
 
 export declare interface GameCellProps {
   game: GameInfo
+  width?: number
+  height?: number
+  small?: boolean
   collectionLink?: string
 }
 
-export default function GameCell({ game, collectionLink }: GameCellProps) {
-  const Container = styled.div`
+export function GameCell({
+  game,
+  width = 316,
+  height = 250,
+  small = false,
+  collectionLink,
+}: GameCellProps) {
+  const Container = styled.div<Pick<Required<GameCellProps>, 'width'>>`
     display: inline-block;
     position: relative;
     vertical-align: top;
     text-align: left;
     margin: 0 20px 40px 0;
+    width: ${(p) => `${p.width}px`};
     &:hover .game-cell-tools {
       opacity: 1;
     }
   `
-  const GameLink = styled.a`
+  const GameThumbLink = styled.a`
     text-decoration: none;
   `
-  const GameThumb = styled.div<{ cover: string }>`
+  const GameThumb = styled.div<
+    Pick<Required<GameCellProps>, 'width' | 'height'> & { cover: string }
+  >`
     background-image: ${(p) => `url(${p.cover})`};
     background-position: 50% 50%;
     background-size: cover;
     display: block;
     position: relative;
-    width: 316px;
-    height: 250px;
+    width: ${(p) => `${p.width}px`};
+    height: ${(p) => `${p.height}px`};
     box-shadow: 0 0 2px rgb(0 0 0 / 15%);
   `
   const GameCellTools = styled.div`
@@ -80,45 +92,55 @@ export default function GameCell({ game, collectionLink }: GameCellProps) {
     text-decoration: none;
     margin-right: 6px;
     word-wrap: break-word;
+    &:hover {
+      text-decoration: underline;
+    }
   `
-  const GameText = styled.div`
+  const GameText = styled.div<Pick<Required<GameCellProps>, 'small'>>`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     color: #606060;
     font-size: 14px;
+    display: ${(p) => (p.small ? 'none' : 'block')};
   `
-  const GameAuthor = styled.div`
+  const GameAuthor = styled.div<Pick<Required<GameCellProps>, 'small'>>`
     display: flex;
     align-items: center;
     font-size: 14px;
     color: #606060;
+    display: ${(p) => (p.small ? 'none' : 'block')};
   `
-  const GameAuthorLink = styled.div`
+  const GameAuthorLink = styled.a`
     min-width: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     color: inherit;
     text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
   `
-  const GameGenre = styled.div`
+  const GameGenre = styled.div<Pick<Required<GameCellProps>, 'small'>>`
     font-size: 14px;
     color: #858585;
+    display: ${(p) => (p.small ? 'none' : 'block')};
   `
-  const GamePlatform = styled.div`
+  const GamePlatform = styled.div<Pick<Required<GameCellProps>, 'small'>>`
     font-size: 14px;
     color: #858585;
+    display: ${(p) => (p.small ? 'none' : 'block')};
   `
   const { title, subtitle, cover, link, genre, platform, user } = game
   const profileUrl = `https://${user?.username}.w3itch.io`
 
   return (
-    <Container className="game-cell">
+    <Container className="game-cell" width={width}>
       <Link href={link} passHref>
-        <GameLink>
-          <GameThumb cover={cover} />
-        </GameLink>
+        <GameThumbLink>
+          <GameThumb cover={cover} width={width} height={height} />
+        </GameThumbLink>
       </Link>
       {collectionLink && (
         <GameCellTools className="game-cell-tools">
@@ -136,16 +158,16 @@ export default function GameCell({ game, collectionLink }: GameCellProps) {
             <GameTitleLink>{title}</GameTitleLink>
           </Link>
         </GameTitle>
-        {subtitle && <GameText>{subtitle}</GameText>}
+        {subtitle && <GameText small={small}>{subtitle}</GameText>}
         {user && (
-          <GameAuthor>
+          <GameAuthor small={small}>
             <Link href={profileUrl} passHref>
               <GameAuthorLink>{user.username}</GameAuthorLink>
             </Link>
           </GameAuthor>
         )}
-        {genre && <GameGenre>{enumWord(genre)}</GameGenre>}
-        {platform && <GamePlatform></GamePlatform>}
+        {genre && <GameGenre small={small}>{enumWord(genre)}</GameGenre>}
+        {platform && <GamePlatform small={small}></GamePlatform>}
       </GameCellData>
     </Container>
   )

@@ -1,18 +1,14 @@
 import styled from '@emotion/styled'
 import Link from 'next/link'
 import Select, { GroupBase, StylesConfig } from 'react-select'
-
-export declare type TagOption = {
-  label: string
-  value: string
-}
+import { TagOption } from 'types'
 
 export declare interface RelatedTagsProps {
   tags: TagOption[]
   placeholder?: string
 }
 
-export default function RelatedTags({ tags, placeholder }: RelatedTagsProps) {
+export function RelatedTags({ tags, placeholder }: RelatedTagsProps) {
   const Container = styled.div`
     display: flex;
     flex-wrap: wrap;

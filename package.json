@@ -10,7 +10,7 @@
     "lint": "yarn lint:eslint && yarn lint:next",
     "lint:eslint": "eslint '**/*.{ts,tsx}' --fix",
     "lint:next": "next lint --fix",
-    "prepare": "husky install"
+    "postinstall": "husky install"
   },
   "dependencies": {
     "@emotion/react": "^11.8.2",
@@ -23,6 +23,7 @@
     "@mui/styled-engine-sc": "^5.5.2",
     "@toast-ui/react-editor": "^3.1.3",
     "add": "^2.0.6",
+    "axios": "^0.26.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "clsx": "^1.1.1",
@@ -38,10 +39,10 @@
     "react-infinite-scroller": "^1.2.5",
     "react-markdown": "^8.0.2",
     "react-select": "^5.2.2",
+    "react-swipeable": "^6.2.1",
     "swr": "^1.2.2",
     "use-wallet": "0.13.1",
-    "uuid": "^8.3.2",
-    "yarn": "^1.22.18"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.2.3",
@@ -68,5 +69,6 @@
     "prettier": "^2.6.1",
     "sass": "^1.49.9",
     "typescript": "4.6.3"
-  }
+  },
+  "packageManager": "yarn@3.2.0"
 }

@@ -6,9 +6,10 @@ import { logout } from '../api/account'
 
 const Logout: NextPage = () => {
   const router = useRouter()
-  const startLogout = useCallback(async () => {
-    await logout()
-    await router.push('/games')
+  const startLogout = useCallback(() => {
+    logout().then(async () => {
+      await router.push('/games')
+    })
   }, [router])
 
   useEffect(() => {

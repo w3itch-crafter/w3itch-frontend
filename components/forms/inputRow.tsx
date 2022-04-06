@@ -16,7 +16,7 @@ export declare interface InputRowProps {
   children?: React.ReactNode
 }
 
-export default function InputRow({
+export function InputRow({
   label,
   subLabel,
   children,

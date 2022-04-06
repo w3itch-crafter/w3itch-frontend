@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import { useState } from 'react'
 
-import { IcoMoonIcon } from './icons'
+import { IcoMoonIcon } from '../icons'
 
 export declare interface FilterGroupProps {
   label: string
@@ -11,7 +11,7 @@ export declare interface FilterGroupProps {
   children: React.ReactNode
 }
 
-export default function FilterGroup({
+export function FilterGroup({
   label,
   children,
   open = false,
