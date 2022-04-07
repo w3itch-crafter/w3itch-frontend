@@ -4,6 +4,7 @@ import { getGames, getTags } from 'api'
 import {
   FilterGroup,
   FilterGroupItem,
+  FilterGroupItemProps,
   GameCell,
   RelatedTags,
   SearchDescription,
@@ -16,14 +17,15 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Fragment } from 'react'
 import { GameEntity, GameInfo, PaginationMeta, TagOption } from 'types'
+import { buildQuerySting } from 'utils'
+
 declare interface GamesProps {
-  genres: { label: string; value: string }[]
   tags: TagOption[]
   games: GameInfo[]
   pageMeta: PaginationMeta<GameEntity>
 }
 
-const Games: NextPage<GamesProps> = ({ genres, tags, games, pageMeta }) => {
+const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   const Container = styled.div`
     margin: 0 auto;
     width: 100%;
@@ -34,24 +36,6 @@ const Games: NextPage<GamesProps> = ({ genres, tags, games, pageMeta }) => {
     box-sizing: border-box;
     width: 260px;
     flex-shrink: 0;
-  `
-  const FilterHeader = styled.div`
-    padding: 20px 20px 0 20px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    & > h2 {
-      font-size: 15px;
-      text-transform: uppercase;
-      margin: 0;
-      font-weight: 900;
-      color: #434343;
-    }
-  `
-  const FilterPickers = styled.div`
-    & > * {
-      margin: 10px;
-    }
   `
   const GridColumn = styled.div`
     margin: 0;
@@ -112,45 +96,7 @@ const Games: NextPage<GamesProps> = ({ genres, tags, games, pageMeta }) => {
       </Head>
       <Container>
         <FilterColumn>
-          <FilterHeader>
-            <h2>Filter Results</h2>
-          </FilterHeader>
-          <FilterPickers>
-            <FilterGroup label="Platform" open>
-              <FilterGroupItem
-                icon="windows8"
-                name="Windows"
-                href="?platform=windows"
-              />
-              <FilterGroupItem icon="apple" name="macOS" href="#" />
-              <FilterGroupItem icon="tux" name="Linux" href="#" />
-              <FilterGroupItem icon="android" name="Android" href="#" />
-              <FilterGroupItem icon="apple" name="iOS" href="#" />
-              <FilterGroupItem icon="globe" name="Web" href="#" />
-            </FilterGroup>
-            <FilterGroup label="Price" open>
-              <FilterGroupItem icon="star" name="Free" href="#" />
-              <FilterGroupItem icon="star" name="On Sale" href="#" />
-              <FilterGroupItem icon="cart" name="Paid" href="#" />
-              <FilterGroupItem icon="cart" name="$5 or less" href="#" />
-              <FilterGroupItem icon="cart" name="$15 or less" href="#" />
-            </FilterGroup>
-            <FilterGroup label="When" open>
-              <FilterGroupItem icon="stopwatch" name="Last Day" href="#" />
-              <FilterGroupItem icon="stopwatch" name="Last 7 days" href="#" />
-              <FilterGroupItem icon="stopwatch" name="Last 30 days" href="#" />
-            </FilterGroup>
-            <FilterGroup label="Genre">
-              {genres.map((t) => (
-                <FilterGroupItem
-                  icon="tag"
-                  href="#"
-                  name={t.label}
-                  key={t.value}
-                />
-              ))}
-            </FilterGroup>
-          </FilterPickers>
+          <GameFilter />
         </FilterColumn>
         <GridColumn>
           <BrowseHeader>
@@ -188,6 +134,109 @@ const Games: NextPage<GamesProps> = ({ genres, tags, games, pageMeta }) => {
   )
 }
 
+declare type FilterGroupItems = FilterGroupItemProps[]
+const PlatformFilters: FilterGroupItems = [
+  { icon: 'windows8', name: 'Windows', href: 'windows' },
+  { icon: 'apple', name: 'macOS', href: 'macos' },
+  { icon: 'tux', name: 'Linux', href: 'linux' },
+  { icon: 'android', name: 'Android', href: 'android' },
+  { icon: 'apple', name: 'iOS', href: 'ios' },
+  { icon: 'globe', name: 'Web', href: 'web' },
+]
+const PriceFilters: FilterGroupItems = [
+  { icon: 'star', name: 'Free', href: '#' },
+  { icon: 'star', name: 'On Sale', href: '#' },
+  { icon: 'cart', name: 'Paid', href: '#' },
+  { icon: 'cart', name: '$5 or less', href: '#' },
+  { icon: 'cart', name: '$15 or less', href: '#' },
+]
+const WhenFilters: FilterGroupItems = [
+  { icon: 'stopwatch', name: 'Last Day', href: '#' },
+  { icon: 'stopwatch', name: 'Last 7 days', href: '#' },
+  { icon: 'stopwatch', name: 'Last 30 days', href: '#' },
+]
+const GenreFilters: FilterGroupItems = genres.map((genre) => ({
+  icon: 'tag',
+  name: `${genre.label}`,
+  href: `${genre.value}`,
+}))
+function GameFilter() {
+  const FilterHeader = styled.div`
+    padding: 20px 20px 0 20px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    & > h2 {
+      font-size: 15px;
+      text-transform: uppercase;
+      margin: 0;
+      font-weight: 900;
+      color: #434343;
+    }
+  `
+  const FilterPickers = styled.div`
+    & > * {
+      margin: 10px;
+    }
+  `
+  const router = useRouter()
+  const buildHref = (key: string, value?: string): string => {
+    const query = router.query as Record<string, string>
+    const queryString = buildQuerySting(key, value, query)
+    return `${router.route}${queryString}`
+  }
+
+  return (
+    <Fragment>
+      <FilterHeader>
+        <h2>Filter Results</h2>
+      </FilterHeader>
+      <FilterPickers>
+        <FilterGroup label="Platform" open>
+          {PlatformFilters.map((platform) => (
+            <FilterGroupItem
+              icon={platform.icon}
+              name={platform.name}
+              href={buildHref('platform', platform.href)}
+              key={platform.name}
+            />
+          ))}
+        </FilterGroup>
+        <FilterGroup label="Price" open>
+          {PriceFilters.map((price) => (
+            <FilterGroupItem
+              icon={price.icon}
+              name={price.name}
+              href={buildHref('price', price.href)}
+              key={price.name}
+            />
+          ))}
+        </FilterGroup>
+        <FilterGroup label="When" open>
+          {WhenFilters.map((when) => (
+            <FilterGroupItem
+              icon={when.icon}
+              name={when.name}
+              href={buildHref('when', when.href)}
+              key={when.name}
+            />
+          ))}
+        </FilterGroup>
+        <FilterGroup label="Genre">
+          {GenreFilters.map((genre) => (
+            <FilterGroupItem
+              icon="tag"
+              href={buildHref('genre', genre.href)}
+              name={genre.name}
+              key={genre.name}
+            />
+          ))}
+        </FilterGroup>
+      </FilterPickers>
+    </Fragment>
+  )
+}
+
 export const getServerSideProps: GetServerSideProps<GamesProps> = async (
   context
 ) => {
@@ -198,7 +247,7 @@ export const getServerSideProps: GetServerSideProps<GamesProps> = async (
     ...g,
     link: `/game/${g.id}`,
   }))
-  return { props: { genres, tags: tagsRes.data, games, pageMeta: meta } }
+  return { props: { tags: tagsRes.data, games, pageMeta: meta } }
 }
 
 export default Games
