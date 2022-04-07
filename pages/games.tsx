@@ -18,7 +18,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Fragment } from 'react'
 import { GameEntity, GameInfo, PaginationMeta, TagOption } from 'types'
-import { buildQuerySting, isEmptyObj } from 'utils'
+import { buildQuerySting, findTags, isEmptyObj } from 'utils'
 
 declare interface GamesProps {
   tags: TagOption[]
@@ -89,6 +89,12 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   ) => {
     router.push({ pathname: router.pathname, query: { ...router.query, page } })
   }
+  const { tags: queryTags } = router.query
+  const tagged = queryTags
+    ? ` tagged ${findTags(queryTags, tags)
+        ?.map((t) => t.label)
+        .join(', ')}`
+    : ''
 
   return (
     <Fragment>
@@ -102,7 +108,8 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
         <GridColumn>
           <BrowseHeader>
             <h2>
-              Top Games<GameCount> ({games.length} results)</GameCount>
+              Top Games{tagged}
+              <GameCount> ({games.length} results)</GameCount>
             </h2>
             <StyledSortOptions sortKey="sortBy">
               <SortOptionItem name="Popular" />

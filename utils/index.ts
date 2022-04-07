@@ -1,5 +1,6 @@
 export * from './file'
 export * from './game'
+export * from './tags'
 export * from './user'
 
 export function isEmptyObj(obj: Record<string, unknown>): boolean {
