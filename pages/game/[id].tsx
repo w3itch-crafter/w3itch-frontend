@@ -56,46 +56,28 @@ const GameId: NextPage<GameProps> = ({ gameProject }) => {
                     </div>
                   )}
                 </div>
-                <div className={`${styles.right_col} ${styles.column}`}>
-                  {/* <div className={styles.video_embed}>
-                    <div
-                      style={{ paddingBottom: '56.25%', position: 'relative' }}
-                      className="video_embed_widget"
-                      id="video_embed_widget_77032"
-                    >
-                      <iframe
-                        frameBorder="0"
-                        style={{
-                          position: 'absolute',
-                          width: '100%',
-                          height: '100%',
-                          left: 0,
-                          right: 0,
-                        }}
-                        allowFullScreen
-                        src="//www.youtube.com/embed/_QtUGdaCb1c"
-                      ></iframe>
+                {gameProject.screenshots.length ? (
+                  <div className={`${styles.right_col} ${styles.column}`}>
+                    <div className={styles.screenshot_list}>
+                      {gameProject.screenshots.map((screenshot) => (
+                        <a
+                          key={screenshot}
+                          href={screenshot}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Image
+                            src={screenshot}
+                            alt="screenshot"
+                            width={'100%'}
+                            height={'100%'}
+                            layout="responsive"
+                          />
+                        </a>
+                      ))}
                     </div>
-                  </div> */}
-                  <div className={styles.screenshot_list}>
-                    {gameProject.screenshots.map((screenshot) => (
-                      <a
-                        key={screenshot}
-                        href={screenshot}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Image
-                          src={screenshot}
-                          alt="screenshot"
-                          width={'100%'}
-                          height={'100%'}
-                          layout="responsive"
-                        />
-                      </a>
-                    ))}
                   </div>
-                </div>
+                ) : null}
               </div>
             </div>
           </div>

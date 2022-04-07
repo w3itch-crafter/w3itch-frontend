@@ -46,21 +46,6 @@ import { fileUrl, parseUrl } from 'utils'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let MESSAGE_SUBMIT_KEY: any
 
-const FormDefaultValues =
-  process.env.NODE_ENV === 'development'
-    ? {
-        title: 'title 123',
-        subtitle: 'subtitle 123',
-        cover:
-          'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
-        screenshots: [
-          'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
-          'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
-          'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
-        ],
-      }
-    : {}
-
 const GameNew: NextPage = () => {
   const router = useRouter()
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
@@ -86,7 +71,8 @@ const GameNew: NextPage = () => {
       tokenId: 0,
       tags: [],
       appStoreLinks: [],
-      ...FormDefaultValues,
+      screenshots: [],
+      cover: '',
     },
   })
 
