@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { FC } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
+import { userHostUrl } from 'utils'
 import { enumWord } from 'utils/word'
 
 interface Props {
@@ -55,7 +56,7 @@ const MoreInformation: FC<Props> = ({ gameProject }) => {
             <tr>
               <td>Author</td>
               <td>
-                <Link href="/">
+                <Link href={userHostUrl(gameProject.username) || '/'}>
                   <a>{gameProject.username}</a>
                 </Link>
               </td>
@@ -73,12 +74,12 @@ const MoreInformation: FC<Props> = ({ gameProject }) => {
               <td>
                 {!gameProject.tags.length && 'No Tags'}
                 {gameProject.tags.map((tag, idx) => (
-                  <>
-                    <a key={tag.name} href="#">
-                      {tag.label}
-                    </a>
+                  <span key={tag.name}>
+                    <Link href="/">
+                      <a>{tag.label}</a>
+                    </Link>
                     {idx < gameProject.tags.length - 1 && ', '}
-                  </>
+                  </span>
                 ))}
               </td>
             </tr>
