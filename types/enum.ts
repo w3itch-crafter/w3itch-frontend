@@ -52,7 +52,8 @@ export enum Community {
   DISABLED = 'DISABLED',
 }
 
-export enum Charset {
-  DEFAULT = 'DEFAULT',
+export enum GameFileCharset {
+  UTF8 = 'UTF8',
+  GBK = 'GBK',
   SHIFT_JIS = 'SHIFT_JIS',
 }

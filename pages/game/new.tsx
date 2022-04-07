@@ -34,7 +34,6 @@ import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import {
-  Charset,
   Community,
   GameEngine,
   Genre,
@@ -184,7 +183,7 @@ const GameNew: NextPage = () => {
       community: game.community,
       genre: Genre.NO_GENRE,
       tokenId: game.tokenId,
-      charset: game.charset === Charset.DEFAULT ? '' : game.charset,
+      charset: game.charset,
     }
     console.log('file', uploadGameFile)
     console.log('gameData', gameData)

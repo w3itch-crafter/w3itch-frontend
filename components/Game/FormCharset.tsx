@@ -1,7 +1,7 @@
 import { FormControl, FormLabel, MenuItem, Select } from '@mui/material'
 import { FC } from 'react'
 import { UseFormRegister } from 'react-hook-form'
-import { Charset } from 'types/enum'
+import { GameFileCharset } from 'types/enum'
 import { Game } from 'utils/validator'
 
 interface Props {
@@ -14,10 +14,10 @@ const FormCharset: FC<Props> = ({ register }) => {
       <FormLabel id="form-charset">Charset</FormLabel>
       <Select
         id="form-charset"
-        defaultValue={Charset.DEFAULT}
+        defaultValue={GameFileCharset.UTF8}
         {...register('charset')}
       >
-        {Object.values(Charset).map((charset) => (
+        {Object.values(GameFileCharset).map((charset) => (
           <MenuItem value={charset} key={charset}>
             {charset}
           </MenuItem>
