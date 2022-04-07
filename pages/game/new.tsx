@@ -53,9 +53,6 @@ const FormDefaultValues =
         subtitle: 'subtitle 123',
         cover:
           'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
-        appStoreLinks: [
-          'https://store.steampowered.com/publisher/sekaiproject/sale/publishersale_sekai22',
-        ],
         screenshots: [
           'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
           'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
@@ -83,12 +80,13 @@ const GameNew: NextPage = () => {
   } = useForm<Game>({
     resolver: resolverGame,
     defaultValues: {
-      ...FormDefaultValues,
       paymentMode: PaymentMode.DISABLE_PAYMENTS,
       community: Community.DISABLED,
       genre: Genre.NO_GENRE,
       tokenId: 0,
       tags: [],
+      appStoreLinks: [],
+      ...FormDefaultValues,
     },
   })
 
@@ -615,7 +613,7 @@ const GameNew: NextPage = () => {
                           errors={formErrors}
                           control={control}
                           changeLinks={(value) => {
-                            setValue('appStoreLinks', [value])
+                            setValue('appStoreLinks', value)
                           }}
                         />
                       </div>
