@@ -14,10 +14,11 @@ import {
 import { genres } from 'data'
 import { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Fragment } from 'react'
 import { GameEntity, GameInfo, PaginationMeta, TagOption } from 'types'
-import { buildQuerySting } from 'utils'
+import { buildQuerySting, isEmptyObj } from 'utils'
 
 declare interface GamesProps {
   tags: TagOption[]
@@ -179,17 +180,34 @@ function GameFilter() {
       margin: 10px;
     }
   `
+  const ClearFilters = styled.span`
+    margin-left: 8px;
+    color: #606060;
+  `
+  const ClearLink = styled.a`
+    color: inherit;
+  `
   const router = useRouter()
   const buildHref = (key: string, value?: string): string => {
     const query = router.query as Record<string, string>
     const queryString = buildQuerySting(key, value, query)
     return `${router.route}${queryString}`
   }
+  const hasQuery = !isEmptyObj(router.query)
 
   return (
     <Fragment>
       <FilterHeader>
         <h2>Filter Results</h2>
+        {hasQuery && (
+          <ClearFilters>
+            (
+            <Link href={router.route} passHref>
+              <ClearLink>Clear</ClearLink>
+            </Link>
+            )
+          </ClearFilters>
+        )}
       </FilterHeader>
       <FilterPickers>
         <FilterGroup label="Platform" open>
