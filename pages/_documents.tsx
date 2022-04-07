@@ -4,6 +4,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
+        <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <link
           rel="stylesheet"
