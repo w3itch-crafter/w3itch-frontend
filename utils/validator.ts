@@ -43,9 +43,9 @@ export class Game {
   @IsNotEmpty()
   paymentMode: PaymentMode
 
-  // @IsString()
-  // @IsNotEmpty()
-  // description: string
+  @IsString()
+  @IsNotEmpty()
+  description: string
 
   @IsEnum(Community)
   @IsNotEmpty()
