@@ -2,8 +2,9 @@
 import styled from '@emotion/styled'
 import { ConnectWallet, PageCard, StatHeader } from 'components/pages'
 import { NextPage } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useWallet } from 'use-wallet'
 import { Wallet } from 'use-wallet/dist/cjs/types'
 
@@ -34,14 +35,19 @@ const Login: NextPage = () => {
   }, [isConnected])
 
   return (
-    <Container>
-      <PageCard>
-        <StatHeader title="Log in to your w3itch.io account" />
-        <Padded>
-          <ConnectWallet />
-        </Padded>
-      </PageCard>
-    </Container>
+    <Fragment>
+      <Head>
+        <title>Log in - w3itch.io</title>
+      </Head>
+      <Container>
+        <PageCard>
+          <StatHeader title="Log in to your w3itch.io account" />
+          <Padded>
+            <ConnectWallet />
+          </Padded>
+        </PageCard>
+      </Container>
+    </Fragment>
   )
 }
 

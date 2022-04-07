@@ -4,6 +4,7 @@ import { IcoMoonIcon } from 'components/icons'
 import { Navbar } from 'components/layout'
 import { GameCell } from 'components/pages'
 import { NextPage } from 'next'
+import Head from 'next/head'
 import Link from 'next/link'
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { GameEntity, GameInfo, NavLinks, UserEntity } from 'types'
@@ -68,25 +69,30 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
   }, [getUserGames, getUserInfo])
 
   return (
-    <Layout wildcard={wildcard}>
-      <Container>
-        <h1>{userInfoHeader}</h1>
-        <ProfileColumn>
-          <LinkGroup href={profileUrl} name={userInfoHeader} icon="globe" />
-        </ProfileColumn>
-        <GameColumn>
-          {games.map((game, index) => (
-            <GameCell
-              small
-              key={`${game.id}-${index}`}
-              game={game}
-              width={306}
-              height={243}
-            />
-          ))}
-        </GameColumn>
-      </Container>
-    </Layout>
+    <Fragment>
+      <Head>
+        <title>{userInfoHeader} - w3itch.io</title>
+      </Head>
+      <Layout wildcard={wildcard}>
+        <Container>
+          <h1>{userInfoHeader}</h1>
+          <ProfileColumn>
+            <LinkGroup href={profileUrl} name={userInfoHeader} icon="globe" />
+          </ProfileColumn>
+          <GameColumn>
+            {games.map((game, index) => (
+              <GameCell
+                small
+                key={`${game.id}-${index}`}
+                game={game}
+                width={306}
+                height={243}
+              />
+            ))}
+          </GameColumn>
+        </Container>
+      </Layout>
+    </Fragment>
   )
 }
 

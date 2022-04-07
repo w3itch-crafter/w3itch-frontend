@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import { getGamesMine, getUser } from 'api'
 import { GameCarousel, GameCell, PageCard, StatHeader } from 'components/pages'
 import { GetServerSideProps, NextPage } from 'next'
+import Head from 'next/head'
 import { Fragment } from 'react'
 import { GameEntity, GameInfo, UserEntity } from 'types'
 
@@ -51,27 +52,33 @@ const UserProfile: NextPage<UserProfileProps> = ({ user, games }) => {
       <HeaderText>{user.username}</HeaderText>
     </Fragment>
   )
+  const title = user?.nickname || user?.username
 
   return (
-    <Container>
-      <PageCard>
-        <StatHeader title={HeaderTitle}></StatHeader>
-        <Padded>
-          <h3>Creator of</h3>
-          <StyledGameCarousel>
-            {games.map((game, index) => (
-              <GameCell
-                small
-                key={`${game.id}-${index}`}
-                game={game}
-                width={220}
-                height={174}
-              />
-            ))}
-          </StyledGameCarousel>
-        </Padded>
-      </PageCard>
-    </Container>
+    <Fragment>
+      <Head>
+        <title>{title} - w3itch.io</title>
+      </Head>
+      <Container>
+        <PageCard>
+          <StatHeader title={HeaderTitle}></StatHeader>
+          <Padded>
+            <h3>Creator of</h3>
+            <StyledGameCarousel>
+              {games.map((game, index) => (
+                <GameCell
+                  small
+                  key={`${game.id}-${index}`}
+                  game={game}
+                  width={220}
+                  height={174}
+                />
+              ))}
+            </StyledGameCarousel>
+          </Padded>
+        </PageCard>
+      </Container>
+    </Fragment>
   )
 }
 

@@ -12,7 +12,9 @@ import {
 } from 'components/pages'
 import { genres } from 'data'
 import { GetServerSideProps, NextPage } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { Fragment } from 'react'
 import { GameEntity, GameInfo, PaginationMeta, TagOption } from 'types'
 declare interface GamesProps {
   genres: { label: string; value: string }[]
@@ -104,77 +106,85 @@ const Games: NextPage<GamesProps> = ({ genres, tags, games, pageMeta }) => {
   }
 
   return (
-    <Container>
-      <FilterColumn>
-        <FilterHeader>
-          <h2>Filter Results</h2>
-        </FilterHeader>
-        <FilterPickers>
-          <FilterGroup label="Platform" open>
-            <FilterGroupItem
-              icon="windows8"
-              name="Windows"
-              href="?platform=windows"
-            />
-            <FilterGroupItem icon="apple" name="macOS" href="#" />
-            <FilterGroupItem icon="tux" name="Linux" href="#" />
-            <FilterGroupItem icon="android" name="Android" href="#" />
-            <FilterGroupItem icon="apple" name="iOS" href="#" />
-            <FilterGroupItem icon="globe" name="Web" href="#" />
-          </FilterGroup>
-          <FilterGroup label="Price" open>
-            <FilterGroupItem icon="star" name="Free" href="#" />
-            <FilterGroupItem icon="star" name="On Sale" href="#" />
-            <FilterGroupItem icon="cart" name="Paid" href="#" />
-            <FilterGroupItem icon="cart" name="$5 or less" href="#" />
-            <FilterGroupItem icon="cart" name="$15 or less" href="#" />
-          </FilterGroup>
-          <FilterGroup label="When" open>
-            <FilterGroupItem icon="stopwatch" name="Last Day" href="#" />
-            <FilterGroupItem icon="stopwatch" name="Last 7 days" href="#" />
-            <FilterGroupItem icon="stopwatch" name="Last 30 days" href="#" />
-          </FilterGroup>
-          <FilterGroup label="Genre">
-            {genres.map((t) => (
+    <Fragment>
+      <Head>
+        <title>Browse games - w3itch.io</title>
+      </Head>
+      <Container>
+        <FilterColumn>
+          <FilterHeader>
+            <h2>Filter Results</h2>
+          </FilterHeader>
+          <FilterPickers>
+            <FilterGroup label="Platform" open>
               <FilterGroupItem
-                icon="tag"
-                href="#"
-                name={t.label}
-                key={t.value}
+                icon="windows8"
+                name="Windows"
+                href="?platform=windows"
               />
+              <FilterGroupItem icon="apple" name="macOS" href="#" />
+              <FilterGroupItem icon="tux" name="Linux" href="#" />
+              <FilterGroupItem icon="android" name="Android" href="#" />
+              <FilterGroupItem icon="apple" name="iOS" href="#" />
+              <FilterGroupItem icon="globe" name="Web" href="#" />
+            </FilterGroup>
+            <FilterGroup label="Price" open>
+              <FilterGroupItem icon="star" name="Free" href="#" />
+              <FilterGroupItem icon="star" name="On Sale" href="#" />
+              <FilterGroupItem icon="cart" name="Paid" href="#" />
+              <FilterGroupItem icon="cart" name="$5 or less" href="#" />
+              <FilterGroupItem icon="cart" name="$15 or less" href="#" />
+            </FilterGroup>
+            <FilterGroup label="When" open>
+              <FilterGroupItem icon="stopwatch" name="Last Day" href="#" />
+              <FilterGroupItem icon="stopwatch" name="Last 7 days" href="#" />
+              <FilterGroupItem icon="stopwatch" name="Last 30 days" href="#" />
+            </FilterGroup>
+            <FilterGroup label="Genre">
+              {genres.map((t) => (
+                <FilterGroupItem
+                  icon="tag"
+                  href="#"
+                  name={t.label}
+                  key={t.value}
+                />
+              ))}
+            </FilterGroup>
+          </FilterPickers>
+        </FilterColumn>
+        <GridColumn>
+          <BrowseHeader>
+            <h2>
+              Top Games<GameCount> ({games.length} results)</GameCount>
+            </h2>
+            <StyledSortOptions sortKey="sortBy">
+              <SortOptionItem name="Popular" />
+              <SortOptionItem value="new" name="New & Popular" />
+              <SortOptionItem value="sellers" name="Top sellers" />
+              <SortOptionItem value="rating" name="Top rated" />
+              <SortOptionItem value="updatedAt" name="Most Recent" />
+            </StyledSortOptions>
+            <RelatedTags
+              tags={tags}
+              placeholder="Select a tag..."
+            ></RelatedTags>
+            <SearchDescription />
+          </BrowseHeader>
+          <GameGrid>
+            {games.map((game, index) => (
+              <GameCell key={`${game.id}-${index}`} game={game} />
             ))}
-          </FilterGroup>
-        </FilterPickers>
-      </FilterColumn>
-      <GridColumn>
-        <BrowseHeader>
-          <h2>
-            Top Games<GameCount> ({games.length} results)</GameCount>
-          </h2>
-          <StyledSortOptions sortKey="sortBy">
-            <SortOptionItem name="Popular" />
-            <SortOptionItem value="new" name="New & Popular" />
-            <SortOptionItem value="sellers" name="Top sellers" />
-            <SortOptionItem value="rating" name="Top rated" />
-            <SortOptionItem value="updatedAt" name="Most Recent" />
-          </StyledSortOptions>
-          <RelatedTags tags={tags} placeholder="Select a tag..."></RelatedTags>
-          <SearchDescription />
-        </BrowseHeader>
-        <GameGrid>
-          {games.map((game, index) => (
-            <GameCell key={`${game.id}-${index}`} game={game} />
-          ))}
-        </GameGrid>
-        <StyledPagination
-          shape="rounded"
-          color="primary"
-          page={currentPage}
-          count={totalPages}
-          onChange={handlePaginationChange}
-        />
-      </GridColumn>
-    </Container>
+          </GameGrid>
+          <StyledPagination
+            shape="rounded"
+            color="primary"
+            page={currentPage}
+            count={totalPages}
+            onChange={handlePaginationChange}
+          />
+        </GridColumn>
+      </Container>
+    </Fragment>
   )
 }
 
