@@ -109,41 +109,6 @@
     }
   }
 
-  .upload_editor {
-    .upload_limit {
-      color: #606060;
-      font-size: 14px;
-      a {
-        color: inherit;
-      }
-    }
-    p {
-      line-height: 1.4;
-    }
-    .upload_buttons {
-      display: flex;
-      align-items: center;
-      color: #606060;
-      .external_file_buttons {
-        flex: 1;
-        display: flex;
-        -webkit-align-items: center;
-        align-items: center;
-        text-align: right;
-        a {
-          flex: 1;
-          color: #606060;
-        }
-        & > * {
-          margin-right: 8px;
-        }
-        & > *:last-child {
-          margin-right: 0;
-        }
-      }
-    }
-  }
-
   .game_edit_form {
     h2 {
       margin-top: 40px;
@@ -272,4 +237,8 @@
 
 .price_picker {
   margin-bottom: 20px;
+}
+
+.simulation_input {
+  position: relative;
 }

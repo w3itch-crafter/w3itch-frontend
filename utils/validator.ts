@@ -43,9 +43,9 @@ export class Game {
   @IsNotEmpty()
   paymentMode: PaymentMode
 
-  // @IsString()
-  // @IsNotEmpty()
-  // description: string
+  @IsString()
+  @IsNotEmpty()
+  description: string
 
   @IsEnum(Community)
   @IsNotEmpty()
@@ -70,11 +70,13 @@ export class Game {
   @IsInt()
   tokenId: number
 
-  @IsUrl({ require_protocol: true })
+  // Use localhost url, do not use Url verification
+  @IsString()
   @IsNotEmpty()
   cover: string
 
-  @IsUrl({ require_protocol: true }, { each: true })
+  // Use localhost url, do not use Url verification
+  @IsString({ each: true })
   @IsOptional()
   screenshots: string[]
 

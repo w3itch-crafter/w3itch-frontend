@@ -69,35 +69,38 @@ const MoreInformation: FC<Props> = ({ gameProject }) => {
                 </Link>
               </td>
             </tr>
-            <tr>
-              <td>Tags</td>
-              <td>
-                {!gameProject.tags.length && 'No Tags'}
-                {gameProject.tags.map((tag, idx) => (
-                  <span key={tag.name}>
-                    <Link href="/">
-                      <a>{tag.label}</a>
-                    </Link>
-                    {idx < gameProject.tags.length - 1 && ', '}
-                  </span>
-                ))}
-              </td>
-            </tr>
-            <tr>
-              <td>Links</td>
-              <td>
-                {gameProject.appStoreLinks.map((appStoreLink) => (
-                  <a
-                    key={appStoreLink}
-                    rel="nofollow noopener noreferrer"
-                    target="_blank"
-                    href={appStoreLink}
-                  >
-                    Links
-                  </a>
-                ))}
-              </td>
-            </tr>
+            {gameProject.tags.length ? (
+              <tr>
+                <td>Tags</td>
+                <td>
+                  {gameProject.tags.map((tag, idx) => (
+                    <span key={tag.name}>
+                      <Link href="/">
+                        <a>{tag.label}</a>
+                      </Link>
+                      {idx < gameProject.tags.length - 1 && ', '}
+                    </span>
+                  ))}
+                </td>
+              </tr>
+            ) : null}
+            {gameProject.appStoreLinks.length ? (
+              <tr>
+                <td>Links</td>
+                <td>
+                  {gameProject.appStoreLinks.map((appStoreLink) => (
+                    <a
+                      key={appStoreLink}
+                      rel="nofollow noopener noreferrer"
+                      target="_blank"
+                      href={appStoreLink}
+                    >
+                      Links
+                    </a>
+                  ))}
+                </td>
+              </tr>
+            ) : null}
           </tbody>
         </table>
       </div>

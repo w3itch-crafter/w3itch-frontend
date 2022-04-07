@@ -46,21 +46,6 @@ import { fileUrl, parseUrl } from 'utils'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let MESSAGE_SUBMIT_KEY: any
 
-const FormDefaultValues =
-  process.env.NODE_ENV === 'development'
-    ? {
-        title: 'title 123',
-        subtitle: 'subtitle 123',
-        cover:
-          'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
-        screenshots: [
-          'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
-          'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
-          'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
-        ],
-      }
-    : {}
-
 const GameNew: NextPage = () => {
   const router = useRouter()
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
@@ -76,6 +61,7 @@ const GameNew: NextPage = () => {
     handleSubmit,
     setValue,
     control,
+    // watch,
     formState: { errors: formErrors },
   } = useForm<Game>({
     resolver: resolverGame,
@@ -86,9 +72,12 @@ const GameNew: NextPage = () => {
       tokenId: 0,
       tags: [],
       appStoreLinks: [],
-      ...FormDefaultValues,
+      screenshots: [],
+      cover: '',
     },
   })
+
+  // console.log(watch('description'))
 
   const handleAllImages = async () => {
     const promiseArray = []
@@ -177,7 +166,7 @@ const GameNew: NextPage = () => {
       cover: allImages.cover,
       tags: game.tags,
       appStoreLinks: game.appStoreLinks,
-      description: description,
+      description: trim(description),
       community: game.community,
       genre: Genre.NO_GENRE,
       tokenId: game.tokenId,
@@ -279,6 +268,13 @@ const GameNew: NextPage = () => {
     },
     [setValue]
   )
+
+  const handleDescription = useCallback(() => {
+    if (editorRef) {
+      const description = editorRef.current?.getInstance().getMarkdown()
+      setValue('description', trim(description))
+    }
+  }, [editorRef, setValue])
 
   useEffect(() => {
     console.log('env', process.env.NODE_ENV)
@@ -520,7 +516,9 @@ const GameNew: NextPage = () => {
                     </p>
                   </div>
 
-                  <div className={styles.upload_editor}>
+                  <div
+                    className={`${styles.input_row} ${styles.simulation_input}`}
+                  >
                     <FormControl fullWidth error={Boolean(formErrors.gameName)}>
                       <FormLabel id="form-genre">Uploads</FormLabel>
                       <section
@@ -536,6 +534,14 @@ const GameNew: NextPage = () => {
                           handleGameFile(file as File | undefined)
                         }
                       />
+                      <TextField
+                        style={{
+                          opacity: '0',
+                          position: 'absolute',
+                          zIndex: -99,
+                        }}
+                        {...register('gameName')}
+                      />
                       <FormHelperText>
                         {formErrors?.gameName?.message}
                       </FormHelperText>
@@ -543,19 +549,33 @@ const GameNew: NextPage = () => {
                   </div>
 
                   <div
-                    className={`${styles.input_row} when_java game_classpath`}
+                    className={`${styles.input_row} ${styles.simulation_input}`}
                   >
-                    <h2>Details</h2>
-                  </div>
-                  <div className={`${styles.input_row}`}>
-                    <div className={styles.label} style={{ marginBottom: 10 }}>
-                      Description
-                      <span className={styles.sub}>
-                        {' '}
-                        — This will make up the content of your game page.
-                      </span>
-                    </div>
-                    <Editor setRef={setEditorRef} />
+                    <FormControl
+                      fullWidth
+                      error={Boolean(formErrors.description)}
+                    >
+                      <FormLabel id="form-genre">Details</FormLabel>
+                      <p className={styles.sub}>
+                        Description — This will make up the content of your game
+                        page.
+                      </p>
+                      <Editor
+                        setRef={setEditorRef}
+                        onChange={handleDescription}
+                      />
+                      <TextField
+                        style={{
+                          opacity: '0',
+                          position: 'absolute',
+                          zIndex: -99,
+                        }}
+                        {...register('description')}
+                      />
+                      <FormHelperText>
+                        {formErrors?.description?.message}
+                      </FormHelperText>
+                    </FormControl>
                   </div>
 
                   <div className="tags_drop">
@@ -746,42 +766,31 @@ const GameNew: NextPage = () => {
                   </div> */}
                 </div>
                 <div className={`misc ${styles.right_col}`}>
-                  <div className="cover_uploader_drop">
-                    <div className={styles.game_edit_cover_uploader_widget}>
-                      <UploadGameCover
-                        setFile={(file) => handleCoverValue(file as File)}
-                      />
-                      <p className={`${styles.sub} instructions`}>
-                        The cover image is used whenever w3itch.io wants to link
-                        to your project from another part of the site. Required
-                        (Minimum: 315x250, Recommended: 630x500)
-                      </p>
-                    </div>
-                    <FormHelperText error={Boolean(formErrors.cover)}>
-                      {formErrors?.cover?.message}
-                    </FormHelperText>
-                  </div>
-                  {/* <section className={styles.video_editor}>
-                    <FormControl fullWidth>
-                      <FormLabel id="form-cover">
-                        Gameplay video or trailer
-                      </FormLabel>
-                      <p className={styles.sub}>
-                        Provide a link to YouTube or Vimeo.
-                      </p>
+                  <div className={styles.simulation_input}>
+                    <FormControl fullWidth error={Boolean(formErrors.gameName)}>
+                      <div className={styles.game_edit_cover_uploader_widget}>
+                        <UploadGameCover
+                          setFile={(file) => handleCoverValue(file as File)}
+                        />
+                        <p className={`${styles.sub} instructions`}>
+                          The cover image is used whenever w3itch.io wants to
+                          link to your project from another part of the site.
+                          Required (Minimum: 315x250, Recommended: 630x500)
+                        </p>
+                      </div>
                       <TextField
-                        id="form-cover"
-                        variant="outlined"
-                        aria-describedby="form-cover-error-text"
-                        error={!!formErrors.cover}
-                        placeholder="eg. https://www.youtube.com/watch?v=5JEaA47sPjQ"
-                        helperText={
-                          formErrors.cover ? formErrors.cover.message : ''
-                        }
+                        style={{
+                          opacity: '0',
+                          position: 'absolute',
+                          zIndex: -99,
+                        }}
                         {...register('cover')}
                       />
+                      <FormHelperText error={Boolean(formErrors.cover)}>
+                        {formErrors?.cover?.message}
+                      </FormHelperText>
                     </FormControl>
-                  </section> */}
+                  </div>
                   <section className={styles.screenshot_editor}>
                     <div className={styles.label}>Screenshots</div>
                     <p className={styles.sub}>

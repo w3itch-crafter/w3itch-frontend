@@ -1,8 +1,8 @@
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
-import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
+import { useFullscreen } from 'ahooks'
 import { gameProjectPlayer } from 'api'
 import { FC } from 'react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
@@ -12,8 +12,10 @@ interface Props {
 }
 
 const EmbedWidget: FC<Props> = ({ gameProject }) => {
+  const ref = useRef(null)
+  const [, { enterFullscreen }] = useFullscreen(ref)
+
   const [runGameFlag, setRunGameFlag] = useState<boolean>(false)
-  const [gameFull, setGameFull] = useState<boolean>(false)
   return (
     <div
       id="html_embed_widget_78140"
@@ -28,38 +30,22 @@ const EmbedWidget: FC<Props> = ({ gameProject }) => {
         {runGameFlag ? (
           <div className={`${styles.iframe_wrapper}`}>
             <iframe
-              className={`${
-                gameFull
-                  ? styles.iframe_wrapper_open
-                  : styles.iframe_wrapper_close
-              }`}
+              ref={ref}
               style={{ width: '100%', height: '100%' }}
-              allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr"
               frameBorder="0"
               src={gameProjectPlayer({
                 gameName: gameProject.gameName,
                 kind: gameProject.kind,
               })}
               scrolling="no"
-              allowFullScreen
               id="game_drop"
             ></iframe>
-            <div
-              className={`${gameFull ? styles.full_open : styles.full_close}`}
-              onClick={() => setGameFull(!gameFull)}
-            >
-              {gameFull ? (
-                <FullscreenExitIcon></FullscreenExitIcon>
-              ) : (
-                <FullscreenIcon></FullscreenIcon>
-              )}
+            <div className={styles.full_close} onClick={enterFullscreen}>
+              <FullscreenIcon></FullscreenIcon>
             </div>
           </div>
         ) : (
-          <div
-            // data-iframe='<iframe mozallowfullscreen="true" allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr" frameborder="0" src="//v6p9d9t4.ssl.hwcdn.net/html/5507938/PixelDefense/index.html" msallowfullscreen="true" scrolling="no" allowfullscreen="true" webkitallowfullscreen="true" id="game_drop" allowtransparency="true"></iframe>'
-            className={styles.iframe_placeholder}
-          >
+          <div className={styles.iframe_placeholder}>
             <button
               onClick={() => setRunGameFlag(true)}
               className={`${stylesCommon.button} ${styles.button} ${styles.load_iframe_btn}`}
