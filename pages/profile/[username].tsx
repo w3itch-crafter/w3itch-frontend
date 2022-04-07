@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { getGamesMine } from 'api'
+import { getGamesMine, getUser } from 'api'
 import { GameCarousel, GameCell, PageCard, StatHeader } from 'components/pages'
 import { GetServerSideProps, NextPage } from 'next'
 import { Fragment } from 'react'
@@ -79,6 +79,7 @@ export const getServerSideProps: GetServerSideProps<UserProfileProps> = async (
   context
 ) => {
   const { username } = context.query
+  const userRes = await getUser(username as string)
   const user: UserEntity = {
     id: 0,
     createdAt: new Date().toDateString(),
@@ -98,7 +99,7 @@ export const getServerSideProps: GetServerSideProps<UserProfileProps> = async (
     ...g,
     link: `/game/${g.id}`,
   }))
-  return { props: { user, games } }
+  return { props: { user: { ...user, ...userRes }, games } }
 }
 
 export default UserProfile
