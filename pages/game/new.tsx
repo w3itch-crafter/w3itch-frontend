@@ -506,7 +506,7 @@ const GameNew: NextPage = () => {
                     </p>
                   </div>
 
-                  <div className={styles.upload_editor}>
+                  <div className={styles.input_row}>
                     <FormControl fullWidth error={Boolean(formErrors.gameName)}>
                       <FormLabel id="form-genre">Uploads</FormLabel>
                       <section
@@ -528,20 +528,15 @@ const GameNew: NextPage = () => {
                     </FormControl>
                   </div>
 
-                  <div
-                    className={`${styles.input_row} when_java game_classpath`}
-                  >
-                    <h2>Details</h2>
-                  </div>
-                  <div className={`${styles.input_row}`}>
-                    <div className={styles.label} style={{ marginBottom: 10 }}>
-                      Description
-                      <span className={styles.sub}>
-                        {' '}
-                        — This will make up the content of your game page.
-                      </span>
-                    </div>
-                    <Editor setRef={setEditorRef} />
+                  <div className={styles.input_row}>
+                    <FormControl fullWidth>
+                      <FormLabel id="form-genre">Details</FormLabel>
+                      <p className={styles.sub}>
+                        Description — This will make up the content of your game
+                        page.
+                      </p>
+                      <Editor setRef={setEditorRef} />
+                    </FormControl>
                   </div>
 
                   <div className="tags_drop">
