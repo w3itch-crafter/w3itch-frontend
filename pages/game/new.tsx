@@ -34,7 +34,6 @@ import { trim } from 'lodash'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import {
-  Charset,
   Community,
   GameEngine,
   Genre,
@@ -54,9 +53,6 @@ const FormDefaultValues =
         subtitle: 'subtitle 123',
         cover:
           'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
-        appStoreLinks: [
-          'https://store.steampowered.com/publisher/sekaiproject/sale/publishersale_sekai22',
-        ],
         screenshots: [
           'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
           'https://ipfs.fleek.co/ipfs/bafybeiflsgroqy4tjign5nrxj4crtlpwltmxpc6bziki4xkhiojpvllppa',
@@ -84,12 +80,13 @@ const GameNew: NextPage = () => {
   } = useForm<Game>({
     resolver: resolverGame,
     defaultValues: {
-      ...FormDefaultValues,
       paymentMode: PaymentMode.DISABLE_PAYMENTS,
       community: Community.DISABLED,
       genre: Genre.NO_GENRE,
       tokenId: 0,
       tags: [],
+      appStoreLinks: [],
+      ...FormDefaultValues,
     },
   })
 
@@ -184,7 +181,7 @@ const GameNew: NextPage = () => {
       community: game.community,
       genre: Genre.NO_GENRE,
       tokenId: game.tokenId,
-      charset: game.charset === Charset.DEFAULT ? '' : game.charset,
+      charset: game.charset,
     }
     console.log('file', uploadGameFile)
     console.log('gameData', gameData)
@@ -616,7 +613,7 @@ const GameNew: NextPage = () => {
                           errors={formErrors}
                           control={control}
                           changeLinks={(value) => {
-                            setValue('appStoreLinks', [value])
+                            setValue('appStoreLinks', value)
                           }}
                         />
                       </div>

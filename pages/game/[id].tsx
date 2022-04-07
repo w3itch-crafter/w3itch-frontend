@@ -1,4 +1,6 @@
 import { gameProjectByID } from 'api'
+import EmbedWidget from 'components/Game/EmbedWidget'
+import GameRating from 'components/Game/GameRating'
 import MoreInformation from 'components/Game/MoreInformation'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
@@ -12,9 +14,6 @@ const RenderMarkdown = dynamic(
   { ssr: false }
 )
 const CommentsDisqus = dynamic(() => import('components/Game/CommentsDisqus'), {
-  ssr: false,
-})
-const EmbedWidget = dynamic(() => import('components/Game/EmbedWidget'), {
   ssr: false,
 })
 
@@ -44,7 +43,12 @@ const GameId: NextPage<GameProps> = ({ gameProject }) => {
                   >
                     <RenderMarkdown md={gameProject.description} />
                   </div>
-                  <MoreInformation gameProject={gameProject} />
+                  <div className={styles.row}>
+                    <MoreInformation gameProject={gameProject} />
+                  </div>
+                  <div className={styles.row}>
+                    <GameRating gameProject={gameProject} />
+                  </div>
                   {gameProject.community === Community.DISQUS && (
                     <div className={styles.game_comments_widget}>
                       <h2>Comments</h2>

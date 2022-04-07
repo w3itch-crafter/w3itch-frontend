@@ -129,6 +129,8 @@ export declare type GameEntity = BaseEntity & {
   community: Community
   /** The category that best describes this game */
   genre: Genre
+  /** game rating */
+  rating: number | null
 }
 
 export declare type GameInfo = GameEntity & {
