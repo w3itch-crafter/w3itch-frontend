@@ -14,7 +14,7 @@ interface Props {
 
 const MoreInformation: FC<Props> = ({ gameProject }) => {
   return (
-    <div className={styles.more_information_toggle}>
+    <div>
       <div className={styles.toggle_row}>
         <span className={styles.toggle_info_btn}>
           More information

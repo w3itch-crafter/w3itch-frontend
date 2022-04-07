@@ -25,4 +25,13 @@ declare namespace Api {
     label: string
     description: string
   }
+
+  type GameProjectsRatingResponse = {
+    id: number
+    createdAt: Date
+    updatedAt: Date
+    gameId: number
+    username: string
+    rating: number
+  }
 }

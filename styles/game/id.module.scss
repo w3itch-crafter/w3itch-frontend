@@ -88,9 +88,6 @@
     margin-bottom: 40px;
     margin-top: 0;
   }
-  .more_information_toggle {
-    margin: 0 20px 20px 20px;
-  }
 }
 
 .info_panel_wrapper {
@@ -189,4 +186,8 @@
     right: 0;
     z-index: 99999;
   }
+}
+
+.row {
+  margin: 0 20px 20px 20px;
 }
