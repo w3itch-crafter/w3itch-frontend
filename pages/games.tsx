@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import Pagination from '@mui/material/Pagination'
-import { getGames } from 'api'
+import { getGames, getTags } from 'api'
 import {
   FilterGroup,
   FilterGroupItem,
@@ -191,20 +191,14 @@ const Games: NextPage<GamesProps> = ({ genres, tags, games, pageMeta }) => {
 export const getServerSideProps: GetServerSideProps<GamesProps> = async (
   context
 ) => {
-  const tagList: TagOption[] = [
-    { label: '16-bit', value: '16-bit' },
-    { label: '1-bit', value: '1-bit' },
-    { label: '1GAM', value: '1gam' },
-    { label: '2D', value: '2d' },
-    { label: '3D', value: '2d' },
-  ]
+  const tagsRes = await getTags()
   const { query } = context
   const { data, meta } = await getGames({ ...query, limit: 20, order: 'DESC' })
   const games: GameInfo[] = data.map((g) => ({
     ...g,
     link: `/game/${g.id}`,
   }))
-  return { props: { genres, tags: tagList, games, pageMeta: meta } }
+  return { props: { genres, tags: tagsRes.data, games, pageMeta: meta } }
 }
 
 export default Games
