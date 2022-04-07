@@ -62,8 +62,8 @@ export class Game {
   @IsOptional()
   tags: string[]
 
-  // @Length(1, 120, { each: true })
-  // @IsUrl({ require_protocol: true }, { each: true })
+  @Length(1, 120, { each: true })
+  @IsUrl({ require_protocol: true }, { each: true })
   @IsOptional()
   appStoreLinks: string[]
 
