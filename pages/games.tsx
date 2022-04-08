@@ -7,7 +7,6 @@ import {
   FilterGroupItemProps,
   GameCell,
   RelatedTags,
-  SearchDescription,
   SortOptionItem,
   SortOptions,
 } from 'components/pages'
@@ -118,11 +117,7 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
               <SortOptionItem value="rating" name="Top rated" />
               <SortOptionItem value="updatedAt" name="Most Recent" />
             </StyledSortOptions>
-            <RelatedTags
-              tags={tags}
-              placeholder="Select a tag..."
-            ></RelatedTags>
-            <SearchDescription />
+            <RelatedTags tags={tags} placeholder="Select a tag..." />
           </BrowseHeader>
           <GameGrid>
             {games.map((game, index) => (
