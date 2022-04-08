@@ -1,17 +1,19 @@
+import { AuthenticationContext } from 'components/pages'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 
 import { logout } from '../api/account'
 
 const Logout: NextPage = () => {
   const router = useRouter()
-  const startLogout = useCallback(() => {
-    logout().then(async () => {
-      await router.push('/games')
-    })
-  }, [router])
+  const { dispatch } = useContext(AuthenticationContext)
+  const startLogout = useCallback(async () => {
+    await logout()
+    dispatch({ type: 'LOGOUT' })
+    await router.push('/games')
+  }, [dispatch, router])
 
   useEffect(() => {
     startLogout()

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import {
+  AuthenticationContext,
   ConnectWallet,
   ConnectWalletContext,
   PageCard,
@@ -27,11 +28,14 @@ const Login: NextPage = () => {
   const isConnected = wallet.isConnected()
   const [hasStarted, setHasStarted] = useState(false)
   const context = useContext(ConnectWalletContext)
+  const { dispatch } = useContext(AuthenticationContext)
   const startLogin = useCallback(
-    (wallet: Wallet) => {
-      login(wallet).then(async () => await router.replace('/games'))
+    async (wallet: Wallet) => {
+      const { user, account } = await login(wallet)
+      dispatch({ type: 'LOGIN', payload: { user, account } })
+      await router.replace('/games')
     },
-    [router]
+    [dispatch, router]
   )
   const checkWalletStatus = useCallback(() => {
     if (isConnected && hasStarted) {

@@ -93,6 +93,11 @@ export declare type UserEntity = BaseEntity & {
   bio: string
   avatar: string
 }
+export declare type AccountEntity = BaseEntity & {
+  userId: number
+  accountId: string
+  platform: 'metamask' | string
+}
 export declare type GameEntity = BaseEntity & {
   /** Creator's user ID */
   userId: number

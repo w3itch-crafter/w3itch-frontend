@@ -2,6 +2,7 @@ import '../styles/globals.css'
 
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { Layout } from 'components/layout'
+import { AuthenticationProvider } from 'components/pages'
 import type { AppProps } from 'next/app'
 import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
@@ -36,10 +37,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         },
       }}
     >
-      <Fragment>
-        <CssBaseline />
-        {getLayout(<Component {...pageProps} />)}
-      </Fragment>
+      <AuthenticationProvider>
+        <Fragment>
+          <CssBaseline />
+          {getLayout(<Component {...pageProps} />)}
+        </Fragment>
+      </AuthenticationProvider>
     </UseWalletProvider>
   )
 }

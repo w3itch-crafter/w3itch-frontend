@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import useRefresh from 'hooks/useAccount'
+import { useRefresh } from 'hooks'
 import Link from 'next/link'
 import { Fragment, useState } from 'react'
 
@@ -72,7 +72,7 @@ export function UserPanel() {
       color: #da2c49;
     }
   `
-  const user = useRefresh()
+  const { user } = useRefresh()
   const profile = `https://${user?.username?.toLowerCase()}.w3itch.io`
 
   return (

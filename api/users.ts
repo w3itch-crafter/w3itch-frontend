@@ -10,12 +10,12 @@ export async function validateUsername(username: string): Promise<boolean> {
   return res.data.isExists
 }
 
-export async function getMe(): Promise<UserEntity | boolean> {
+export async function getMe(): Promise<UserEntity | null> {
   try {
     const res = await backend.get<UserEntity>('/users/me')
     return res.data
   } catch (e) {
-    return false
+    return null
   }
 }
 
