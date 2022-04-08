@@ -2,7 +2,10 @@ import '../styles/globals.css'
 
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { Layout } from 'components/layout'
-import { AuthenticationProvider } from 'components/pages'
+import {
+  AuthenticationProvider,
+  ReadonlyEthersProvider,
+} from 'components/pages'
 import type { AppProps } from 'next/app'
 import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
@@ -38,10 +41,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       }}
     >
       <AuthenticationProvider>
-        <Fragment>
-          <CssBaseline />
-          {getLayout(<Component {...pageProps} />)}
-        </Fragment>
+        <ReadonlyEthersProvider>
+          <Fragment>
+            <CssBaseline />
+            {getLayout(<Component {...pageProps} />)}
+          </Fragment>
+        </ReadonlyEthersProvider>
       </AuthenticationProvider>
     </UseWalletProvider>
   )

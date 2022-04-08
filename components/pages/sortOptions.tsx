@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import clsx from 'clsx'
+import { SortOptionsContext } from 'context'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useContext } from 'react'
@@ -10,10 +11,6 @@ export declare interface SortOptionsProps {
   className?: string
   children: React.ReactNode
 }
-
-const SortOptionsContext = React.createContext<
-  Pick<SortOptionsProps, 'sortKey'>
->({ sortKey: '' })
 
 export function SortOptions({
   sortKey,

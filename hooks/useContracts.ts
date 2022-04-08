@@ -4,8 +4,10 @@ import { BigNumber } from 'ethers'
 import React from 'react'
 
 export function useERC20(address: string, provider: Provider) {
-  const contract = ERC20__factory.connect(address, provider)
-  return contract
+  return React.useMemo(
+    () => ERC20__factory.connect(address, provider),
+    [address, provider]
+  )
 }
 
 export function useERC20Balance(contract: ERC20, account?: string) {
