@@ -1,12 +1,13 @@
 import styled from '@emotion/styled'
-import { getGamesMine } from 'api'
+import { getGamesMine, getUser } from 'api'
 import { IcoMoonIcon } from 'components/icons'
 import { Navbar } from 'components/layout'
 import { GameCell } from 'components/pages'
 import { NextPage } from 'next'
+import Head from 'next/head'
 import Link from 'next/link'
 import { Fragment, useCallback, useEffect, useState } from 'react'
-import { GameEntity, GameInfo, NavLinks } from 'types'
+import { GameEntity, GameInfo, NavLinks, UserEntity } from 'types'
 
 declare interface ProfileHomeProps {
   wildcard: string | null
@@ -40,7 +41,12 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
   `
   const { NEXT_PUBLIC_URL } = process.env
   const profileUrl = `${NEXT_PUBLIC_URL}/profile/${wildcard}`
+  const [user, setUser] = useState<UserEntity>()
   const [games, setGames] = useState<GameInfo[]>([])
+  const getUserInfo = useCallback(async () => {
+    const res = await getUser(wildcard as string)
+    setUser(res)
+  }, [wildcard])
   const getUserGames = useCallback(async () => {
     const res = await getGamesMine({
       username: wildcard as string,
@@ -54,31 +60,39 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
     }))
     setGames(games)
   }, [wildcard])
+  const userInfoHeader =
+    user?.nickname || user?.username || (wildcard as string)
 
   useEffect(() => {
+    getUserInfo()
     getUserGames()
-  }, [getUserGames])
+  }, [getUserGames, getUserInfo])
 
   return (
-    <Layout wildcard={wildcard}>
-      <Container>
-        <h1>{wildcard}</h1>
-        <ProfileColumn>
-          <LinkGroup href={profileUrl} name={wildcard as string} icon="globe" />
-        </ProfileColumn>
-        <GameColumn>
-          {games.map((game, index) => (
-            <GameCell
-              small
-              key={`${game.id}-${index}`}
-              game={game}
-              width={306}
-              height={243}
-            />
-          ))}
-        </GameColumn>
-      </Container>
-    </Layout>
+    <Fragment>
+      <Head>
+        <title>{userInfoHeader} - w3itch.io</title>
+      </Head>
+      <Layout wildcard={wildcard}>
+        <Container>
+          <h1>{userInfoHeader}</h1>
+          <ProfileColumn>
+            <LinkGroup href={profileUrl} name={userInfoHeader} icon="globe" />
+          </ProfileColumn>
+          <GameColumn>
+            {games.map((game, index) => (
+              <GameCell
+                small
+                key={`${game.id}-${index}`}
+                game={game}
+                width={306}
+                height={243}
+              />
+            ))}
+          </GameColumn>
+        </Container>
+      </Layout>
+    </Fragment>
   )
 }
 

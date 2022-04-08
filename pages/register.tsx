@@ -4,6 +4,7 @@ import { RedButton } from 'components/buttons'
 import { InputCheckbox, InputRow } from 'components/forms'
 import { ConnectWallet, PageCard, StatHeader } from 'components/pages'
 import { NextPage } from 'next'
+import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { Fragment, useEffect, useState } from 'react'
@@ -144,113 +145,120 @@ const Register: NextPage = () => {
   }, [isConnected, wallet.account])
 
   return (
-    <Container>
-      <PageCard>
-        <StatHeader title="Create an account on w3itch.io" />
-        <RegisterForm>
-          <FormColumn>
-            {!isConnected && (
-              <Fragment>
-                <ConnectLabelWrapper>
-                  <ConnectLabel>Connect wallet</ConnectLabel>
-                  {invalidData.address && (
-                    <ConnectMessage>
-                      {invalidData.address.message}
-                    </ConnectMessage>
-                  )}
-                </ConnectLabelWrapper>
-                <ConnectWallet />
-              </Fragment>
-            )}
-            {isConnected && (
+    <Fragment>
+      <Head>
+        <title>Register account - w3itch.io</title>
+      </Head>
+      <Container>
+        <PageCard>
+          <StatHeader title="Create an account on w3itch.io" />
+          <RegisterForm>
+            <FormColumn>
+              {!isConnected && (
+                <Fragment>
+                  <ConnectLabelWrapper>
+                    <ConnectLabel>Connect wallet</ConnectLabel>
+                    {invalidData.address && (
+                      <ConnectMessage>
+                        {invalidData.address.message}
+                      </ConnectMessage>
+                    )}
+                  </ConnectLabelWrapper>
+                  <ConnectWallet />
+                </Fragment>
+              )}
+              {isConnected && (
+                <InputRow
+                  disabled
+                  preview
+                  required
+                  label="Wallet address"
+                  name="address"
+                  type="text"
+                  value={registerData.address}
+                  onChange={handleRegisterData}
+                />
+              )}
+              <InputRow
+                autoFocus
+                required
+                label="Username"
+                name="username"
+                type="text"
+                invalid={invalidData.username}
+                value={registerData.username}
+                onChange={handleRegisterData}
+              />
               <InputRow
                 disabled
                 preview
-                required
-                label="Wallet address"
-                name="address"
+                center
+                label="Your profile page will be"
                 type="text"
-                value={registerData.address}
-                onChange={handleRegisterData}
+                placeholder="https://username.w3itch.io/"
+                value={profileUrl}
               />
-            )}
-            <InputRow
-              autoFocus
-              required
-              label="Username"
-              name="username"
-              type="text"
-              invalid={invalidData.username}
-              value={registerData.username}
-              onChange={handleRegisterData}
-            />
-            <InputRow
-              disabled
-              preview
-              center
-              label="Your profile page will be"
-              type="text"
-              placeholder="https://username.w3itch.io/"
-              value={profileUrl}
-            />
-            <UserConfigurator>
-              <strong>About you</strong>
-              <InputCheckbox
-                label="I'm interested in playing or downloading games on w3itch.io"
-                name="gamer"
-                checked={registerData.gamer}
-                onChange={handleRegisterData}
-              />
-              <InputCheckbox
-                label="I'm interested in distributing content on w3itch.io"
-                name="developer"
-                checked={registerData.developer}
-                onChange={handleRegisterData}
-              />
+              <UserConfigurator>
+                <strong>About you</strong>
+                <InputCheckbox
+                  label="I'm interested in playing or downloading games on w3itch.io"
+                  name="gamer"
+                  checked={registerData.gamer}
+                  onChange={handleRegisterData}
+                />
+                <InputCheckbox
+                  label="I'm interested in distributing content on w3itch.io"
+                  name="developer"
+                  checked={registerData.developer}
+                  onChange={handleRegisterData}
+                />
+                <p>
+                  You can change your responses to these questions later, they
+                  are used to hint w3itch.io in how it should present itself to
+                  you.
+                </p>
+              </UserConfigurator>
+              <Buttons>
+                <RedButton onClick={() => handleRegisterSubmit()}>
+                  Create account
+                </RedButton>
+                <LoginMessage>
+                  or already have an account?{' '}
+                  <Link href="/login" passHref>
+                    <Login>Log in</Login>
+                  </Link>
+                </LoginMessage>
+              </Buttons>
+            </FormColumn>
+            <FormColumn>
+              <h2>Who should register on w3itch.io?</h2>
               <p>
-                You can change your responses to these questions later, they are
-                used to hint w3itch.io in how it should present itself to you.
+                <strong>w3itch.io</strong> was originally created for
+                independent video games but hosts a wide range of creative
+                digital content. If you’re buying something an account is
+                optional, but recommended.
               </p>
-            </UserConfigurator>
-            <Buttons>
-              <RedButton onClick={() => handleRegisterSubmit()}>
-                Create account
-              </RedButton>
-              <LoginMessage>
-                or already have an account?{' '}
-                <Link href="/login" passHref>
-                  <Login>Log in</Login>
-                </Link>
-              </LoginMessage>
-            </Buttons>
-          </FormColumn>
-          <FormColumn>
-            <h2>Who should register on w3itch.io?</h2>
-            <p>
-              <strong>w3itch.io</strong> was originally created for independent
-              video games but hosts a wide range of creative digital content. If
-              you’re buying something an account is optional, but recommended.
-            </p>
-            <h3>I want to play games!</h3>
-            <p>
-              Although registration isn’t required, creating an account will
-              give you the ability to create collections of your favorites and
-              soon to be favorites. If you’ve bought anything on{' '}
-              <strong>w3itch.io</strong> you can even link those purchases to
-              your account to keep track of them.
-            </p>
-            <h3>I’m a developer/creator!</h3>
-            <p>
-              Great! <strong>w3itch.io</strong> is designed for creative types
-              of all kinds to quickly distribute their work easily as possible.
-              If you’re selling your content you can start right away. An
-              account also lets you submit games to the various game jams hosted
-              on <strong>w3itch.io</strong>.
-            </p>
-          </FormColumn>
-        </RegisterForm>
-      </PageCard>
-    </Container>
+              <h3>I want to play games!</h3>
+              <p>
+                Although registration isn’t required, creating an account will
+                give you the ability to create collections of your favorites and
+                soon to be favorites. If you’ve bought anything on{' '}
+                <strong>w3itch.io</strong> you can even link those purchases to
+                your account to keep track of them.
+              </p>
+              <h3>I’m a developer/creator!</h3>
+              <p>
+                Great! <strong>w3itch.io</strong> is designed for creative types
+                of all kinds to quickly distribute their work easily as
+                possible. If you’re selling your content you can start right
+                away. An account also lets you submit games to the various game
+                jams hosted on <strong>w3itch.io</strong>.
+              </p>
+            </FormColumn>
+          </RegisterForm>
+        </PageCard>
+      </Container>
+    </Fragment>
   )
 }
 

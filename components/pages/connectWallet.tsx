@@ -1,16 +1,45 @@
 import styled from '@emotion/styled'
-import { Fragment } from 'react'
+import Alert, { AlertColor } from '@mui/material/Alert'
+import Snackbar from '@mui/material/Snackbar'
+import { createContext, Fragment, useContext } from 'react'
 import { useWallet } from 'use-wallet'
 
 import { MetaMaskIcon, WalletConnectIcon } from '../icons'
 
+export declare type ConnectWalletContextValue = {
+  open: boolean
+  message: string
+  status: AlertColor
+}
+
+const defaultContextValue: ConnectWalletContextValue = {
+  open: false,
+  message: '',
+  status: 'info',
+}
+
+export const ConnectWalletContext =
+  createContext<ConnectWalletContextValue>(defaultContextValue)
+
 export function ConnectWallet() {
   const wallet = useWallet()
+  const context = useContext(ConnectWalletContext)
+  const checkWalletStatus = () => {
+    if (wallet.status === 'error') {
+      if (wallet.error?.name === 'ChainUnsupportedError') {
+        context.message = wallet.error.message
+        context.status = 'error'
+        context.open = true
+      }
+    }
+  }
   const handleConnectMetaMask = () => {
     wallet.connect('injected')
+    checkWalletStatus()
   }
   const handleConnectWalletConnect = () => {
     wallet.connect('walletconnect')
+    checkWalletStatus()
   }
 
   return (
@@ -27,6 +56,15 @@ export function ConnectWallet() {
         desc="Scan with WalletConnect to connect"
         onClick={handleConnectWalletConnect}
       />
+      <ConnectWalletContext.Provider value={defaultContextValue}>
+        <Snackbar
+          open={context.open}
+          autoHideDuration={5000}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <Alert severity={context.status}>{context.message}</Alert>
+        </Snackbar>
+      </ConnectWalletContext.Provider>
     </Fragment>
   )
 }
@@ -49,7 +87,7 @@ function ConnectButton({ icon, name, desc, onClick }: ConnectButtonProps) {
     transition: all 0.1s ease;
     margin-bottom: 20px;
     padding: 16px;
-    &:last-child {
+    &:last-of-type {
       margin-bottom: 0;
     }
     &:hover {

@@ -10,6 +10,7 @@ import MoreInformation from 'components/Game/MoreInformation'
 import UserTools from 'components/Game/UserTools'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
+import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
@@ -47,6 +48,10 @@ const GameId: NextPage<GameProps> = ({
 
   const [gameRatingMine, setGameRatingMine] =
     useState<Api.GameProjectsRatingResponse>()
+
+  const gameTitle = gameProject
+    ? `${gameProject.title} | by ${gameProject.username} | w3itch.io`
+    : 'Game - w3itch.io'
 
   const fetchGameRatingMineFn = useCallback(async () => {
     try {
@@ -94,6 +99,9 @@ const GameId: NextPage<GameProps> = ({
 
   return (
     <>
+      <Head>
+        <title>{gameTitle}</title>
+      </Head>
       {gameProject ? (
         <div className={`main ${styles.wrapper}`}>
           <div

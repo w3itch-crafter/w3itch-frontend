@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { IcoMoonIcon } from 'components/icons'
-import { Children, useReducer } from 'react'
+import { Children, Fragment, useReducer } from 'react'
 import { useSwipeable } from 'react-swipeable'
 
 declare type Direction = 'PREV' | 'NEXT'
@@ -134,12 +134,16 @@ export function GameCarousel({ children, className }: GameCarouselProps) {
           ))}
         </CarouselContainer>
       </Wrapper>
-      <SlideButtonLeft onClick={handleSlideLeft}>
-        <IcoMoonIcon name="arrow-left" />
-      </SlideButtonLeft>
-      <SlideButtonRight onClick={handleSlideRight}>
-        <IcoMoonIcon name="arrow-right" />
-      </SlideButtonRight>
+      {!!numItems && (
+        <Fragment>
+          <SlideButtonLeft onClick={handleSlideLeft}>
+            <IcoMoonIcon name="arrow-left" />
+          </SlideButtonLeft>
+          <SlideButtonRight onClick={handleSlideRight}>
+            <IcoMoonIcon name="arrow-right" />
+          </SlideButtonRight>
+        </Fragment>
+      )}
     </Carousel>
   )
 }

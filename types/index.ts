@@ -93,6 +93,11 @@ export declare type UserEntity = BaseEntity & {
   bio: string
   avatar: string
 }
+export declare type AccountEntity = BaseEntity & {
+  userId: number
+  accountId: string
+  platform: 'metamask' | string
+}
 export declare type GameEntity = BaseEntity & {
   /** Creator's user ID */
   userId: number
@@ -132,6 +137,11 @@ export declare type GameEntity = BaseEntity & {
   /** game rating */
   rating: number | null
 }
+export declare type TagEntity = BaseEntity & {
+  name: string
+  label: string
+  description: string
+}
 
 export declare type GameInfo = GameEntity & {
   link: string
@@ -139,10 +149,7 @@ export declare type GameInfo = GameEntity & {
   user?: UserEntity
 }
 
-export declare type TagOption = {
-  label: string
-  value: string
-}
+export declare type TagOption = Omit<TagEntity, 'createdAt' | 'updatedAt'>
 
 export declare type NavLink = { href: string; name: string }
 export declare type NavLinks = NavLink[]
