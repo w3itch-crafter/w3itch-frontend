@@ -47,3 +47,17 @@ export const UpdateGameRatingsMine = async (
     data,
   })
 }
+
+/**
+ * delete game project rating mine
+ * @param id
+ * @returns
+ */
+export const DeleteGameRatingsMine = async (
+  id: number
+): Promise<AxiosResponse<void>> => {
+  return await backend({
+    url: `/game-projects/${id}/ratings/mine`,
+    method: 'DELETE',
+  })
+}
