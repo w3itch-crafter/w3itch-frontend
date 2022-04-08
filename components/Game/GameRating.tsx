@@ -1,8 +1,9 @@
 import { Box, Typography } from '@mui/material'
+import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import Rating from '@mui/material/Rating'
-import { UpdateGameRatingsMine } from 'api'
+import { DeleteGameRatingsMine, UpdateGameRatingsMine } from 'api'
 import { PrimaryLoadingButton } from 'components/CustomizedButtons'
 import { useSnackbar } from 'notistack'
 import { FC, useCallback, useEffect, useState } from 'react'
@@ -68,18 +69,54 @@ const GameRating: FC<GameRatingProps> = ({
           vertical: 'top',
           horizontal: 'center',
         },
-        variant: 'warning',
+        variant: 'error',
       })
     } finally {
       setRatingLoading(false)
     }
   }, [enqueueSnackbar, id, rateValue, setGameRatingDialogOpen, handleRefresh])
 
+  const handleDeleteRating = useCallback(async () => {
+    if (!window.confirm('Are you sure you want to delete your rating?')) {
+      return
+    }
+
+    try {
+      const deleteGameRatingsMineResult = await DeleteGameRatingsMine(id)
+      if (deleteGameRatingsMineResult.status === 200) {
+        enqueueSnackbar('Game rating deleted success', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'success',
+        })
+        setGameRatingDialogOpen(false)
+        handleRefresh()
+      } else {
+        console.error(deleteGameRatingsMineResult)
+        throw new Error('deleteGameRatingsMineResult error')
+      }
+    } catch (error) {
+      console.error(error)
+      enqueueSnackbar('Game rating deletion failed', {
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'center',
+        },
+        variant: 'error',
+      })
+    }
+  }, [enqueueSnackbar, id, handleRefresh, setGameRatingDialogOpen])
+
   useEffect(() => {
     if (gameRatingMine) {
       setRateValue(calcRating(gameRatingMine.rating || 0))
+    } else {
+      setRateValue(0)
     }
-  }, [gameRatingMine])
+    // watch gameRatingDialogOpen change
+  }, [gameRatingDialogOpen, gameRatingMine])
 
   return (
     <Dialog
@@ -102,13 +139,30 @@ const GameRating: FC<GameRatingProps> = ({
             />
           </Box>
         </Box>
-        <Box>
+        <Box display="flex" justifyContent="space-between">
           <PrimaryLoadingButton
             onClick={handleRatingChange}
             loading={ratingLoading}
+            sx={{
+              textTransform: 'capitalize',
+            }}
           >
             Submit
           </PrimaryLoadingButton>
+          {gameRatingMine && (
+            <Button
+              variant="text"
+              onClick={handleDeleteRating}
+              sx={{
+                color: '#434343',
+                fontSize: '14px',
+                textDecoration: 'underline',
+                textTransform: 'capitalize',
+              }}
+            >
+              Delete rating
+            </Button>
+          )}
         </Box>
       </Box>
     </Dialog>
