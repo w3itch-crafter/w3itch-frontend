@@ -13,8 +13,7 @@ const ConnectedAccounts: NextPageWithLayout = () => {
   const {
     state: { account },
   } = useContext(AuthenticationContext)
-  const accountId =
-    account?.accountId && ethers.utils.getAddress(account.accountId)
+  const accountId = account?.accountId
   const { balance: daiBalance, decimals: daiDecimals } = useERC20Balance(
     dai,
     accountId
