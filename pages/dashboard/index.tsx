@@ -2,12 +2,12 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import Pagination from '@mui/material/Pagination'
 import { getGamesMine } from 'api'
 import Navigation from 'components/Dashboard/Navigation'
-import useUser from 'hooks/useUser'
+import { AuthenticationContext } from 'components/pages'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
-import { FC, Fragment } from 'react'
+import { FC, Fragment, useContext } from 'react'
 import { Dispatch, SetStateAction, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/dashboard.module.scss'
@@ -113,7 +113,9 @@ const HasGameProject: FC<HasGameProjectProps> = ({
 const Dashboard: NextPage = () => {
   const [page, setPage] = useState(1)
   const [limit] = useState(5)
-  const user = useUser()
+  const {
+    state: { user },
+  } = useContext(AuthenticationContext)
   const { data, error } = useSWR(
     {
       page,

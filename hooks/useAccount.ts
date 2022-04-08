@@ -1,16 +1,21 @@
-import { refresh } from 'api/account'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { UserEntity } from 'types'
+import { getMine, refresh } from 'api/account'
+import { AuthenticationContext } from 'components/pages'
+import { useCallback, useContext, useEffect, useMemo } from 'react'
 
-export default function useRefresh() {
-  const [user, setUser] = useState<UserEntity>()
+export function useRefresh() {
+  const { state, dispatch } = useContext(AuthenticationContext)
+  const memoState = useMemo(() => state, [state])
   const fetchUser = useCallback(async () => {
-    const user = await refresh()
-    if (typeof user === 'object') setUser(user)
-  }, [])
+    if (!state.isAuthenticated && !state.isLogout) {
+      const user = await refresh()
+      const account = await getMine()
+      dispatch({ type: 'LOGIN', payload: { user, account } })
+    }
+  }, [dispatch, state.isAuthenticated, state.isLogout])
+
   useEffect(() => {
     fetchUser()
   }, [fetchUser])
-  const memoUser = useMemo(() => user, [user])
-  return memoUser
+
+  return memoState
 }

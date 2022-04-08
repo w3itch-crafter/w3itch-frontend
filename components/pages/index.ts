@@ -1,3 +1,4 @@
+export * from './authentication'
 export * from './connectWallet'
 export * from './filterGroup'
 export * from './gameCarousel'

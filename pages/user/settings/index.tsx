@@ -4,10 +4,10 @@ import { storagesUploadToIPFS } from 'api'
 import { updateMe } from 'api/users'
 import { RedButton } from 'components/buttons'
 import { InputCheckbox, InputRow } from 'components/forms'
-import useUser from 'hooks/useUser'
+import { AuthenticationContext } from 'components/pages'
 import Image from 'next/image'
 import path from 'path'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useContext, useEffect, useRef, useState } from 'react'
 import { isBackendError, NextPageWithLayout, UserEntity } from 'types'
 import { v4 as uuid } from 'uuid'
 
@@ -37,8 +37,10 @@ const Settings: NextPageWithLayout = () => {
     margin-top: 20px;
     color: #858585;
   `
-  const userData = useUser()
-  const [user, setUser] = useState<Partial<UserEntity> | undefined>({})
+  const {
+    state: { user: userData },
+  } = useContext(AuthenticationContext)
+  const [user, setUser] = useState<Partial<UserEntity> | null>(null)
   const [updateUser, setUpdateUser] = useState<Partial<UserEntity>>({})
   const [uploading, setUploading] = useState<boolean>(false)
   const submitButton = useRef<HTMLButtonElement>(null)

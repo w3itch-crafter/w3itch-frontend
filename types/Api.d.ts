@@ -1,3 +1,5 @@
+import { AccountEntity, UserEntity } from 'types'
+
 import type { GamesListSortBy } from './enum'
 
 declare namespace Api {
@@ -33,5 +35,14 @@ declare namespace Api {
     gameId: number
     username: string
     rating: number
+  }
+
+  type AccountsMetamaskVerificationCodeResponse = {
+    code: string
+  }
+
+  type AccountsMetamaskActionResponse = {
+    user: UserEntity
+    account: AccountEntity
   }
 }
