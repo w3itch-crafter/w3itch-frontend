@@ -71,19 +71,3 @@ export const gameProjectPlayer = ({
   kind: string
 }) =>
   `${process.env.NEXT_PUBLIC_API_URL}/player?game=${gameName}&engine=${kind}`
-
-/**
- * Game project rating
- */
-export const UpdateGameRating = async (
-  id: number,
-  data: {
-    rating: number
-  }
-): Promise<AxiosResponse<Api.GameProjectsRatingResponse>> => {
-  return await backend({
-    url: `/game-projects/${id}/rating`,
-    method: 'PATCH',
-    data,
-  })
-}
