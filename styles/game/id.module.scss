@@ -160,30 +160,30 @@
     z-index: 99998;
   }
   .full_close {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     background-color: #fff;
-    border-radius: 3px;
+    border-radius: 3px 0 0 3px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     position: absolute;
     right: 0;
-    bottom: 0;
+    top: 0;
   }
   .full_open {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
+    border-radius: 3px 0 0 3px;
     background-color: #fff;
-    border-radius: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     position: fixed;
-    top: 0;
     right: 0;
+    top: 0;
     z-index: 99999;
   }
 }
