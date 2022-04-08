@@ -1,18 +1,21 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import Rating from '@mui/material/Rating'
 import { format } from 'date-fns'
 import Link from 'next/link'
 import { FC } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
 import { userHostUrl } from 'utils'
+import { calcRating } from 'utils'
 import { enumWord } from 'utils/word'
 
 interface Props {
-  gameProject: GameEntity
+  readonly gameProject: GameEntity
+  readonly gameRatingsCount: number
 }
 
-const MoreInformation: FC<Props> = ({ gameProject }) => {
+const MoreInformation: FC<Props> = ({ gameProject, gameRatingsCount }) => {
   return (
     <div>
       <div className={styles.toggle_row}>
@@ -53,6 +56,13 @@ const MoreInformation: FC<Props> = ({ gameProject }) => {
                 </Link>
               </td>
             </tr> */}
+            <tr>
+              <td>Rating</td>
+              <td>
+                <Rating readOnly value={calcRating(gameProject.rating || 0)} />(
+                {gameRatingsCount})
+              </td>
+            </tr>
             <tr>
               <td>Author</td>
               <td>

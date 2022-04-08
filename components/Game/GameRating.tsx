@@ -1,103 +1,117 @@
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
+import { Box, Typography } from '@mui/material'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
 import Rating from '@mui/material/Rating'
-import { gameProjectByID, UpdateGameRating } from 'api'
+import { UpdateGameRatingsMine } from 'api'
+import { PrimaryLoadingButton } from 'components/CustomizedButtons'
 import { useSnackbar } from 'notistack'
 import { FC, useCallback, useEffect, useState } from 'react'
-import { GameEntity } from 'types'
+import { Api } from 'types/Api'
 import { calcRating } from 'utils'
 
-interface Props {
-  gameProject: GameEntity
+export interface GameRatingProps {
+  readonly id: number
+  readonly gameRatingMine: Api.GameProjectsRatingResponse | undefined
+  readonly gameRatingDialogOpen: boolean
+  setGameRatingDialogOpen: (value: boolean) => void
+  handleRefresh: () => void
 }
 
-const GameRating: FC<Props> = ({ gameProject }) => {
+const GameRating: FC<GameRatingProps> = ({
+  id,
+  setGameRatingDialogOpen,
+  gameRatingMine,
+  gameRatingDialogOpen,
+  handleRefresh,
+}) => {
   const { enqueueSnackbar } = useSnackbar()
-
-  const [toggleRate, setToggleRate] = useState(false)
   const [rateValue, setRateValue] = useState(0)
+  const [ratingLoading, setRatingLoading] = useState(false)
 
-  useEffect(() => {
-    if (gameProject.rating) {
-      setRateValue(calcRating(gameProject.rating))
-    } else {
-      setRateValue(0)
+  const handleRatingChange = useCallback(async () => {
+    if (rateValue <= 0) {
+      enqueueSnackbar('Please choose a rating', {
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'center',
+        },
+        variant: 'warning',
+      })
+      return
     }
-  }, [gameProject])
 
-  // handle rating
-  const handleRatingChange = useCallback(
-    async (value: number) => {
-      try {
-        const gameRatingResult = await UpdateGameRating(gameProject.id, {
-          rating: value * 100,
-        })
+    try {
+      setRatingLoading(true)
 
-        if (gameRatingResult.status !== 200) {
-          console.error(gameRatingResult)
-          throw new Error('UpdateGameRating error')
-        }
+      const gameRatingResult = await UpdateGameRatingsMine(id, {
+        rating: rateValue * 100,
+      })
 
-        const gameProjectResult = await gameProjectByID(gameProject.id)
-        if (gameProjectResult.status === 200) {
-          enqueueSnackbar('Game rating success', {
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'center',
-            },
-            variant: 'success',
-          })
-
-          setRateValue(calcRating(gameProjectResult.data.rating || 0))
-          setToggleRate(false)
-        } else {
-          console.error(gameProjectResult)
-          throw new Error('gameProjectResult error')
-        }
-      } catch (err) {
-        console.log(err)
-        enqueueSnackbar('Game rating failed', {
+      if (gameRatingResult.status === 200) {
+        enqueueSnackbar('Game rating success', {
           anchorOrigin: {
             vertical: 'top',
             horizontal: 'center',
           },
-          variant: 'warning',
+          variant: 'success',
         })
+        setGameRatingDialogOpen(false)
+        handleRefresh()
+      } else {
+        console.error(gameRatingResult)
+        throw new Error('gameRatingResult error')
       }
-    },
-    [enqueueSnackbar, gameProject]
-  )
+    } catch (err) {
+      console.log(err)
+      enqueueSnackbar('Game rating failed', {
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'center',
+        },
+        variant: 'warning',
+      })
+    } finally {
+      setRatingLoading(false)
+    }
+  }, [enqueueSnackbar, id, rateValue, setGameRatingDialogOpen, handleRefresh])
+
+  useEffect(() => {
+    if (gameRatingMine) {
+      setRateValue(calcRating(gameRatingMine.rating || 0))
+    }
+  }, [gameRatingMine])
 
   return (
-    <>
-      <Rating name="read-only" value={rateValue} readOnly />
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Button
-          variant="outlined"
-          size="small"
-          onClick={() => setToggleRate(!toggleRate)}
-        >
-          Rate now
-        </Button>
-        {toggleRate && (
-          <Rating
-            name="read-only"
-            onChange={(event, newValue) => {
-              console.log(newValue)
-              handleRatingChange(newValue || 0)
-            }}
-            sx={{
-              marginLeft: '10px',
-            }}
-          />
-        )}
+    <Dialog
+      onClose={() => setGameRatingDialogOpen(false)}
+      open={gameRatingDialogOpen}
+      maxWidth={'sm'}
+      fullWidth
+    >
+      <DialogTitle>Rate</DialogTitle>
+      <Box px={3} py={2}>
+        <Typography>Choose a rating from 1 to 5 stars.</Typography>
+        <Box my={5} display="flex" justifyContent="center">
+          <Box p={1} border={2} borderColor={'#dadada'} display="inline-flex">
+            <Rating
+              value={rateValue}
+              onChange={(event, newValue) => {
+                console.log(newValue)
+                setRateValue(newValue || 0)
+              }}
+            />
+          </Box>
+        </Box>
+        <Box>
+          <PrimaryLoadingButton
+            onClick={handleRatingChange}
+            loading={ratingLoading}
+          >
+            Submit
+          </PrimaryLoadingButton>
+        </Box>
       </Box>
-    </>
+    </Dialog>
   )
 }
 

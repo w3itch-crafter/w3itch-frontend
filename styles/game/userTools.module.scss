@@ -1,0 +1,40 @@
+.user_tools {
+  position: fixed;
+  list-style: none;
+  padding: 0;
+  margin: 10px 10px 0 0;
+  top: 50px;
+  right: 0;
+  z-index: 2;
+  margin-top: 10px;
+  margin-right: 10px;
+  text-align: right;
+  opacity: 1;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  transform: translate(0, 0);
+  li {
+    margin-bottom: 10px;
+  }
+  .action_btn {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    background: black;
+    background: rgba(0, 0, 0, 0.6);
+    color: #eee;
+    font-size: 12px;
+    font-weight: bold;
+    border: 1px solid rgba(10, 10, 10, 0.5);
+    border-radius: 2px;
+    padding: 0.1428571429em 0.2857142857em;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 20%);
+    margin-bottom: 10px;
+    text-decoration: none;
+    text-align: left;
+    margin-bottom: 0;
+    font-size: 16px;
+  }
+}
