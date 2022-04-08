@@ -165,7 +165,7 @@ const GameNew: NextPage = () => {
       title: trim(game.title),
       paymentMode: game.paymentMode,
       subtitle: trim(game.subtitle),
-      gameName: game.gameName,
+      gameName: trim(game.gameName).replaceAll(' ', '_'),
       classification: ProjectClassification.GAMES,
       kind: GameEngine.RM2K3E,
       releaseStatus: ReleaseStatus.RELEASED,
