@@ -146,3 +146,15 @@ export declare type TagOption = {
 
 export declare type NavLink = { href: string; name: string }
 export declare type NavLinks = NavLink[]
+
+interface Keyboard {
+  lock(keyCodes?: Iterable<string>): Promise<void>
+  unlock(): void
+}
+
+declare global {
+  interface Navigator {
+    // See https://wicg.github.io/keyboard-lock/
+    readonly keyboard: Keyboard
+  }
+}

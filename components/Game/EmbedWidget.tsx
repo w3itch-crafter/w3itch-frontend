@@ -1,7 +1,8 @@
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import { useFullscreen } from 'ahooks'
 import { gameProjectPlayer } from 'api'
-import { FC } from 'react'
+import { FC, useCallback } from 'react'
 import { useRef, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
@@ -13,9 +14,34 @@ interface Props {
 
 const EmbedWidget: FC<Props> = ({ gameProject }) => {
   const ref = useRef(null)
-  const [, { enterFullscreen }] = useFullscreen(ref)
-
+  const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(
+    ref,
+    {
+      onExit: () => {
+        // console.log('exit')
+        if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
+          navigator.keyboard.unlock()
+        }
+      },
+    }
+  )
   const [runGameFlag, setRunGameFlag] = useState<boolean>(false)
+
+  const handleFullscreen = useCallback(() => {
+    // https://developer.mozilla.org/en-US/docs/Web/API/Lock
+    if (isFullscreen) {
+      if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
+        exitFullscreen()
+        navigator.keyboard.unlock()
+      }
+    } else {
+      if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
+        navigator.keyboard.lock(['Escape'])
+        enterFullscreen()
+      }
+    }
+  }, [enterFullscreen, exitFullscreen, isFullscreen])
+
   return (
     <div
       id="html_embed_widget_78140"
@@ -28,9 +54,8 @@ const EmbedWidget: FC<Props> = ({ gameProject }) => {
         style={{ width: '640px', height: '360px' }}
       >
         {runGameFlag ? (
-          <div className={`${styles.iframe_wrapper}`}>
+          <div className={`${styles.iframe_wrapper}`} ref={ref}>
             <iframe
-              ref={ref}
               style={{ width: '100%', height: '100%' }}
               frameBorder="0"
               src={gameProjectPlayer({
@@ -40,8 +65,12 @@ const EmbedWidget: FC<Props> = ({ gameProject }) => {
               scrolling="no"
               id="game_drop"
             ></iframe>
-            <div className={styles.full_close} onClick={enterFullscreen}>
-              <FullscreenIcon></FullscreenIcon>
+            <div className={styles.full_close} onClick={handleFullscreen}>
+              {isFullscreen ? (
+                <FullscreenExitIcon></FullscreenExitIcon>
+              ) : (
+                <FullscreenIcon></FullscreenIcon>
+              )}
             </div>
           </div>
         ) : (
