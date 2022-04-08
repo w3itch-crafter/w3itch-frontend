@@ -1,39 +1,52 @@
+import { ethers } from 'ethers'
 import { AccountEntity, UserEntity } from 'types'
 import { Api } from 'types/Api'
 import type { Wallet } from 'use-wallet/dist/cjs/types'
 
 import backend from './backend'
 
-const service = async (
+async function service(
   wallet: Wallet,
   action: 'login' | 'signup',
   username?: string
-) => {
-  const account = wallet.account
+): Promise<Api.AccountsMetamaskActionResponse> {
+  const walletAccount = wallet.account
   const {
     data: { code },
   } = await backend.post<Api.AccountsMetamaskVerificationCodeResponse>(
     '/accounts/metamask/verification-code',
-    { key: account }
+    { key: walletAccount }
   )
   const message = `\x19Ethereum Signed Message:\n Code Length: ${code.length}; Code: ${code}`
   const signature = await wallet.ethereum.request({
     method: 'personal_sign',
-    params: [message, account],
+    params: [message, walletAccount],
   })
 
   const res = await backend.post<Api.AccountsMetamaskActionResponse>(
     `/accounts/metamask/${action}`,
-    { account, signature, username }
+    { account: walletAccount, signature, username }
   )
-  return res.data
+  const { user, account } = res.data
+  return {
+    user,
+    account: {
+      ...account,
+      accountId: ethers.utils.getAddress(account.accountId),
+    },
+  }
 }
 
-export const signup = async (wallet: Wallet, username: string) => {
+export async function signup(
+  wallet: Wallet,
+  username: string
+): Promise<Api.AccountsMetamaskActionResponse> {
   return await service(wallet, 'signup', username)
 }
 
-export const login = async (wallet: Wallet) => {
+export async function login(
+  wallet: Wallet
+): Promise<Api.AccountsMetamaskActionResponse> {
   return await service(wallet, 'login')
 }
 
@@ -52,8 +65,8 @@ export async function logout(): Promise<void> {
 
 export async function getMine(): Promise<AccountEntity | null> {
   try {
-    const res = await backend.get<AccountEntity>('/accounts/mine')
-    return res.data
+    const { data } = await backend.get<AccountEntity>('/accounts/mine')
+    return { ...data, accountId: ethers.utils.getAddress(data.accountId) }
   } catch (error) {
     return null
   }
