@@ -24,11 +24,11 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     <UseWalletProvider
       connectors={{
         injected: {
-          chainId: [1, 4, 56, 97],
+          chainId: [4],
         },
         walletconnect: {
           rpc: {
-            1: 'https://mainnet.infura.io/v3/a0d8c94ba9a946daa5ee149e52fa5ff1',
+            // 1: 'https://mainnet.infura.io/v3/a0d8c94ba9a946daa5ee149e52fa5ff1',
             4: 'https://rinkeby.infura.io/v3/a0d8c94ba9a946daa5ee149e52fa5ff1',
           },
           bridge: 'https://bridge.walletconnect.org',

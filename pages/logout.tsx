@@ -1,4 +1,5 @@
 import { NextPage } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect } from 'react'
 
@@ -16,7 +17,11 @@ const Logout: NextPage = () => {
     startLogout()
   }, [startLogout])
 
-  return null
+  return (
+    <Head>
+      <title>Register account - w3itch.io</title>
+    </Head>
+  )
 }
 
 export default Logout

@@ -4,9 +4,10 @@ import { getGamesMine } from 'api'
 import Navigation from 'components/Dashboard/Navigation'
 import useUser from 'hooks/useUser'
 import type { NextPage } from 'next'
+import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
-import type { FC } from 'react'
+import { FC, Fragment } from 'react'
 import { Dispatch, SetStateAction, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/dashboard.module.scss'
@@ -123,24 +124,26 @@ const Dashboard: NextPage = () => {
     getGamesMine
   )
 
-  console.log('data', data)
-
   return (
-    <div className={stylesCommon.main}>
-      <div className={stylesCommon.inner_column}>
-        <div
-          id="dashboard_page_79202"
-          className={`${styles.dashboard_page} ${styles.page_widget}`}
-        >
+    <Fragment>
+      <Head>
+        <title>Creator Dashboard - w3itch.io</title>
+      </Head>
+      <div className={stylesCommon.main}>
+        <div className={stylesCommon.inner_column}>
           <div
-            id="user_header_widget_27838"
-            className="user_header_widget tabbed_header_widget"
+            id="dashboard_page_79202"
+            className={`${styles.dashboard_page} ${styles.page_widget}`}
           >
-            <div className={styles.stat_header_widget}>
-              <div className={styles.text_container}>
-                <h2>Creator Dashboard</h2>
-              </div>
-              {/* <div className={styles.stats_container}>
+            <div
+              id="user_header_widget_27838"
+              className="user_header_widget tabbed_header_widget"
+            >
+              <div className={styles.stat_header_widget}>
+                <div className={styles.text_container}>
+                  <h2>Creator Dashboard</h2>
+                </div>
+                {/* <div className={styles.stats_container}>
                 <div className={styles.stat_box}>
                   <div className={styles.stat_value}>0</div>
                   <div className={styles.stat_label}>Views</div>
@@ -177,10 +180,10 @@ const Dashboard: NextPage = () => {
                   </a>
                 </Link>
               </div> */}
+              </div>
+              <Navigation />
             </div>
-            <Navigation />
-          </div>
-          {/* <div className={`${styles.header_notification} ${styles.itchio_tip}`}>
+            {/* <div className={`${styles.header_notification} ${styles.itchio_tip}`}>
             <strong>itch.io tips </strong>
             <span>
               Engage with your audience · Post to your development log to share
@@ -196,24 +199,25 @@ const Dashboard: NextPage = () => {
               <ArrowRightAltIcon />
             </a>
           </div> */}
-          <div className={styles.padded}>
-            {!user ||
-            error ||
-            !data ||
-            (!data.meta.totalItems && !data.data.length) ? (
-              <EmptyGameProject />
-            ) : (
-              <HasGameProject
-                page={page}
-                setPage={setPage}
-                meta={data.meta}
-                items={data.data}
-              />
-            )}
+            <div className={styles.padded}>
+              {!user ||
+              error ||
+              !data ||
+              (!data.meta.totalItems && !data.data.length) ? (
+                <EmptyGameProject />
+              ) : (
+                <HasGameProject
+                  page={page}
+                  setPage={setPage}
+                  meta={data.meta}
+                  items={data.data}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Fragment>
   )
 }
 

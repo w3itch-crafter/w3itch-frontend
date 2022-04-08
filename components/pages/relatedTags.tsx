@@ -1,6 +1,12 @@
 import styled from '@emotion/styled'
 import Link from 'next/link'
-import Select, { GroupBase, StylesConfig } from 'react-select'
+import { useRouter } from 'next/router'
+import Select, {
+  ActionMeta,
+  GroupBase,
+  SingleValue,
+  StylesConfig,
+} from 'react-select'
 import { TagOption } from 'types'
 
 export declare interface RelatedTagsProps {
@@ -54,8 +60,28 @@ export function RelatedTags({ tags, placeholder }: RelatedTagsProps) {
       borderRadius: '3px',
     }),
     input: (prev) => ({ ...prev, padding: '0', margin: '0 1px' }),
-    indicatorSeparator: () => ({ display: 'none' }),
+    indicatorSeparator: (prev) => ({ ...prev, margin: '0 4px 0 0' }),
     dropdownIndicator: (prev) => ({ ...prev, padding: '0' }),
+  }
+  const router = useRouter()
+  const { pathname } = router
+  const { tags: queryTags } = router.query
+  const firstFiveTags = tags.slice(0, 5)
+  const selectedTags = new Set<string>([])
+  if (typeof queryTags === 'string') selectedTags.add(queryTags)
+  if (Array.isArray(queryTags)) queryTags.forEach((t) => selectedTags.add(t))
+  const pushNewRoute = () => {
+    const query = { ...router.query, tags: [...selectedTags] }
+    router.push({ pathname, query })
+  }
+  const handleSelectChange = (
+    newValue: SingleValue<TagOption>,
+    actionMeta: ActionMeta<TagOption>
+  ) => {
+    if (newValue && actionMeta.action === 'select-option') {
+      selectedTags.add(newValue.name)
+      pushNewRoute()
+    }
   }
 
   return (
@@ -80,8 +106,20 @@ export function RelatedTags({ tags, placeholder }: RelatedTagsProps) {
         </svg>
       </Icon>
       <TagSelector>
-        <Select options={tags} placeholder={placeholder} styles={selectStyle} />
+        <Select
+          id="tag-select"
+          instanceId="tag-select-instance"
+          inputId="tag-select-input"
+          isOptionSelected={() => false}
+          options={tags}
+          placeholder={placeholder}
+          styles={selectStyle}
+          onChange={handleSelectChange}
+        />
       </TagSelector>
+      {firstFiveTags.map((tag) => (
+        <TagSegmented tag={tag} key={tag.id} />
+      ))}
       <TagsLabel>
         <BrowseTopTags>
           (
@@ -91,6 +129,46 @@ export function RelatedTags({ tags, placeholder }: RelatedTagsProps) {
           )
         </BrowseTopTags>
       </TagsLabel>
+    </Container>
+  )
+}
+
+declare interface TagSegmentedProps {
+  tag: TagOption
+}
+function TagSegmented({ tag }: TagSegmentedProps) {
+  const Container = styled.div`
+    color: #606060;
+    font-size: 14px;
+    display: flex;
+    height: 30px;
+    box-sizing: border-box;
+    & a {
+      border: 1px solid;
+      border-color: #dadada;
+      text-decoration: none;
+      font-weight: bold;
+      color: inherit;
+      display: flex;
+      padding: 0 8px;
+      align-items: center;
+      &:first-of-type {
+        border-radius: 3px;
+      }
+      &:first-of-type:not(:last-of-type) {
+        border-radius: 3px 0 0 3px;
+      }
+      &:last-of-type:not(:first-of-type) {
+        border-left: 0;
+        border-radius: 0 3px 3px 0;
+      }
+    }
+  `
+  const href = `?tags=${tag.name}`
+
+  return (
+    <Container>
+      <Link href={href}>{tag.label}</Link>
     </Container>
   )
 }

@@ -60,6 +60,7 @@ w3itch
 const CommentPolicy: NextPage = () => (
   <>
     <Head>
+      <title>Privacy Policy - w3itch.io</title>
       <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css"

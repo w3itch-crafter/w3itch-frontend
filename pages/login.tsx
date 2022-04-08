@@ -1,9 +1,14 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import styled from '@emotion/styled'
-import { ConnectWallet, PageCard, StatHeader } from 'components/pages'
+import {
+  ConnectWallet,
+  ConnectWalletContext,
+  PageCard,
+  StatHeader,
+} from 'components/pages'
 import { NextPage } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useContext, useEffect, useState } from 'react'
 import { useWallet } from 'use-wallet'
 import { Wallet } from 'use-wallet/dist/cjs/types'
 
@@ -19,29 +24,46 @@ const Login: NextPage = () => {
   `
   const wallet = useWallet()
   const router = useRouter()
-  const [hasStarted, setHasStarted] = useState(false)
   const isConnected = wallet.isConnected()
-  const startLogin = useCallback(async (wallet: Wallet) => {
-    await login(wallet)
-    await router.replace('/games')
-  }, [])
+  const [hasStarted, setHasStarted] = useState(false)
+  const context = useContext(ConnectWalletContext)
+  const startLogin = useCallback(
+    (wallet: Wallet) => {
+      login(wallet).then(async () => await router.replace('/games'))
+    },
+    [router]
+  )
+  const checkWalletStatus = useCallback(() => {
+    if (isConnected && hasStarted) {
+      context.message =
+        "You're already started login, if your wallet not response, please refresh this page."
+      context.status = 'info'
+      context.open = true
+    }
+  }, [context, hasStarted, isConnected])
 
   useEffect(() => {
     if (isConnected && !hasStarted) {
       setHasStarted(true)
       startLogin(wallet)
     }
-  }, [isConnected])
+    checkWalletStatus()
+  }, [checkWalletStatus, hasStarted, isConnected, startLogin, wallet])
 
   return (
-    <Container>
-      <PageCard>
-        <StatHeader title="Log in to your w3itch.io account" />
-        <Padded>
-          <ConnectWallet />
-        </Padded>
-      </PageCard>
-    </Container>
+    <Fragment>
+      <Head>
+        <title>Log in - w3itch.io</title>
+      </Head>
+      <Container>
+        <PageCard>
+          <StatHeader title="Log in to your w3itch.io account" />
+          <Padded>
+            <ConnectWallet />
+          </Padded>
+        </PageCard>
+      </Container>
+    </Fragment>
   )
 }
 

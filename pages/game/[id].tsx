@@ -4,6 +4,7 @@ import GameRating from 'components/Game/GameRating'
 import MoreInformation from 'components/Game/MoreInformation'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
+import Head from 'next/head'
 import Image from 'next/image'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
@@ -22,8 +23,15 @@ declare interface GameProps {
 }
 
 const GameId: NextPage<GameProps> = ({ gameProject }) => {
+  const gameTitle = gameProject
+    ? `${gameProject.title} | by ${gameProject.username} | w3itch.io`
+    : 'Game - w3itch.io'
+
   return (
     <>
+      <Head>
+        <title>{gameTitle}</title>
+      </Head>
       {gameProject ? (
         <div className={`main ${styles.wrapper}`}>
           <div

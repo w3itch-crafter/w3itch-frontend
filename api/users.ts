@@ -19,6 +19,18 @@ export async function getMe(): Promise<UserEntity | boolean> {
   }
 }
 
+export async function getUser(
+  username: string
+): Promise<UserEntity | undefined> {
+  try {
+    if (!username) return undefined
+    const res = await backend.get<UserEntity>(`/users/${username}`)
+    return res.data
+  } catch (e) {
+    return undefined
+  }
+}
+
 export async function updateMe(
   user: Partial<UserEntity>
 ): Promise<UserEntity | BackendErrorResponse> {

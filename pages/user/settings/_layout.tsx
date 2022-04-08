@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import clsx from 'clsx'
 import { Footer, Navbar } from 'components/layout'
 import { PageCard, StatHeader } from 'components/pages'
+import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { Fragment } from 'react'
@@ -58,6 +59,9 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <Fragment>
+      <Head>
+        <title>Account settings - w3itch.io</title>
+      </Head>
       <Navbar />
       <main>
         <Container>
