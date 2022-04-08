@@ -1,8 +1,5 @@
 import { InputRow } from 'components/forms'
-import {
-  AuthenticationContext,
-  ReadonlyEthersProviderContext,
-} from 'components/pages'
+import { AuthenticationContext, ReadonlyEthersProviderContext } from 'context'
 import { ethers } from 'ethers'
 import { useERC20, useERC20Balance } from 'hooks'
 import { Fragment, useContext } from 'react'

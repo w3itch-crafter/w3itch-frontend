@@ -1,11 +1,6 @@
 import styled from '@emotion/styled'
-import {
-  AuthenticationContext,
-  ConnectWallet,
-  ConnectWalletContext,
-  PageCard,
-  StatHeader,
-} from 'components/pages'
+import { ConnectWallet, PageCard, StatHeader } from 'components/pages'
+import { AuthenticationContext, ConnectWalletContext } from 'context'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'

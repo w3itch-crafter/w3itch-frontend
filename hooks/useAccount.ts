@@ -1,5 +1,5 @@
 import { getMine, refresh } from 'api/account'
-import { AuthenticationContext } from 'components/pages'
+import { AuthenticationContext } from 'context'
 import { useCallback, useContext, useEffect, useMemo } from 'react'
 
 export function useRefresh() {
