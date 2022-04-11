@@ -33,7 +33,9 @@ import { createGame, gameValidate, storagesUploadToIPFS } from 'api/index'
 import { PrimaryLoadingButton } from 'components/CustomizedButtons'
 import FormAppStoreLinks from 'components/Game/FormAppStoreLinks'
 import FormCharset from 'components/Game/FormCharset'
+import FormPricing from 'components/Game/FormPricing'
 import FormTags from 'components/Game/FormTags'
+import TokenList from 'components/TokenList'
 import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
@@ -41,6 +43,7 @@ import { trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
+import { Token } from 'types'
 import {
   Community,
   GameEngine,
@@ -50,7 +53,6 @@ import {
   ReleaseStatus,
 } from 'types/enum'
 import { fileUrl, parseUrl, processMessage } from 'utils'
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let MESSAGE_SUBMIT_KEY: any
 
@@ -64,19 +66,26 @@ const GameNew: NextPage = () => {
   const [screenshotsFiles, setScreenshotsFiles] = useState<File[]>()
   const [submitLoading, setSubmitLoading] = useState<boolean>(false)
 
+  const [tokenListDialogOpen, setTtokenListDialogOpen] = useState(false)
+  const [currentSelectToken, setCurrentSelectToken] = useState<Token>(
+    {} as Token
+  )
+  const [currentSelectTokenAmount, setCurrentSelectTokenAmount] =
+    useState<number>(0)
+
   const {
     register,
     handleSubmit,
     setValue,
     control,
-    // watch,
+    watch,
     formState: { errors: formErrors },
   } = useForm<Game>({
     resolver: resolverGame,
     defaultValues: {
       paymentMode: PaymentMode.DISABLE_PAYMENTS,
       community: Community.DISABLED,
-      genre: Genre.NO_GENRE,
+      genre: Genre.ROLE_PLAYING,
       tokenId: 0,
       tags: [],
       appStoreLinks: [],
@@ -85,7 +94,7 @@ const GameNew: NextPage = () => {
     },
   })
 
-  // console.log(watch('description'))
+  console.log(watch('paymentMode'))
 
   const handleAllImages = async () => {
     const promiseArray = []
@@ -473,72 +482,15 @@ const GameNew: NextPage = () => {
                       </FormControl>
                     </div>
 
-                    <div className={styles.price_picker}>
-                      <div className="payment_modes">
-                        <Controller
-                          control={control}
-                          name="paymentMode"
-                          render={({ field }) => (
-                            <FormControl
-                              fullWidth
-                              error={Boolean(formErrors.paymentMode)}
-                            >
-                              <FormLabel id="form-pricing">Pricing</FormLabel>
-                              <RadioGroup
-                                {...field}
-                                row
-                                aria-labelledby="form-pricing"
-                                defaultValue="DISABLE_PAYMENTS"
-                              >
-                                <FormControlLabel
-                                  value="FREE"
-                                  control={<Radio disabled />}
-                                  label="$0 or donate"
-                                />
-                                <FormControlLabel
-                                  value="PAID"
-                                  control={<Radio disabled />}
-                                  label="Paid"
-                                />
-                                <FormControlLabel
-                                  value="DISABLE_PAYMENTS"
-                                  control={<Radio />}
-                                  label="No payments"
-                                />
-                              </RadioGroup>
-                              <FormHelperText>
-                                {formErrors?.paymentMode?.message}
-                              </FormHelperText>
-                            </FormControl>
-                          )}
-                        />
-                      </div>
-
-                      {/* <div className="mode_free">
-                            <p className={styles.sub}>
-                              Someone downloading your project will be asked for a
-                              donation before getting access. They can skip to
-                              download for free.
-                            </p>
-                            <div className="price_inputs">
-                              <div className="suggested_price">
-                                <FormControl fullWidth>
-                                  <TextField
-                                    id="outlined-basic"
-                                    label="Suggested donation — Default donation amount"
-                                    variant="outlined"
-                                    placeholder="$2.00"
-                                  />
-                                </FormControl>
-                              </div>
-                            </div>
-                          </div> */}
-
-                      <p className={styles.sub}>
-                        {
-                          "The project's files will be freely available and no donations can be made"
-                        }
-                      </p>
+                    <div className={styles.input_row}>
+                      <FormPricing
+                        control={control}
+                        errors={formErrors}
+                        watch={watch}
+                        token={currentSelectToken}
+                        setTtokenListDialogOpen={setTtokenListDialogOpen}
+                        tokenAmountChange={setCurrentSelectTokenAmount}
+                      />
                     </div>
 
                     <div
@@ -862,6 +814,15 @@ const GameNew: NextPage = () => {
           </div>
         </div>
       </div>
+      <TokenList
+        open={tokenListDialogOpen}
+        setOpen={setTtokenListDialogOpen}
+        selectToken={(token) => {
+          console.log(token)
+          setCurrentSelectToken(token)
+          setTtokenListDialogOpen(false)
+        }}
+      />
     </Fragment>
   )
 }
