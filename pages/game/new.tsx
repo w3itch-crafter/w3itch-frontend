@@ -9,6 +9,7 @@ import {
   TextField,
 } from '@mui/material'
 import Select from '@mui/material/Select'
+import { AxiosError } from 'axios'
 import type { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
@@ -28,7 +29,7 @@ import { Controller, FieldError, SubmitHandler, useForm } from 'react-hook-form'
 import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
-import { createGame, storagesUploadToIPFS } from 'api/index'
+import { createGame, gameValidate, storagesUploadToIPFS } from 'api/index'
 import { PrimaryLoadingButton } from 'components/CustomizedButtons'
 import FormAppStoreLinks from 'components/Game/FormAppStoreLinks'
 import FormCharset from 'components/Game/FormCharset'
@@ -48,7 +49,7 @@ import {
   ProjectClassification,
   ReleaseStatus,
 } from 'types/enum'
-import { fileUrl, parseUrl } from 'utils'
+import { fileUrl, parseUrl, processMessage } from 'utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let MESSAGE_SUBMIT_KEY: any
@@ -187,10 +188,16 @@ const GameNew: NextPage = () => {
     formData.append('game', JSON.stringify(gameData))
 
     try {
+      // check field
+      const gameValidateResult = await gameValidate(gameData)
+      if (gameValidateResult.status !== 200) {
+        console.error('gameValidateResult', gameValidateResult)
+        throw new Error('gameValidate error')
+      }
+
       const createGameResult = await createGame(formData)
       console.log('createGameResult', createGameResult)
 
-      // @TODO 409
       if (createGameResult.status === 201) {
         enqueueSnackbar('Uploaded successfully', {
           anchorOrigin: {
@@ -200,27 +207,30 @@ const GameNew: NextPage = () => {
           variant: 'success',
         })
         router.push('/dashboard')
-      } else if (createGameResult.status === 409) {
-        enqueueSnackbar('The name of the game is repeated, please modify it.', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
       } else {
-        enqueueSnackbar('Upload failed', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'error',
-        })
+        console.error('createGame', createGameResult)
+        throw new Error('createGame error')
       }
-    } catch (error) {
-      // @TODO 400 404 500
-      console.error('error: ', error)
-      enqueueSnackbar('Upload failed', {
+    } catch (error: unknown) {
+      console.error('createGame error: ', error)
+
+      const err = error as AxiosError<{
+        error: string
+        message: string | string[]
+        statusCode: number
+      }>
+
+      let messageContent = ''
+
+      if (err?.response) {
+        const statusCode = err?.response?.status
+        const message = processMessage(err?.response?.data.message || 'failed')
+        messageContent = `statusCode: ${statusCode}, message: ${message}`
+      } else {
+        messageContent = (error as Error).message
+      }
+
+      enqueueSnackbar(messageContent, {
         anchorOrigin: {
           vertical: 'top',
           horizontal: 'center',

@@ -24,3 +24,16 @@ export function buildQuerySting(
   const queryStr = query.toString()
   return queryStr ? `?${queryStr}` : ''
 }
+
+/**
+ * process message
+ * @param messages
+ * @returns
+ */
+export const processMessage = (messages: string | string[]) => {
+  if (typeof messages === 'string') {
+    return messages
+  } else {
+    return messages.join()
+  }
+}

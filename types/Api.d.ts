@@ -1,6 +1,15 @@
 import { AccountEntity, UserEntity } from 'types'
 
-import type { GamesListSortBy } from './enum'
+import type {
+  Community,
+  GameEngine,
+  GameFileCharset,
+  GamesListSortBy,
+  Genre,
+  PaymentMode,
+  ProjectClassification,
+  ReleaseStatus,
+} from './enum'
 
 declare namespace Api {
   type UploadToIPFS = {
@@ -17,6 +26,25 @@ declare namespace Api {
     page?: number
     sortBy?: GamesListSortBy
     order?: 'ASC' | 'DESC'
+  }
+
+  type GameProjectDto = {
+    title: string
+    paymentMode: PaymentMode
+    subtitle: string
+    gameName: string
+    charset: GameFileCharset
+    classification: ProjectClassification
+    kind: GameEngine
+    releaseStatus: ReleaseStatus
+    screenshots: string[]
+    cover: string
+    tags: string[]
+    tokenId: number
+    appStoreLinks: string[]
+    description: string
+    community: Community
+    genre: Genre
   }
 
   type Tag = {
