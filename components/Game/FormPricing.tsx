@@ -75,7 +75,20 @@ const FormPricing: FC<FormPricingProps> = ({
           marginTop: '10px',
         }}
       >
-        {watch('paymentMode') === PaymentMode.PAID ? (
+        {watch('paymentMode') === PaymentMode.FREE ? (
+          <Box>
+            <TextField
+              onChange={(event) => console.log(Number(event.target.value))}
+              size="small"
+              placeholder="amount"
+              fullWidth
+            />
+            <p className={styles.sub}>
+              Someone downloading your project will be asked for a donation
+              before getting access. They can skip to download for free.
+            </p>
+          </Box>
+        ) : watch('paymentMode') === PaymentMode.PAID ? (
           <Box
             sx={{
               display: 'flex',
