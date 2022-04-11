@@ -71,3 +71,18 @@ export const gameProjectPlayer = ({
   kind: string
 }) =>
   `${process.env.NEXT_PUBLIC_API_URL}/player?game=${gameName}&engine=${kind}`
+
+/**
+ * game project validate
+ * @param data
+ * @returns
+ */
+export const gameValidate = async (
+  data: Api.GameProjectDto
+): Promise<AxiosResponse<unknown>> => {
+  return await backend({
+    url: '/game-projects/validate',
+    method: 'POST',
+    data,
+  })
+}
