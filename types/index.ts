@@ -1,6 +1,5 @@
 import { NextPage } from 'next'
 import React from 'react'
-import { Api } from 'types/Api'
 
 import {
   Community,
@@ -87,25 +86,17 @@ declare type BaseEntity = {
   readonly createdAt: Date | string
   readonly updatedAt: Date | string
 }
-export declare type UserEntity = BaseEntity & {
-  username: string
-  nickname: string
-  bio: string
-  avatar: string
-}
 export declare type AccountEntity = BaseEntity & {
   userId: number
   accountId: string
   platform: 'metamask' | string
 }
 export declare type GameEntity = BaseEntity & {
-  /** Creator's user ID */
-  userId: number
+  /** Creator's username */
+  username: string
   /** Game title */
   title: string
   paymentMode: PaymentMode
-  /** Creator's username */
-  username: string
   /** Short description or tagline */
   subtitle: string
   /** For player */
@@ -123,9 +114,11 @@ export declare type GameEntity = BaseEntity & {
   /** Cover URL */
   cover: string
   /** Game tags */
-  tags: Api.Tag[]
+  tags: TagEntity[]
+  /** Calculated average rating of the game */
+  rating: number
   /** Tokens to be held/paid to play this game */
-  tokenId: number
+  prices: PriceEntity[]
   /** Links to other app stores */
   appStoreLinks: string[]
   /** Game description (markdown) */
@@ -134,13 +127,34 @@ export declare type GameEntity = BaseEntity & {
   community: Community
   /** The category that best describes this game */
   genre: Genre
-  /** game rating */
-  rating: number | null
+}
+export declare type PriceEntity = BaseEntity & {
+  chainId: number
+  amount: number
+  token: TokenEntity
+}
+export declare type RatingEntity = BaseEntity & {
+  gameId: number
+  username: string
+  rating: number
 }
 export declare type TagEntity = BaseEntity & {
   name: string
   label: string
   description: string
+}
+export declare type TokenEntity = BaseEntity & {
+  chainId: number
+  address: string
+  name: string
+  decimals: number
+  symbol: string
+}
+export declare type UserEntity = BaseEntity & {
+  username: string
+  nickname: string
+  bio: string
+  avatar: string
 }
 
 export declare type GameInfo = GameEntity & {
