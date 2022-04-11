@@ -74,3 +74,7 @@ export enum UniswapSupportedChainId {
   POLYGON = 137,
   POLYGON_MUMBAI = 80001,
 }
+
+export enum PancakeSwapSupportedChainId {
+  BSC_MAINNET = 56,
+}

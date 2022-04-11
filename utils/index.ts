@@ -1,3 +1,4 @@
+export * from './chains'
 export * from './file'
 export * from './game'
 export * from './tags'

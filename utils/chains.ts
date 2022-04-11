@@ -23,3 +23,17 @@ export function getChainInfoFromName(name: string): ChainInfo | undefined {
 export function getChainInfoFromId(id: string | number): ChainInfo | undefined {
   return CHAIN_INFO[id as SupportedChainId]
 }
+
+export function getSwapURL(
+  id: string | number,
+  inputCurrency?: string,
+  outputCurrency?: string
+): string | undefined {
+  const chainInfo = getChainInfoFromId(id)
+  if (!chainInfo) return undefined
+  const { name, swapLink } = chainInfo
+  const query = new URLSearchParams({ chain: name })
+  if (inputCurrency) query.set('inputCurrency', inputCurrency)
+  if (outputCurrency) query.set('outputCurrency', outputCurrency)
+  return `${swapLink}?${query.toString()}`
+}
