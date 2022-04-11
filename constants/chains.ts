@@ -1,7 +1,14 @@
-import { UniswapSupportedChainId } from 'types/enum'
+import {
+  PancakeSwapSupportedChainId,
+  UniswapSupportedChainId,
+} from 'types/enum'
 
-export type SupportedChainId = UniswapSupportedChainId
-export const SupportedChainId = { ...UniswapSupportedChainId }
+export type SupportedChainId = UniswapSupportedChainId &
+  PancakeSwapSupportedChainId
+export const SupportedChainId = {
+  ...UniswapSupportedChainId,
+  ...PancakeSwapSupportedChainId,
+}
 
 export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.MAINNET]: 'mainnet',
@@ -15,6 +22,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.ARBITRUM_RINKEBY]: 'arbitrum_rinkeby',
   [SupportedChainId.OPTIMISM]: 'optimism',
   [SupportedChainId.OPTIMISTIC_KOVAN]: 'optimistic_kovan',
+  [SupportedChainId.BSC_MAINNET]: 'binance',
 }
 
 /**
@@ -25,15 +33,17 @@ export const ALL_UNISWAP_SUPPORTED_CHAIN_IDS: SupportedChainId[] =
     (id) => typeof id === 'number'
   ) as SupportedChainId[]
 
-const ethereumLogoUrl = 'public/icons/ethereum-logo.png'
-const arbitrumLogoUrl = 'public/icons/arbitrum_logo.svg'
-const optimismLogoUrl = 'public/icons/optimistic_ethereum.svg'
+const ethereumLogoUrl = 'public/icons/ethereum-eth-logo.png'
+const arbitrumLogoUrl = 'public/icons/arbitrum-logo.svg'
+const optimismLogoUrl = 'public/icons/optimistic-ethereum-logo.svg'
 const polygonMaticLogo = 'public/icons/polygon-matic-logo.svg'
+const binanceLogoUrl = 'public/icons/binance-bnb-logo.svg'
 
 interface BaseChainInfo {
   readonly docs: string
   readonly bridge?: string
   readonly explorer: string
+  readonly swapLink: string
   readonly infoLink: string
   readonly logoUrl: string
   readonly label: string
@@ -57,6 +67,7 @@ export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.MAINNET]: {
     docs: 'https://docs.uniswap.org/',
     explorer: 'https://etherscan.io/',
+    swapLink: 'https://app.uniswap.org/#/swap',
     infoLink: 'https://info.uniswap.org/#/',
     label: 'Ethereum',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.MAINNET],
@@ -66,6 +77,7 @@ export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.RINKEBY]: {
     docs: 'https://docs.uniswap.org/',
     explorer: 'https://rinkeby.etherscan.io/',
+    swapLink: 'https://app.uniswap.org/#/swap',
     infoLink: 'https://info.uniswap.org/#/',
     label: 'Rinkeby',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.RINKEBY],
@@ -75,6 +87,7 @@ export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.ROPSTEN]: {
     docs: 'https://docs.uniswap.org/',
     explorer: 'https://ropsten.etherscan.io/',
+    swapLink: 'https://app.uniswap.org/#/swap',
     infoLink: 'https://info.uniswap.org/#/',
     label: 'Ropsten',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.ROPSTEN],
@@ -84,6 +97,7 @@ export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.KOVAN]: {
     docs: 'https://docs.uniswap.org/',
     explorer: 'https://kovan.etherscan.io/',
+    swapLink: 'https://app.uniswap.org/#/swap',
     infoLink: 'https://info.uniswap.org/#/',
     label: 'Kovan',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.KOVAN],
@@ -93,6 +107,7 @@ export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.GOERLI]: {
     docs: 'https://docs.uniswap.org/',
     explorer: 'https://goerli.etherscan.io/',
+    swapLink: 'https://app.uniswap.org/#/swap',
     infoLink: 'https://info.uniswap.org/#/',
     label: 'Görli',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.GOERLI],
@@ -103,6 +118,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     bridge: 'https://gateway.optimism.io/?chainId=1',
     docs: 'https://optimism.io/',
     explorer: 'https://optimistic.etherscan.io/',
+    swapLink: 'https://app.uniswap.org/#/swap',
     infoLink: 'https://info.uniswap.org/#/optimism/',
     label: 'Optimism',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.OPTIMISM],
@@ -116,6 +132,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     bridge: 'https://gateway.optimism.io/',
     docs: 'https://optimism.io/',
     explorer: 'https://optimistic.etherscan.io/',
+    swapLink: 'https://app.uniswap.org/#/swap',
     infoLink: 'https://info.uniswap.org/#/optimism/',
     label: 'Optimistic Kovan',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.OPTIMISTIC_KOVAN],
@@ -133,6 +150,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     bridge: 'https://bridge.arbitrum.io/',
     docs: 'https://offchainlabs.com/',
     explorer: 'https://arbiscan.io/',
+    swapLink: 'https://app.uniswap.org/#/swap',
     infoLink: 'https://info.uniswap.org/#/arbitrum',
     label: 'Arbitrum',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.ARBITRUM_ONE],
@@ -145,6 +163,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     bridge: 'https://bridge.arbitrum.io/',
     docs: 'https://offchainlabs.com/',
     explorer: 'https://rinkeby-explorer.arbitrum.io/',
+    swapLink: 'https://app.uniswap.org/#/swap',
     infoLink: 'https://info.uniswap.org/#/arbitrum/',
     label: 'Arbitrum Rinkeby',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.ARBITRUM_RINKEBY],
@@ -161,6 +180,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     bridge: 'https://wallet.polygon.technology/bridge',
     docs: 'https://polygon.io/',
     explorer: 'https://polygonscan.com/',
+    swapLink: 'https://app.uniswap.org/#/swap',
     infoLink: 'https://info.uniswap.org/#/polygon/',
     label: 'Polygon',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.POLYGON],
@@ -171,6 +191,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     bridge: 'https://wallet.polygon.technology/bridge',
     docs: 'https://polygon.io/',
     explorer: 'https://mumbai.polygonscan.com/',
+    swapLink: 'https://app.uniswap.org/#/swap',
     infoLink: 'https://info.uniswap.org/#/polygon/',
     label: 'Polygon Mumbai',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.POLYGON_MUMBAI],
@@ -180,5 +201,15 @@ export const CHAIN_INFO: ChainInfoMap = {
       symbol: 'mMATIC',
       decimals: 18,
     },
+  },
+  [SupportedChainId.BSC_MAINNET]: {
+    docs: 'https://docs.pancakeswap.finance/',
+    explorer: 'https://bscscan.com/',
+    swapLink: 'https://pancakeswap.finance/swap',
+    infoLink: 'https://pancakeswap.finance/info/',
+    label: 'Binance Smart Chain',
+    name: CHAIN_IDS_TO_NAMES[SupportedChainId.BSC_MAINNET],
+    logoUrl: binanceLogoUrl,
+    nativeCurrency: { name: 'Binance Coin', symbol: 'BNB', decimals: 18 },
   },
 }
