@@ -33,11 +33,11 @@ export const ALL_UNISWAP_SUPPORTED_CHAIN_IDS: SupportedChainId[] =
     (id) => typeof id === 'number'
   ) as SupportedChainId[]
 
-const ethereumLogoUrl = 'public/icons/ethereum-logo.png'
+const ethereumLogoUrl = 'public/icons/ethereum-eth-logo.png'
 const arbitrumLogoUrl = 'public/icons/arbitrum-logo.svg'
 const optimismLogoUrl = 'public/icons/optimistic-ethereum-logo.svg'
 const polygonMaticLogo = 'public/icons/polygon-matic-logo.svg'
-const binanceLogoUrl = 'public/icons/binance-logo.svg'
+const binanceLogoUrl = 'public/icons/binance-bnb-logo.svg'
 
 interface BaseChainInfo {
   readonly docs: string
