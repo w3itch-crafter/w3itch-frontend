@@ -1,25 +1,17 @@
 import styled from '@emotion/styled'
-import Alert, { AlertColor } from '@mui/material/Alert'
+import Alert from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
-import { createContext, Fragment, useContext } from 'react'
+import { ConnectWalletContext, ConnectWalletContextValue } from 'context'
+import { Fragment, useContext } from 'react'
 import { useWallet } from 'use-wallet'
 
 import { MetaMaskIcon, WalletConnectIcon } from '../icons'
-
-export declare type ConnectWalletContextValue = {
-  open: boolean
-  message: string
-  status: AlertColor
-}
 
 const defaultContextValue: ConnectWalletContextValue = {
   open: false,
   message: '',
   status: 'info',
 }
-
-export const ConnectWalletContext =
-  createContext<ConnectWalletContextValue>(defaultContextValue)
 
 export function ConnectWallet() {
   const wallet = useWallet()

@@ -1,3 +1,4 @@
+import { AuthenticationContext } from 'context'
 import React from 'react'
 import { AccountEntity, UserEntity } from 'types'
 
@@ -9,17 +10,9 @@ export declare type AuthenticationState = {
   account: AccountEntity | null
 }
 
-declare type AuthenticationAction =
+export declare type AuthenticationAction =
   | { type: 'LOGIN'; payload: Pick<AuthenticationState, 'user' | 'account'> }
   | { type: 'LOGOUT' }
-
-declare interface AuthenticationContextValue {
-  state: AuthenticationState
-  dispatch: React.Dispatch<AuthenticationAction>
-}
-
-export const AuthenticationContext =
-  React.createContext<AuthenticationContextValue>(undefined as never)
 
 function authenticationReducer(
   state: AuthenticationState,
