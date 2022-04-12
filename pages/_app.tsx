@@ -6,6 +6,8 @@ import {
   AuthenticationProvider,
   ReadonlyEthersProvider,
 } from 'components/pages'
+import { CurrentChainId } from 'constants/chains'
+import { providers } from 'constants/providers'
 import type { AppProps } from 'next/app'
 import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
@@ -17,6 +19,8 @@ type AppPropsWithLayout = AppProps & {
 }
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  console.log('CurrentChainId', CurrentChainId, providers)
+
   const getLayout =
     Component.getLayout ??
     ((page) => (
@@ -28,7 +32,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     <UseWalletProvider
       connectors={{
         injected: {
-          chainId: [4],
+          chainId: [CurrentChainId],
         },
         walletconnect: {
           rpc: {

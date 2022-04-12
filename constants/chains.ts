@@ -213,3 +213,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     nativeCurrency: { name: 'Binance Coin', symbol: 'BNB', decimals: 18 },
   },
 }
+
+export const CurrentChainId = Number(UniswapSupportedChainId.RINKEBY) as
+  | UniswapSupportedChainId
+  | PancakeSwapSupportedChainId

@@ -10,16 +10,16 @@ import {
 } from '@mui/material'
 import { PrimaryButton } from 'components/CustomizedButtons'
 import TokenItem from 'components/TokenList/TokenItem'
+import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
 import { isEmpty } from 'lodash'
 import { FC } from 'react'
 import { Control, Controller, FieldErrors, UseFormWatch } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
-import { Token } from 'types'
 import { PaymentMode } from 'types/enum'
 import { Game } from 'utils/validator'
 
 interface FormPricingProps {
-  readonly token: Token
+  readonly token: ERC20MulticallTokenResult
   errors: FieldErrors<Game>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<Game, any>
@@ -92,8 +92,8 @@ const FormPricing: FC<FormPricingProps> = ({
           <Box
             sx={{
               display: 'flex',
-              gap: '10px',
               flexDirection: 'column',
+              gap: '10px',
             }}
           >
             <Box>

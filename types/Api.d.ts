@@ -73,4 +73,14 @@ declare namespace Api {
     user: UserEntity
     account: AccountEntity
   }
+
+  type BlockchainsEvmTokensResponse = {
+    id: number
+    createdAt: Date
+    updatedAt: Date
+    address: string
+    symbol: string
+    chainId: number
+    chainName: string
+  }
 }

@@ -5,17 +5,22 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
 import TextField from '@mui/material/TextField'
-import { tokens } from 'data'
+import { CurrentChainId } from 'constants/chains'
+import {
+  ERC20MulticallTokenResult,
+  useERC20Multicall,
+} from 'hooks/useERC20Multicall'
+import useTokens from 'hooks/useTokens'
 import { FC } from 'react'
-import { Token } from 'types'
 
 import TokenItem from './TokenItem'
 
 export interface GameRatingProps {
   readonly open: boolean
   setOpen: (value: boolean) => void
-  selectToken: (token: Token) => void
+  selectToken: (token: ERC20MulticallTokenResult) => void
 }
 
 export interface DialogTitleProps {
@@ -50,6 +55,15 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
 
 const TokenList: FC<GameRatingProps> = ({ setOpen, open, selectToken }) => {
   // const { enqueueSnackbar } = useSnackbar()
+  const { tokens } = useTokens({ chainId: CurrentChainId })
+  console.log('tokens ', tokens)
+  const { tokensData } = useERC20Multicall(tokens)
+  console.log('tokensData ', tokensData)
+
+  const tokensList: ERC20MulticallTokenResult[] = tokensData.map((token) => ({
+    address: token.address,
+    ...token.data,
+  }))
 
   return (
     <Dialog onClose={() => setOpen(false)} open={open}>
@@ -76,12 +90,18 @@ const TokenList: FC<GameRatingProps> = ({ setOpen, open, selectToken }) => {
             padding: 0,
           }}
         >
-          {tokens.tokens.map((token) => (
-            <TokenItem
-              token={token as Token}
+          {tokensList.map((token) => (
+            <ListItem
               key={token.address}
-              selectToken={selectToken}
-            />
+              sx={{
+                padding: 0,
+              }}
+            >
+              <TokenItem
+                token={token as ERC20MulticallTokenResult}
+                selectToken={selectToken}
+              />
+            </ListItem>
           ))}
         </List>
       </DialogContent>

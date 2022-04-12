@@ -39,11 +39,11 @@ import TokenList from 'components/TokenList'
 import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
+import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
 import { trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
-import { Token } from 'types'
 import {
   Community,
   GameEngine,
@@ -67,11 +67,12 @@ const GameNew: NextPage = () => {
   const [submitLoading, setSubmitLoading] = useState<boolean>(false)
 
   const [tokenListDialogOpen, setTtokenListDialogOpen] = useState(false)
-  const [currentSelectToken, setCurrentSelectToken] = useState<Token>(
-    {} as Token
-  )
+  const [currentSelectToken, setCurrentSelectToken] =
+    useState<ERC20MulticallTokenResult>({} as ERC20MulticallTokenResult)
   const [currentSelectTokenAmount, setCurrentSelectTokenAmount] =
     useState<number>(0)
+
+  console.log('currentSelectTokenAmount', currentSelectTokenAmount)
 
   const {
     register,
@@ -83,7 +84,7 @@ const GameNew: NextPage = () => {
   } = useForm<Game>({
     resolver: resolverGame,
     defaultValues: {
-      paymentMode: PaymentMode.DISABLE_PAYMENTS,
+      paymentMode: PaymentMode.PAID,
       community: Community.DISABLED,
       genre: Genre.ROLE_PLAYING,
       tokenId: 0,
