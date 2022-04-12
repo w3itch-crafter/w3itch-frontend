@@ -39,6 +39,8 @@ import TokenList from 'components/TokenList'
 import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
+import { CurrentChainId } from 'constants'
+import { CHAIN_IDS_TO_NAMES } from 'constants'
 import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
 import { trim } from 'lodash'
 import Head from 'next/head'
@@ -159,6 +161,20 @@ const GameNew: NextPage = () => {
       return
     }
 
+    let prices = undefined
+    if (game.paymentMode === PaymentMode.PAID) {
+      prices = {
+        chainId: CurrentChainId,
+        amount: 1,
+        token: {
+          address: currentSelectToken.address,
+          symbol: currentSelectToken.symbol,
+          chainId: CurrentChainId,
+          chainName: CHAIN_IDS_TO_NAMES[CurrentChainId],
+        },
+      }
+    }
+
     MESSAGE_SUBMIT_KEY = enqueueSnackbar('uploading game...', {
       anchorOrigin: {
         vertical: 'top',
@@ -174,7 +190,6 @@ const GameNew: NextPage = () => {
 
     const gameData = {
       title: trim(game.title),
-      paymentMode: game.paymentMode,
       subtitle: trim(game.subtitle),
       gameName: trim(game.gameName).replaceAll(' ', '_'),
       classification: ProjectClassification.GAMES,
@@ -189,6 +204,8 @@ const GameNew: NextPage = () => {
       genre: Genre.NO_GENRE,
       tokenId: game.tokenId,
       charset: game.charset,
+      paymentMode: game.paymentMode,
+      prices: prices,
     }
     console.log('file', uploadGameFile)
     console.log('gameData', gameData)
@@ -196,6 +213,8 @@ const GameNew: NextPage = () => {
     const formData = new FormData()
     formData.append('file', uploadGameFile)
     formData.append('game', JSON.stringify(gameData))
+
+    // return
 
     try {
       // check field

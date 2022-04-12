@@ -7,6 +7,7 @@ import {
 import EmbedWidget from 'components/Game/EmbedWidget'
 import GameRating from 'components/Game/GameRating'
 import MoreInformation from 'components/Game/MoreInformation'
+import Purchase from 'components/Game/Purchase'
 import UserTools from 'components/Game/UserTools'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
@@ -127,9 +128,29 @@ const GameId: NextPage<GameProps> = ({
                       gameRatingsCount={gameRatingsCount}
                     />
                   </div>
+                  <div className={styles.row}>
+                    <Purchase
+                      prices={{
+                        id: 1,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                        chainId: 4,
+                        amount: 10,
+                        token: {
+                          id: 1,
+                          createdAt: new Date(),
+                          updatedAt: new Date(),
+                          address: '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735',
+                          symbol: 'DAI',
+                          chainId: 4,
+                          chainName: 'rinkeby',
+                        },
+                      }}
+                    />
+                  </div>
                   {gameProject.community === Community.DISQUS && (
                     <div className={styles.game_comments_widget}>
-                      <h2>Comments</h2>
+                      <h2 className={styles.row_title}>Comments</h2>
                       <CommentsDisqus title={gameProject.title} />
                     </div>
                   )}
