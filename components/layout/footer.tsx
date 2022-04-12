@@ -34,11 +34,11 @@ export function Footer() {
   return (
     <Container>
       <Primary>
-        <Link href="/docs/general/about" passHref>
-          <PrimaryLink>About</PrimaryLink>
+        <Link href="https://docs.w3itch.io/" passHref>
+          <PrimaryLink target="_blank">Docs</PrimaryLink>
         </Link>
-        <Link href="/docs/general/faq" passHref>
-          <PrimaryLink>FAQ</PrimaryLink>
+        <Link href="https://docs.w3itch.io/faq.html" passHref>
+          <PrimaryLink target="_blank">FAQ</PrimaryLink>
         </Link>
         <Link href="/blog" passHref>
           <PrimaryLink>Blog</PrimaryLink>
