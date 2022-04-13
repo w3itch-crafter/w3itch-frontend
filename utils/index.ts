@@ -1,3 +1,5 @@
+import { BackendErrorResponse } from 'types'
+
 export * from './chains'
 export * from './file'
 export * from './game'
@@ -36,5 +38,15 @@ export const processMessage = (messages: string | string[]) => {
     return messages
   } else {
     return messages.join()
+  }
+}
+
+export class BackendError extends Error {
+  public readonly statusCode: number
+
+  public constructor(res: BackendErrorResponse, options?: ErrorOptions) {
+    super(res.message, options)
+    this.message = res.message
+    this.statusCode = res.statusCode
   }
 }

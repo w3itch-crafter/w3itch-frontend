@@ -76,7 +76,11 @@ export declare type BackendErrorResponse = {
   statusCode: number
 }
 export function isBackendError(obj: unknown): obj is BackendErrorResponse {
-  if ((obj as BackendErrorResponse).message) return true
+  if (
+    (obj as BackendErrorResponse).message &&
+    (obj as BackendErrorResponse).statusCode
+  )
+    return true
   return false
 }
 

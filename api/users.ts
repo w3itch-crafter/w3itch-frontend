@@ -37,9 +37,7 @@ export async function updateMe(
   const res = await backend.patch<UserEntity | BackendErrorResponse>(
     '/users/me',
     user,
-    {
-      validateStatus: () => true,
-    }
+    { validateStatus: () => true }
   )
   const { status } = res
   if (status === 200) return res.data

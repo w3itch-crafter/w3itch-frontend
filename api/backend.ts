@@ -1,4 +1,6 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
+import { BackendErrorResponse } from 'types'
+import { BackendError } from 'utils'
 
 const backend = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -15,9 +17,8 @@ backend.interceptors.response.use(
     return response
   },
   function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    return Promise.reject(error)
+    const res: AxiosResponse<BackendErrorResponse> = error.response
+    return Promise.reject(new BackendError(res.data, { cause: error }))
   }
 )
 
