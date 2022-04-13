@@ -31,7 +31,7 @@ interface FormPricingProps {
   control: Control<Game, any>
   watch: UseFormWatch<Game>
   setTtokenListDialogOpen: (value: boolean) => void
-  tokenAmountChange: (value: number) => void
+  tokenAmountChange: (value: string) => void
 }
 
 const FormPricing: FC<FormPricingProps> = ({
