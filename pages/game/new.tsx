@@ -30,6 +30,7 @@ import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { createGame, gameValidate, storagesUploadToIPFS } from 'api/index'
+import BigNumber from 'bignumber.js'
 import { PrimaryLoadingButton } from 'components/CustomizedButtons'
 import FormAppStoreLinks from 'components/Game/FormAppStoreLinks'
 import FormCharset from 'components/Game/FormCharset'
@@ -39,9 +40,10 @@ import TokenList from 'components/TokenList'
 import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
-import { CHAIN_IDS_TO_NAMES, CurrentChainId } from 'constants/chains'
+import { CurrentChainId } from 'constants/chains'
+import { utils } from 'ethers'
 import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
-import { trim } from 'lodash'
+import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
@@ -54,6 +56,7 @@ import {
   ReleaseStatus,
 } from 'types/enum'
 import { fileUrl, parseUrl, processMessage } from 'utils'
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let MESSAGE_SUBMIT_KEY: any
 
@@ -71,7 +74,7 @@ const GameNew: NextPage = () => {
   const [currentSelectToken, setCurrentSelectToken] =
     useState<ERC20MulticallTokenResult>({} as ERC20MulticallTokenResult)
   const [currentSelectTokenAmount, setCurrentSelectTokenAmount] =
-    useState<number>(0)
+    useState<string>('0')
 
   console.log('currentSelectTokenAmount', currentSelectTokenAmount)
 
@@ -162,16 +165,56 @@ const GameNew: NextPage = () => {
 
     let prices = undefined
     if (game.paymentMode === PaymentMode.PAID) {
-      prices = {
-        chainId: CurrentChainId,
-        amount: 1,
-        token: {
-          address: currentSelectToken.address,
-          symbol: currentSelectToken.symbol,
-          chainId: CurrentChainId,
-          chainName: CHAIN_IDS_TO_NAMES[CurrentChainId],
-        },
+      if (isEmpty(currentSelectToken)) {
+        enqueueSnackbar('Please select Token', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'warning',
+        })
+        return
       }
+
+      if (!currentSelectTokenAmount || currentSelectTokenAmount === '0') {
+        enqueueSnackbar('Please enter amount', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'warning',
+        })
+        return
+      }
+      if (new BigNumber(currentSelectTokenAmount).lte('0')) {
+        enqueueSnackbar('Amount needs to be greater than zero', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'warning',
+        })
+        return
+      }
+
+      prices = [
+        {
+          chainId: CurrentChainId,
+          amount: utils
+            .parseUnits(currentSelectTokenAmount, currentSelectToken.decimals)
+            .toString(),
+          token: currentSelectToken.address,
+        },
+      ]
+    } else if (game.paymentMode === PaymentMode.FREE) {
+      enqueueSnackbar('Please set a donation address', {
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'center',
+        },
+        variant: 'warning',
+      })
+      return
     }
 
     MESSAGE_SUBMIT_KEY = enqueueSnackbar('uploading game...', {
@@ -182,6 +225,7 @@ const GameNew: NextPage = () => {
       variant: 'info',
       persist: true,
     })
+
     setSubmitLoading(true)
     try {
       const allImages = await handleAllImages()

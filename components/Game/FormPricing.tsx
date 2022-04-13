@@ -109,7 +109,7 @@ const FormPricing: FC<FormPricingProps> = ({
                 <TokenItem token={token} selectToken={() => void 0} />
                 <TextField
                   onChange={(event) =>
-                    tokenAmountChange(Number(event.target.value))
+                    tokenAmountChange(String(event.target.value))
                   }
                   size="small"
                   placeholder="token amount"
