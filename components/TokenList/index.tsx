@@ -8,12 +8,11 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import TextField from '@mui/material/TextField'
 import { CurrentChainId } from 'constants/chains'
-import {
-  ERC20MulticallTokenResult,
-  useERC20Multicall,
-} from 'hooks/useERC20Multicall'
+import { getAddress, isAddress } from 'ethers/lib/utils'
+import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
 import useTokens from 'hooks/useTokens'
-import { FC } from 'react'
+import useTokensList from 'hooks/useTokensList'
+import { FC, useCallback, useState } from 'react'
 
 import TokenItem from './TokenItem'
 
@@ -57,19 +56,28 @@ const TokenList: FC<GameRatingProps> = ({ setOpen, open, selectToken }) => {
   // const { enqueueSnackbar } = useSnackbar()
   const { tokens } = useTokens({ chainId: CurrentChainId })
   console.log('tokens ', tokens)
-  const { tokensData } = useERC20Multicall(tokens)
-  console.log('tokensData ', tokensData)
+  const [searchAddress, setSearchAddress] = useState('')
+  const { tokens: tokensList } = useTokensList({
+    tokensAddress: tokens,
+    searchTokenAddress: searchAddress,
+  })
 
-  const tokensList: ERC20MulticallTokenResult[] = tokensData.map((token) => ({
-    address: token.address,
-    ...token.data,
-  }))
+  const handleAddressChange = useCallback((address: string) => {
+    console.log('address', address)
+    if (isAddress(address)) {
+      console.log('aaddress', address, getAddress(address))
+
+      setSearchAddress(getAddress(address))
+    } else {
+      setSearchAddress('')
+    }
+  }, [])
 
   return (
     <Dialog onClose={() => setOpen(false)} open={open}>
       <BootstrapDialogTitle
         onClose={() => setOpen(false)}
-        id="customized-dialog-title"
+        id="tokenList-dialog-title"
       >
         Select Token
       </BootstrapDialogTitle>
@@ -80,9 +88,12 @@ const TokenList: FC<GameRatingProps> = ({ setOpen, open, selectToken }) => {
             borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
           }}
         >
-          <TextField placeholder="Search name or paste address" fullWidth />
+          <TextField
+            placeholder="Search name or paste address"
+            fullWidth
+            onChange={(event) => handleAddressChange(event.target.value)}
+          />
         </Box>
-        {/* <TokenItem token={tokens.tokens[0]} key={tokens.tokens[0].address} /> */}
         <List
           sx={{
             height: '500px',
