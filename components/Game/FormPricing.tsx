@@ -1,3 +1,4 @@
+import styled from '@emotion/styled'
 import { Box } from '@material-ui/core'
 import {
   FormControl,
@@ -17,6 +18,11 @@ import { Control, Controller, FieldErrors, UseFormWatch } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
 import { PaymentMode } from 'types/enum'
 import { Game } from 'utils/validator'
+
+const TokenInfo = styled.div`
+  display: grid;
+  gap: 10px;
+`
 
 interface FormPricingProps {
   readonly token: ERC20MulticallTokenResult
@@ -89,21 +95,15 @@ const FormPricing: FC<FormPricingProps> = ({
             </p>
           </Box>
         ) : watch('paymentMode') === PaymentMode.PAID ? (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-            }}
-          >
-            <Box>
+          <TokenInfo>
+            <div>
               <PrimaryButton
                 onClick={() => setTtokenListDialogOpen(true)}
                 variant="contained"
               >
                 Select
               </PrimaryButton>
-            </Box>
+            </div>
             {!isEmpty(token) && (
               <>
                 <TokenItem token={token} selectToken={() => void 0} />
@@ -117,7 +117,7 @@ const FormPricing: FC<FormPricingProps> = ({
                 />
               </>
             )}
-          </Box>
+          </TokenInfo>
         ) : watch('paymentMode') === PaymentMode.DISABLE_PAYMENTS ? (
           <p className={styles.sub}>
             {
