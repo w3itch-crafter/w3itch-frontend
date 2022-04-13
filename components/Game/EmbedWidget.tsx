@@ -4,7 +4,6 @@ import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import { useFullscreen } from 'ahooks'
 import { gameProjectPlayer } from 'api'
 import { useBuyNow } from 'hooks/useBuyNow'
-import { useSnackbar } from 'notistack'
 import { FC, useCallback, useEffect } from 'react'
 import { useRef, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
@@ -19,7 +18,6 @@ interface Props {
 }
 
 const EmbedWidget: FC<Props> = ({ gameProject, prices }) => {
-  const { enqueueSnackbar } = useSnackbar()
   const { buyNow } = useBuyNow()
   const ref = useRef(null)
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(
@@ -59,13 +57,6 @@ const EmbedWidget: FC<Props> = ({ gameProject, prices }) => {
       gameProject.paymentMode === PaymentMode.DISABLE_PAYMENTS ||
       gameProject.paymentMode === PaymentMode.FREE
     ) {
-      enqueueSnackbar(`Need to hold ${prices.amount} ${prices.token.symbol}`, {
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'center',
-        },
-        variant: 'info',
-      })
       buyNow({
         inputCurrency: '',
         outputCurrency: prices.token.address,
@@ -73,7 +64,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, prices }) => {
     } else {
       setRunGameFlag(true)
     }
-  }, [gameProject, prices, enqueueSnackbar, buyNow])
+  }, [gameProject, prices, buyNow])
 
   const processHoldUnlock = useCallback(() => {
     if (gameProject.paymentMode === PaymentMode.PAID) {

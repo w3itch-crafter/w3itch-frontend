@@ -1,10 +1,21 @@
+import styled from '@emotion/styled'
 import { Box } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { PrimaryButton } from 'components/CustomizedButtons'
+import { CurrentChainId } from 'constants/chains'
 import { useBuyNow } from 'hooks/useBuyNow'
+import Link from 'next/link'
 import { FC } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { Api } from 'types/Api'
+import { ExplorerDataType, getExplorerLink } from 'utils'
+
+const ExplorerLink = styled.a`
+  font-size: 120%;
+  margin-right: 6px;
+  font-weight: bold;
+  color: inherit;
+`
 
 interface PurchaseProps {
   readonly prices: Api.GameProjectPricesDto
@@ -16,7 +27,12 @@ const Purchase: FC<PurchaseProps> = ({ prices }) => {
   return (
     <Box>
       <h2 className={styles.row_title}>Purchase</h2>
-      <Box>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
         <PrimaryButton
           onClick={() =>
             buyNow({
@@ -38,16 +54,18 @@ const Purchase: FC<PurchaseProps> = ({ prices }) => {
           }}
           component="span"
         >
-          <Typography
-            component="span"
-            sx={{
-              fontWeight: 'bold',
-              fontSize: '120%',
-              marginRight: '5px',
-            }}
+          <Link
+            passHref
+            href={getExplorerLink(
+              CurrentChainId,
+              prices.token.address,
+              ExplorerDataType.TOKEN
+            )}
           >
-            {`${prices.amount} ${prices.token.symbol}`}
-          </Typography>{' '}
+            <ExplorerLink target="_blank" rel="noopener noreferrer">
+              {`${prices.amount} ${prices.token.symbol}`}
+            </ExplorerLink>
+          </Link>
           <Typography
             component="span"
             sx={{
