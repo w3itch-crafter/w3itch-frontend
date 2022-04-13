@@ -19,12 +19,8 @@ function getOrder(index: number, pos: number, numItems: number) {
   return index - pos < 0 ? numItems - Math.abs(index - pos) : index - pos
 }
 
-function getInitialState(numItems: number): CarouselState {
-  return {
-    pos: numItems - 1,
-    sliding: false,
-    dir: 'NEXT',
-  }
+function getInitialState(): CarouselState {
+  return { pos: 0, sliding: false, dir: 'NEXT' }
 }
 
 function reducer(state: CarouselState, action: CarouselAction): CarouselState {
@@ -65,12 +61,6 @@ export function GameCarousel({ children, className }: GameCarouselProps) {
   `
   const CarouselContainer = styled.div<Pick<CarouselState, 'dir' | 'sliding'>>`
     display: flex;
-    transition: ${(p) => (p.sliding ? 'none' : 'transform 1s ease')};
-    transform: ${(p) => {
-      if (!p.sliding) return 'translateX(-240px)'
-      if (p.dir === 'PREV') return 'translateX(calc(2 * -240px))'
-      return 'translateX(0%)'
-    }};
   `
   const SlideButton = styled.button`
     color: #222;
@@ -102,7 +92,7 @@ export function GameCarousel({ children, className }: GameCarouselProps) {
     }
   `
   const numItems = Children.count(children)
-  const [state, dispatch] = useReducer(reducer, getInitialState(numItems))
+  const [state, dispatch] = useReducer(reducer, getInitialState())
   const onSlide = (dir: Direction) => {
     dispatch({ type: dir, numItems })
     setTimeout(() => {
@@ -134,7 +124,7 @@ export function GameCarousel({ children, className }: GameCarouselProps) {
           ))}
         </CarouselContainer>
       </Wrapper>
-      {!!numItems && (
+      {numItems > 3 && (
         <Fragment>
           <SlideButtonLeft onClick={handleSlideLeft}>
             <IcoMoonIcon name="arrow-left" />

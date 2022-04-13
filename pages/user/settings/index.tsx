@@ -1,24 +1,29 @@
 import styled from '@emotion/styled'
-import { Alert, AlertColor, CircularProgress, Popover } from '@mui/material'
+import { Alert, AlertColor, CircularProgress, Snackbar } from '@mui/material'
 import { storagesUploadToIPFS } from 'api'
 import { updateMe } from 'api/users'
 import { RedButton } from 'components/buttons'
 import { InputCheckbox, InputRow } from 'components/forms'
 import { AuthenticationContext } from 'context'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import path from 'path'
 import { Fragment, useContext, useEffect, useRef, useState } from 'react'
-import { isBackendError, NextPageWithLayout, UserEntity } from 'types'
+import {
+  BackendErrorResponse,
+  isBackendError,
+  NextPageWithLayout,
+  UserEntity,
+} from 'types'
+import { BackendError, userHostUrl } from 'utils'
 import { v4 as uuid } from 'uuid'
 
 import Layout from './_layout'
 
 declare type PopoverState = {
-  anchor: HTMLButtonElement | null
   open: boolean
   color: AlertColor
   message: string
-  id: string
 }
 
 const Settings: NextPageWithLayout = () => {
@@ -37,20 +42,21 @@ const Settings: NextPageWithLayout = () => {
     margin-top: 20px;
     color: #858585;
   `
+  const router = useRouter()
   const {
-    state: { user: userData },
+    state: { user: userData, account, isAuthenticated },
+    dispatch,
   } = useContext(AuthenticationContext)
-  const [user, setUser] = useState<Partial<UserEntity> | null>(null)
+  const [user, setUser] = useState<Partial<UserEntity> | null>(userData)
   const [updateUser, setUpdateUser] = useState<Partial<UserEntity>>({})
   const [uploading, setUploading] = useState<boolean>(false)
   const submitButton = useRef<HTMLButtonElement>(null)
   const [popoverState, setPopoverState] = useState<PopoverState>({
-    anchor: null,
     open: false,
-    id: 'state-popover',
     color: 'success',
     message: 'Profile updated',
   })
+  const profileUrl = userHostUrl(user?.username?.toLowerCase())
   const handleChangeUserData = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
@@ -69,10 +75,16 @@ const Settings: NextPageWithLayout = () => {
       const { ext } = path.parse(file.name)
       const avatar = new FormData()
       avatar.append('file', file, `${uuid()}${ext}`)
-      const res = await storagesUploadToIPFS(avatar)
-      const { publicUrl } = res.data
-      setUser((u) => ({ ...u, avatar: publicUrl }))
-      setUpdateUser((u) => ({ ...u, avatar: publicUrl }))
+      try {
+        const res = await storagesUploadToIPFS(avatar)
+        const { publicUrl } = res.data
+        setUser((u) => ({ ...u, avatar: publicUrl }))
+        setUpdateUser((u) => ({ ...u, avatar: publicUrl }))
+      } catch (error) {
+        if (error instanceof BackendError) {
+          return checkError(error)
+        }
+      }
     }
     setUploading(false)
   }
@@ -80,29 +92,26 @@ const Settings: NextPageWithLayout = () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const state = await updateMe(updateUser)
     if (isBackendError(state)) {
-      return setPopoverState((s) => ({
-        ...s,
-        anchor: submitButton.current,
-        open: true,
-        color: 'error',
-        message: state.message,
-      }))
+      return checkError(state)
     } else {
-      setUser(state)
-      setPopoverState((s) => ({
-        ...s,
-        anchor: submitButton.current,
-        open: true,
-      }))
+      dispatch({ type: 'LOGIN', payload: { user: state, account } })
+      setPopoverState((s) => ({ ...s, open: true }))
     }
   }
-  const handlePopoverClose = () => {
-    setPopoverState((s) => ({ ...s, anchor: null, open: false }))
+  const checkError = (error: BackendError | BackendErrorResponse) => {
+    const { message, statusCode } = error
+    setPopoverState((s) => ({
+      ...s,
+      open: true,
+      color: 'error',
+      message,
+    }))
+    if (statusCode === 401) return router.replace('/login')
   }
 
   useEffect(() => {
-    setUser(userData)
-  }, [userData])
+    if (!isAuthenticated) router.replace('/login')
+  }, [isAuthenticated, router])
 
   return (
     <Fragment>
@@ -117,7 +126,7 @@ const Settings: NextPageWithLayout = () => {
       </InputRow>
       <InputRow label="URL" subLabel=" — The public URL for your account">
         <UsernameRow>
-          <span>https://{user?.username?.toLowerCase()}.w3itch.io</span>
+          <span>{profileUrl}</span>
         </UsernameRow>
       </InputRow>
       <InputRow
@@ -158,18 +167,13 @@ const Settings: NextPageWithLayout = () => {
         <RedButton ref={submitButton} onClick={handleSubmitProfile}>
           Save
         </RedButton>
-        <Popover
-          id={popoverState.id}
+        <Snackbar
           open={popoverState.open}
-          anchorEl={popoverState.anchor}
-          onClose={handlePopoverClose}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
+          autoHideDuration={5000}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
         >
           <Alert severity={popoverState.color}>{popoverState.message}</Alert>
-        </Popover>
+        </Snackbar>
       </Buttons>
     </Fragment>
   )

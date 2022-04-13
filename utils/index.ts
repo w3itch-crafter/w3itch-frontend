@@ -1,4 +1,5 @@
 export * from './chains'
+export * from './error'
 export * from './file'
 export * from './game'
 export * from './getExplorerLink'
