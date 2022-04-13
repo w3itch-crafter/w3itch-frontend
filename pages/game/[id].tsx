@@ -114,7 +114,25 @@ const GameId: NextPage<GameProps> = ({
               id="view_html_game_page_667"
               className={`${styles.view_html_game_page} ${styles.view_game_page} page_widget direct_download ready`}
             >
-              <EmbedWidget gameProject={gameProject} />
+              <EmbedWidget
+                gameProject={gameProject}
+                prices={{
+                  id: 1,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                  chainId: 4,
+                  amount: 10,
+                  token: {
+                    id: 1,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    address: '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735',
+                    symbol: 'DAI',
+                    chainId: 4,
+                    chainName: 'rinkeby',
+                  },
+                }}
+              />
               <div className={styles.columns}>
                 <div className={`${styles.left_col} ${styles.column}`}>
                   <div

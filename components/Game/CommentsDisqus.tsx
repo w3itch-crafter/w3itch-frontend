@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { FC } from 'react'
 
 interface Props {
-  title: string
+  readonly title: string
 }
 
 const CommentsDisqus: FC<Props> = ({ title }) => {
