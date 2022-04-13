@@ -3,6 +3,7 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import { useFullscreen } from 'ahooks'
 import { gameProjectPlayer } from 'api'
+import { useBuyNow } from 'hooks/useBuyNow'
 import { useSnackbar } from 'notistack'
 import { FC, useCallback, useEffect } from 'react'
 import { useRef, useState } from 'react'
@@ -19,6 +20,7 @@ interface Props {
 
 const EmbedWidget: FC<Props> = ({ gameProject, prices }) => {
   const { enqueueSnackbar } = useSnackbar()
+  const { buyNow } = useBuyNow()
   const ref = useRef(null)
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(
     ref,
@@ -64,10 +66,14 @@ const EmbedWidget: FC<Props> = ({ gameProject, prices }) => {
         },
         variant: 'info',
       })
+      buyNow({
+        inputCurrency: '',
+        outputCurrency: prices.token.address,
+      })
     } else {
       setRunGameFlag(true)
     }
-  }, [gameProject, prices, enqueueSnackbar])
+  }, [gameProject, prices, enqueueSnackbar, buyNow])
 
   const processHoldUnlock = useCallback(() => {
     if (gameProject.paymentMode === PaymentMode.PAID) {

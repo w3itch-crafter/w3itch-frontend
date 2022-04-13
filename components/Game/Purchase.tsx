@@ -1,6 +1,7 @@
 import { Box } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { PrimaryButton } from 'components/CustomizedButtons'
+import { useBuyNow } from 'hooks/useBuyNow'
 import { FC } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { Api } from 'types/Api'
@@ -10,11 +11,19 @@ interface PurchaseProps {
 }
 
 const Purchase: FC<PurchaseProps> = ({ prices }) => {
+  const { buyNow } = useBuyNow()
+
   return (
     <Box>
       <h2 className={styles.row_title}>Purchase</h2>
       <Box>
         <PrimaryButton
+          onClick={() =>
+            buyNow({
+              inputCurrency: '',
+              outputCurrency: prices.token.address,
+            })
+          }
           sx={{
             textTransform: 'capitalize',
           }}
