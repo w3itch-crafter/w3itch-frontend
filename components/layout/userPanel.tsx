@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import { useRefresh } from 'hooks'
 import Link from 'next/link'
 import { Fragment, useState } from 'react'
+import { userHostUrl } from 'utils'
 
 export function UserPanel() {
   const UserPanelWidget = styled.div`
@@ -73,7 +74,7 @@ export function UserPanel() {
     }
   `
   const { user } = useRefresh()
-  const profile = `https://${user?.username?.toLowerCase()}.w3itch.io`
+  const profile = userHostUrl(user?.username?.toLowerCase())
 
   return (
     <UserPanelWidget>

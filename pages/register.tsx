@@ -10,7 +10,7 @@ import { useRouter } from 'next/router'
 import React, { Fragment, useEffect, useState } from 'react'
 import { RegisterData } from 'types'
 import { useWallet } from 'use-wallet'
-import { isEmptyObj } from 'utils'
+import { isEmptyObj, userHostUrl } from 'utils'
 
 import { signup } from '../api/account'
 
@@ -113,7 +113,7 @@ const Register: NextPage = () => {
     const name = target.name
     setRegisterData({ ...registerData, [name]: value })
     if (name === 'username')
-      setProfileUrl(`https://${String(value).toLowerCase()}.w3itch.io/`)
+      setProfileUrl(userHostUrl(String(value).toLowerCase()))
   }
   const checkRegisterData = async () => {
     const invalid: Partial<InvalidData> = {}

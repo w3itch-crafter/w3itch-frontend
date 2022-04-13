@@ -15,7 +15,7 @@ import {
   NextPageWithLayout,
   UserEntity,
 } from 'types'
-import { BackendError } from 'utils'
+import { BackendError, userHostUrl } from 'utils'
 import { v4 as uuid } from 'uuid'
 
 import Layout from './_layout'
@@ -56,6 +56,7 @@ const Settings: NextPageWithLayout = () => {
     color: 'success',
     message: 'Profile updated',
   })
+  const profileUrl = userHostUrl(user?.username?.toLowerCase())
   const handleChangeUserData = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
@@ -125,7 +126,7 @@ const Settings: NextPageWithLayout = () => {
       </InputRow>
       <InputRow label="URL" subLabel=" — The public URL for your account">
         <UsernameRow>
-          <span>https://{user?.username?.toLowerCase()}.w3itch.io</span>
+          <span>{profileUrl}</span>
         </UsernameRow>
       </InputRow>
       <InputRow
