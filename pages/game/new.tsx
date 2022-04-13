@@ -183,39 +183,35 @@ const GameNew: NextPage = () => {
       persist: true,
     })
     setSubmitLoading(true)
-
-    // @TODO need message notification
-    const allImages = await handleAllImages()
-
-    const gameData = {
-      title: trim(game.title),
-      subtitle: trim(game.subtitle),
-      gameName: trim(game.gameName).replaceAll(' ', '_'),
-      classification: ProjectClassification.GAMES,
-      kind: GameEngine.RM2K3E,
-      releaseStatus: ReleaseStatus.RELEASED,
-      screenshots: allImages.screenshots,
-      cover: allImages.cover,
-      tags: game.tags,
-      appStoreLinks: game.appStoreLinks,
-      description: trim(description),
-      community: game.community,
-      genre: Genre.NO_GENRE,
-      tokenId: game.tokenId,
-      charset: game.charset,
-      paymentMode: game.paymentMode,
-      prices: prices,
-    }
-    console.log('file', uploadGameFile)
-    console.log('gameData', gameData)
-
-    const formData = new FormData()
-    formData.append('file', uploadGameFile)
-    formData.append('game', JSON.stringify(gameData))
-
-    // return
-
     try {
+      const allImages = await handleAllImages()
+
+      const gameData = {
+        title: trim(game.title),
+        subtitle: trim(game.subtitle),
+        gameName: trim(game.gameName).replaceAll(' ', '_'),
+        classification: ProjectClassification.GAMES,
+        kind: GameEngine.RM2K3E,
+        releaseStatus: ReleaseStatus.RELEASED,
+        screenshots: allImages.screenshots,
+        cover: allImages.cover,
+        tags: game.tags,
+        appStoreLinks: game.appStoreLinks,
+        description: trim(description),
+        community: game.community,
+        genre: Genre.NO_GENRE,
+        tokenId: game.tokenId,
+        charset: game.charset,
+        paymentMode: game.paymentMode,
+        prices: prices,
+      }
+      console.log('file', uploadGameFile)
+      console.log('gameData', gameData)
+
+      const formData = new FormData()
+      formData.append('file', uploadGameFile)
+      formData.append('game', JSON.stringify(gameData))
+
       // check field
       const gameValidateResult = await gameValidate(gameData)
       if (gameValidateResult.status !== 200) {
