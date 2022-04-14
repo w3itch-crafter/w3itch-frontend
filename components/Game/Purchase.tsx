@@ -41,6 +41,7 @@ const Purchase: FC<PurchaseProps> = ({ price, priceToken }) => {
         <PrimaryButton
           onClick={() =>
             buyNow({
+              chainId: price.token.chainId,
               inputCurrency: '',
               outputCurrency: getAddress(price.token.address),
             })

@@ -5,6 +5,7 @@ import { useFullscreen } from 'ahooks'
 import { gameProjectPlayer } from 'api'
 import BigNumber from 'bignumber.js'
 import { utils } from 'ethers'
+import { getAddress } from 'ethers/lib/utils'
 import { useBuyNow } from 'hooks/useBuyNow'
 import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
 import { isEmpty } from 'lodash'
@@ -62,8 +63,9 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
     if (gameProject.paymentMode === PaymentMode.PAID) {
       if (holdUnlock) {
         buyNow({
+          chainId: price.token.chainId,
           inputCurrency: '',
-          outputCurrency: price.token.address,
+          outputCurrency: getAddress(price.token.address),
         })
       } else {
         setRunGameFlag(true)

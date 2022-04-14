@@ -1,13 +1,18 @@
-import { CurrentChainId } from 'constants/chains'
 import { useCallback } from 'react'
+import {
+  PancakeSwapSupportedChainId,
+  UniswapSupportedChainId,
+} from 'types/enum'
 import { getSwapURL } from 'utils'
 
 export function useBuyNow() {
   const buyNow = useCallback(
     ({
+      chainId,
       inputCurrency,
       outputCurrency,
     }: {
+      chainId: UniswapSupportedChainId | PancakeSwapSupportedChainId
       inputCurrency: string
       outputCurrency: string
     }) => {
@@ -19,7 +24,7 @@ export function useBuyNow() {
         return
       }
 
-      const url = getSwapURL(CurrentChainId, inputCurrency, outputCurrency)
+      const url = getSwapURL(chainId, inputCurrency, outputCurrency)
       window.open(url, '_blank')
     },
     []
