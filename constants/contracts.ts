@@ -3,10 +3,10 @@ import {
   UniswapSupportedChainId,
 } from 'types/enum'
 
-import { CurrentChainId } from './index'
+import { CurrentChainId, SupportedChainId } from './chains'
 
 export type AddressBookForNetwork = {
-  [chainId in UniswapSupportedChainId | PancakeSwapSupportedChainId]: string
+  [chainId in SupportedChainId]: string
 }
 
 export type OptionalAddressBookForNetwork = Partial<AddressBookForNetwork>

@@ -5,10 +5,10 @@ import {
   UniswapSupportedChainId,
 } from 'types/enum'
 
-import { CurrentChainId } from './chains'
+import { CurrentChainId, SupportedChainId } from './chains'
 
 export declare type Providers = {
-  [chainId in UniswapSupportedChainId | PancakeSwapSupportedChainId]?: Provider
+  [chainId in SupportedChainId]?: Provider
 }
 
 export const Providers: Providers = {

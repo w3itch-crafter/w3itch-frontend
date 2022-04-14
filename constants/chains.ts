@@ -3,12 +3,14 @@ import {
   UniswapSupportedChainId,
 } from 'types/enum'
 
-export type SupportedChainId = UniswapSupportedChainId &
+export type SupportedChainId =
+  | UniswapSupportedChainId
+  | PancakeSwapSupportedChainId
+export const SupportedChainId = Object.assign(
+  {},
+  UniswapSupportedChainId,
   PancakeSwapSupportedChainId
-export const SupportedChainId = {
-  ...UniswapSupportedChainId,
-  ...PancakeSwapSupportedChainId,
-}
+)
 
 export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.MAINNET]: 'mainnet',
@@ -59,9 +61,7 @@ interface BaseChainInfo {
 export type ChainInfo = BaseChainInfo
 
 export type ChainInfoMap = {
-  readonly [chainId in
-    | UniswapSupportedChainId
-    | PancakeSwapSupportedChainId]: ChainInfo
+  readonly [chainId in SupportedChainId]: ChainInfo
 }
 export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.MAINNET]: {
@@ -214,6 +214,6 @@ export const CHAIN_INFO: ChainInfoMap = {
   },
 }
 
-export const CurrentChainId = Number(UniswapSupportedChainId.RINKEBY) as
-  | UniswapSupportedChainId
-  | PancakeSwapSupportedChainId
+export const CurrentChainId = Number(
+  UniswapSupportedChainId.RINKEBY
+) as SupportedChainId
