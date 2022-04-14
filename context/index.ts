@@ -1,4 +1,3 @@
-import { Provider } from '@ethersproject/providers'
 import { AlertColor } from '@mui/material/Alert'
 import type {
   AuthenticationAction,
@@ -25,10 +24,6 @@ export const ConnectWalletContext =
     message: '',
     status: 'info',
   })
-
-export const ReadonlyEthersProviderContext = React.createContext<Provider>(
-  null as never
-)
 
 export const SortOptionsContext = React.createContext<
   Pick<SortOptionsProps, 'sortKey'>

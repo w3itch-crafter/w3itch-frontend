@@ -1,8 +1,8 @@
 export * from './chains'
 export * from './error'
+export * from './explorer'
 export * from './file'
 export * from './game'
-export * from './getExplorerLink'
 export * from './tags'
 export * from './user'
 

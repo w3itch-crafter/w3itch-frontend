@@ -107,7 +107,7 @@ export declare type GameEntity = BaseEntity & {
   gameName: string
   /** Original name */
   file: string
-  /** Classification */
+  /** Project classification */
   classification: ProjectClassification
   /** Kind of the project (game engine) */
   kind: GameEngine
@@ -123,6 +123,8 @@ export declare type GameEntity = BaseEntity & {
   rating: number
   /** Tokens to be held/paid to play this game */
   prices: PriceEntity[]
+  /** Donate wallet address of the creator */
+  donationAddress?: string
   /** Links to other app stores */
   appStoreLinks: string[]
   /** Game description (markdown) */
@@ -135,7 +137,7 @@ export declare type GameEntity = BaseEntity & {
 }
 export declare type PriceEntity = BaseEntity & {
   chainId: number
-  amount: number
+  amount: string
   token: TokenEntity
 }
 export declare type RatingEntity = BaseEntity & {
@@ -149,11 +151,11 @@ export declare type TagEntity = BaseEntity & {
   description: string
 }
 export declare type TokenEntity = BaseEntity & {
-  chainId: number
   address: string
   name: string
   decimals: number
   symbol: string
+  chainId: number
 }
 export declare type UserEntity = BaseEntity & {
   username: string
