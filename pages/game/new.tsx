@@ -49,6 +49,7 @@ import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
+import { Api } from 'types/Api'
 import {
   Community,
   GameEngine,
@@ -168,7 +169,7 @@ const GameNew: NextPage = () => {
       return
     }
 
-    let prices = undefined
+    let prices: Api.GameProjectPricesDto[] = []
     if (game.paymentMode === PaymentMode.PAID) {
       if (isEmpty(currentSelectToken)) {
         enqueueSnackbar('Please select Token', {

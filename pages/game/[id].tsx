@@ -13,6 +13,7 @@ import {
   ERC20MulticallTokenResult,
   useERC20Multicall,
 } from 'hooks/useERC20Multicall'
+import { isEmpty } from 'lodash'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
@@ -23,7 +24,7 @@ import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
 import { Api } from 'types/Api'
-import { Community } from 'types/enum'
+import { Community, PaymentMode } from 'types/enum'
 const RenderMarkdown = dynamic(
   () => import('components/RenderMarkdown/index'),
   { ssr: false }
@@ -98,18 +99,20 @@ const GameId: NextPage<GameProps> = ({
   }, [id])
 
   const fetchPricesToken = useCallback(async () => {
-    // map address
-    const address = ['0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735']
-    const tokensResponse = await fetchTokensAddress(address)
-    console.log('tokensResponse', tokensResponse)
-    const tokens: ERC20MulticallTokenResult[] = (tokensResponse || []).map(
-      (token) => ({
-        address: token.address,
-        ...token.data,
-      })
-    )
-    setPricesTokens(tokens)
-  }, [fetchTokensAddress])
+    if (gameProject.paymentMode === PaymentMode.PAID) {
+      // map address
+      const address = gameProject.prices.map((price) => price.token.address)
+      const tokensResponse = await fetchTokensAddress(address)
+      console.log('tokensResponse', tokensResponse)
+      const tokens: ERC20MulticallTokenResult[] = (tokensResponse || []).map(
+        (token) => ({
+          address: token.address,
+          ...token.data,
+        })
+      )
+      setPricesTokens(tokens)
+    }
+  }, [fetchTokensAddress, gameProject])
 
   // refresh
   const handleRefresh = useCallback(() => {
@@ -144,11 +147,7 @@ const GameId: NextPage<GameProps> = ({
             >
               <EmbedWidget
                 gameProject={gameProject}
-                price={{
-                  chainId: 4,
-                  amount: (10.12875678 * 10 ** 18).toString(),
-                  token: '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735',
-                }}
+                price={gameProject.prices[0]}
                 priceToken={pricesTokens[0]}
               />
               <div className={styles.columns}>
@@ -164,16 +163,16 @@ const GameId: NextPage<GameProps> = ({
                       gameRatingsCount={gameRatingsCount}
                     />
                   </div>
-                  <div className={styles.row}>
-                    <Purchase
-                      price={{
-                        chainId: 4,
-                        amount: (10.12875678 * 10 ** 18).toString(),
-                        token: '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735',
-                      }}
-                      priceToken={pricesTokens[0]}
-                    />
-                  </div>
+                  {gameProject.paymentMode === PaymentMode.PAID &&
+                    !isEmpty(gameProject.prices) && (
+                      <div className={styles.row}>
+                        <Purchase
+                          price={gameProject.prices[0]}
+                          priceToken={pricesTokens[0]}
+                        />
+                      </div>
+                    )}
+
                   {gameProject.community === Community.DISQUS && (
                     <div className={styles.game_comments_widget}>
                       <h2 className={styles.row_title}>Comments</h2>

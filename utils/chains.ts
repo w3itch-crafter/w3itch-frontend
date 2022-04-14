@@ -44,7 +44,7 @@ export function getSwapURL(
  * @param decimal
  * @returns
  */
-export const balanceDecimal = (amount: string, decimal = 3) => {
+export const balanceDecimal = (amount: string, decimal = 6) => {
   // utils.formatUnits 0.0
   if (amount === '0.0') return '0'
 

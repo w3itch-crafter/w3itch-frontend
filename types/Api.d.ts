@@ -1,4 +1,8 @@
 import { AccountEntity, UserEntity } from 'types'
+import {
+  PancakeSwapSupportedChainId,
+  UniswapSupportedChainId,
+} from 'types/enum'
 
 import type {
   Community,
@@ -29,7 +33,7 @@ declare namespace Api {
   }
 
   type GameProjectPricesDto = {
-    chainId: number
+    chainId: UniswapSupportedChainId | PancakeSwapSupportedChainId
     amount: string
     token: string
   }
@@ -51,6 +55,7 @@ declare namespace Api {
     description: string
     community: Community
     genre: Genre
+    prices: GameProjectPricesDto[]
   }
 
   type Tag = {

@@ -3,6 +3,7 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import { useFullscreen } from 'ahooks'
 import { gameProjectPlayer } from 'api'
+import BigNumber from 'bignumber.js'
 import { utils } from 'ethers'
 import { useBuyNow } from 'hooks/useBuyNow'
 import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
@@ -12,14 +13,14 @@ import { useRef, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
-import { Api } from 'types/Api'
+import { PriceEntity } from 'types'
 import { PaymentMode } from 'types/enum'
 import { balanceDecimal } from 'utils'
 
 interface Props {
   readonly gameProject: GameEntity
-  readonly price: Api.GameProjectPricesDto
-  readonly priceToken: ERC20MulticallTokenResult
+  readonly price: PriceEntity
+  readonly priceToken?: ERC20MulticallTokenResult
 }
 
 const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
@@ -40,7 +41,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
   // hold unlock
   // false can play
   // true can't play
-  const [holdUnlock, setHoldUnlock] = useState<boolean>(false)
+  const [holdUnlock, setHoldUnlock] = useState<boolean>(true)
 
   const handleFullscreen = useCallback(() => {
     // https://developer.mozilla.org/en-US/docs/Web/API/Lock
@@ -58,13 +59,10 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
   }, [enterFullscreen, exitFullscreen, isFullscreen])
 
   const handlePlay = useCallback(() => {
-    if (
-      gameProject.paymentMode === PaymentMode.DISABLE_PAYMENTS ||
-      gameProject.paymentMode === PaymentMode.FREE
-    ) {
+    if (gameProject.paymentMode === PaymentMode.PAID) {
       buyNow({
         inputCurrency: '',
-        outputCurrency: price.token,
+        outputCurrency: price.token.address,
       })
     } else {
       setRunGameFlag(true)
@@ -73,11 +71,21 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
 
   const processHoldUnlock = useCallback(() => {
     if (gameProject.paymentMode === PaymentMode.PAID) {
-      setHoldUnlock(true)
+      if (isEmpty(priceToken) || !priceToken?.balanceOf) {
+        return
+      }
+
+      const isUnlock = new BigNumber(
+        utils.formatUnits(priceToken.balanceOf, price.token.decimals)
+      ).gte(utils.formatUnits(price.amount, price.token.decimals))
+
+      if (isUnlock) {
+        setHoldUnlock(false)
+      }
     } else {
-      setHoldUnlock(true)
+      setHoldUnlock(false)
     }
-  }, [gameProject])
+  }, [gameProject, price, priceToken])
 
   useEffect(() => {
     processHoldUnlock()
@@ -121,12 +129,12 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
               className={`${stylesCommon.button} ${styles.button} ${styles.load_iframe_btn}`}
             >
               {holdUnlock ? (
-                isEmpty(priceToken) ? (
+                isEmpty(price) ? (
                   `Need to hold Token`
                 ) : (
                   `Need to hold ${balanceDecimal(
-                    utils.formatUnits(price.amount, priceToken.decimals)
-                  )} ${priceToken.symbol}`
+                    utils.formatUnits(price.amount, price.token.decimals)
+                  )} ${price.token.symbol}`
                 )
               ) : (
                 <>
