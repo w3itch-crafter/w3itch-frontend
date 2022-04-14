@@ -175,7 +175,9 @@ const GameId: NextPage<GameProps> = ({
                     )
                   ) : gameProject.paymentMode === PaymentMode.FREE ? (
                     <div className={styles.row}>
-                      <Donation donationAddress={gameProject.donationAddress} />
+                      <Donation
+                        donationAddress={gameProject.donationAddress || ''}
+                      />
                     </div>
                   ) : null}
 
