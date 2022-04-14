@@ -6,8 +6,7 @@ import {
   AuthenticationProvider,
   ReadonlyEthersProvider,
 } from 'components/pages'
-import { CurrentChainId } from 'constants/chains'
-import { providers } from 'constants/providers'
+import { CurrentChainId, Providers } from 'constants/index'
 import type { AppProps } from 'next/app'
 import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
@@ -19,21 +18,12 @@ type AppPropsWithLayout = AppProps & {
 }
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  console.log('CurrentChainId', CurrentChainId, providers)
+  const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>)
 
-  const getLayout =
-    Component.getLayout ??
-    ((page) => (
-      <SnackbarProvider maxSnack={3}>
-        <Layout>{page}</Layout>
-      </SnackbarProvider>
-    ))
   return (
     <UseWalletProvider
       connectors={{
-        injected: {
-          chainId: [CurrentChainId],
-        },
+        injected: { chainId: [CurrentChainId] },
         walletconnect: {
           rpc: {
             // 1: 'https://mainnet.infura.io/v3/a0d8c94ba9a946daa5ee149e52fa5ff1',
@@ -45,11 +35,13 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       }}
     >
       <AuthenticationProvider>
-        <ReadonlyEthersProvider>
-          <Fragment>
-            <CssBaseline />
-            {getLayout(<Component {...pageProps} />)}
-          </Fragment>
+        <ReadonlyEthersProvider provider={Providers[CurrentChainId]}>
+          <SnackbarProvider maxSnack={3}>
+            <Fragment>
+              <CssBaseline />
+              {getLayout(<Component {...pageProps} />)}
+            </Fragment>
+          </SnackbarProvider>
         </ReadonlyEthersProvider>
       </AuthenticationProvider>
     </UseWalletProvider>

@@ -2,30 +2,20 @@ import { CurrentChainId } from 'constants/chains'
 import { useCallback } from 'react'
 import { getSwapURL } from 'utils'
 
+declare type BuyNow = {
+  inputCurrency: string
+  outputCurrency: string
+}
 export function useBuyNow() {
-  const buyNow = useCallback(
-    ({
-      inputCurrency,
-      outputCurrency,
-    }: {
-      inputCurrency: string
-      outputCurrency: string
-    }) => {
-      if (
-        !window.confirm(
-          'Are you sure you want to jump to uniswap/pancakeswap to buy?'
-        )
-      ) {
-        return
-      }
+  const buyNow = useCallback(({ inputCurrency, outputCurrency }: BuyNow) => {
+    const confirm = window.confirm(
+      'Are you sure you want to jump to Uniswap/Pancakeswap to buy?'
+    )
+    if (!confirm) return
 
-      const url = getSwapURL(CurrentChainId, inputCurrency, outputCurrency)
-      window.open(url, '_blank')
-    },
-    []
-  )
+    const url = getSwapURL(CurrentChainId, inputCurrency, outputCurrency)
+    window.open(url, '_blank')
+  }, [])
 
-  return {
-    buyNow,
-  }
+  return { buyNow }
 }

@@ -30,4 +30,4 @@ export const MULTICALL_NETWORKS: AddressBookForNetwork = {
   80001: '',
 }
 
-export const currentMulticallAddress = MULTICALL_NETWORKS[CurrentChainId]
+export const CurrentMulticallAddress = MULTICALL_NETWORKS[CurrentChainId]

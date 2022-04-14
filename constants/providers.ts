@@ -1,16 +1,17 @@
+import { Provider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
 import {
   PancakeSwapSupportedChainId,
   UniswapSupportedChainId,
 } from 'types/enum'
 
-import { CurrentChainId } from './index'
+import { CurrentChainId } from './chains'
 
-export const providers: {
-  [chainId in
-    | UniswapSupportedChainId
-    | PancakeSwapSupportedChainId]?: ethers.providers.Provider
-} = {
+export declare type Providers = {
+  [chainId in UniswapSupportedChainId | PancakeSwapSupportedChainId]?: Provider
+}
+
+export const Providers: Providers = {
   [PancakeSwapSupportedChainId.BSC_MAINNET]:
     new ethers.providers.JsonRpcProvider('https://bsc-dataseed.binance.org/'),
   [UniswapSupportedChainId.RINKEBY]: new ethers.providers.InfuraProvider(
@@ -19,6 +20,4 @@ export const providers: {
   ),
 }
 
-export const currentProvider = providers[CurrentChainId]
-
-console.log('providers', providers)
+export const CurrentProvider = Providers[CurrentChainId]
