@@ -2,7 +2,6 @@ import styled from '@emotion/styled'
 import { Box } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { PrimaryButton } from 'components/CustomizedButtons'
-import { CurrentChainId } from 'constants/chains'
 import { utils } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
 import { useBuyNow } from 'hooks/useBuyNow'
@@ -63,7 +62,7 @@ const Purchase: FC<PurchaseProps> = ({ price, priceToken }) => {
           <Link
             passHref
             href={getExplorerLink(
-              CurrentChainId,
+              price.token.chainId,
               getAddress(price.token.address),
               ExplorerDataType.TOKEN
             )}
