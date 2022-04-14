@@ -81,6 +81,8 @@ const GameNew: NextPage = () => {
     useState<ERC20MulticallTokenResult>({} as ERC20MulticallTokenResult)
   const [currentSelectTokenAmount, setCurrentSelectTokenAmount] =
     useState<string>('0')
+  const [currentDonationAddress, setCurrentDonationAddress] =
+    useState<string>('')
 
   console.log('currentSelectTokenAmount', currentSelectTokenAmount)
 
@@ -94,7 +96,7 @@ const GameNew: NextPage = () => {
   } = useForm<Game>({
     resolver: resolverGame,
     defaultValues: {
-      paymentMode: PaymentMode.PAID,
+      paymentMode: PaymentMode.DISABLE_PAYMENTS,
       community: Community.DISABLED,
       genre: Genre.ROLE_PLAYING,
       tokenId: 0,
@@ -223,14 +225,16 @@ const GameNew: NextPage = () => {
         },
       ]
     } else if (game.paymentMode === PaymentMode.FREE) {
-      enqueueSnackbar('Please set a donation address', {
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'center',
-        },
-        variant: 'warning',
-      })
-      return
+      if (!currentDonationAddress || !utils.isAddress(currentDonationAddress)) {
+        enqueueSnackbar('Please set a donation address', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'warning',
+        })
+        return
+      }
     }
 
     MESSAGE_SUBMIT_KEY = enqueueSnackbar('uploading game...', {
@@ -264,6 +268,10 @@ const GameNew: NextPage = () => {
         charset: game.charset,
         paymentMode: game.paymentMode,
         prices: prices,
+        donationAddress:
+          game.paymentMode === PaymentMode.FREE
+            ? utils.getAddress(currentDonationAddress)
+            : '',
       }
       console.log('file', uploadGameFile)
       console.log('gameData', gameData)
@@ -565,6 +573,7 @@ const GameNew: NextPage = () => {
                         token={currentSelectToken}
                         setTtokenListDialogOpen={setTtokenListDialogOpen}
                         tokenAmountChange={setCurrentSelectTokenAmount}
+                        donationAddressChange={setCurrentDonationAddress}
                       />
                     </div>
 

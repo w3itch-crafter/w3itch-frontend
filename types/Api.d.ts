@@ -56,6 +56,7 @@ declare namespace Api {
     community: Community
     genre: Genre
     prices: GameProjectPricesDto[]
+    donationAddress: string
   }
 
   type Tag = {

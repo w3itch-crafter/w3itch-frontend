@@ -32,6 +32,7 @@ interface FormPricingProps {
   watch: UseFormWatch<Game>
   setTtokenListDialogOpen: (value: boolean) => void
   tokenAmountChange: (value: string) => void
+  donationAddressChange: (value: string) => void
 }
 
 const FormPricing: FC<FormPricingProps> = ({
@@ -41,6 +42,7 @@ const FormPricing: FC<FormPricingProps> = ({
   watch,
   setTtokenListDialogOpen,
   tokenAmountChange,
+  donationAddressChange,
 }) => {
   return (
     <div>
@@ -84,9 +86,9 @@ const FormPricing: FC<FormPricingProps> = ({
         {watch('paymentMode') === PaymentMode.FREE ? (
           <Box>
             <TextField
-              onChange={(event) => console.log(Number(event.target.value))}
+              onChange={(event) => donationAddressChange(event.target.value)}
               size="small"
-              placeholder="amount"
+              placeholder="Please enter wallet address"
               fullWidth
             />
             <p className={styles.sub}>
@@ -108,11 +110,9 @@ const FormPricing: FC<FormPricingProps> = ({
               <>
                 <TokenItem token={token} selectToken={() => void 0} />
                 <TextField
-                  onChange={(event) =>
-                    tokenAmountChange(String(event.target.value))
-                  }
+                  onChange={(event) => tokenAmountChange(event.target.value)}
                   size="small"
-                  placeholder="token amount"
+                  placeholder="Please enter the amount"
                   fullWidth
                 />
               </>

@@ -4,6 +4,7 @@ import {
   fetchGameRatingsMine,
   gameProjectByID,
 } from 'api'
+import Donation from 'components/Game/Donation'
 import EmbedWidget from 'components/Game/EmbedWidget'
 import GameRating from 'components/Game/GameRating'
 import MoreInformation from 'components/Game/MoreInformation'
@@ -163,7 +164,7 @@ const GameId: NextPage<GameProps> = ({
                       gameRatingsCount={gameRatingsCount}
                     />
                   </div>
-                  {gameProject.paymentMode === PaymentMode.PAID &&
+                  {gameProject.paymentMode === PaymentMode.PAID ? (
                     !isEmpty(gameProject.prices) && (
                       <div className={styles.row}>
                         <Purchase
@@ -171,7 +172,12 @@ const GameId: NextPage<GameProps> = ({
                           priceToken={pricesTokens[0]}
                         />
                       </div>
-                    )}
+                    )
+                  ) : gameProject.paymentMode === PaymentMode.FREE ? (
+                    <div className={styles.row}>
+                      <Donation donationAddress={gameProject.donationAddress} />
+                    </div>
+                  ) : null}
 
                   {gameProject.community === Community.DISQUS && (
                     <div className={styles.game_comments_widget}>

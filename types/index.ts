@@ -131,6 +131,7 @@ export declare type GameEntity = BaseEntity & {
   community: Community
   /** The category that best describes this game */
   genre: Genre
+  donationAddress: string
 }
 export declare type PriceEntity = BaseEntity & {
   chainId: number
