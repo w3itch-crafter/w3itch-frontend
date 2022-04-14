@@ -4,7 +4,6 @@ import {
   fetchGameRatingsMine,
   gameProjectByID,
 } from 'api'
-import Donation from 'components/Game/Donation'
 import EmbedWidget from 'components/Game/EmbedWidget'
 import GameRating from 'components/Game/GameRating'
 import MoreInformation from 'components/Game/MoreInformation'
@@ -31,6 +30,9 @@ const RenderMarkdown = dynamic(
   { ssr: false }
 )
 const CommentsDisqus = dynamic(() => import('components/Game/CommentsDisqus'), {
+  ssr: false,
+})
+const Donation = dynamic(() => import('components/Game/Donation'), {
   ssr: false,
 })
 
