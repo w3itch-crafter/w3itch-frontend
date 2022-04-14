@@ -20,4 +20,4 @@ export const Providers: Providers = {
   ),
 }
 
-export const CurrentProvider = Providers[CurrentChainId]
+export const CurrentProvider = Providers[CurrentChainId] as Provider

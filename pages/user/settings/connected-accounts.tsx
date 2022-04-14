@@ -1,14 +1,14 @@
 import { InputRow } from 'components/forms'
-import { AuthenticationContext, ReadonlyEthersProviderContext } from 'context'
+import { AuthenticationContext } from 'context'
 import { ethers } from 'ethers'
-import { useERC20, useERC20Balance } from 'hooks'
+import { useERC20, useERC20Balance, useProvider } from 'hooks'
 import { Fragment, useContext } from 'react'
 import { NextPageWithLayout } from 'types'
 
 import Layout from './_layout'
 
 const ConnectedAccounts: NextPageWithLayout = () => {
-  const provider = useContext(ReadonlyEthersProviderContext)
+  const provider = useProvider(4)
   const { state } = useContext(AuthenticationContext)
   const dai = useERC20('0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735', provider)
   const accountId = state?.account?.accountId
