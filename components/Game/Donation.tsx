@@ -11,7 +11,6 @@ import { FC, useCallback } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import styles from 'styles/game/id.module.scss'
 import { ExplorerDataType, getExplorerLink } from 'utils'
-
 interface PurchaseProps {
   readonly donationAddress: string
 }
