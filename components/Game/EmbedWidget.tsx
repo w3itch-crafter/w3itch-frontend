@@ -40,15 +40,15 @@ const EmbedWidget: FC<Props> = ({ gameProject, prices }) => {
   const handleFullscreen = useCallback(() => {
     // https://developer.mozilla.org/en-US/docs/Web/API/Lock
     if (isFullscreen) {
+      exitFullscreen()
       if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
-        exitFullscreen()
         navigator.keyboard.unlock()
       }
     } else {
       if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
         navigator.keyboard.lock(['Escape'])
-        enterFullscreen()
       }
+      enterFullscreen()
     }
   }, [enterFullscreen, exitFullscreen, isFullscreen])
 
