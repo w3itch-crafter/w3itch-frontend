@@ -55,7 +55,7 @@ import {
   ProjectClassification,
   ReleaseStatus,
 } from 'types/enum'
-import { fileUrl, parseUrl, processMessage } from 'utils'
+import { fileUrl, isStringNumber, parseUrl, processMessage } from 'utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let MESSAGE_SUBMIT_KEY: any
@@ -178,6 +178,16 @@ const GameNew: NextPage = () => {
 
       if (!currentSelectTokenAmount || currentSelectTokenAmount === '0') {
         enqueueSnackbar('Please enter amount', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'warning',
+        })
+        return
+      }
+      if (!isStringNumber(currentSelectTokenAmount)) {
+        enqueueSnackbar('Please enter the correct amount', {
           anchorOrigin: {
             vertical: 'top',
             horizontal: 'center',

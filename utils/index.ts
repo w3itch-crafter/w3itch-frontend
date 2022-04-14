@@ -33,10 +33,24 @@ export function buildQuerySting(
  * @param messages
  * @returns
  */
-export const processMessage = (messages: string | string[]) => {
+export const processMessage = (messages: string | string[]): string => {
   if (typeof messages === 'string') {
     return messages
   } else {
     return messages.join()
+  }
+}
+
+/**
+ * is stringNumber
+ * @param value
+ * @returns
+ */
+export const isStringNumber = (value: string): boolean => {
+  const valueIsNaN = Number(value)
+  if (Number.isNaN(valueIsNaN)) {
+    return false
+  } else {
+    return true
   }
 }
