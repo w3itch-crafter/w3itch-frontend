@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { formatUnits } from 'ethers/lib/utils'
 import Link from 'next/link'
 import { GameInfo } from 'types'
 import { userHostUrl } from 'utils'
@@ -165,6 +166,7 @@ export function GameCell({
   const { title, subtitle, cover, link, genre, platform, user, prices } = game
   const profileUrl = userHostUrl(user?.username)
   const price = (Array.isArray(prices) && prices[0]) || null
+  const gameSale = false
 
   return (
     <Container className="game-cell" width={width}>
@@ -191,8 +193,11 @@ export function GameCell({
           {price && (
             <Link href={link} passHref>
               <GameMetaTag>
-                <GamePriceValue>1 DAI</GamePriceValue>
-                <GameSaleValue>-30%</GameSaleValue>
+                <GamePriceValue>
+                  {formatUnits(price.amount, price.token.decimals)}{' '}
+                  {price.token.symbol}
+                </GamePriceValue>
+                {gameSale && <GameSaleValue>-30%</GameSaleValue>}
               </GameMetaTag>
             </Link>
           )}
