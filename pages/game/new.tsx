@@ -30,7 +30,6 @@ import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { createGame, gameValidate, storagesUploadToIPFS } from 'api/index'
-import BigNumber from 'bignumber.js'
 import { PrimaryLoadingButton } from 'components/CustomizedButtons'
 import FormAppStoreLinks from 'components/Game/FormAppStoreLinks'
 import FormCharset from 'components/Game/FormCharset'
@@ -41,7 +40,7 @@ import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
 import { CurrentChainId } from 'constants/chains'
-import { utils } from 'ethers'
+import { BigNumber, utils } from 'ethers'
 import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
@@ -186,7 +185,7 @@ const GameNew: NextPage = () => {
         })
         return
       }
-      if (new BigNumber(currentSelectTokenAmount).lte('0')) {
+      if (BigNumber.from(currentSelectTokenAmount).lte('0')) {
         enqueueSnackbar('Amount needs to be greater than zero', {
           anchorOrigin: {
             vertical: 'top',
