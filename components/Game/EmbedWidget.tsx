@@ -60,14 +60,18 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
 
   const handlePlay = useCallback(() => {
     if (gameProject.paymentMode === PaymentMode.PAID) {
-      buyNow({
-        inputCurrency: '',
-        outputCurrency: price.token.address,
-      })
+      if (holdUnlock) {
+        buyNow({
+          inputCurrency: '',
+          outputCurrency: price.token.address,
+        })
+      } else {
+        setRunGameFlag(true)
+      }
     } else {
       setRunGameFlag(true)
     }
-  }, [gameProject, price, buyNow])
+  }, [gameProject, price, buyNow, holdUnlock])
 
   const processHoldUnlock = useCallback(() => {
     if (gameProject.paymentMode === PaymentMode.PAID) {
