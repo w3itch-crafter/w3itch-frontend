@@ -2,6 +2,7 @@ export * from './chains'
 export * from './error'
 export * from './file'
 export * from './game'
+export * from './getExplorerLink'
 export * from './tags'
 export * from './user'
 

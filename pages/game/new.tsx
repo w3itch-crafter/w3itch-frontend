@@ -30,14 +30,20 @@ import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { createGame, gameValidate, storagesUploadToIPFS } from 'api/index'
+import BigNumber from 'bignumber.js'
 import { PrimaryLoadingButton } from 'components/CustomizedButtons'
 import FormAppStoreLinks from 'components/Game/FormAppStoreLinks'
 import FormCharset from 'components/Game/FormCharset'
+import FormPricing from 'components/Game/FormPricing'
 import FormTags from 'components/Game/FormTags'
+import TokenList from 'components/TokenList'
 import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
-import { trim } from 'lodash'
+import { CurrentChainId } from 'constants/chains'
+import { utils } from 'ethers'
+import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
+import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
@@ -64,19 +70,27 @@ const GameNew: NextPage = () => {
   const [screenshotsFiles, setScreenshotsFiles] = useState<File[]>()
   const [submitLoading, setSubmitLoading] = useState<boolean>(false)
 
+  const [tokenListDialogOpen, setTtokenListDialogOpen] = useState(false)
+  const [currentSelectToken, setCurrentSelectToken] =
+    useState<ERC20MulticallTokenResult>({} as ERC20MulticallTokenResult)
+  const [currentSelectTokenAmount, setCurrentSelectTokenAmount] =
+    useState<string>('0')
+
+  console.log('currentSelectTokenAmount', currentSelectTokenAmount)
+
   const {
     register,
     handleSubmit,
     setValue,
     control,
-    // watch,
+    watch,
     formState: { errors: formErrors },
   } = useForm<Game>({
     resolver: resolverGame,
     defaultValues: {
-      paymentMode: PaymentMode.DISABLE_PAYMENTS,
+      paymentMode: PaymentMode.PAID,
       community: Community.DISABLED,
-      genre: Genre.NO_GENRE,
+      genre: Genre.ROLE_PLAYING,
       tokenId: 0,
       tags: [],
       appStoreLinks: [],
@@ -85,7 +99,7 @@ const GameNew: NextPage = () => {
     },
   })
 
-  // console.log(watch('description'))
+  console.log(watch('paymentMode'))
 
   const handleAllImages = async () => {
     const promiseArray = []
@@ -149,6 +163,60 @@ const GameNew: NextPage = () => {
       return
     }
 
+    let prices = undefined
+    if (game.paymentMode === PaymentMode.PAID) {
+      if (isEmpty(currentSelectToken)) {
+        enqueueSnackbar('Please select Token', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'warning',
+        })
+        return
+      }
+
+      if (!currentSelectTokenAmount || currentSelectTokenAmount === '0') {
+        enqueueSnackbar('Please enter amount', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'warning',
+        })
+        return
+      }
+      if (new BigNumber(currentSelectTokenAmount).lte('0')) {
+        enqueueSnackbar('Amount needs to be greater than zero', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'warning',
+        })
+        return
+      }
+
+      prices = [
+        {
+          chainId: CurrentChainId,
+          amount: utils
+            .parseUnits(currentSelectTokenAmount, currentSelectToken.decimals)
+            .toString(),
+          token: currentSelectToken.address,
+        },
+      ]
+    } else if (game.paymentMode === PaymentMode.FREE) {
+      enqueueSnackbar('Please set a donation address', {
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'center',
+        },
+        variant: 'warning',
+      })
+      return
+    }
+
     MESSAGE_SUBMIT_KEY = enqueueSnackbar('uploading game...', {
       anchorOrigin: {
         vertical: 'top',
@@ -157,37 +225,37 @@ const GameNew: NextPage = () => {
       variant: 'info',
       persist: true,
     })
+
     setSubmitLoading(true)
-
-    // @TODO need message notification
-    const allImages = await handleAllImages()
-
-    const gameData = {
-      title: trim(game.title),
-      paymentMode: game.paymentMode,
-      subtitle: trim(game.subtitle),
-      gameName: trim(game.gameName).replaceAll(' ', '_'),
-      classification: ProjectClassification.GAMES,
-      kind: GameEngine.RM2K3E,
-      releaseStatus: ReleaseStatus.RELEASED,
-      screenshots: allImages.screenshots,
-      cover: allImages.cover,
-      tags: game.tags,
-      appStoreLinks: game.appStoreLinks,
-      description: trim(description),
-      community: game.community,
-      genre: Genre.NO_GENRE,
-      tokenId: game.tokenId,
-      charset: game.charset,
-    }
-    console.log('file', uploadGameFile)
-    console.log('gameData', gameData)
-
-    const formData = new FormData()
-    formData.append('file', uploadGameFile)
-    formData.append('game', JSON.stringify(gameData))
-
     try {
+      const allImages = await handleAllImages()
+
+      const gameData = {
+        title: trim(game.title),
+        subtitle: trim(game.subtitle),
+        gameName: trim(game.gameName).replaceAll(' ', '_'),
+        classification: ProjectClassification.GAMES,
+        kind: GameEngine.RM2K3E,
+        releaseStatus: ReleaseStatus.RELEASED,
+        screenshots: allImages.screenshots,
+        cover: allImages.cover,
+        tags: game.tags,
+        appStoreLinks: game.appStoreLinks,
+        description: trim(description),
+        community: game.community,
+        genre: Genre.NO_GENRE,
+        tokenId: game.tokenId,
+        charset: game.charset,
+        paymentMode: game.paymentMode,
+        prices: prices,
+      }
+      console.log('file', uploadGameFile)
+      console.log('gameData', gameData)
+
+      const formData = new FormData()
+      formData.append('file', uploadGameFile)
+      formData.append('game', JSON.stringify(gameData))
+
       // check field
       const gameValidateResult = await gameValidate(gameData)
       if (gameValidateResult.status !== 200) {
@@ -473,72 +541,15 @@ const GameNew: NextPage = () => {
                       </FormControl>
                     </div>
 
-                    <div className={styles.price_picker}>
-                      <div className="payment_modes">
-                        <Controller
-                          control={control}
-                          name="paymentMode"
-                          render={({ field }) => (
-                            <FormControl
-                              fullWidth
-                              error={Boolean(formErrors.paymentMode)}
-                            >
-                              <FormLabel id="form-pricing">Pricing</FormLabel>
-                              <RadioGroup
-                                {...field}
-                                row
-                                aria-labelledby="form-pricing"
-                                defaultValue="DISABLE_PAYMENTS"
-                              >
-                                <FormControlLabel
-                                  value="FREE"
-                                  control={<Radio disabled />}
-                                  label="$0 or donate"
-                                />
-                                <FormControlLabel
-                                  value="PAID"
-                                  control={<Radio disabled />}
-                                  label="Paid"
-                                />
-                                <FormControlLabel
-                                  value="DISABLE_PAYMENTS"
-                                  control={<Radio />}
-                                  label="No payments"
-                                />
-                              </RadioGroup>
-                              <FormHelperText>
-                                {formErrors?.paymentMode?.message}
-                              </FormHelperText>
-                            </FormControl>
-                          )}
-                        />
-                      </div>
-
-                      {/* <div className="mode_free">
-                            <p className={styles.sub}>
-                              Someone downloading your project will be asked for a
-                              donation before getting access. They can skip to
-                              download for free.
-                            </p>
-                            <div className="price_inputs">
-                              <div className="suggested_price">
-                                <FormControl fullWidth>
-                                  <TextField
-                                    id="outlined-basic"
-                                    label="Suggested donation — Default donation amount"
-                                    variant="outlined"
-                                    placeholder="$2.00"
-                                  />
-                                </FormControl>
-                              </div>
-                            </div>
-                          </div> */}
-
-                      <p className={styles.sub}>
-                        {
-                          "The project's files will be freely available and no donations can be made"
-                        }
-                      </p>
+                    <div className={styles.input_row}>
+                      <FormPricing
+                        control={control}
+                        errors={formErrors}
+                        watch={watch}
+                        token={currentSelectToken}
+                        setTtokenListDialogOpen={setTtokenListDialogOpen}
+                        tokenAmountChange={setCurrentSelectTokenAmount}
+                      />
                     </div>
 
                     <div
@@ -862,6 +873,15 @@ const GameNew: NextPage = () => {
           </div>
         </div>
       </div>
+      <TokenList
+        open={tokenListDialogOpen}
+        setOpen={setTtokenListDialogOpen}
+        selectToken={(token) => {
+          console.log(token)
+          setCurrentSelectToken(token)
+          setTtokenListDialogOpen(false)
+        }}
+      />
     </Fragment>
   )
 }

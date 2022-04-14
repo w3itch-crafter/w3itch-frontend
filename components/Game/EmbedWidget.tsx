@@ -1,18 +1,24 @@
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import { useFullscreen } from 'ahooks'
 import { gameProjectPlayer } from 'api'
-import { FC, useCallback } from 'react'
+import { useBuyNow } from 'hooks/useBuyNow'
+import { FC, useCallback, useEffect } from 'react'
 import { useRef, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
+import { Api } from 'types/Api'
+import { PaymentMode } from 'types/enum'
 
 interface Props {
-  gameProject: GameEntity
+  readonly gameProject: GameEntity
+  readonly prices: Api.GameProjectPricesDto
 }
 
-const EmbedWidget: FC<Props> = ({ gameProject }) => {
+const EmbedWidget: FC<Props> = ({ gameProject, prices }) => {
+  const { buyNow } = useBuyNow()
   const ref = useRef(null)
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(
     ref,
@@ -26,6 +32,10 @@ const EmbedWidget: FC<Props> = ({ gameProject }) => {
     }
   )
   const [runGameFlag, setRunGameFlag] = useState<boolean>(false)
+  // hold unlock
+  // false can play
+  // true can't play
+  const [holdUnlock, setHoldUnlock] = useState<boolean>(false)
 
   const handleFullscreen = useCallback(() => {
     // https://developer.mozilla.org/en-US/docs/Web/API/Lock
@@ -41,6 +51,32 @@ const EmbedWidget: FC<Props> = ({ gameProject }) => {
       }
     }
   }, [enterFullscreen, exitFullscreen, isFullscreen])
+
+  const handlePlay = useCallback(() => {
+    if (
+      gameProject.paymentMode === PaymentMode.DISABLE_PAYMENTS ||
+      gameProject.paymentMode === PaymentMode.FREE
+    ) {
+      buyNow({
+        inputCurrency: '',
+        outputCurrency: prices.token.address,
+      })
+    } else {
+      setRunGameFlag(true)
+    }
+  }, [gameProject, prices, buyNow])
+
+  const processHoldUnlock = useCallback(() => {
+    if (gameProject.paymentMode === PaymentMode.PAID) {
+      setHoldUnlock(true)
+    } else {
+      setHoldUnlock(true)
+    }
+  }, [gameProject])
+
+  useEffect(() => {
+    processHoldUnlock()
+  }, [processHoldUnlock])
 
   return (
     <div
@@ -76,27 +112,22 @@ const EmbedWidget: FC<Props> = ({ gameProject }) => {
         ) : (
           <div className={styles.iframe_placeholder}>
             <button
-              onClick={() => setRunGameFlag(true)}
+              onClick={() => handlePlay()}
               className={`${stylesCommon.button} ${styles.button} ${styles.load_iframe_btn}`}
             >
-              <svg
-                strokeLinecap="round"
-                stroke="currentColor"
-                className={`${styles.svgicon} icon_play`}
-                role="img"
-                version="1.1"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                height="24"
-                strokeLinejoin="round"
-                aria-hidden
-                fill="none"
-                width="24"
-              >
-                <circle cx="12" cy="12" r="10"></circle>
-                <polygon points="10 8 16 12 10 16 10 8"></polygon>
-              </svg>{' '}
-              Play
+              {holdUnlock ? (
+                `Need to hold ${prices.amount} ${prices.token.symbol}`
+              ) : (
+                <>
+                  <PlayCircleOutlineIcon
+                    sx={{
+                      mr: 1,
+                      fontSize: '26px',
+                    }}
+                  />
+                  Play
+                </>
+              )}
             </button>
           </div>
         )}

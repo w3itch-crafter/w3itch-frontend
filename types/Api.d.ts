@@ -28,6 +28,23 @@ declare namespace Api {
     order?: 'ASC' | 'DESC'
   }
 
+  type GameProjectPricesDto = {
+    id: number
+    createdAt: Date
+    updatedAt: Date
+    chainId: number
+    amount: number
+    token: {
+      id: number
+      createdAt: Date
+      updatedAt: Date
+      address: string
+      symbol: string
+      chainId: number
+      chainName: string
+    }
+  }
+
   type GameProjectDto = {
     title: string
     paymentMode: PaymentMode
@@ -72,5 +89,15 @@ declare namespace Api {
   type AccountsMetamaskActionResponse = {
     user: UserEntity
     account: AccountEntity
+  }
+
+  type BlockchainsEvmTokensResponse = {
+    id: number
+    createdAt: Date
+    updatedAt: Date
+    address: string
+    symbol: string
+    chainId: number
+    chainName: string
   }
 }
