@@ -17,6 +17,7 @@ import {
   Fragment,
   MutableRefObject,
   useCallback,
+  useContext,
   useEffect,
   useState,
 } from 'react'
@@ -41,6 +42,7 @@ import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
 import { CurrentChainId } from 'constants/chains'
+import { AuthenticationContext } from 'context'
 import { utils } from 'ethers'
 import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
 import { isEmpty, trim } from 'lodash'
@@ -62,6 +64,9 @@ let MESSAGE_SUBMIT_KEY: any
 
 const GameNew: NextPage = () => {
   const router = useRouter()
+  const {
+    state: { isAuthenticated },
+  } = useContext(AuthenticationContext)
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const [editorRef, setEditorRef] = useState<MutableRefObject<ToastUiEditor>>()
@@ -372,8 +377,8 @@ const GameNew: NextPage = () => {
   }, [editorRef, setValue])
 
   useEffect(() => {
-    console.log('env', process.env.NODE_ENV)
-  }, [])
+    if (!isAuthenticated) router.replace('/login')
+  }, [isAuthenticated, router])
 
   return (
     <Fragment>
