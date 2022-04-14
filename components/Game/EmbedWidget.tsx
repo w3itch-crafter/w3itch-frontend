@@ -3,7 +3,10 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import { useFullscreen } from 'ahooks'
 import { gameProjectPlayer } from 'api'
+import { utils } from 'ethers'
 import { useBuyNow } from 'hooks/useBuyNow'
+import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
+import { isEmpty } from 'lodash'
 import { FC, useCallback, useEffect } from 'react'
 import { useRef, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
@@ -11,13 +14,15 @@ import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
 import { Api } from 'types/Api'
 import { PaymentMode } from 'types/enum'
+import { balanceDecimal } from 'utils'
 
 interface Props {
   readonly gameProject: GameEntity
-  readonly prices: Api.GameProjectPricesDto
+  readonly price: Api.GameProjectPricesDto
+  readonly priceToken: ERC20MulticallTokenResult
 }
 
-const EmbedWidget: FC<Props> = ({ gameProject, prices }) => {
+const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
   const { buyNow } = useBuyNow()
   const ref = useRef(null)
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(
@@ -59,12 +64,12 @@ const EmbedWidget: FC<Props> = ({ gameProject, prices }) => {
     ) {
       buyNow({
         inputCurrency: '',
-        outputCurrency: prices.token.address,
+        outputCurrency: price.token,
       })
     } else {
       setRunGameFlag(true)
     }
-  }, [gameProject, prices, buyNow])
+  }, [gameProject, price, buyNow])
 
   const processHoldUnlock = useCallback(() => {
     if (gameProject.paymentMode === PaymentMode.PAID) {
@@ -116,7 +121,13 @@ const EmbedWidget: FC<Props> = ({ gameProject, prices }) => {
               className={`${stylesCommon.button} ${styles.button} ${styles.load_iframe_btn}`}
             >
               {holdUnlock ? (
-                `Need to hold ${prices.amount} ${prices.token.symbol}`
+                isEmpty(priceToken) ? (
+                  `Need to hold Token`
+                ) : (
+                  `Need to hold ${balanceDecimal(
+                    utils.formatUnits(price.amount, priceToken.decimals)
+                  )} ${priceToken.symbol}`
+                )
               ) : (
                 <>
                   <PlayCircleOutlineIcon

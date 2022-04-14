@@ -29,20 +29,9 @@ declare namespace Api {
   }
 
   type GameProjectPricesDto = {
-    id: number
-    createdAt: Date
-    updatedAt: Date
     chainId: number
-    amount: number
-    token: {
-      id: number
-      createdAt: Date
-      updatedAt: Date
-      address: string
-      symbol: string
-      chainId: number
-      chainName: string
-    }
+    amount: string
+    token: string
   }
 
   type GameProjectDto = {

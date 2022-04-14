@@ -3,13 +3,15 @@ import { Box } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { PrimaryButton } from 'components/CustomizedButtons'
 import { CurrentChainId } from 'constants/chains'
+import { utils } from 'ethers'
 import { useBuyNow } from 'hooks/useBuyNow'
+import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
+import { isEmpty } from 'lodash'
 import Link from 'next/link'
 import { FC } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { Api } from 'types/Api'
-import { ExplorerDataType, getExplorerLink } from 'utils'
-
+import { balanceDecimal, ExplorerDataType, getExplorerLink } from 'utils'
 const ExplorerLink = styled.a`
   font-size: 120%;
   margin-right: 6px;
@@ -18,10 +20,11 @@ const ExplorerLink = styled.a`
 `
 
 interface PurchaseProps {
-  readonly prices: Api.GameProjectPricesDto
+  readonly price: Api.GameProjectPricesDto
+  readonly priceToken: ERC20MulticallTokenResult
 }
 
-const Purchase: FC<PurchaseProps> = ({ prices }) => {
+const Purchase: FC<PurchaseProps> = ({ price, priceToken }) => {
   const { buyNow } = useBuyNow()
 
   return (
@@ -37,7 +40,7 @@ const Purchase: FC<PurchaseProps> = ({ prices }) => {
           onClick={() =>
             buyNow({
               inputCurrency: '',
-              outputCurrency: prices.token.address,
+              outputCurrency: price.token,
             })
           }
           sx={{
@@ -46,46 +49,68 @@ const Purchase: FC<PurchaseProps> = ({ prices }) => {
         >
           Buy Now
         </PrimaryButton>
-        <Typography
-          sx={{
-            marginLeft: '10px',
-            display: 'inline-flex',
-            alignItems: 'center',
-          }}
-          component="span"
-        >
-          <Link
-            passHref
-            href={getExplorerLink(
-              CurrentChainId,
-              prices.token.address,
-              ExplorerDataType.TOKEN
-            )}
-          >
-            <ExplorerLink target="_blank" rel="noopener noreferrer">
-              {`${prices.amount} ${prices.token.symbol}`}
-            </ExplorerLink>
-          </Link>
+        {!isEmpty(priceToken) && (
           <Typography
-            component="span"
             sx={{
-              color: 'inherit',
-              opacity: 0.5,
+              marginLeft: '10px',
+              display: 'inline-flex',
+              alignItems: 'center',
+            }}
+            component="span"
+          >
+            <Link
+              passHref
+              href={getExplorerLink(
+                CurrentChainId,
+                price.token,
+                ExplorerDataType.TOKEN
+              )}
+            >
+              <ExplorerLink target="_blank" rel="noopener noreferrer">
+                {balanceDecimal(
+                  utils.formatUnits(price.amount, priceToken.decimals)
+                )}{' '}
+                {priceToken.symbol}
+              </ExplorerLink>
+            </Link>
+            <Typography
+              component="span"
+              sx={{
+                color: 'inherit',
+                opacity: 0.5,
+              }}
+            >
+              or more
+            </Typography>
+          </Typography>
+        )}
+      </Box>
+      {!isEmpty(priceToken) && (
+        <>
+          <Typography
+            variant="body2"
+            sx={{
+              marginTop: 1.5,
             }}
           >
-            or more
+            Balance:{' '}
+            {balanceDecimal(
+              utils.formatUnits(priceToken.balanceOf, priceToken.decimals)
+            )}{' '}
+            {priceToken.symbol}
           </Typography>
-        </Typography>
-      </Box>
-      <Typography
-        variant="body2"
-        sx={{
-          marginTop: 1.5,
-        }}
-      >
-        To play this game, you must hold at least{' '}
-        {`${prices.amount} ${prices.token.symbol}`}.
-      </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              marginTop: 1.5,
+            }}
+          >
+            To play this game, you must hold at least{' '}
+            {utils.formatUnits(price.amount, priceToken.decimals)}{' '}
+            {priceToken.symbol}.
+          </Typography>
+        </>
+      )}
     </Box>
   )
 }
