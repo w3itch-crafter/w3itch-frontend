@@ -2,11 +2,8 @@ import '../styles/globals.css'
 
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { Layout } from 'components/layout'
-import {
-  AuthenticationProvider,
-  ReadonlyEthersProvider,
-} from 'components/pages'
-import { CurrentChainId, Providers } from 'constants/index'
+import { AuthenticationProvider } from 'components/pages'
+import { CurrentChainId } from 'constants/index'
 import type { AppProps } from 'next/app'
 import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
@@ -35,14 +32,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       }}
     >
       <AuthenticationProvider>
-        <ReadonlyEthersProvider provider={Providers[CurrentChainId]}>
-          <SnackbarProvider maxSnack={3}>
-            <Fragment>
-              <CssBaseline />
-              {getLayout(<Component {...pageProps} />)}
-            </Fragment>
-          </SnackbarProvider>
-        </ReadonlyEthersProvider>
+        <SnackbarProvider maxSnack={3}>
+          <Fragment>
+            <CssBaseline />
+            {getLayout(<Component {...pageProps} />)}
+          </Fragment>
+        </SnackbarProvider>
       </AuthenticationProvider>
     </UseWalletProvider>
   )
