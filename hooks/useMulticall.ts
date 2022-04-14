@@ -1,16 +1,16 @@
 import { FunctionFragment } from '@ethersproject/abi'
-import { currentMulticallAddress } from 'constants/contracts'
-import { currentProvider } from 'constants/providers'
+import { Provider } from '@ethersproject/providers'
+import { CurrentMulticallAddress, CurrentProvider } from 'constants/index'
 import { Multicall__factory } from 'contracts/MulticallFactory'
-import { BytesLike, ethers, utils } from 'ethers'
+import { BytesLike, utils } from 'ethers'
 import { useCallback, useMemo } from 'react'
 
 import { useSigner } from './useSigner'
 
 // static multicall
 export const staticMulticall = Multicall__factory.connect(
-  currentMulticallAddress,
-  currentProvider as ethers.providers.Provider
+  CurrentMulticallAddress,
+  CurrentProvider as Provider
 )
 
 export function useMulticall() {
@@ -18,7 +18,7 @@ export function useMulticall() {
   // multicall contract
   const Multicall = useMemo(() => {
     if (isSignerReady(signer)) {
-      return Multicall__factory.connect(currentMulticallAddress, signer)
+      return Multicall__factory.connect(CurrentMulticallAddress, signer)
     } else {
       return staticMulticall
     }

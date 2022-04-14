@@ -3,12 +3,14 @@ import {
   UniswapSupportedChainId,
 } from 'types/enum'
 
-export type SupportedChainId = UniswapSupportedChainId &
+export type SupportedChainId =
+  | UniswapSupportedChainId
+  | PancakeSwapSupportedChainId
+export const SupportedChainId = Object.assign(
+  {},
+  UniswapSupportedChainId,
   PancakeSwapSupportedChainId
-export const SupportedChainId = {
-  ...UniswapSupportedChainId,
-  ...PancakeSwapSupportedChainId,
-}
+)
 
 export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.MAINNET]: 'mainnet',
@@ -36,7 +38,7 @@ export const ALL_UNISWAP_SUPPORTED_CHAIN_IDS: SupportedChainId[] =
 const ethereumLogoUrl = 'public/icons/ethereum-eth-logo.png'
 const arbitrumLogoUrl = 'public/icons/arbitrum-logo.svg'
 const optimismLogoUrl = 'public/icons/optimistic-ethereum-logo.svg'
-const polygonMaticLogo = 'public/icons/polygon-matic-logo.svg'
+const polygonLogoUrl = 'public/icons/polygon-matic-logo.svg'
 const binanceLogoUrl = 'public/icons/binance-bnb-logo.svg'
 
 interface BaseChainInfo {
@@ -56,13 +58,11 @@ interface BaseChainInfo {
     decimals: number // e.g. 18,
   }
 }
-
 export type ChainInfo = BaseChainInfo
 
 export type ChainInfoMap = {
-  readonly [chainId: number]: BaseChainInfo
+  readonly [chainId in SupportedChainId]: ChainInfo
 }
-
 export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.MAINNET]: {
     docs: 'https://docs.uniswap.org/',
@@ -184,7 +184,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/polygon/',
     label: 'Polygon',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.POLYGON],
-    logoUrl: polygonMaticLogo,
+    logoUrl: polygonLogoUrl,
     nativeCurrency: { name: 'Polygon Matic', symbol: 'MATIC', decimals: 18 },
   },
   [SupportedChainId.POLYGON_MUMBAI]: {
@@ -195,7 +195,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/polygon/',
     label: 'Polygon Mumbai',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.POLYGON_MUMBAI],
-    logoUrl: polygonMaticLogo,
+    logoUrl: polygonLogoUrl,
     nativeCurrency: {
       name: 'Polygon Mumbai Matic',
       symbol: 'mMATIC',
@@ -214,6 +214,6 @@ export const CHAIN_INFO: ChainInfoMap = {
   },
 }
 
-export const CurrentChainId = Number(UniswapSupportedChainId.RINKEBY) as
-  | UniswapSupportedChainId
-  | PancakeSwapSupportedChainId
+export const CurrentChainId = Number(
+  UniswapSupportedChainId.RINKEBY
+) as SupportedChainId
