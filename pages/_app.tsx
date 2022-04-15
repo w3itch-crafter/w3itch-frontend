@@ -32,7 +32,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       }}
     >
       <AuthenticationProvider>
-        <SnackbarProvider maxSnack={3}>
+        <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
           <Fragment>
             <CssBaseline />
             {getLayout(<Component {...pageProps} />)}

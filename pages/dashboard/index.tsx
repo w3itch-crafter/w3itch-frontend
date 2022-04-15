@@ -1,6 +1,5 @@
 import styled from '@emotion/styled'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import { Alert, AlertColor, Snackbar } from '@mui/material'
 import Pagination from '@mui/material/Pagination'
 import { deleteGameProject, getGamesMine } from 'api'
 import Navigation from 'components/Dashboard/Navigation'
@@ -10,6 +9,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import Router, { useRouter } from 'next/router'
+import { useSnackbar } from 'notistack'
 import { FC, Fragment, useCallback, useContext } from 'react'
 import { Dispatch, SetStateAction, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
@@ -40,11 +40,6 @@ const EmptyGameProject = () => {
   )
 }
 
-declare type PopoverState = {
-  open: boolean
-  color: AlertColor
-  message: string
-}
 const HasGameProject: FC<HasGameProjectProps> = ({
   items,
   meta,
@@ -57,11 +52,7 @@ const HasGameProject: FC<HasGameProjectProps> = ({
     text-decoration: underline;
   `
   const router = useRouter()
-  const [popoverState, setPopoverState] = useState<PopoverState>({
-    open: false,
-    color: 'success',
-    message: 'Game deleted',
-  })
+  const { enqueueSnackbar } = useSnackbar()
   const handleDeleteGame = useCallback(
     async (id: number) => {
       const confirm = window.confirm(
@@ -70,18 +61,19 @@ const HasGameProject: FC<HasGameProjectProps> = ({
       if (!confirm) return
       const res = await deleteGameProject(id)
       if (res.status === 401) {
-        setPopoverState((s) => ({
-          ...s,
-          open: true,
-          color: 'error',
-          message: res.data.message,
-        }))
+        enqueueSnackbar(res.data.message, {
+          anchorOrigin: { vertical: 'top', horizontal: 'center' },
+          variant: 'error',
+        })
         return setTimeout(() => router.replace('/login'), 1500)
       }
-      setPopoverState((s) => ({ ...s, open: true }))
+      enqueueSnackbar('Game deleted', {
+        anchorOrigin: { vertical: 'top', horizontal: 'center' },
+        variant: 'success',
+      })
       return Router.reload()
     },
-    [router]
+    [enqueueSnackbar, router]
   )
 
   return (
@@ -150,13 +142,6 @@ const HasGameProject: FC<HasGameProjectProps> = ({
         </p>
       </div>
       <div className={styles.right_col}></div>
-      <Snackbar
-        open={popoverState.open}
-        autoHideDuration={5000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert severity={popoverState.color}>{popoverState.message}</Alert>
-      </Snackbar>
     </div>
   )
 }
