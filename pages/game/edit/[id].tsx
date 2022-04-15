@@ -20,7 +20,7 @@ import { GameEntity } from 'types'
 const GameEdit: NextPage = () => {
   const router = useRouter()
   const id = router.query.id
-  const [gameProject, setGameProject] = useState<GameEntity>({})
+  const [gameProject, setGameProject] = useState<GameEntity>({} as GameEntity)
   const [editorRef, setEditorRef] = useState<MutableRefObject<Editor>>()
 
   const [defaultValue] = useState<DefaultValues<Game>>({
@@ -45,9 +45,6 @@ const GameEdit: NextPage = () => {
     resolver: resolverGame,
     defaultValues: defaultValue,
   })
-  console.log('formState', formState)
-  console.log('watch cover', watch('cover'))
-
   const fetchGameProjectFn = useCallback(
     async (id: number) => {
       const gameProjectResult = await gameProjectByID(id)
@@ -65,8 +62,6 @@ const GameEdit: NextPage = () => {
         setValue('cover', gameProjectResult.data.cover)
         setValue('charset', gameProjectResult.data.charset)
 
-        console.log('editorRef', editorRef?.current)
-
         setTimeout(() => {
           if (editorRef?.current) {
             editorRef?.current
@@ -78,11 +73,6 @@ const GameEdit: NextPage = () => {
     },
     [setValue, editorRef]
   )
-
-  // update game
-  const updateGame = useCallback(async () => {
-    //
-  }, [])
 
   useEffect(() => {
     if (id) {

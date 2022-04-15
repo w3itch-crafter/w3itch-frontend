@@ -131,8 +131,6 @@ const GameForm: FC<GameFormProps> = ({
   const [currentDonationAddress, setCurrentDonationAddress] =
     useState<string>('')
 
-  console.log('currentSelectTokenAmount', currentSelectTokenAmount)
-
   const { errors } = formState
   const watchPaymentMode = watch('paymentMode')
 
@@ -308,7 +306,7 @@ const GameForm: FC<GameFormProps> = ({
         console.log('gameData', gameData)
 
         const formData = new FormData()
-        formData.append('file', uploadGameFile)
+        formData.append('file', uploadGameFile as File)
         formData.append('game', JSON.stringify(gameData))
 
         // check field
@@ -348,7 +346,7 @@ const GameForm: FC<GameFormProps> = ({
 
         const allImages = await handleAllImages()
 
-        const gameData = {
+        const gameData: Api.GameProjectDto = {
           title: trim(game.title),
           subtitle: trim(game.subtitle),
           description: trim(description),
@@ -492,7 +490,6 @@ const GameForm: FC<GameFormProps> = ({
   // watch current token fill data
   // paymentMode
   useEffect(() => {
-    console.log(11, getValues('paymentMode'))
     if (
       editorMode === EditorMode.EDIT &&
       getValues('paymentMode') === PaymentMode.PAID &&
@@ -508,20 +505,6 @@ const GameForm: FC<GameFormProps> = ({
         balanceOf: BigNumberEthers.from(0),
       })
     }
-
-    if (
-      editorMode === EditorMode.EDIT &&
-      getValues('paymentMode') === PaymentMode.PAID &&
-      !currentSelectTokenAmount &&
-      currentSelectTokenAmount === '0'
-    ) {
-      setCurrentSelectTokenAmount(
-        utils.formatUnits(
-          gameProject.prices[0].amount,
-          gameProject.prices[0].token.decimals
-        )
-      )
-    }
   }, [
     currentSelectTokenAmount,
     gameProject,
@@ -529,27 +512,6 @@ const GameForm: FC<GameFormProps> = ({
     currentSelectToken,
     watchPaymentMode,
     getValues,
-  ])
-
-  // watch current donationAddress fill data
-  // paymentMode
-  useEffect(() => {
-    if (
-      editorMode === EditorMode.EDIT &&
-      getValues('paymentMode') === PaymentMode.FREE &&
-      !currentDonationAddress
-    ) {
-      setCurrentDonationAddress(
-        (gameProject?.donationAddress || account?.accountId) as string
-      )
-    }
-  }, [
-    watchPaymentMode,
-    editorMode,
-    currentDonationAddress,
-    gameProject,
-    getValues,
-    account,
   ])
 
   useEffect(() => {
@@ -731,13 +693,18 @@ const GameForm: FC<GameFormProps> = ({
 
                     <div className={styles.input_row}>
                       <FormPricing
+                        gameProject={gameProject}
                         control={control}
+                        getValues={getValues}
                         errors={errors}
                         watch={watch}
                         token={currentSelectToken}
                         setTtokenListDialogOpen={setTtokenListDialogOpen}
                         tokenAmountChange={setCurrentSelectTokenAmount}
                         donationAddressChange={setCurrentDonationAddress}
+                        currentSelectTokenAmount={currentSelectTokenAmount}
+                        currentDonationAddress={currentDonationAddress}
+                        editorMode={editorMode}
                       />
                     </div>
 
