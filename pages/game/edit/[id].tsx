@@ -49,7 +49,6 @@ const GameEdit: NextPage = () => {
     async (id: number) => {
       const gameProjectResult = await gameProjectByID(id)
       if (gameProjectResult.status === 200) {
-        console.log('gameProjectResult', gameProjectResult.data)
         setGameProject(gameProjectResult.data)
 
         setValue('title', gameProjectResult.data.title)
