@@ -26,7 +26,8 @@ export function getExplorerLink(
   if (!chainInfo) return ''
 
   const buildExplorerUrl = (input: string): string => {
-    return new URL(input, chainInfo.explorer).toString().toLowerCase()
+    // Server URL error
+    return `${chainInfo.explorer}${input}`.replaceAll('//', '/')
   }
 
   switch (type) {

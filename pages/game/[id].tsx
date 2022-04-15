@@ -9,22 +9,30 @@ import GameRating from 'components/Game/GameRating'
 import MoreInformation from 'components/Game/MoreInformation'
 import Purchase from 'components/Game/Purchase'
 import UserTools from 'components/Game/UserTools'
+import {
+  ERC20MulticallTokenResult,
+  useERC20Multicall,
+} from 'hooks/useERC20Multicall'
+import { isEmpty } from 'lodash'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
 import { Api } from 'types/Api'
-import { Community } from 'types/enum'
+import { Community, PaymentMode } from 'types/enum'
 const RenderMarkdown = dynamic(
   () => import('components/RenderMarkdown/index'),
   { ssr: false }
 )
 const CommentsDisqus = dynamic(() => import('components/Game/CommentsDisqus'), {
+  ssr: false,
+})
+const Donation = dynamic(() => import('components/Game/Donation'), {
   ssr: false,
 })
 
@@ -39,6 +47,7 @@ const GameId: NextPage<GameProps> = ({
 }) => {
   const router = useRouter()
   const id = router.query.id
+  const { fetchTokensAddress } = useERC20Multicall()
 
   const [gameProject, setGameProject] = useState<GameEntity>(gameProjectData)
   const [gameRatingsCount, setGameRatingsCount] =
@@ -53,6 +62,11 @@ const GameId: NextPage<GameProps> = ({
   const gameTitle = gameProject
     ? `${gameProject.title} | by ${gameProject.username} | w3itch.io`
     : 'Game - w3itch.io'
+
+  // hold unlock token
+  const [pricesTokens, setPricesTokens] = useState<ERC20MulticallTokenResult[]>(
+    []
+  )
 
   const fetchGameRatingMineFn = useCallback(async () => {
     try {
@@ -87,6 +101,22 @@ const GameId: NextPage<GameProps> = ({
     }
   }, [id])
 
+  const fetchPricesToken = useCallback(async () => {
+    if (gameProject.paymentMode === PaymentMode.PAID) {
+      // map address
+      const address = gameProject.prices.map((price) => price.token.address)
+      const tokensResponse = await fetchTokensAddress(address)
+      console.log('tokensResponse', tokensResponse)
+      const tokens: ERC20MulticallTokenResult[] = (tokensResponse || []).map(
+        (token) => ({
+          address: token.address,
+          ...token.data,
+        })
+      )
+      setPricesTokens(tokens)
+    }
+  }, [fetchTokensAddress, gameProject])
+
   // refresh
   const handleRefresh = useCallback(() => {
     fetchGameProjectFn()
@@ -97,6 +127,10 @@ const GameId: NextPage<GameProps> = ({
   useMount(() => {
     fetchGameRatingMineFn()
   })
+
+  useEffect(() => {
+    fetchPricesToken()
+  }, [fetchPricesToken])
 
   return (
     <>
@@ -116,22 +150,8 @@ const GameId: NextPage<GameProps> = ({
             >
               <EmbedWidget
                 gameProject={gameProject}
-                prices={{
-                  id: 1,
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                  chainId: 4,
-                  amount: 10,
-                  token: {
-                    id: 1,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    address: '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735',
-                    symbol: 'DAI',
-                    chainId: 4,
-                    chainName: 'rinkeby',
-                  },
-                }}
+                price={gameProject.prices[0]}
+                priceToken={pricesTokens[0]}
               />
               <div className={styles.columns}>
                 <div className={`${styles.left_col} ${styles.column}`}>
@@ -146,26 +166,23 @@ const GameId: NextPage<GameProps> = ({
                       gameRatingsCount={gameRatingsCount}
                     />
                   </div>
-                  <div className={styles.row}>
-                    <Purchase
-                      prices={{
-                        id: 1,
-                        createdAt: new Date(),
-                        updatedAt: new Date(),
-                        chainId: 4,
-                        amount: 10,
-                        token: {
-                          id: 1,
-                          createdAt: new Date(),
-                          updatedAt: new Date(),
-                          address: '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735',
-                          symbol: 'DAI',
-                          chainId: 4,
-                          chainName: 'rinkeby',
-                        },
-                      }}
-                    />
-                  </div>
+                  {gameProject.paymentMode === PaymentMode.PAID ? (
+                    !isEmpty(gameProject.prices) && (
+                      <div className={styles.row}>
+                        <Purchase
+                          price={gameProject.prices[0]}
+                          priceToken={pricesTokens[0]}
+                        />
+                      </div>
+                    )
+                  ) : gameProject.paymentMode === PaymentMode.FREE ? (
+                    <div className={styles.row}>
+                      <Donation
+                        donationAddress={gameProject.donationAddress || ''}
+                      />
+                    </div>
+                  ) : null}
+
                   {gameProject.community === Community.DISQUS && (
                     <div className={styles.game_comments_widget}>
                       <h2 className={styles.row_title}>Comments</h2>

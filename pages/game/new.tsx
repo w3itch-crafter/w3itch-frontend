@@ -17,6 +17,7 @@ import {
   Fragment,
   MutableRefObject,
   useCallback,
+  useContext,
   useEffect,
   useState,
 } from 'react'
@@ -41,12 +42,14 @@ import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
 import { CurrentChainId } from 'constants/chains'
+import { AuthenticationContext } from 'context'
 import { utils } from 'ethers'
 import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
+import { Api } from 'types/Api'
 import {
   Community,
   GameEngine,
@@ -55,13 +58,16 @@ import {
   ProjectClassification,
   ReleaseStatus,
 } from 'types/enum'
-import { fileUrl, parseUrl, processMessage } from 'utils'
+import { fileUrl, isStringNumber, parseUrl, processMessage } from 'utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let MESSAGE_SUBMIT_KEY: any
 
 const GameNew: NextPage = () => {
   const router = useRouter()
+  const {
+    state: { isAuthenticated },
+  } = useContext(AuthenticationContext)
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const [editorRef, setEditorRef] = useState<MutableRefObject<ToastUiEditor>>()
@@ -75,6 +81,8 @@ const GameNew: NextPage = () => {
     useState<ERC20MulticallTokenResult>({} as ERC20MulticallTokenResult)
   const [currentSelectTokenAmount, setCurrentSelectTokenAmount] =
     useState<string>('0')
+  const [currentDonationAddress, setCurrentDonationAddress] =
+    useState<string>('')
 
   console.log('currentSelectTokenAmount', currentSelectTokenAmount)
 
@@ -88,7 +96,7 @@ const GameNew: NextPage = () => {
   } = useForm<Game>({
     resolver: resolverGame,
     defaultValues: {
-      paymentMode: PaymentMode.PAID,
+      paymentMode: PaymentMode.DISABLE_PAYMENTS,
       community: Community.DISABLED,
       genre: Genre.ROLE_PLAYING,
       tokenId: 0,
@@ -163,7 +171,7 @@ const GameNew: NextPage = () => {
       return
     }
 
-    let prices = undefined
+    let prices: Api.GameProjectPricesDto[] = []
     if (game.paymentMode === PaymentMode.PAID) {
       if (isEmpty(currentSelectToken)) {
         enqueueSnackbar('Please select Token', {
@@ -178,6 +186,16 @@ const GameNew: NextPage = () => {
 
       if (!currentSelectTokenAmount || currentSelectTokenAmount === '0') {
         enqueueSnackbar('Please enter amount', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'warning',
+        })
+        return
+      }
+      if (!isStringNumber(currentSelectTokenAmount)) {
+        enqueueSnackbar('Please enter the correct amount', {
           anchorOrigin: {
             vertical: 'top',
             horizontal: 'center',
@@ -207,14 +225,16 @@ const GameNew: NextPage = () => {
         },
       ]
     } else if (game.paymentMode === PaymentMode.FREE) {
-      enqueueSnackbar('Please set a donation address', {
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'center',
-        },
-        variant: 'warning',
-      })
-      return
+      if (!currentDonationAddress || !utils.isAddress(currentDonationAddress)) {
+        enqueueSnackbar('Please set a donation address', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'warning',
+        })
+        return
+      }
     }
 
     MESSAGE_SUBMIT_KEY = enqueueSnackbar('uploading game...', {
@@ -248,6 +268,10 @@ const GameNew: NextPage = () => {
         charset: game.charset,
         paymentMode: game.paymentMode,
         prices: prices,
+        donationAddress:
+          game.paymentMode === PaymentMode.FREE
+            ? utils.getAddress(currentDonationAddress)
+            : '',
       }
       console.log('file', uploadGameFile)
       console.log('gameData', gameData)
@@ -362,8 +386,8 @@ const GameNew: NextPage = () => {
   }, [editorRef, setValue])
 
   useEffect(() => {
-    console.log('env', process.env.NODE_ENV)
-  }, [])
+    if (!isAuthenticated) router.replace('/login')
+  }, [isAuthenticated, router])
 
   return (
     <Fragment>
@@ -549,6 +573,7 @@ const GameNew: NextPage = () => {
                         token={currentSelectToken}
                         setTtokenListDialogOpen={setTtokenListDialogOpen}
                         tokenAmountChange={setCurrentSelectTokenAmount}
+                        donationAddressChange={setCurrentDonationAddress}
                       />
                     </div>
 

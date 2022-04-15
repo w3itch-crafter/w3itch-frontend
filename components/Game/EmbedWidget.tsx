@@ -3,21 +3,28 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import { useFullscreen } from 'ahooks'
 import { gameProjectPlayer } from 'api'
+import BigNumber from 'bignumber.js'
+import { utils } from 'ethers'
+import { getAddress } from 'ethers/lib/utils'
 import { useBuyNow } from 'hooks/useBuyNow'
+import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
+import { isEmpty } from 'lodash'
 import { FC, useCallback, useEffect } from 'react'
 import { useRef, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
-import { Api } from 'types/Api'
+import { PriceEntity } from 'types'
 import { PaymentMode } from 'types/enum'
+import { balanceDecimal } from 'utils'
 
 interface Props {
   readonly gameProject: GameEntity
-  readonly prices: Api.GameProjectPricesDto
+  readonly price: PriceEntity
+  readonly priceToken?: ERC20MulticallTokenResult
 }
 
-const EmbedWidget: FC<Props> = ({ gameProject, prices }) => {
+const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
   const { buyNow } = useBuyNow()
   const ref = useRef(null)
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(
@@ -35,44 +42,56 @@ const EmbedWidget: FC<Props> = ({ gameProject, prices }) => {
   // hold unlock
   // false can play
   // true can't play
-  const [holdUnlock, setHoldUnlock] = useState<boolean>(false)
+  const [holdUnlock, setHoldUnlock] = useState<boolean>(true)
 
   const handleFullscreen = useCallback(() => {
     // https://developer.mozilla.org/en-US/docs/Web/API/Lock
     if (isFullscreen) {
+      exitFullscreen()
       if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
-        exitFullscreen()
         navigator.keyboard.unlock()
       }
     } else {
       if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
         navigator.keyboard.lock(['Escape'])
-        enterFullscreen()
       }
+      enterFullscreen()
     }
   }, [enterFullscreen, exitFullscreen, isFullscreen])
 
   const handlePlay = useCallback(() => {
-    if (
-      gameProject.paymentMode === PaymentMode.DISABLE_PAYMENTS ||
-      gameProject.paymentMode === PaymentMode.FREE
-    ) {
-      buyNow({
-        inputCurrency: '',
-        outputCurrency: prices.token.address,
-      })
+    if (gameProject.paymentMode === PaymentMode.PAID) {
+      if (holdUnlock) {
+        buyNow({
+          chainId: price.token.chainId,
+          inputCurrency: '',
+          outputCurrency: getAddress(price.token.address),
+        })
+      } else {
+        setRunGameFlag(true)
+      }
     } else {
       setRunGameFlag(true)
     }
-  }, [gameProject, prices, buyNow])
+  }, [gameProject, price, buyNow, holdUnlock])
 
   const processHoldUnlock = useCallback(() => {
     if (gameProject.paymentMode === PaymentMode.PAID) {
-      setHoldUnlock(true)
+      if (isEmpty(priceToken) || !priceToken?.balanceOf) {
+        return
+      }
+
+      const isUnlock = new BigNumber(
+        utils.formatUnits(priceToken.balanceOf, price.token.decimals)
+      ).gte(utils.formatUnits(price.amount, price.token.decimals))
+
+      if (isUnlock) {
+        setHoldUnlock(false)
+      }
     } else {
-      setHoldUnlock(true)
+      setHoldUnlock(false)
     }
-  }, [gameProject])
+  }, [gameProject, price, priceToken])
 
   useEffect(() => {
     processHoldUnlock()
@@ -116,7 +135,13 @@ const EmbedWidget: FC<Props> = ({ gameProject, prices }) => {
               className={`${stylesCommon.button} ${styles.button} ${styles.load_iframe_btn}`}
             >
               {holdUnlock ? (
-                `Need to hold ${prices.amount} ${prices.token.symbol}`
+                isEmpty(price) ? (
+                  `Need to hold Token`
+                ) : (
+                  `Need to hold ${balanceDecimal(
+                    utils.formatUnits(price.amount, price.token.decimals)
+                  )} ${price.token.symbol}`
+                )
               ) : (
                 <>
                   <PlayCircleOutlineIcon

@@ -1,9 +1,9 @@
+import { AuthenticationContext } from 'context'
 import { _abi } from 'contracts/BaseErc20Factory'
 import { BigNumber, ethers, utils } from 'ethers'
-import { isAddress } from 'ethers/lib/utils'
+import { getAddress, isAddress } from 'ethers/lib/utils'
 import { chunk } from 'lodash'
-import { useCallback } from 'react'
-import { useWallet } from 'use-wallet'
+import { useCallback, useContext } from 'react'
 
 import { staticMulticall } from './useMulticall'
 
@@ -36,7 +36,14 @@ const ERC20Interface = new utils.Interface(_abi)
  * @returns
  */
 export function useERC20Multicall() {
-  const { account } = useWallet()
+  const {
+    state: { account: accountInfo },
+  } = useContext(AuthenticationContext)
+
+  const account = isAddress(accountInfo?.accountId || '')
+    ? getAddress(accountInfo?.accountId || '')
+    : ''
+  console.log('useERC20Multicall account', account)
 
   const fetchTokensAddress = useCallback(
     async (address: string[]): Promise<ERC20MulticallResult[] | undefined> => {

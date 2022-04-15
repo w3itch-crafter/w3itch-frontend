@@ -2,13 +2,16 @@ import styled from '@emotion/styled'
 import { Box } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { PrimaryButton } from 'components/CustomizedButtons'
-import { CurrentChainId } from 'constants/chains'
+import { utils } from 'ethers'
+import { getAddress } from 'ethers/lib/utils'
 import { useBuyNow } from 'hooks/useBuyNow'
+import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
+import { isEmpty } from 'lodash'
 import Link from 'next/link'
 import { FC } from 'react'
 import styles from 'styles/game/id.module.scss'
-import { Api } from 'types/Api'
-import { ExplorerDataType, getExplorerLink } from 'utils'
+import { PriceEntity } from 'types'
+import { balanceDecimal, ExplorerDataType, getExplorerLink } from 'utils'
 
 const ExplorerLink = styled.a`
   font-size: 120%;
@@ -18,10 +21,11 @@ const ExplorerLink = styled.a`
 `
 
 interface PurchaseProps {
-  readonly prices: Api.GameProjectPricesDto
+  readonly price: PriceEntity
+  readonly priceToken: ERC20MulticallTokenResult
 }
 
-const Purchase: FC<PurchaseProps> = ({ prices }) => {
+const Purchase: FC<PurchaseProps> = ({ price, priceToken }) => {
   const { buyNow } = useBuyNow()
 
   return (
@@ -36,8 +40,9 @@ const Purchase: FC<PurchaseProps> = ({ prices }) => {
         <PrimaryButton
           onClick={() =>
             buyNow({
+              chainId: price.token.chainId,
               inputCurrency: '',
-              outputCurrency: prices.token.address,
+              outputCurrency: getAddress(price.token.address),
             })
           }
           sx={{
@@ -57,13 +62,16 @@ const Purchase: FC<PurchaseProps> = ({ prices }) => {
           <Link
             passHref
             href={getExplorerLink(
-              CurrentChainId,
-              prices.token.address,
+              price.token.chainId,
+              getAddress(price.token.address),
               ExplorerDataType.TOKEN
             )}
           >
             <ExplorerLink target="_blank" rel="noopener noreferrer">
-              {`${prices.amount} ${prices.token.symbol}`}
+              {balanceDecimal(
+                utils.formatUnits(price.amount, price.token.decimals)
+              )}{' '}
+              {price.token.symbol}
             </ExplorerLink>
           </Link>
           <Typography
@@ -77,15 +85,32 @@ const Purchase: FC<PurchaseProps> = ({ prices }) => {
           </Typography>
         </Typography>
       </Box>
-      <Typography
-        variant="body2"
-        sx={{
-          marginTop: 1.5,
-        }}
-      >
-        To play this game, you must hold at least{' '}
-        {`${prices.amount} ${prices.token.symbol}`}.
-      </Typography>
+      <>
+        <Typography
+          variant="body2"
+          sx={{
+            marginTop: 1.5,
+          }}
+        >
+          Balance:{' '}
+          {isEmpty(priceToken) || !priceToken?.balanceOf
+            ? '0'
+            : balanceDecimal(
+                utils.formatUnits(priceToken.balanceOf, priceToken.decimals)
+              )}{' '}
+          {price.token.symbol}
+        </Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            marginTop: 1.5,
+          }}
+        >
+          To play this game, you must hold at least{' '}
+          {utils.formatUnits(price.amount, price.token.decimals)}{' '}
+          {price.token.symbol}.
+        </Typography>
+      </>
     </Box>
   )
 }
