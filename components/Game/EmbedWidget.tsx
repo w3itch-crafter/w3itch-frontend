@@ -103,10 +103,10 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
       className={`${styles.html_embed_widget} ${styles.embed_wrapper}`}
     >
       <div
-        data-height="360"
+        data-height="480"
         data-width="640"
         className={`${styles.game_frame} game_pending`}
-        style={{ width: '640px', height: '360px' }}
+        style={{ width: '640px', height: '480px' }}
       >
         {runGameFlag ? (
           <div className={`${styles.iframe_wrapper}`} ref={ref}>

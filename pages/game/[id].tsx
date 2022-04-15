@@ -1,3 +1,4 @@
+import styled from '@emotion/styled'
 import { useMount } from 'ahooks'
 import {
   fetchGameRatingsCount,
@@ -25,6 +26,8 @@ import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
 import { Api } from 'types/Api'
 import { Community, PaymentMode } from 'types/enum'
+import { BackendError } from 'utils'
+
 const RenderMarkdown = dynamic(
   () => import('components/RenderMarkdown/index'),
   { ssr: false }
@@ -37,7 +40,7 @@ const Donation = dynamic(() => import('components/Game/Donation'), {
 })
 
 declare interface GameProps {
-  readonly gameProjectData: GameEntity
+  readonly gameProjectData: GameEntity | null
   readonly gameRatingsCountData: number
 }
 
@@ -45,11 +48,21 @@ const GameId: NextPage<GameProps> = ({
   gameProjectData,
   gameRatingsCountData,
 }) => {
+  const NoGame = styled.div`
+    height: 100vh;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  `
   const router = useRouter()
   const id = router.query.id
   const { fetchTokensAddress } = useERC20Multicall()
 
-  const [gameProject, setGameProject] = useState<GameEntity>(gameProjectData)
+  const [gameProject, setGameProject] = useState<GameEntity | null>(
+    gameProjectData
+  )
   const [gameRatingsCount, setGameRatingsCount] =
     useState<number>(gameRatingsCountData)
 
@@ -102,7 +115,7 @@ const GameId: NextPage<GameProps> = ({
   }, [id])
 
   const fetchPricesToken = useCallback(async () => {
-    if (gameProject.paymentMode === PaymentMode.PAID) {
+    if (gameProject && gameProject.paymentMode === PaymentMode.PAID) {
       // map address
       const address = gameProject.prices.map((price) => price.token.address)
       const tokensResponse = await fetchTokensAddress(address)
@@ -229,7 +242,9 @@ const GameId: NextPage<GameProps> = ({
           />
         </div>
       ) : (
-        <div>No Game</div>
+        <NoGame>
+          <h1>No Game</h1>
+        </NoGame>
       )}
     </>
   )
@@ -239,13 +254,24 @@ export const getServerSideProps: GetServerSideProps<GameProps> = async (
   ctx
 ) => {
   const id = ctx.query.id
-  const gameProjectResult = await gameProjectByID(Number(id))
-  const gameRatingsCountResult = await fetchGameRatingsCount(Number(id))
-  return {
-    props: {
-      gameProjectData: gameProjectResult.data,
-      gameRatingsCountData: gameRatingsCountResult.data,
-    },
+  try {
+    const gameProjectResult = await gameProjectByID(Number(id))
+    const gameRatingsCountResult = await fetchGameRatingsCount(Number(id))
+    return {
+      props: {
+        gameProjectData: gameProjectResult.data,
+        gameRatingsCountData: gameRatingsCountResult.data,
+      },
+    }
+  } catch (error) {
+    if (error instanceof BackendError && error.statusCode === 404) {
+      // If backend returns 404 show No Game on page
+      return {
+        props: { gameProjectData: null, gameRatingsCountData: 0 },
+      }
+    }
+    // Otherwise show 404 page
+    return { notFound: true }
   }
 }
 

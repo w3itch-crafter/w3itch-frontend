@@ -76,6 +76,8 @@ declare namespace Api {
     rating: number
   }
 
+  type GameProjectDeleteResponse = Record<string, never>
+
   type AccountsMetamaskVerificationCodeResponse = {
     code: string
   }
@@ -93,5 +95,10 @@ declare namespace Api {
     symbol: string
     chainId: number
     chainName: string
+  }
+
+  type ValidateUsernameResponse = {
+    username?: string
+    isExists?: boolean
   }
 }
