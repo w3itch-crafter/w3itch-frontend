@@ -77,6 +77,8 @@ declare namespace Api {
     rating: number
   }
 
+  type GameProjectDeleteResponse = Record<string, never>
+
   type AccountsMetamaskVerificationCodeResponse = {
     code: string
   }

@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import { GameEntity, Pagination } from 'types'
+import { BackendErrorResponse, GameEntity, Pagination } from 'types'
 import { Api } from 'types/Api'
 
 import backend from './backend'
@@ -85,4 +85,10 @@ export const gameValidate = async (
     method: 'POST',
     data,
   })
+}
+
+export async function deleteGameProject(id: number) {
+  return await backend.delete<
+    Api.GameProjectDeleteResponse | BackendErrorResponse
+  >(`/game-projects/${id}`, { validateStatus: () => true })
 }

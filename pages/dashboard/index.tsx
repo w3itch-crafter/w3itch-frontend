@@ -1,13 +1,16 @@
+import styled from '@emotion/styled'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import { Alert, AlertColor, Snackbar } from '@mui/material'
 import Pagination from '@mui/material/Pagination'
-import { getGamesMine } from 'api'
+import { deleteGameProject, getGamesMine } from 'api'
 import Navigation from 'components/Dashboard/Navigation'
 import { AuthenticationContext } from 'context'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
-import { FC, Fragment, useContext } from 'react'
+import { useRouter } from 'next/router'
+import { FC, Fragment, useCallback, useContext } from 'react'
 import { Dispatch, SetStateAction, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/dashboard.module.scss'
@@ -37,12 +40,49 @@ const EmptyGameProject = () => {
   )
 }
 
+declare type PopoverState = {
+  open: boolean
+  color: AlertColor
+  message: string
+}
 const HasGameProject: FC<HasGameProjectProps> = ({
   items,
   meta,
   page,
   setPage,
 }) => {
+  const DeleteGame = styled.a`
+    margin-right: 8px;
+    cursor: pointer;
+    text-decoration: underline;
+  `
+  const router = useRouter()
+  const [popoverState, setPopoverState] = useState<PopoverState>({
+    open: false,
+    color: 'success',
+    message: 'Game deleted',
+  })
+  const handleDeleteGame = useCallback(
+    async (id: number) => {
+      const confirm = window.confirm(
+        'Are you sure you want to delete this game?'
+      )
+      if (!confirm) return
+      const res = await deleteGameProject(id)
+      if (res.status === 401) {
+        setPopoverState((s) => ({
+          ...s,
+          open: true,
+          color: 'error',
+          message: res.data.message,
+        }))
+        return setTimeout(() => router.replace('/login'), 1500)
+      }
+      return setPopoverState((s) => ({ ...s, open: true }))
+    },
+    [router]
+  )
+
   return (
     <div className={styles.dashboard_columns}>
       <div className={styles.left_col}>
@@ -67,6 +107,9 @@ const HasGameProject: FC<HasGameProjectProps> = ({
                   </Link>
                 </div>
                 <div className={styles.game_links}>
+                  <DeleteGame onClick={() => handleDeleteGame(item.id)}>
+                    Delete
+                  </DeleteGame>
                   <div className={styles.publish_status}>
                     <span className={`${styles.tag_bubble} ${styles.green}`}>
                       <Link href={`/game/${item.id}`}>
@@ -106,6 +149,13 @@ const HasGameProject: FC<HasGameProjectProps> = ({
         </p>
       </div>
       <div className={styles.right_col}></div>
+      <Snackbar
+        open={popoverState.open}
+        autoHideDuration={5000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert severity={popoverState.color}>{popoverState.message}</Alert>
+      </Snackbar>
     </div>
   )
 }
