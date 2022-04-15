@@ -45,7 +45,7 @@ import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
 import { CurrentChainId } from 'constants/chains'
 import { AuthenticationContext } from 'context'
-import { classifications, genres, kindOfProjects, releaseStatus } from 'data'
+import { classifications, kindOfProjects, releaseStatus } from 'data'
 import { utils } from 'ethers'
 import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
 import { isEmpty, trim } from 'lodash'
@@ -74,6 +74,8 @@ import {
 } from 'types/enum'
 import { fileUrl, isStringNumber, parseUrl, processMessage } from 'utils'
 import { Game } from 'utils/validator'
+
+import FormGenre from './FormGenre'
 
 interface GameFormProps {
   readonly editorMode: EditorMode
@@ -742,36 +744,7 @@ const GameForm: FC<GameFormProps> = ({
                     <div className="tags_drop">
                       <div className="game_edit_game_tags_widget">
                         <div className={`${styles.input_row}`}>
-                          <Controller
-                            control={control}
-                            name="genre"
-                            render={({ field }) => (
-                              <FormControl
-                                fullWidth
-                                error={Boolean(errors.genre)}
-                              >
-                                <FormLabel id="form-genre">Genre</FormLabel>
-                                <p className={styles.sub}>
-                                  Select the category that best describes your
-                                  game. You can pick additional genres with tags
-                                  below
-                                </p>
-                                <Select id="form-genre" {...field}>
-                                  {genres.map((genre) => (
-                                    <MenuItem
-                                      value={genre.value}
-                                      key={genre.value}
-                                    >
-                                      {genre.label}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                                <FormHelperText>
-                                  {errors?.genre?.message}
-                                </FormHelperText>
-                              </FormControl>
-                            )}
-                          />
+                          <FormGenre control={control} errors={errors} />
                         </div>
                         <div className={`${styles.input_row} tags_input_row`}>
                           <FormTags
