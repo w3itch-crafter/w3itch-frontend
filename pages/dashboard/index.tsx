@@ -9,7 +9,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
 import { FC, Fragment, useCallback, useContext } from 'react'
 import { Dispatch, SetStateAction, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
@@ -78,7 +78,8 @@ const HasGameProject: FC<HasGameProjectProps> = ({
         }))
         return setTimeout(() => router.replace('/login'), 1500)
       }
-      return setPopoverState((s) => ({ ...s, open: true }))
+      setPopoverState((s) => ({ ...s, open: true }))
+      return Router.reload()
     },
     [router]
   )
