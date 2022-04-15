@@ -2,7 +2,13 @@ import GameForm from 'components/Game/Form'
 import type { NextPage } from 'next'
 import { MutableRefObject, useState } from 'react'
 import { DefaultValues, useForm } from 'react-hook-form'
-import { Community, EditorMode, Genre, PaymentMode } from 'types/enum'
+import {
+  Community,
+  EditorMode,
+  GameFileCharset,
+  Genre,
+  PaymentMode,
+} from 'types/enum'
 import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
@@ -16,6 +22,7 @@ const GameCreate: NextPage = () => {
     paymentMode: PaymentMode.DISABLE_PAYMENTS,
     community: Community.DISABLED,
     genre: Genre.ROLE_PLAYING,
+    charset: GameFileCharset.UTF8,
     tags: [],
     appStoreLinks: [],
     screenshots: [],

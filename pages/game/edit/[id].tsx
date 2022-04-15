@@ -27,11 +27,11 @@ const GameEdit: NextPage = () => {
     paymentMode: PaymentMode.DISABLE_PAYMENTS,
     community: Community.DISABLED,
     genre: Genre.ROLE_PLAYING,
+    charset: GameFileCharset.UTF8,
     tags: [],
     appStoreLinks: [],
     screenshots: [],
     cover: '',
-    charset: GameFileCharset.UTF8,
   })
   const {
     register,
