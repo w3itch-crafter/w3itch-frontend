@@ -25,6 +25,8 @@ import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
 import { Api } from 'types/Api'
 import { Community, PaymentMode } from 'types/enum'
+import { BackendError } from 'utils'
+
 const RenderMarkdown = dynamic(
   () => import('components/RenderMarkdown/index'),
   { ssr: false }
@@ -239,13 +241,22 @@ export const getServerSideProps: GetServerSideProps<GameProps> = async (
   ctx
 ) => {
   const id = ctx.query.id
-  const gameProjectResult = await gameProjectByID(Number(id))
-  const gameRatingsCountResult = await fetchGameRatingsCount(Number(id))
-  return {
-    props: {
-      gameProjectData: gameProjectResult.data,
-      gameRatingsCountData: gameRatingsCountResult.data,
-    },
+  try {
+    const gameProjectResult = await gameProjectByID(Number(id))
+    const gameRatingsCountResult = await fetchGameRatingsCount(Number(id))
+    return {
+      props: {
+        gameProjectData: gameProjectResult.data,
+        gameRatingsCountData: gameRatingsCountResult.data,
+      },
+    }
+  } catch (error) {
+    if (error instanceof BackendError && error.statusCode === 404) {
+      ctx.res.writeHead(301, { Location: '/404' }).end()
+    }
+    return {
+      props: { gameProjectData: {} as GameEntity, gameRatingsCountData: 0 },
+    }
   }
 }
 
