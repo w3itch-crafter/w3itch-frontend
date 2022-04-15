@@ -1,11 +1,8 @@
 import {
   FormControl,
-  FormControlLabel,
   FormHelperText,
   FormLabel,
   MenuItem,
-  Radio,
-  RadioGroup,
   TextField,
 } from '@mui/material'
 import Select from '@mui/material/Select'
@@ -54,7 +51,6 @@ import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import {
   Control,
-  Controller,
   FieldError,
   FormState,
   SubmitHandler,
@@ -75,6 +71,7 @@ import {
 import { fileUrl, isStringNumber, parseUrl, processMessage } from 'utils'
 import { Game } from 'utils/validator'
 
+import FormCommunity from './FormCommunity'
 import FormGenre from './FormGenre'
 
 interface GameFormProps {
@@ -741,38 +738,32 @@ const GameForm: FC<GameFormProps> = ({
                       </FormControl>
                     </div>
 
-                    <div className="tags_drop">
-                      <div className="game_edit_game_tags_widget">
-                        <div className={`${styles.input_row}`}>
-                          <FormGenre control={control} errors={errors} />
-                        </div>
-                        <div className={`${styles.input_row} tags_input_row`}>
-                          <FormTags
-                            control={control}
-                            errors={errors}
-                            changeTags={(tags) => {
-                              setValue('tags', tags)
-                            }}
-                          />
-                        </div>
-                      </div>
+                    <div className={`${styles.input_row}`}>
+                      <FormGenre control={control} errors={errors} />
                     </div>
+                    {editorMode === EditorMode.CREATE && (
+                      <div className={`${styles.input_row} tags_input_row`}>
+                        <FormTags
+                          control={control}
+                          errors={errors}
+                          changeTags={(tags) => {
+                            setValue('tags', tags)
+                          }}
+                        />
+                      </div>
+                    )}
 
-                    <div className="links_drop">
-                      <div className="links_editor">
-                        <div
-                          className={`${styles.input_row} app_store_links_row`}
-                        >
-                          <FormAppStoreLinks
-                            errors={errors}
-                            control={control}
-                            changeLinks={(value) => {
-                              setValue('appStoreLinks', value)
-                            }}
-                          />
-                        </div>
+                    {editorMode === EditorMode.CREATE && (
+                      <div className={styles.input_row}>
+                        <FormAppStoreLinks
+                          errors={errors}
+                          control={control}
+                          changeLinks={(value) => {
+                            setValue('appStoreLinks', value)
+                          }}
+                        />
                       </div>
-                    </div>
+                    )}
 
                     {/* <div className={styles.input_row}>
                             <FormControl fullWidth>
@@ -796,39 +787,7 @@ const GameForm: FC<GameFormProps> = ({
                           </div> */}
 
                     <div className={styles.input_row}>
-                      <Controller
-                        control={control}
-                        name="community"
-                        render={({ field }) => (
-                          <FormControl
-                            error={Boolean(errors.community)}
-                            fullWidth
-                          >
-                            <FormLabel id="demo-radio-buttons-group-label">
-                              Community
-                            </FormLabel>
-                            <p className={styles.sub}>
-                              Build a community for your project by letting
-                              people post to your page.
-                            </p>
-                            <RadioGroup {...field}>
-                              <FormControlLabel
-                                value="DISABLED"
-                                control={<Radio size="small" />}
-                                label="Disabled"
-                              />
-                              <FormControlLabel
-                                value="DISQUS"
-                                control={<Radio size="small" />}
-                                label="Disqus"
-                              ></FormControlLabel>
-                            </RadioGroup>
-                            <FormHelperText>
-                              {errors?.community?.message}
-                            </FormHelperText>
-                          </FormControl>
-                        )}
-                      />
+                      <FormCommunity control={control} errors={errors} />
                     </div>
                     {/* <div className={styles.input_row}>
                             <FormControl>
