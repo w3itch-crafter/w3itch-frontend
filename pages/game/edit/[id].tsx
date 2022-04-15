@@ -61,22 +61,21 @@ const GameEdit: NextPage = () => {
         setValue('gameName', gameProjectResult.data.gameName)
         setValue('cover', gameProjectResult.data.cover)
         setValue('charset', gameProjectResult.data.charset)
-
-        setTimeout(() => {
-          if (editorRef?.current) {
-            editorRef?.current
-              .getInstance()
-              .setMarkdown(gameProjectResult.data.description)
-          }
-        }, 3000)
       }
     },
-    [setValue, editorRef]
+    [setValue]
   )
 
   useEffect(() => {
+    if (editorRef?.current) {
+      editorRef?.current
+        .getInstance()
+        .setMarkdown(gameProject.description || '')
+    }
+  }, [editorRef, gameProject])
+
+  useEffect(() => {
     if (id) {
-      console.log('id', id)
       fetchGameProjectFn(Number(id))
     }
   }, [id, fetchGameProjectFn])
