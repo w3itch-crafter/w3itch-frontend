@@ -46,18 +46,8 @@ export function InputRow({
   `
   const ErrorMessage = styled.span<Pick<InputRowProps, 'invalid' | 'disabled'>>`
     transition: all 0.2s ease;
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    right: 0;
+    opacity: ${(p) => (p.invalid && !p.disabled ? 1 : 0)};
     color: #d14343;
-    ${(p) =>
-      p.invalid &&
-      !p.disabled &&
-      `
-      top: -15px;
-      opacity: 1;
-    `}
   `
   const Input = styled.input<
     Pick<InputRowProps, 'invalid' | 'center' | 'disabled' | 'preview'>
@@ -79,14 +69,10 @@ export function InputRow({
       background-color: #f4f4f4;
       opacity: 0.5;
     }
-    ${(p) => p.invalid && !p.disabled && `border-color: #D14343;`}
-    ${(p) => p.center && `text-align: center;`}
     ${(p) =>
-      p.preview &&
-      `
-      border: none;
-      font-size: 14px;
-    `}
+      p.invalid && !p.disabled && `border-color: #D14343; color: #D14343;`}
+    ${(p) => p.center && `text-align: center;`}
+    ${(p) => p.preview && `border: none; font-size: 14px;`}
   `
 
   return (
@@ -99,11 +85,6 @@ export function InputRow({
         {!!children && children}
         {!children && (
           <Validated>
-            {invalid && (
-              <ErrorMessage disabled={disabled} invalid={invalid}>
-                {invalid.message}
-              </ErrorMessage>
-            )}
             <Input
               center={center}
               disabled={disabled}
@@ -112,6 +93,11 @@ export function InputRow({
               invalid={invalid}
               {...inputProps}
             />
+            {invalid && (
+              <ErrorMessage disabled={disabled} invalid={invalid}>
+                {invalid.message}
+              </ErrorMessage>
+            )}
           </Validated>
         )}
       </label>

@@ -97,4 +97,9 @@ declare namespace Api {
     chainId: number
     chainName: string
   }
+
+  type ValidateUsernameResponse = {
+    username?: string
+    isExists?: boolean
+  }
 }
