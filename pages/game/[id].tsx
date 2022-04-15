@@ -1,3 +1,4 @@
+import styled from '@emotion/styled'
 import { useMount } from 'ahooks'
 import {
   fetchGameRatingsCount,
@@ -39,7 +40,7 @@ const Donation = dynamic(() => import('components/Game/Donation'), {
 })
 
 declare interface GameProps {
-  readonly gameProjectData: GameEntity
+  readonly gameProjectData: GameEntity | null
   readonly gameRatingsCountData: number
 }
 
@@ -47,11 +48,21 @@ const GameId: NextPage<GameProps> = ({
   gameProjectData,
   gameRatingsCountData,
 }) => {
+  const NoGame = styled.div`
+    height: 100vh;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  `
   const router = useRouter()
   const id = router.query.id
   const { fetchTokensAddress } = useERC20Multicall()
 
-  const [gameProject, setGameProject] = useState<GameEntity>(gameProjectData)
+  const [gameProject, setGameProject] = useState<GameEntity | null>(
+    gameProjectData
+  )
   const [gameRatingsCount, setGameRatingsCount] =
     useState<number>(gameRatingsCountData)
 
@@ -104,7 +115,7 @@ const GameId: NextPage<GameProps> = ({
   }, [id])
 
   const fetchPricesToken = useCallback(async () => {
-    if (gameProject.paymentMode === PaymentMode.PAID) {
+    if (gameProject && gameProject.paymentMode === PaymentMode.PAID) {
       // map address
       const address = gameProject.prices.map((price) => price.token.address)
       const tokensResponse = await fetchTokensAddress(address)
@@ -231,7 +242,9 @@ const GameId: NextPage<GameProps> = ({
           />
         </div>
       ) : (
-        <div>No Game</div>
+        <NoGame>
+          <h1>No Game</h1>
+        </NoGame>
       )}
     </>
   )
@@ -252,11 +265,13 @@ export const getServerSideProps: GetServerSideProps<GameProps> = async (
     }
   } catch (error) {
     if (error instanceof BackendError && error.statusCode === 404) {
-      ctx.res.writeHead(301, { Location: '/404' }).end()
+      // If backend returns 404 show No Game on page
+      return {
+        props: { gameProjectData: null, gameRatingsCountData: 0 },
+      }
     }
-    return {
-      props: { gameProjectData: {} as GameEntity, gameRatingsCountData: 0 },
-    }
+    // Otherwise show 404 page
+    return { notFound: true }
   }
 }
 
