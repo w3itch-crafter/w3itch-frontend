@@ -46,6 +46,7 @@ const GameEdit: NextPage = () => {
     defaultValues: defaultValue,
   })
   console.log('formState', formState)
+  console.log('watch cover', watch('cover'))
 
   const fetchGameProjectFn = useCallback(
     async (id: number) => {
