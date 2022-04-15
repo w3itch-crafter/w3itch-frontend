@@ -93,6 +93,7 @@ const GameEdit: NextPage = () => {
 
   return (
     <GameForm
+      gameProject={gameProject}
       editorMode={EditorMode.EDIT}
       register={register}
       handleSubmit={handleSubmit}

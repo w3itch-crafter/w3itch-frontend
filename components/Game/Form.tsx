@@ -43,7 +43,7 @@ import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
 import { CurrentChainId } from 'constants/chains'
 import { AuthenticationContext } from 'context'
 import { classifications, kindOfProjects, releaseStatus } from 'data'
-import { utils } from 'ethers'
+import { BigNumber as BigNumberEthers, utils } from 'ethers'
 import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
@@ -60,6 +60,7 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form'
+import { GameEntity } from 'types'
 import { Api } from 'types/Api'
 import {
   EditorMode,
@@ -75,6 +76,7 @@ import FormCommunity from './FormCommunity'
 import FormGenre from './FormGenre'
 
 interface GameFormProps {
+  readonly gameProject: GameEntity
   readonly editorMode: EditorMode
   readonly register: UseFormRegister<Game>
   readonly handleSubmit: UseFormHandleSubmit<Game>
@@ -94,6 +96,7 @@ interface GameFormProps {
 let MESSAGE_SUBMIT_KEY: any
 
 const GameForm: FC<GameFormProps> = ({
+  gameProject,
   editorMode,
   register,
   handleSubmit,
@@ -131,6 +134,7 @@ const GameForm: FC<GameFormProps> = ({
   console.log('currentSelectTokenAmount', currentSelectTokenAmount)
 
   const { errors } = formState
+  const watchPaymentMode = watch('paymentMode')
 
   // console.log(watch('paymentMode'))
   // console.log(watch('genre'))
@@ -484,6 +488,69 @@ const GameForm: FC<GameFormProps> = ({
       setValue('description', trim(description))
     }
   }, [editorRef, setValue])
+
+  // watch current token fill data
+  // paymentMode
+  useEffect(() => {
+    console.log(11, getValues('paymentMode'))
+    if (
+      editorMode === EditorMode.EDIT &&
+      getValues('paymentMode') === PaymentMode.PAID &&
+      isEmpty(currentSelectToken)
+    ) {
+      // balanceOf and totalSupply are not processed
+      setCurrentSelectToken({
+        address: gameProject.prices[0].token.address,
+        name: gameProject.prices[0].token.name,
+        symbol: gameProject.prices[0].token.symbol,
+        decimals: gameProject.prices[0].token.decimals,
+        totalSupply: BigNumberEthers.from(0),
+        balanceOf: BigNumberEthers.from(0),
+      })
+    }
+
+    if (
+      editorMode === EditorMode.EDIT &&
+      getValues('paymentMode') === PaymentMode.PAID &&
+      !currentSelectTokenAmount &&
+      currentSelectTokenAmount === '0'
+    ) {
+      setCurrentSelectTokenAmount(
+        utils.formatUnits(
+          gameProject.prices[0].amount,
+          gameProject.prices[0].token.decimals
+        )
+      )
+    }
+  }, [
+    currentSelectTokenAmount,
+    gameProject,
+    editorMode,
+    currentSelectToken,
+    watchPaymentMode,
+    getValues,
+  ])
+
+  // watch current donationAddress fill data
+  // paymentMode
+  useEffect(() => {
+    if (
+      editorMode === EditorMode.EDIT &&
+      getValues('paymentMode') === PaymentMode.FREE &&
+      !currentDonationAddress
+    ) {
+      setCurrentDonationAddress(
+        (gameProject?.donationAddress || account?.accountId) as string
+      )
+    }
+  }, [
+    watchPaymentMode,
+    editorMode,
+    currentDonationAddress,
+    gameProject,
+    getValues,
+    account,
+  ])
 
   useEffect(() => {
     // if (!isAuthenticated) router.replace('/login')
