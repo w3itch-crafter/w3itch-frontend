@@ -349,13 +349,14 @@ const GameForm: FC<GameFormProps> = ({
         const gameData: Api.GameProjectDto = {
           title: trim(game.title),
           subtitle: trim(game.subtitle),
-          description: trim(description),
-          cover: allImages.cover,
-          community: game.community,
           gameName: trim(game.gameName).replaceAll(' ', '_'),
+          cover: allImages.cover,
+          description: trim(description),
+          community: game.community,
           genre: game.genre,
           charset: game.charset,
           paymentMode: game.paymentMode,
+          prices: prices,
           donationAddress:
             game.paymentMode === PaymentMode.FREE
               ? utils.getAddress(currentDonationAddress)
@@ -493,7 +494,8 @@ const GameForm: FC<GameFormProps> = ({
     if (
       editorMode === EditorMode.EDIT &&
       getValues('paymentMode') === PaymentMode.PAID &&
-      isEmpty(currentSelectToken)
+      isEmpty(currentSelectToken) &&
+      !isEmpty(gameProject?.prices[0])
     ) {
       // balanceOf and totalSupply are not processed
       setCurrentSelectToken({

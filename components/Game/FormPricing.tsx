@@ -77,7 +77,8 @@ const FormPricing: FC<FormPricingProps> = ({
       editorMode === EditorMode.EDIT &&
       tokenAmountRef.current &&
       getValues('paymentMode') === PaymentMode.PAID &&
-      (!currentSelectTokenAmount || currentSelectTokenAmount === '0')
+      (!currentSelectTokenAmount || currentSelectTokenAmount === '0') &&
+      !isEmpty(gameProject?.prices[0])
     ) {
       tokenAmountRef.current.value = utils.formatUnits(
         gameProject.prices[0].amount,
