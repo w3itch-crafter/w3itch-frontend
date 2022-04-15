@@ -110,13 +110,13 @@ export function GameCell({
       font-weight: bold;
       background-color: #737373;
       background-image: linear-gradient(to top right, gray 0%, #676767 100%);
-      &:first-child:last-child {
+      &:first-of-type:last-of-type {
         border-radius: 2px;
       }
-      &:first-child {
+      &:first-of-type {
         border-radius: 2px 0 0 2px;
       }
-      &:last-child {
+      &:last-of-type {
         border-radius: 0 2px 2px 0;
       }
     }
