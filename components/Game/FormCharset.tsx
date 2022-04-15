@@ -22,7 +22,7 @@ const FormCharset: FC<Props> = ({ control, errors }) => {
       name="charset"
       control={control}
       render={({ field }) => (
-        <FormControl fullWidth error={Boolean(errors.genre)}>
+        <FormControl fullWidth error={Boolean(errors.charset)}>
           <FormLabel id="form-charset">Charset</FormLabel>
           <Select id="form-charset" {...field}>
             {Object.values(GameFileCharset).map((charset) => (
