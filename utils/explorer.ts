@@ -1,6 +1,5 @@
 // github.com/Uniswap/interface/blob/e81e8a8f71/src/utils/getExplorerLink.ts
 import { SupportedChainId } from 'constants/index'
-import { URL } from 'url'
 
 import { getChainInfoFromId } from './chains'
 
@@ -26,8 +25,7 @@ export function getExplorerLink(
   if (!chainInfo) return ''
 
   const buildExplorerUrl = (input: string): string => {
-    // Server URL error
-    return `${chainInfo.explorer}${input}`.replaceAll('//', '/')
+    return new URL(input, chainInfo.explorer).toString().toLowerCase()
   }
 
   switch (type) {
