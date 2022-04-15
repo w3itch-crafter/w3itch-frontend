@@ -4,6 +4,7 @@ import React from 'react'
 import {
   Community,
   GameEngine,
+  GameFileCharset,
   Genre,
   PaymentMode,
   ProjectClassification,
@@ -133,6 +134,8 @@ export declare type GameEntity = BaseEntity & {
   community: Community
   /** The category that best describes this game */
   genre: Genre
+  /** Game charset */
+  charset: GameFileCharset
 }
 export declare type PriceEntity = BaseEntity & {
   chainId: number

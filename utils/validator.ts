@@ -1,6 +1,5 @@
 import {
   IsEnum,
-  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -66,9 +65,6 @@ export class Game {
   @IsUrl({ require_protocol: true }, { each: true })
   @IsOptional()
   appStoreLinks: string[]
-
-  @IsInt()
-  tokenId: number
 
   // Use localhost url, do not use Url verification
   @IsString()
