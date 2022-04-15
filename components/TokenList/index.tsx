@@ -89,7 +89,7 @@ const TokenList: FC<GameRatingProps> = ({ setOpen, open, selectToken }) => {
           }}
         >
           <TextField
-            placeholder="Search name or paste address"
+            placeholder="Search address"
             fullWidth
             onChange={(event) => handleAddressChange(event.target.value)}
           />

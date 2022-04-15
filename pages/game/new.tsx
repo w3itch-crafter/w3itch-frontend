@@ -66,7 +66,7 @@ let MESSAGE_SUBMIT_KEY: any
 const GameNew: NextPage = () => {
   const router = useRouter()
   const {
-    state: { isAuthenticated },
+    state: { isAuthenticated, account },
   } = useContext(AuthenticationContext)
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
@@ -107,7 +107,8 @@ const GameNew: NextPage = () => {
     },
   })
 
-  console.log(watch('paymentMode'))
+  // console.log(watch('paymentMode'))
+  // console.log(watch('genre'))
 
   const handleAllImages = async () => {
     const promiseArray = []
@@ -263,7 +264,7 @@ const GameNew: NextPage = () => {
         appStoreLinks: game.appStoreLinks,
         description: trim(description),
         community: game.community,
-        genre: Genre.NO_GENRE,
+        genre: game.genre,
         tokenId: game.tokenId,
         charset: game.charset,
         paymentMode: game.paymentMode,
@@ -271,7 +272,7 @@ const GameNew: NextPage = () => {
         donationAddress:
           game.paymentMode === PaymentMode.FREE
             ? utils.getAddress(currentDonationAddress)
-            : '',
+            : account?.accountId,
       }
       console.log('file', uploadGameFile)
       console.log('gameData', gameData)
