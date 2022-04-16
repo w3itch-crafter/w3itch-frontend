@@ -11,12 +11,21 @@ import {
 } from '@mui/material'
 import { PrimaryButton } from 'components/CustomizedButtons'
 import TokenItem from 'components/TokenList/TokenItem'
+import { AuthenticationContext } from 'context'
+import { utils } from 'ethers'
 import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
 import { isEmpty } from 'lodash'
-import { FC } from 'react'
-import { Control, Controller, FieldErrors, UseFormWatch } from 'react-hook-form'
+import { FC, MutableRefObject, useContext, useEffect, useRef } from 'react'
+import {
+  Control,
+  Controller,
+  FieldErrors,
+  UseFormGetValues,
+  UseFormWatch,
+} from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
-import { PaymentMode } from 'types/enum'
+import { GameEntity } from 'types'
+import { EditorMode, PaymentMode } from 'types/enum'
 import { Game } from 'utils/validator'
 
 const TokenInfo = styled.div`
@@ -25,25 +34,96 @@ const TokenInfo = styled.div`
 `
 
 interface FormPricingProps {
+  readonly gameProject: GameEntity
+  readonly editorMode: EditorMode
   readonly token: ERC20MulticallTokenResult
-  errors: FieldErrors<Game>
+  readonly errors: FieldErrors<Game>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<Game, any>
-  watch: UseFormWatch<Game>
+  readonly control: Control<Game, any>
+  readonly watch: UseFormWatch<Game>
+  readonly getValues: UseFormGetValues<Game>
   setTtokenListDialogOpen: (value: boolean) => void
   tokenAmountChange: (value: string) => void
   donationAddressChange: (value: string) => void
+  currentSelectTokenAmount: string
+  currentDonationAddress: string
 }
 
 const FormPricing: FC<FormPricingProps> = ({
+  gameProject,
+  editorMode,
   token,
   errors,
   control,
+  getValues,
   watch,
   setTtokenListDialogOpen,
   tokenAmountChange,
   donationAddressChange,
+  currentSelectTokenAmount,
+  currentDonationAddress,
 }) => {
+  const {
+    state: { account },
+  } = useContext(AuthenticationContext)
+  const tokenAmountRef = useRef() as MutableRefObject<HTMLInputElement>
+  const donationAddressRef = useRef() as MutableRefObject<HTMLInputElement>
+  const watchPaymentMode = watch('paymentMode')
+
+  // fill data
+  // edit mode has no data
+  useEffect(() => {
+    if (
+      editorMode === EditorMode.EDIT &&
+      tokenAmountRef.current &&
+      getValues('paymentMode') === PaymentMode.PAID &&
+      (!currentSelectTokenAmount || currentSelectTokenAmount === '0') &&
+      !isEmpty(gameProject?.prices[0])
+    ) {
+      tokenAmountRef.current.value = utils.formatUnits(
+        gameProject.prices[0].amount,
+        gameProject.prices[0].token.decimals
+      )
+
+      tokenAmountChange(
+        utils.formatUnits(
+          gameProject.prices[0].amount,
+          gameProject.prices[0].token.decimals
+        )
+      )
+    }
+  }, [
+    currentSelectTokenAmount,
+    editorMode,
+    getValues,
+    gameProject,
+    tokenAmountChange,
+    watchPaymentMode,
+  ])
+  useEffect(() => {
+    if (
+      editorMode === EditorMode.EDIT &&
+      donationAddressRef.current &&
+      getValues('paymentMode') === PaymentMode.FREE &&
+      !currentDonationAddress
+    ) {
+      donationAddressRef.current.value = (gameProject?.donationAddress ||
+        account?.accountId) as string
+
+      donationAddressChange(
+        (gameProject?.donationAddress || account?.accountId) as string
+      )
+    }
+  }, [
+    currentDonationAddress,
+    editorMode,
+    getValues,
+    gameProject,
+    account,
+    donationAddressChange,
+    watchPaymentMode,
+  ])
+
   return (
     <div>
       <Controller
@@ -86,6 +166,7 @@ const FormPricing: FC<FormPricingProps> = ({
         {watch('paymentMode') === PaymentMode.FREE ? (
           <Box>
             <TextField
+              inputRef={donationAddressRef}
               onChange={(event) => donationAddressChange(event.target.value)}
               size="small"
               placeholder="Please enter wallet address"
@@ -107,16 +188,15 @@ const FormPricing: FC<FormPricingProps> = ({
               </PrimaryButton>
             </div>
             {!isEmpty(token) && (
-              <>
-                <TokenItem token={token} selectToken={() => void 0} />
-                <TextField
-                  onChange={(event) => tokenAmountChange(event.target.value)}
-                  size="small"
-                  placeholder="Please enter the amount"
-                  fullWidth
-                />
-              </>
+              <TokenItem token={token} selectToken={() => void 0} />
             )}
+            <TextField
+              inputRef={tokenAmountRef}
+              onChange={(event) => tokenAmountChange(event.target.value)}
+              size="small"
+              placeholder="Please enter the amount"
+              fullWidth
+            />
           </TokenInfo>
         ) : watch('paymentMode') === PaymentMode.DISABLE_PAYMENTS ? (
           <p className={styles.sub}>

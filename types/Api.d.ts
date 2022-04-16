@@ -39,24 +39,23 @@ declare namespace Api {
   }
 
   type GameProjectDto = {
-    title: string
-    paymentMode: PaymentMode
-    subtitle: string
-    gameName: string
-    charset: GameFileCharset
-    classification: ProjectClassification
-    kind: GameEngine
-    releaseStatus: ReleaseStatus
-    screenshots: string[]
-    cover: string
-    tags: string[]
-    tokenId: number
-    appStoreLinks: string[]
-    description: string
-    community: Community
-    genre: Genre
-    prices: GameProjectPricesDto[]
-    donationAddress: string
+    title?: string
+    paymentMode?: PaymentMode
+    subtitle?: string
+    gameName?: string
+    charset?: GameFileCharset
+    classification?: ProjectClassification
+    kind?: GameEngine
+    releaseStatus?: ReleaseStatus
+    screenshots?: string[]
+    cover?: string
+    tags?: string[]
+    appStoreLinks?: string[]
+    description?: string
+    community?: Community
+    genre?: Genre
+    prices?: GameProjectPricesDto[]
+    donationAddress?: string
   }
 
   type Tag = {

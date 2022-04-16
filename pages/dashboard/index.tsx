@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import Pagination from '@mui/material/Pagination'
+import Stack from '@mui/material/Stack'
 import { deleteGameProject, getGamesMine } from 'api'
 import Navigation from 'components/Dashboard/Navigation'
 import { AuthenticationContext } from 'context'
@@ -100,9 +101,14 @@ const HasGameProject: FC<HasGameProjectProps> = ({
                   </Link>
                 </div>
                 <div className={styles.game_links}>
-                  <DeleteGame onClick={() => handleDeleteGame(item.id)}>
-                    Delete
-                  </DeleteGame>
+                  <Stack direction="row" spacing={1}>
+                    <Link href={`game/edit/${item.id}`}>
+                      <a>Edit</a>
+                    </Link>
+                    <DeleteGame onClick={() => handleDeleteGame(item.id)}>
+                      Delete
+                    </DeleteGame>
+                  </Stack>
                   <div className={styles.publish_status}>
                     <span className={`${styles.tag_bubble} ${styles.green}`}>
                       <Link href={`/game/${item.id}`}>

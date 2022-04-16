@@ -87,6 +87,26 @@ export const gameValidate = async (
   })
 }
 
+/**
+ * update game
+ * @param id
+ * @param data
+ * @returns
+ */
+export const updateGame = async (
+  id: number,
+  data: FormData
+): Promise<AxiosResponse<unknown>> => {
+  return await backend({
+    url: `/game-projects/${id}`,
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    data,
+  })
+}
+
 export async function deleteGameProject(id: number) {
   return await backend.delete<
     Api.GameProjectDeleteResponse | BackendErrorResponse

@@ -6,11 +6,14 @@ import {
   FC,
   SetStateAction,
   useCallback,
-  useMemo,
+  useEffect,
   useState,
 } from 'react'
 import { FileWithPath, useDropzone } from 'react-dropzone'
+import { UseFormGetValues, UseFormWatch } from 'react-hook-form'
+import { EditorMode } from 'types/enum'
 import { fileUrl } from 'utils'
+import { Game } from 'utils/validator'
 
 const WrapperDrap = styled.section`
   border: 1px dashed;
@@ -61,13 +64,30 @@ const ButtonRemoveImage = styled.button`
 `
 
 interface Props {
+  readonly editorMode: EditorMode
+  readonly watch: UseFormWatch<Game>
+  readonly getValues: UseFormGetValues<Game>
   setFile: Dispatch<SetStateAction<File | undefined>>
 }
 
-const UploadGameCover: FC<Props> = ({ setFile }) => {
+const UploadGameCover: FC<Props> = ({
+  setFile,
+  editorMode,
+  getValues,
+  watch,
+}) => {
   const [coverFile, setCoverFile] = useState<FileWithPath>()
+  const [coverUrl, setCoverUrl] = useState<string>('')
+  const watchCover = watch('cover')
 
-  const coverUrl = useMemo(() => fileUrl(coverFile), [coverFile])
+  useEffect(() => {
+    if (editorMode === EditorMode.EDIT && !coverFile) {
+      setCoverUrl(getValues('cover'))
+    } else {
+      setCoverUrl(fileUrl(coverFile))
+    }
+    // watch cover
+  }, [coverFile, editorMode, getValues, watchCover])
 
   const onDrop = useCallback(
     (acceptedFiles) => {
@@ -94,7 +114,7 @@ const UploadGameCover: FC<Props> = ({ setFile }) => {
         <input {...getInputProps()} />
         {coverUrl ? (
           <>
-            <s>
+            <WrapperDrapContainer>
               <Image
                 src={coverUrl}
                 width={315}
@@ -102,7 +122,7 @@ const UploadGameCover: FC<Props> = ({ setFile }) => {
                 alt="Cover"
                 objectFit="cover"
               />
-            </s>
+            </WrapperDrapContainer>
             <WrapperDrapContainer>
               <WrapperDrapContainerBackdrop>
                 <RedButton type="button">Replace Cover Image</RedButton>
