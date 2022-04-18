@@ -12,7 +12,9 @@ export function ConnectWallet() {
   const checkWalletStatus = () => {
     if (wallet.status === 'error' && wallet.error) {
       if (wallet.error?.name === 'ChainUnsupportedError') {
-        const message = `Supported networks are ${WalletSupportedChainNames.join(
+        const message = `Supported network${
+          WalletSupportedChainNames.length > 1 ? 's' : ''
+        } are ${WalletSupportedChainNames.join(
           ', '
         )}, please switch your wallet netrowk.`
         enqueueSnackbar(message, {
