@@ -16,7 +16,7 @@ export function ConnectWallet() {
           WalletSupportedChainNames.length > 1 ? 's' : ''
         } are ${WalletSupportedChainNames.join(
           ', '
-        )}, please switch your wallet netrowk.`
+        )}, please switch your wallet network.`
         enqueueSnackbar(message, {
           anchorOrigin: { vertical: 'top', horizontal: 'right' },
           variant: 'error',
