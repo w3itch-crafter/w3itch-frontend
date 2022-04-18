@@ -62,6 +62,10 @@ const GameEdit: NextPage = () => {
         setValue('charset', gameProjectResult.data.charset)
         setValue('screenshots', gameProjectResult.data.screenshots)
         setValue('appStoreLinks', gameProjectResult.data.appStoreLinks)
+        setValue(
+          'tags',
+          gameProjectResult.data.tags?.map((i) => i.name)
+        )
       }
     },
     [setValue]

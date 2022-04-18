@@ -353,6 +353,7 @@ const GameForm: FC<GameFormProps> = ({
           // gameName: trim(game.gameName).replaceAll(' ', '_'),
           screenshots: allImages.screenshots,
           cover: allImages.cover,
+          tags: game.tags,
           appStoreLinks: game.appStoreLinks,
           description: trim(description),
           community: game.community,
@@ -795,17 +796,18 @@ const GameForm: FC<GameFormProps> = ({
                     <div className={`${styles.input_row}`}>
                       <FormGenre control={control} errors={errors} />
                     </div>
-                    {editorMode === EditorMode.CREATE && (
-                      <div className={`${styles.input_row} tags_input_row`}>
-                        <FormTags
-                          control={control}
-                          errors={errors}
-                          changeTags={(tags) => {
-                            setValue('tags', tags)
-                          }}
-                        />
-                      </div>
-                    )}
+                    <div className={`${styles.input_row} tags_input_row`}>
+                      <FormTags
+                        editorMode={editorMode}
+                        getValues={getValues}
+                        errors={errors}
+                        watch={watch}
+                        control={control}
+                        changeTags={(tags) => {
+                          setValue('tags', tags)
+                        }}
+                      />
+                    </div>
 
                     <div className={styles.input_row}>
                       <FormAppStoreLinks
