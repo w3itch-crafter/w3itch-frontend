@@ -280,7 +280,7 @@ const GameForm: FC<GameFormProps> = ({
 
         const allImages = await handleAllImages()
 
-        const gameData = {
+        const gameData: Api.GameProjectDto = {
           title: trim(game.title),
           subtitle: trim(game.subtitle),
           gameName: trim(game.gameName).replaceAll(' ', '_'),
@@ -300,7 +300,7 @@ const GameForm: FC<GameFormProps> = ({
           donationAddress:
             game.paymentMode === PaymentMode.FREE
               ? utils.getAddress(currentDonationAddress)
-              : account?.accountId,
+              : account?.accountId || '',
         }
         console.log('file', uploadGameFile)
         console.log('gameData', gameData)
@@ -351,6 +351,7 @@ const GameForm: FC<GameFormProps> = ({
           subtitle: trim(game.subtitle),
           // The only game name is not allowed to be modified
           // gameName: trim(game.gameName).replaceAll(' ', '_'),
+          screenshots: allImages.screenshots,
           cover: allImages.cover,
           description: trim(description),
           community: game.community,
@@ -935,29 +936,30 @@ const GameForm: FC<GameFormProps> = ({
                         </FormHelperText>
                       </FormControl>
                     </div>
-                    {editorMode === EditorMode.CREATE && (
-                      <section className={styles.screenshot_editor}>
-                        <div className={styles.label}>Screenshots</div>
-                        <p className={styles.sub}>
-                          <span className="when_default">
-                            {"Screenshots will appear on your game's page."}{' '}
-                          </span>
-                          Optional but highly recommended. Upload 3 to 5 for
-                          best results.
-                        </p>
-                        <FormHelperText error={Boolean(errors?.screenshots)}>
-                          {
-                            (errors?.screenshots as unknown as FieldError)
-                              ?.message
-                          }
-                        </FormHelperText>
-                        <UploadGameScreenshots
-                          setFiles={(files) => {
-                            handleScreenshots(files as File[] | undefined)
-                          }}
-                        />
-                      </section>
-                    )}
+                    <section className={styles.screenshot_editor}>
+                      <div className={styles.label}>Screenshots</div>
+                      <p className={styles.sub}>
+                        <span className="when_default">
+                          {"Screenshots will appear on your game's page."}{' '}
+                        </span>
+                        Optional but highly recommended. Upload 3 to 5 for best
+                        results.
+                      </p>
+                      <FormHelperText error={Boolean(errors?.screenshots)}>
+                        {
+                          (errors?.screenshots as unknown as FieldError)
+                            ?.message
+                        }
+                      </FormHelperText>
+                      <UploadGameScreenshots
+                        editorMode={editorMode}
+                        getValues={getValues}
+                        watch={watch}
+                        setFiles={(files) => {
+                          handleScreenshots(files as File[] | undefined)
+                        }}
+                      />
+                    </section>
                   </div>
                 </div>
                 <div className={styles.buttons}>

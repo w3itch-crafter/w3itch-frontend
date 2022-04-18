@@ -60,6 +60,7 @@ const GameEdit: NextPage = () => {
         setValue('gameName', gameProjectResult.data.gameName)
         setValue('cover', gameProjectResult.data.cover)
         setValue('charset', gameProjectResult.data.charset)
+        setValue('screenshots', gameProjectResult.data.screenshots)
       }
     },
     [setValue]
