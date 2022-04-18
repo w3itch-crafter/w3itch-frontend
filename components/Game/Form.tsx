@@ -143,6 +143,7 @@ const GameForm: FC<GameFormProps> = ({
 
   // console.log(watch('paymentMode'))
   // console.log(watch('genre'))
+  // console.log('errors', errors)
 
   const handleAllImages = async () => {
     const promiseArray = []
@@ -307,7 +308,7 @@ const GameForm: FC<GameFormProps> = ({
           donationAddress:
             game.paymentMode === PaymentMode.FREE
               ? utils.getAddress(currentDonationAddress)
-              : account?.accountId || '',
+              : account?.accountId,
         }
         console.log('file', uploadGameFile)
         console.log('gameData', gameData)
@@ -460,8 +461,6 @@ const GameForm: FC<GameFormProps> = ({
     // const result = await handleAllImages()
     // console.log('result', result)
   }
-
-  console.log('errors', errors)
 
   // handle cover
   const handleCoverValue = (file: File) => {
