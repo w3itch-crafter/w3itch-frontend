@@ -69,7 +69,14 @@ import {
   ProjectClassification,
   ReleaseStatus,
 } from 'types/enum'
-import { fileUrl, isStringNumber, parseUrl, processMessage } from 'utils'
+import {
+  filenameHandle,
+  fileUrl,
+  isStringNumber,
+  parseFilename,
+  parseUrl,
+  processMessage,
+} from 'utils'
 import { Game } from 'utils/validator'
 
 import FormCommunity from './FormCommunity'
@@ -143,7 +150,7 @@ const GameForm: FC<GameFormProps> = ({
     // cover
     if (coverFileFile) {
       const formDataCover = new FormData()
-      formDataCover.append('file', coverFileFile)
+      formDataCover.append('file', filenameHandle(coverFileFile))
 
       promiseArray.push(storagesUploadToIPFS(formDataCover))
     }
@@ -151,7 +158,7 @@ const GameForm: FC<GameFormProps> = ({
     // screenshots
     screenshotsFiles?.forEach((screenshotsFile) => {
       const formDataScreenshot = new FormData()
-      formDataScreenshot.append('file', screenshotsFile)
+      formDataScreenshot.append('file', filenameHandle(screenshotsFile))
 
       promiseArray.push(storagesUploadToIPFS(formDataScreenshot))
     })
@@ -449,8 +456,8 @@ const GameForm: FC<GameFormProps> = ({
   const onSubmit: SubmitHandler<Game> = async (data) => {
     console.log(data)
     handleCreateGame(data)
-    // const result = await handleAllImages()
 
+    // const result = await handleAllImages()
     // console.log('result', result)
   }
 
@@ -481,7 +488,7 @@ const GameForm: FC<GameFormProps> = ({
     (file: File | undefined) => {
       setUploadGameFile(file)
 
-      const name = file?.name.substring(0, file?.name.lastIndexOf('.'))
+      const name = parseFilename(file?.name || '')
       if (name) {
         setValue('gameName', name)
       }
