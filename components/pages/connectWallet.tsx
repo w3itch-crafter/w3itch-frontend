@@ -1,27 +1,29 @@
 import styled from '@emotion/styled'
-import Alert from '@mui/material/Alert'
-import Snackbar from '@mui/material/Snackbar'
-import { ConnectWalletContext, ConnectWalletContextValue } from 'context'
-import { Fragment, useContext } from 'react'
+import { WalletSupportedChainNames } from 'constants/index'
+import { useSnackbar } from 'notistack'
+import { Fragment } from 'react'
 import { useWallet } from 'use-wallet'
 
 import { MetaMaskIcon, WalletConnectIcon } from '../icons'
 
-const defaultContextValue: ConnectWalletContextValue = {
-  open: false,
-  message: '',
-  status: 'info',
-}
-
 export function ConnectWallet() {
   const wallet = useWallet()
-  const context = useContext(ConnectWalletContext)
+  const { enqueueSnackbar } = useSnackbar()
   const checkWalletStatus = () => {
-    if (wallet.status === 'error') {
+    if (wallet.status === 'error' && wallet.error) {
       if (wallet.error?.name === 'ChainUnsupportedError') {
-        context.message = wallet.error.message
-        context.status = 'error'
-        context.open = true
+        const message = `Supported networks are ${WalletSupportedChainNames.join(
+          ', '
+        )}, please switch your wallet netrowk.`
+        enqueueSnackbar(message, {
+          anchorOrigin: { vertical: 'top', horizontal: 'right' },
+          variant: 'error',
+        })
+      } else {
+        enqueueSnackbar(wallet.error.message, {
+          anchorOrigin: { vertical: 'top', horizontal: 'right' },
+          variant: 'error',
+        })
       }
     }
   }
@@ -48,15 +50,6 @@ export function ConnectWallet() {
         desc="Scan with WalletConnect to connect"
         onClick={handleConnectWalletConnect}
       />
-      <ConnectWalletContext.Provider value={defaultContextValue}>
-        <Snackbar
-          open={context.open}
-          autoHideDuration={5000}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        >
-          <Alert severity={context.status}>{context.message}</Alert>
-        </Snackbar>
-      </ConnectWalletContext.Provider>
     </Fragment>
   )
 }

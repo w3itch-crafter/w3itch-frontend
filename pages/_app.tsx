@@ -3,7 +3,7 @@ import '../styles/globals.css'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { Layout } from 'components/layout'
 import { AuthenticationProvider } from 'components/pages'
-import { CurrentChainId } from 'constants/index'
+import { WalletSupportedChainIds } from 'constants/index'
 import type { AppProps } from 'next/app'
 import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   return (
     <UseWalletProvider
       connectors={{
-        injected: { chainId: [CurrentChainId] },
+        injected: { chainId: WalletSupportedChainIds },
         walletconnect: {
           rpc: {
             // 1: 'https://mainnet.infura.io/v3/a0d8c94ba9a946daa5ee149e52fa5ff1',
@@ -32,7 +32,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       }}
     >
       <AuthenticationProvider>
-        <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
+        <SnackbarProvider maxSnack={3} autoHideDuration={5000}>
           <Fragment>
             <CssBaseline />
             {getLayout(<Component {...pageProps} />)}
