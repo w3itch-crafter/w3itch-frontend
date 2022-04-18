@@ -353,6 +353,7 @@ const GameForm: FC<GameFormProps> = ({
           // gameName: trim(game.gameName).replaceAll(' ', '_'),
           screenshots: allImages.screenshots,
           cover: allImages.cover,
+          appStoreLinks: game.appStoreLinks,
           description: trim(description),
           community: game.community,
           genre: game.genre,
@@ -372,6 +373,10 @@ const GameForm: FC<GameFormProps> = ({
         // No re-upload cover removed gameName cover
         if (!coverFileFile) {
           delete gameData.cover
+        }
+        // No re-upload screenshots Deleted game screenshots
+        if (isEmpty(screenshotsFiles)) {
+          delete gameData.screenshots
         }
 
         // 更新游戏文件
@@ -802,17 +807,18 @@ const GameForm: FC<GameFormProps> = ({
                       </div>
                     )}
 
-                    {editorMode === EditorMode.CREATE && (
-                      <div className={styles.input_row}>
-                        <FormAppStoreLinks
-                          errors={errors}
-                          control={control}
-                          changeLinks={(value) => {
-                            setValue('appStoreLinks', value)
-                          }}
-                        />
-                      </div>
-                    )}
+                    <div className={styles.input_row}>
+                      <FormAppStoreLinks
+                        editorMode={editorMode}
+                        getValues={getValues}
+                        errors={errors}
+                        watch={watch}
+                        control={control}
+                        changeLinks={(value) => {
+                          setValue('appStoreLinks', value)
+                        }}
+                      />
+                    </div>
 
                     {/* <div className={styles.input_row}>
                             <FormControl fullWidth>

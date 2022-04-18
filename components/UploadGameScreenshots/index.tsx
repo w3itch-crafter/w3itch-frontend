@@ -89,7 +89,7 @@ const UploadGameScreenshots: FC<Props> = ({
     <section>
       {!isEmpty(screenshotsUrl) ? (
         <WrapperItem>
-          {screenshotsUrl?.map((screenshot, index) => (
+          {screenshotsUrl?.map((screenshot) => (
             <div key={screenshot} style={{ marginBottom: 10 }}>
               <Image
                 src={screenshot}
