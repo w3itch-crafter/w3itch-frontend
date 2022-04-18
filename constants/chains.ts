@@ -217,3 +217,9 @@ export const CHAIN_INFO: ChainInfoMap = {
 export const CurrentChainId = Number(
   UniswapSupportedChainId.RINKEBY
 ) as SupportedChainId
+
+export const WalletSupportedChainIds = [SupportedChainId.RINKEBY]
+
+export const WalletSupportedChainNames = WalletSupportedChainIds.map(
+  (chainId) => CHAIN_INFO[chainId].label
+)

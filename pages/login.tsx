@@ -1,10 +1,14 @@
 import styled from '@emotion/styled'
+import { RedButton } from 'components/buttons'
+import { InputRow } from 'components/forms'
 import { ConnectWallet, PageCard, StatHeader } from 'components/pages'
-import { AuthenticationContext, ConnectWalletContext } from 'context'
+import { AuthenticationContext } from 'context'
 import { NextPage } from 'next'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Fragment, useCallback, useContext, useEffect, useState } from 'react'
+import { useSnackbar, VariantType } from 'notistack'
+import { Fragment, useCallback, useContext, useState } from 'react'
 import { useWallet } from 'use-wallet'
 import { Wallet } from 'use-wallet/dist/cjs/types'
 
@@ -18,36 +22,56 @@ const Login: NextPage = () => {
   const Padded = styled.div`
     padding: 30px var(--itchio-gutter_width, 40px);
   `
+  const Buttons = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    & a {
+      color: #606060;
+    }
+  `
   const wallet = useWallet()
   const router = useRouter()
+  const { enqueueSnackbar } = useSnackbar()
   const isConnected = wallet.isConnected()
+  const accountId = wallet.account || 'No account'
   const [hasStarted, setHasStarted] = useState(false)
-  const context = useContext(ConnectWalletContext)
   const { dispatch } = useContext(AuthenticationContext)
+  const showSnackbar = useCallback(
+    (message: string, status: VariantType) => {
+      enqueueSnackbar(message, {
+        anchorOrigin: { vertical: 'top', horizontal: 'right' },
+        variant: status,
+      })
+    },
+    [enqueueSnackbar]
+  )
   const startLogin = useCallback(
     async (wallet: Wallet) => {
-      const { user, account } = await login(wallet)
-      dispatch({ type: 'LOGIN', payload: { user, account } })
-      await router.replace('/games')
+      try {
+        setHasStarted(true)
+        showSnackbar(
+          "You're already started login, if your wallet not response, please refresh this page.",
+          'info'
+        )
+        const { user, account } = await login(wallet)
+        dispatch({ type: 'LOGIN', payload: { user, account } })
+        await router.replace('/games')
+      } catch (error) {
+        if (error instanceof Error) {
+          showSnackbar(error.message, 'error')
+        }
+      } finally {
+        setHasStarted(false)
+      }
     },
-    [dispatch, router]
+    [dispatch, router, showSnackbar]
   )
-  const checkWalletStatus = useCallback(() => {
-    if (isConnected && hasStarted) {
-      context.message =
-        "You're already started login, if your wallet not response, please refresh this page."
-      context.status = 'info'
-      context.open = true
-    }
-  }, [context, hasStarted, isConnected])
-
-  useEffect(() => {
+  const handleLogin = () => {
     if (isConnected && !hasStarted) {
-      setHasStarted(true)
       startLogin(wallet)
     }
-    checkWalletStatus()
-  }, [checkWalletStatus, hasStarted, isConnected, startLogin, wallet])
+  }
 
   return (
     <Fragment>
@@ -58,7 +82,16 @@ const Login: NextPage = () => {
         <PageCard>
           <StatHeader title="Log in to your w3itch.io account" />
           <Padded>
-            <ConnectWallet />
+            {!isConnected && <ConnectWallet />}
+            {isConnected && (
+              <Fragment>
+                <InputRow disabled label="Wallet account" value={accountId} />
+                <Buttons>
+                  <RedButton onClick={handleLogin}>Login</RedButton>
+                  or <Link href="/register">Create account</Link>
+                </Buttons>
+              </Fragment>
+            )}
           </Padded>
         </PageCard>
       </Container>
