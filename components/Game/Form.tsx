@@ -346,10 +346,11 @@ const GameForm: FC<GameFormProps> = ({
 
         const allImages = await handleAllImages()
 
-        const gameData: Api.GameProjectDto = {
+        const gameData: Partial<Api.GameProjectDto> = {
           title: trim(game.title),
           subtitle: trim(game.subtitle),
-          gameName: trim(game.gameName).replaceAll(' ', '_'),
+          // The only game name is not allowed to be modified
+          // gameName: trim(game.gameName).replaceAll(' ', '_'),
           cover: allImages.cover,
           description: trim(description),
           community: game.community,
@@ -517,8 +518,8 @@ const GameForm: FC<GameFormProps> = ({
   ])
 
   useEffect(() => {
-    // if (!isAuthenticated) router.replace('/login')
     console.log('isAuthenticated', isAuthenticated)
+    // if (!isAuthenticated) router.replace('/login')
   }, [isAuthenticated, router])
 
   return (
@@ -710,44 +711,50 @@ const GameForm: FC<GameFormProps> = ({
                       />
                     </div>
 
-                    {editorMode === EditorMode.CREATE && (
-                      <div
-                        className={`${styles.input_row} ${styles.simulation_input}`}
-                      >
-                        <FormControl fullWidth error={Boolean(errors.gameName)}>
-                          <FormLabel id="form-genre">Uploads</FormLabel>
-                          <section
-                            data-label="Tip"
-                            className={`${styles.hint} ${styles.butler_tip}`}
-                          >
-                            {
-                              "File size limit: 1 GB. Game name doesn't allow starts or ends with _ or -."
-                            }
-                          </section>
-                          <UploadGame
-                            setFile={(file) =>
-                              handleGameFile(file as File | undefined)
-                            }
-                          />
-                          <TextField
-                            style={{
-                              opacity: '0',
-                              position: 'absolute',
-                              zIndex: -99,
-                            }}
-                            {...register('gameName')}
-                          />
-                          <div>
-                            Currently in update mode, please re-upload if you
-                            need to update the game.
-                          </div>
-                          <div>Game name: {getValues('gameName')}</div>
-                          <FormHelperText>
-                            {errors?.gameName?.message}
-                          </FormHelperText>
-                        </FormControl>
-                      </div>
-                    )}
+                    <div
+                      className={`${styles.input_row} ${styles.simulation_input}`}
+                    >
+                      <FormControl fullWidth error={Boolean(errors.gameName)}>
+                        <FormLabel id="form-genre">Uploads</FormLabel>
+                        <section
+                          data-label="Tip"
+                          className={`${styles.hint} ${styles.butler_tip}`}
+                        >
+                          {
+                            "File size limit: 1 GB. Game name doesn't allow starts or ends with _ or -."
+                          }
+                        </section>
+                        <UploadGame
+                          setFile={(file) =>
+                            handleGameFile(file as File | undefined)
+                          }
+                        />
+                        <TextField
+                          style={{
+                            opacity: '0',
+                            position: 'absolute',
+                            zIndex: -99,
+                          }}
+                          {...register('gameName')}
+                        />
+                        {editorMode === EditorMode.EDIT && (
+                          <>
+                            <div>
+                              Currently in update mode, please re-upload if you
+                              need to update the game.
+                            </div>
+                            <div>(Game name will not change)</div>
+                            <div>
+                              Game name: <b>{getValues('gameName')}</b>
+                            </div>
+                          </>
+                        )}
+
+                        <FormHelperText>
+                          {errors?.gameName?.message}
+                        </FormHelperText>
+                      </FormControl>
+                    </div>
 
                     <div
                       className={`${styles.input_row} ${styles.simulation_input}`}
