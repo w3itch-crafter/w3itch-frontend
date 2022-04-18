@@ -1,18 +1,31 @@
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import { useFullscreen } from 'ahooks'
 import { gameProjectPlayer } from 'api'
-import { FC, useCallback } from 'react'
+import BigNumber from 'bignumber.js'
+import { utils } from 'ethers'
+import { getAddress } from 'ethers/lib/utils'
+import { useBuyNow } from 'hooks/useBuyNow'
+import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
+import { isEmpty } from 'lodash'
+import { FC, useCallback, useEffect } from 'react'
 import { useRef, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
+import { PriceEntity } from 'types'
+import { PaymentMode } from 'types/enum'
+import { balanceDecimal } from 'utils'
 
 interface Props {
-  gameProject: GameEntity
+  readonly gameProject: GameEntity
+  readonly price: PriceEntity
+  readonly priceToken?: ERC20MulticallTokenResult
 }
 
-const EmbedWidget: FC<Props> = ({ gameProject }) => {
+const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
+  const { buyNow } = useBuyNow()
   const ref = useRef(null)
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(
     ref,
@@ -26,21 +39,63 @@ const EmbedWidget: FC<Props> = ({ gameProject }) => {
     }
   )
   const [runGameFlag, setRunGameFlag] = useState<boolean>(false)
+  // hold unlock
+  // false can play
+  // true can't play
+  const [holdUnlock, setHoldUnlock] = useState<boolean>(true)
 
   const handleFullscreen = useCallback(() => {
     // https://developer.mozilla.org/en-US/docs/Web/API/Lock
     if (isFullscreen) {
+      exitFullscreen()
       if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
-        exitFullscreen()
         navigator.keyboard.unlock()
       }
     } else {
       if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
         navigator.keyboard.lock(['Escape'])
-        enterFullscreen()
       }
+      enterFullscreen()
     }
   }, [enterFullscreen, exitFullscreen, isFullscreen])
+
+  const handlePlay = useCallback(() => {
+    if (gameProject.paymentMode === PaymentMode.PAID) {
+      if (holdUnlock) {
+        buyNow({
+          chainId: price.token.chainId,
+          inputCurrency: '',
+          outputCurrency: getAddress(price.token.address),
+        })
+      } else {
+        setRunGameFlag(true)
+      }
+    } else {
+      setRunGameFlag(true)
+    }
+  }, [gameProject, price, buyNow, holdUnlock])
+
+  const processHoldUnlock = useCallback(() => {
+    if (gameProject.paymentMode === PaymentMode.PAID) {
+      if (isEmpty(priceToken) || !priceToken?.balanceOf) {
+        return
+      }
+
+      const isUnlock = new BigNumber(
+        utils.formatUnits(priceToken.balanceOf, price.token.decimals)
+      ).gte(utils.formatUnits(price.amount, price.token.decimals))
+
+      if (isUnlock) {
+        setHoldUnlock(false)
+      }
+    } else {
+      setHoldUnlock(false)
+    }
+  }, [gameProject, price, priceToken])
+
+  useEffect(() => {
+    processHoldUnlock()
+  }, [processHoldUnlock])
 
   return (
     <div
@@ -48,10 +103,10 @@ const EmbedWidget: FC<Props> = ({ gameProject }) => {
       className={`${styles.html_embed_widget} ${styles.embed_wrapper}`}
     >
       <div
-        data-height="360"
+        data-height="480"
         data-width="640"
         className={`${styles.game_frame} game_pending`}
-        style={{ width: '640px', height: '360px' }}
+        style={{ width: '640px', height: '480px' }}
       >
         {runGameFlag ? (
           <div className={`${styles.iframe_wrapper}`} ref={ref}>
@@ -76,27 +131,28 @@ const EmbedWidget: FC<Props> = ({ gameProject }) => {
         ) : (
           <div className={styles.iframe_placeholder}>
             <button
-              onClick={() => setRunGameFlag(true)}
+              onClick={() => handlePlay()}
               className={`${stylesCommon.button} ${styles.button} ${styles.load_iframe_btn}`}
             >
-              <svg
-                strokeLinecap="round"
-                stroke="currentColor"
-                className={`${styles.svgicon} icon_play`}
-                role="img"
-                version="1.1"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                height="24"
-                strokeLinejoin="round"
-                aria-hidden
-                fill="none"
-                width="24"
-              >
-                <circle cx="12" cy="12" r="10"></circle>
-                <polygon points="10 8 16 12 10 16 10 8"></polygon>
-              </svg>{' '}
-              Play
+              {holdUnlock ? (
+                isEmpty(price) ? (
+                  `Need to hold Token`
+                ) : (
+                  `Need to hold ${balanceDecimal(
+                    utils.formatUnits(price.amount, price.token.decimals)
+                  )} ${price.token.symbol}`
+                )
+              ) : (
+                <>
+                  <PlayCircleOutlineIcon
+                    sx={{
+                      mr: 1,
+                      fontSize: '26px',
+                    }}
+                  />
+                  Play
+                </>
+              )}
             </button>
           </div>
         )}

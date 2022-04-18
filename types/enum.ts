@@ -78,3 +78,8 @@ export enum UniswapSupportedChainId {
 export enum PancakeSwapSupportedChainId {
   BSC_MAINNET = 56,
 }
+
+export enum EditorMode {
+  CREATE = 'CREATE',
+  EDIT = 'EDIT',
+}

@@ -1,6 +1,8 @@
 import styled from '@emotion/styled'
+import { formatUnits } from 'ethers/lib/utils'
 import Link from 'next/link'
 import { GameInfo } from 'types'
+import { userHostUrl } from 'utils'
 import { enumWord } from 'utils/word'
 
 import { IcoMoonIcon } from '../icons'
@@ -96,6 +98,35 @@ export function GameCell({
       text-decoration: underline;
     }
   `
+  const GameMetaTag = styled.a`
+    text-decoration: none;
+    color: white !important;
+    font-size: 0.7222222222em;
+    vertical-align: 2px;
+    display: inline-flex;
+    line-height: normal;
+    & > div {
+      padding: 0.25em 0.5em;
+      font-weight: bold;
+      background-color: #737373;
+      background-image: linear-gradient(to top right, gray 0%, #676767 100%);
+      &:first-of-type:last-of-type {
+        border-radius: 2px;
+      }
+      &:first-of-type {
+        border-radius: 2px 0 0 2px;
+      }
+      &:last-of-type {
+        border-radius: 0 2px 2px 0;
+      }
+    }
+  `
+  const GamePriceValue = styled.div``
+  const GameSaleValue = styled.div`
+    background-color: #34a0f2 !important;
+    background-image: none !important;
+    color: rgba(255, 255, 255, 0.8);
+  `
   const GameText = styled.div<Pick<Required<GameCellProps>, 'small'>>`
     white-space: nowrap;
     overflow: hidden;
@@ -132,8 +163,10 @@ export function GameCell({
     color: #858585;
     display: ${(p) => (p.small ? 'none' : 'block')};
   `
-  const { title, subtitle, cover, link, genre, platform, user } = game
-  const profileUrl = `https://${user?.username}.w3itch.io`
+  const { title, subtitle, cover, link, genre, platform, user, prices } = game
+  const profileUrl = userHostUrl(user?.username)
+  const price = (Array.isArray(prices) && prices[0]) || null
+  const gameSale = false
 
   return (
     <Container className="game-cell" width={width}>
@@ -157,6 +190,17 @@ export function GameCell({
           <Link href={link} passHref>
             <GameTitleLink>{title}</GameTitleLink>
           </Link>
+          {price && (
+            <Link href={link} passHref>
+              <GameMetaTag>
+                <GamePriceValue>
+                  {formatUnits(price.amount, price.token.decimals)}{' '}
+                  {price.token.symbol}
+                </GamePriceValue>
+                {gameSale && <GameSaleValue>-30%</GameSaleValue>}
+              </GameMetaTag>
+            </Link>
+          )}
         </GameTitle>
         {subtitle && <GameText small={small}>{subtitle}</GameText>}
         {user && (

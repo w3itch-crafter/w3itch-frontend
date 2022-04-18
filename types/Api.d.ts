@@ -1,4 +1,8 @@
 import { AccountEntity, UserEntity } from 'types'
+import {
+  PancakeSwapSupportedChainId,
+  UniswapSupportedChainId,
+} from 'types/enum'
 
 import type {
   Community,
@@ -28,23 +32,30 @@ declare namespace Api {
     order?: 'ASC' | 'DESC'
   }
 
+  type GameProjectPricesDto = {
+    chainId: UniswapSupportedChainId | PancakeSwapSupportedChainId
+    amount: string
+    token: string
+  }
+
   type GameProjectDto = {
-    title: string
-    paymentMode: PaymentMode
-    subtitle: string
-    gameName: string
-    charset: GameFileCharset
-    classification: ProjectClassification
-    kind: GameEngine
-    releaseStatus: ReleaseStatus
-    screenshots: string[]
-    cover: string
-    tags: string[]
-    tokenId: number
-    appStoreLinks: string[]
-    description: string
-    community: Community
-    genre: Genre
+    title?: string
+    paymentMode?: PaymentMode
+    subtitle?: string
+    gameName?: string
+    charset?: GameFileCharset
+    classification?: ProjectClassification
+    kind?: GameEngine
+    releaseStatus?: ReleaseStatus
+    screenshots?: string[]
+    cover?: string
+    tags?: string[]
+    appStoreLinks?: string[]
+    description?: string
+    community?: Community
+    genre?: Genre
+    prices?: GameProjectPricesDto[]
+    donationAddress?: string
   }
 
   type Tag = {
@@ -65,6 +76,8 @@ declare namespace Api {
     rating: number
   }
 
+  type GameProjectDeleteResponse = Record<string, never>
+
   type AccountsMetamaskVerificationCodeResponse = {
     code: string
   }
@@ -72,5 +85,20 @@ declare namespace Api {
   type AccountsMetamaskActionResponse = {
     user: UserEntity
     account: AccountEntity
+  }
+
+  type BlockchainsEvmTokensResponse = {
+    id: number
+    createdAt: Date
+    updatedAt: Date
+    address: string
+    symbol: string
+    chainId: number
+    chainName: string
+  }
+
+  type ValidateUsernameResponse = {
+    username?: string
+    isExists?: boolean
   }
 }

@@ -1,13 +1,15 @@
 import { BackendErrorResponse, UserEntity } from 'types'
+import { Api } from 'types/Api'
 
 import backend from './backend'
 
-export async function validateUsername(username: string): Promise<boolean> {
-  const res = await backend.post<{ isExists: boolean }>(
-    '/users/username/validate',
-    { username }
-  )
-  return res.data.isExists
+export async function validateUsername(
+  username: string
+): Promise<Api.ValidateUsernameResponse | BackendErrorResponse> {
+  const res = await backend.post<
+    Api.ValidateUsernameResponse | BackendErrorResponse
+  >('/users/username/validate', { username }, { validateStatus: () => true })
+  return res.data
 }
 
 export async function getMe(): Promise<UserEntity | null> {

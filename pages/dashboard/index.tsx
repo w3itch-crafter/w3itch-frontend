@@ -1,13 +1,17 @@
+import styled from '@emotion/styled'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import Pagination from '@mui/material/Pagination'
-import { getGamesMine } from 'api'
+import Stack from '@mui/material/Stack'
+import { deleteGameProject, getGamesMine } from 'api'
 import Navigation from 'components/Dashboard/Navigation'
 import { AuthenticationContext } from 'context'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
-import { FC, Fragment, useContext } from 'react'
+import Router, { useRouter } from 'next/router'
+import { useSnackbar } from 'notistack'
+import { FC, Fragment, useCallback, useContext } from 'react'
 import { Dispatch, SetStateAction, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/dashboard.module.scss'
@@ -43,6 +47,36 @@ const HasGameProject: FC<HasGameProjectProps> = ({
   page,
   setPage,
 }) => {
+  const DeleteGame = styled.a`
+    margin-right: 8px;
+    cursor: pointer;
+    text-decoration: underline;
+  `
+  const router = useRouter()
+  const { enqueueSnackbar } = useSnackbar()
+  const handleDeleteGame = useCallback(
+    async (id: number) => {
+      const confirm = window.confirm(
+        'Are you sure you want to delete this game?'
+      )
+      if (!confirm) return
+      const res = await deleteGameProject(id)
+      if (res.status === 401) {
+        enqueueSnackbar(res.data.message, {
+          anchorOrigin: { vertical: 'top', horizontal: 'center' },
+          variant: 'error',
+        })
+        return setTimeout(() => router.replace('/login'), 1500)
+      }
+      enqueueSnackbar('Game deleted', {
+        anchorOrigin: { vertical: 'top', horizontal: 'center' },
+        variant: 'success',
+      })
+      return Router.reload()
+    },
+    [enqueueSnackbar, router]
+  )
+
   return (
     <div className={styles.dashboard_columns}>
       <div className={styles.left_col}>
@@ -67,6 +101,14 @@ const HasGameProject: FC<HasGameProjectProps> = ({
                   </Link>
                 </div>
                 <div className={styles.game_links}>
+                  <Stack direction="row" spacing={1}>
+                    <Link href={`game/edit/${item.id}`}>
+                      <a>Edit</a>
+                    </Link>
+                    <DeleteGame onClick={() => handleDeleteGame(item.id)}>
+                      Delete
+                    </DeleteGame>
+                  </Stack>
                   <div className={styles.publish_status}>
                     <span className={`${styles.tag_bubble} ${styles.green}`}>
                       <Link href={`/game/${item.id}`}>

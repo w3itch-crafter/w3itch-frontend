@@ -8,7 +8,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { Fragment, useEffect, useState } from 'react'
-import { RegisterData } from 'types'
+import { isBackendError, RegisterData } from 'types'
 import { useWallet } from 'use-wallet'
 import { isEmptyObj, userHostUrl } from 'utils'
 
@@ -55,6 +55,9 @@ const Register: NextPage = () => {
     align-items: center;
     margin-bottom: 6px;
     font-size: 14px;
+  `
+  const ConnectWalletWrapper = styled.div`
+    margin-bottom: 20px;
   `
   const ConnectLabel = styled.div`
     color: #434343;
@@ -114,23 +117,30 @@ const Register: NextPage = () => {
     setRegisterData({ ...registerData, [name]: value })
     if (name === 'username')
       setProfileUrl(userHostUrl(String(value).toLowerCase()))
+    setInvalidData({})
   }
   const checkRegisterData = async () => {
     const invalid: Partial<InvalidData> = {}
-    if (!registerData.address) {
+    const { username, address } = registerData
+    if (!address) {
       invalid.address = { message: 'Please connect wallet' }
     }
-    if (!registerData.username) {
+    if (!username) {
       invalid.username = { message: 'Username is required' }
+    } else {
+      const validate = await validateUsername(registerData.username)
+      if (isBackendError(validate)) {
+        invalid.username = {
+          message: validate.message?.toString().replace('username', 'Username'),
+        }
+      } else if (validate.isExists) {
+        invalid.username = { message: 'Username already exists' }
+      }
     }
-    if (registerData.username) {
-      const isExists = await validateUsername(registerData.username)
-      if (isExists) invalid.username = { message: 'Username already exists' }
-    }
+
     setInvalidData(invalid)
     return isEmptyObj(invalid)
   }
-
   const handleRegisterSubmit = async () => {
     const check = await checkRegisterData()
     if (!check) return
@@ -155,7 +165,7 @@ const Register: NextPage = () => {
           <RegisterForm>
             <FormColumn>
               {!isConnected && (
-                <Fragment>
+                <ConnectWalletWrapper>
                   <ConnectLabelWrapper>
                     <ConnectLabel>Connect wallet</ConnectLabel>
                     {invalidData.address && (
@@ -165,7 +175,7 @@ const Register: NextPage = () => {
                     )}
                   </ConnectLabelWrapper>
                   <ConnectWallet />
-                </Fragment>
+                </ConnectWalletWrapper>
               )}
               {isConnected && (
                 <InputRow
