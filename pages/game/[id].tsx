@@ -18,7 +18,6 @@ import { isEmpty } from 'lodash'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
@@ -206,20 +205,15 @@ const GameId: NextPage<GameProps> = ({
                 {gameProject.screenshots.length ? (
                   <div className={`${styles.right_col} ${styles.column}`}>
                     <div className={styles.screenshot_list}>
-                      {gameProject.screenshots.map((screenshot) => (
+                      {gameProject.screenshots.map((screenshot, index) => (
                         <a
-                          key={screenshot}
+                          key={`${index}-${screenshot}`}
                           href={screenshot}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <Image
-                            src={screenshot}
-                            alt="screenshot"
-                            width={'100%'}
-                            height={'100%'}
-                            layout="responsive"
-                          />
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={screenshot} alt="screenshot" />
                         </a>
                       ))}
                     </div>
