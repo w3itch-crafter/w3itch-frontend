@@ -8,21 +8,43 @@ import {
 } from '@mui/material'
 import { getTags } from 'api'
 import { trim } from 'lodash'
+import { isEmpty } from 'lodash'
 import { FC, useCallback, useEffect, useState } from 'react'
-import { Control, Controller, FieldError, FieldErrors } from 'react-hook-form'
+import {
+  Control,
+  Controller,
+  FieldError,
+  FieldErrors,
+  UseFormGetValues,
+  UseFormWatch,
+} from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
 import { Api } from 'types/Api'
+import { EditorMode } from 'types/enum'
 import { Game } from 'utils/validator'
 
 interface Props {
-  errors: FieldErrors<Game>
+  readonly editorMode: EditorMode
+  readonly getValues: UseFormGetValues<Game>
+  readonly errors: FieldErrors<Game>
+  readonly watch: UseFormWatch<Game>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<Game, any>
+  readonly control: Control<Game, any>
   changeTags: (value: string[]) => void
 }
 
-const FormTags: FC<Props> = ({ errors, control, changeTags }) => {
+const FormTags: FC<Props> = ({
+  errors,
+  control,
+  editorMode,
+  watch,
+  getValues,
+  changeTags,
+}) => {
+  const [currentTags, setCurrentTags] = useState<string[]>([])
+  const [inputTagValue, setInputTagValue] = useState('')
   const [tags, setTags] = useState<Api.Tag[]>([])
+  const watchTags = watch('tags')
 
   const fetchTags = useCallback(async () => {
     const resultTags = await getTags()
@@ -31,6 +53,17 @@ const FormTags: FC<Props> = ({ errors, control, changeTags }) => {
     }
   }, [])
 
+  // fill data
+  useEffect(() => {
+    if (
+      editorMode === EditorMode.EDIT &&
+      isEmpty(currentTags) &&
+      getValues('tags')
+    ) {
+      setCurrentTags(getValues('tags') || [])
+    }
+  }, [editorMode, getValues, watchTags, currentTags])
+
   useEffect(() => {
     fetchTags()
   }, [fetchTags])
@@ -38,6 +71,7 @@ const FormTags: FC<Props> = ({ errors, control, changeTags }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTagsSelectChange = (event: any, newValue: string[] | null) => {
     const formatTags = newValue?.map((i) => trim(i).toLocaleLowerCase())
+    setCurrentTags(formatTags || [])
     changeTags(formatTags || [])
   }
 
@@ -69,6 +103,11 @@ const FormTags: FC<Props> = ({ errors, control, changeTags }) => {
             options={tags.map((option) => option.name)}
             freeSolo
             onChange={handleTagsSelectChange}
+            value={currentTags}
+            inputValue={inputTagValue}
+            onInputChange={(_, newInputValue) => {
+              setInputTagValue(newInputValue)
+            }}
             renderTags={(value: readonly string[], getTagProps) => {
               console.log('value', value)
               return value.map((tag: string, index: number) => (

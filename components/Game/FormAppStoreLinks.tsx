@@ -5,26 +5,78 @@ import {
   FormLabel,
   TextField,
 } from '@mui/material'
+import Stack from '@mui/material/Stack'
 import { PrimaryButton } from 'components/CustomizedButtons'
-import { FC, useCallback } from 'react'
-import { Control, Controller, FieldError, FieldErrors } from 'react-hook-form'
+import { isEmpty } from 'lodash'
+import {
+  FC,
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import {
+  Control,
+  Controller,
+  FieldError,
+  FieldErrors,
+  UseFormGetValues,
+  UseFormWatch,
+} from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
+import { EditorMode } from 'types/enum'
 import { Game } from 'utils/validator'
 
 interface Props {
-  errors: FieldErrors<Game>
+  readonly editorMode: EditorMode
+  readonly getValues: UseFormGetValues<Game>
+  readonly errors: FieldErrors<Game>
+  readonly watch: UseFormWatch<Game>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<Game, any>
+  readonly control: Control<Game, any>
   changeLinks: (value: string[]) => void
 }
 
-const FormAppStoreLinks: FC<Props> = ({ errors, control, changeLinks }) => {
+const FormAppStoreLinks: FC<Props> = ({
+  editorMode,
+  errors,
+  control,
+  watch,
+  getValues,
+  changeLinks,
+}) => {
+  const [appStoreLinks, setAppStoreLinks] = useState<string[]>([])
+  const appStoreLinkRef = useRef() as MutableRefObject<HTMLInputElement>
+  const watchAppStoreLinks = watch('appStoreLinks')
+
   const handleChangeLinks = useCallback(
     (value: string) => {
-      changeLinks(value === '' ? [] : [value])
+      const links = value === '' ? [] : [value]
+      setAppStoreLinks(links)
+      changeLinks(links)
     },
     [changeLinks]
   )
+
+  // fill data
+  useEffect(() => {
+    if (
+      editorMode === EditorMode.EDIT &&
+      appStoreLinkRef.current &&
+      isEmpty(appStoreLinks) &&
+      getValues('appStoreLinks')
+    ) {
+      const link = getValues('appStoreLinks')
+      appStoreLinkRef.current.value = isEmpty(link) ? '' : link[0]
+    }
+  }, [
+    editorMode,
+    getValues,
+    watchAppStoreLinks,
+    appStoreLinkRef,
+    appStoreLinks,
+  ])
 
   return (
     <>
@@ -39,12 +91,16 @@ const FormAppStoreLinks: FC<Props> = ({ errors, control, changeLinks }) => {
                 "If your project is available on any other stores we'll link to it."
               }
             </p>
-            <TextField
-              id="form-appStoreLink"
-              variant="outlined"
-              placeholder="eg. http(s)://"
-              onChange={(event) => handleChangeLinks(event.target.value)}
-            />
+            <Stack spacing={2}>
+              <TextField
+                inputRef={appStoreLinkRef}
+                id="form-appStoreLink"
+                variant="outlined"
+                placeholder="eg. http(s)://"
+                onChange={(event) => handleChangeLinks(event.target.value)}
+              />
+            </Stack>
+
             <FormHelperText>
               {(errors?.appStoreLinks as unknown as FieldError)?.message}
             </FormHelperText>

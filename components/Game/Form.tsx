@@ -69,7 +69,14 @@ import {
   ProjectClassification,
   ReleaseStatus,
 } from 'types/enum'
-import { fileUrl, isStringNumber, parseUrl, processMessage } from 'utils'
+import {
+  filenameHandle,
+  fileUrl,
+  isStringNumber,
+  parseFilename,
+  parseUrl,
+  processMessage,
+} from 'utils'
 import { Game } from 'utils/validator'
 
 import FormCommunity from './FormCommunity'
@@ -136,6 +143,7 @@ const GameForm: FC<GameFormProps> = ({
 
   // console.log(watch('paymentMode'))
   // console.log(watch('genre'))
+  // console.log('errors', errors)
 
   const handleAllImages = async () => {
     const promiseArray = []
@@ -143,7 +151,7 @@ const GameForm: FC<GameFormProps> = ({
     // cover
     if (coverFileFile) {
       const formDataCover = new FormData()
-      formDataCover.append('file', coverFileFile)
+      formDataCover.append('file', filenameHandle(coverFileFile))
 
       promiseArray.push(storagesUploadToIPFS(formDataCover))
     }
@@ -151,7 +159,7 @@ const GameForm: FC<GameFormProps> = ({
     // screenshots
     screenshotsFiles?.forEach((screenshotsFile) => {
       const formDataScreenshot = new FormData()
-      formDataScreenshot.append('file', screenshotsFile)
+      formDataScreenshot.append('file', filenameHandle(screenshotsFile))
 
       promiseArray.push(storagesUploadToIPFS(formDataScreenshot))
     })
@@ -280,7 +288,7 @@ const GameForm: FC<GameFormProps> = ({
 
         const allImages = await handleAllImages()
 
-        const gameData = {
+        const gameData: Api.GameProjectDto = {
           title: trim(game.title),
           subtitle: trim(game.subtitle),
           gameName: trim(game.gameName).replaceAll(' ', '_'),
@@ -346,11 +354,15 @@ const GameForm: FC<GameFormProps> = ({
 
         const allImages = await handleAllImages()
 
-        const gameData: Api.GameProjectDto = {
+        const gameData: Partial<Api.GameProjectDto> = {
           title: trim(game.title),
           subtitle: trim(game.subtitle),
-          gameName: trim(game.gameName).replaceAll(' ', '_'),
+          // The only game name is not allowed to be modified
+          // gameName: trim(game.gameName).replaceAll(' ', '_'),
+          screenshots: allImages.screenshots,
           cover: allImages.cover,
+          tags: game.tags,
+          appStoreLinks: game.appStoreLinks,
           description: trim(description),
           community: game.community,
           genre: game.genre,
@@ -370,6 +382,10 @@ const GameForm: FC<GameFormProps> = ({
         // No re-upload cover removed gameName cover
         if (!coverFileFile) {
           delete gameData.cover
+        }
+        // No re-upload screenshots Deleted game screenshots
+        if (isEmpty(screenshotsFiles)) {
+          delete gameData.screenshots
         }
 
         // 更新游戏文件
@@ -441,12 +457,10 @@ const GameForm: FC<GameFormProps> = ({
   const onSubmit: SubmitHandler<Game> = async (data) => {
     console.log(data)
     handleCreateGame(data)
-    // const result = await handleAllImages()
 
+    // const result = await handleAllImages()
     // console.log('result', result)
   }
-
-  console.log('errors', errors)
 
   // handle cover
   const handleCoverValue = (file: File) => {
@@ -473,7 +487,7 @@ const GameForm: FC<GameFormProps> = ({
     (file: File | undefined) => {
       setUploadGameFile(file)
 
-      const name = file?.name.substring(0, file?.name.lastIndexOf('.'))
+      const name = parseFilename(file?.name || '')
       if (name) {
         setValue('gameName', name)
       }
@@ -517,8 +531,8 @@ const GameForm: FC<GameFormProps> = ({
   ])
 
   useEffect(() => {
-    // if (!isAuthenticated) router.replace('/login')
     console.log('isAuthenticated', isAuthenticated)
+    // if (!isAuthenticated) router.replace('/login')
   }, [isAuthenticated, router])
 
   return (
@@ -710,44 +724,50 @@ const GameForm: FC<GameFormProps> = ({
                       />
                     </div>
 
-                    {editorMode === EditorMode.CREATE && (
-                      <div
-                        className={`${styles.input_row} ${styles.simulation_input}`}
-                      >
-                        <FormControl fullWidth error={Boolean(errors.gameName)}>
-                          <FormLabel id="form-genre">Uploads</FormLabel>
-                          <section
-                            data-label="Tip"
-                            className={`${styles.hint} ${styles.butler_tip}`}
-                          >
-                            {
-                              "File size limit: 1 GB. Game name doesn't allow starts or ends with _ or -."
-                            }
-                          </section>
-                          <UploadGame
-                            setFile={(file) =>
-                              handleGameFile(file as File | undefined)
-                            }
-                          />
-                          <TextField
-                            style={{
-                              opacity: '0',
-                              position: 'absolute',
-                              zIndex: -99,
-                            }}
-                            {...register('gameName')}
-                          />
-                          <div>
-                            Currently in update mode, please re-upload if you
-                            need to update the game.
-                          </div>
-                          <div>Game name: {getValues('gameName')}</div>
-                          <FormHelperText>
-                            {errors?.gameName?.message}
-                          </FormHelperText>
-                        </FormControl>
-                      </div>
-                    )}
+                    <div
+                      className={`${styles.input_row} ${styles.simulation_input}`}
+                    >
+                      <FormControl fullWidth error={Boolean(errors.gameName)}>
+                        <FormLabel id="form-genre">Uploads</FormLabel>
+                        <section
+                          data-label="Tip"
+                          className={`${styles.hint} ${styles.butler_tip}`}
+                        >
+                          {
+                            "File size limit: 1 GB. Game name doesn't allow starts or ends with _ or -."
+                          }
+                        </section>
+                        <UploadGame
+                          setFile={(file) =>
+                            handleGameFile(file as File | undefined)
+                          }
+                        />
+                        <TextField
+                          style={{
+                            opacity: '0',
+                            position: 'absolute',
+                            zIndex: -99,
+                          }}
+                          {...register('gameName')}
+                        />
+                        {editorMode === EditorMode.EDIT && (
+                          <>
+                            <div>
+                              Currently in update mode, please re-upload if you
+                              need to update the game.
+                            </div>
+                            <div>(Game name will not change)</div>
+                            <div>
+                              Game name: <b>{getValues('gameName')}</b>
+                            </div>
+                          </>
+                        )}
+
+                        <FormHelperText>
+                          {errors?.gameName?.message}
+                        </FormHelperText>
+                      </FormControl>
+                    </div>
 
                     <div
                       className={`${styles.input_row} ${styles.simulation_input}`}
@@ -782,29 +802,31 @@ const GameForm: FC<GameFormProps> = ({
                     <div className={`${styles.input_row}`}>
                       <FormGenre control={control} errors={errors} />
                     </div>
-                    {editorMode === EditorMode.CREATE && (
-                      <div className={`${styles.input_row} tags_input_row`}>
-                        <FormTags
-                          control={control}
-                          errors={errors}
-                          changeTags={(tags) => {
-                            setValue('tags', tags)
-                          }}
-                        />
-                      </div>
-                    )}
+                    <div className={`${styles.input_row} tags_input_row`}>
+                      <FormTags
+                        editorMode={editorMode}
+                        getValues={getValues}
+                        errors={errors}
+                        watch={watch}
+                        control={control}
+                        changeTags={(tags) => {
+                          setValue('tags', tags)
+                        }}
+                      />
+                    </div>
 
-                    {editorMode === EditorMode.CREATE && (
-                      <div className={styles.input_row}>
-                        <FormAppStoreLinks
-                          errors={errors}
-                          control={control}
-                          changeLinks={(value) => {
-                            setValue('appStoreLinks', value)
-                          }}
-                        />
-                      </div>
-                    )}
+                    <div className={styles.input_row}>
+                      <FormAppStoreLinks
+                        editorMode={editorMode}
+                        getValues={getValues}
+                        errors={errors}
+                        watch={watch}
+                        control={control}
+                        changeLinks={(value) => {
+                          setValue('appStoreLinks', value)
+                        }}
+                      />
+                    </div>
 
                     {/* <div className={styles.input_row}>
                             <FormControl fullWidth>
@@ -928,29 +950,30 @@ const GameForm: FC<GameFormProps> = ({
                         </FormHelperText>
                       </FormControl>
                     </div>
-                    {editorMode === EditorMode.CREATE && (
-                      <section className={styles.screenshot_editor}>
-                        <div className={styles.label}>Screenshots</div>
-                        <p className={styles.sub}>
-                          <span className="when_default">
-                            {"Screenshots will appear on your game's page."}{' '}
-                          </span>
-                          Optional but highly recommended. Upload 3 to 5 for
-                          best results.
-                        </p>
-                        <FormHelperText error={Boolean(errors?.screenshots)}>
-                          {
-                            (errors?.screenshots as unknown as FieldError)
-                              ?.message
-                          }
-                        </FormHelperText>
-                        <UploadGameScreenshots
-                          setFiles={(files) => {
-                            handleScreenshots(files as File[] | undefined)
-                          }}
-                        />
-                      </section>
-                    )}
+                    <section className={styles.screenshot_editor}>
+                      <div className={styles.label}>Screenshots</div>
+                      <p className={styles.sub}>
+                        <span className="when_default">
+                          {"Screenshots will appear on your game's page."}{' '}
+                        </span>
+                        Optional but highly recommended. Upload 3 to 5 for best
+                        results.
+                      </p>
+                      <FormHelperText error={Boolean(errors?.screenshots)}>
+                        {
+                          (errors?.screenshots as unknown as FieldError)
+                            ?.message
+                        }
+                      </FormHelperText>
+                      <UploadGameScreenshots
+                        editorMode={editorMode}
+                        getValues={getValues}
+                        watch={watch}
+                        setFiles={(files) => {
+                          handleScreenshots(files as File[] | undefined)
+                        }}
+                      />
+                    </section>
                   </div>
                 </div>
                 <div className={styles.buttons}>

@@ -78,7 +78,7 @@ export const gameProjectPlayer = ({
  * @returns
  */
 export const gameValidate = async (
-  data: Api.GameProjectDto
+  data: Partial<Api.GameProjectDto>
 ): Promise<AxiosResponse<unknown>> => {
   return await backend({
     url: '/game-projects/validate',

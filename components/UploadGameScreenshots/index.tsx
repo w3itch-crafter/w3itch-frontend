@@ -1,17 +1,20 @@
 import styled from '@emotion/styled'
 import { RedButton } from 'components/buttons'
-import { cloneDeep } from 'lodash'
+import { isEmpty } from 'lodash'
 import Image from 'next/image'
 import {
   Dispatch,
   FC,
   SetStateAction,
   useCallback,
-  useMemo,
+  useEffect,
   useState,
 } from 'react'
 import { FileWithPath, useDropzone } from 'react-dropzone'
+import { UseFormGetValues, UseFormWatch } from 'react-hook-form'
+import { EditorMode } from 'types/enum'
 import { fileUrl } from 'utils'
+import { Game } from 'utils/validator'
 
 const WrapperItem = styled.section`
   height: auto;
@@ -23,11 +26,22 @@ const WrapperItem = styled.section`
 `
 
 interface Props {
+  readonly editorMode: EditorMode
+  readonly watch: UseFormWatch<Game>
+  readonly getValues: UseFormGetValues<Game>
   setFiles: Dispatch<SetStateAction<File[] | undefined>>
 }
 
-const UploadGameScreenshots: FC<Props> = ({ setFiles }) => {
+const UploadGameScreenshots: FC<Props> = ({
+  editorMode,
+  watch,
+  getValues,
+  setFiles,
+}) => {
   const [screenshotsFiles, setScreenshotsFiles] = useState<FileWithPath[]>()
+  const [screenshotsUrl, setScreenshotsUrl] = useState<string[]>([])
+
+  const watchScreenshots = watch('screenshots')
 
   const onDrop = useCallback(
     (acceptedFiles) => {
@@ -48,31 +62,42 @@ const UploadGameScreenshots: FC<Props> = ({ setFiles }) => {
     accept: 'image/*',
   })
 
-  const screenshotsItems = useMemo(() => {
-    return screenshotsFiles?.map((i) => fileUrl(i))
-  }, [screenshotsFiles])
+  // const handleDeleteItems = useCallback(
+  //   (index: number) => {
+  //     const newFiles = cloneDeep(screenshotsFiles)
+  //     newFiles?.splice(index, 1)
 
-  const handleDeleteItems = useCallback(
-    (index: number) => {
-      const newFiles = cloneDeep(screenshotsFiles)
-      newFiles?.splice(index, 1)
+  //     // console.log('newFiles', newFiles)
 
-      // console.log('newFiles', newFiles)
+  //     setScreenshotsFiles(newFiles)
+  //     setFiles(newFiles as File[])
+  //   },
+  //   [setScreenshotsFiles, setFiles, screenshotsFiles]
+  // )
 
-      setScreenshotsFiles(newFiles)
-      setFiles(newFiles as File[])
-    },
-    [setScreenshotsFiles, setFiles, screenshotsFiles]
-  )
+  useEffect(() => {
+    if (editorMode === EditorMode.EDIT && isEmpty(screenshotsFiles)) {
+      setScreenshotsUrl(getValues('screenshots'))
+    } else {
+      const screenshots = screenshotsFiles?.map((i) => fileUrl(i))
+      setScreenshotsUrl(screenshots || [])
+    }
+    // watch screenshots
+  }, [screenshotsFiles, editorMode, getValues, watchScreenshots])
 
   return (
     <section>
-      {screenshotsItems && screenshotsItems.length ? (
+      {!isEmpty(screenshotsUrl) ? (
         <WrapperItem>
-          {screenshotsItems?.map((i, index) => (
-            <div key={i} style={{ marginBottom: 10 }}>
-              <Image src={i} alt="screenshot" width={200} height={200} />
-              <div>
+          {screenshotsUrl?.map((screenshot) => (
+            <div key={screenshot} style={{ marginBottom: 10 }}>
+              <Image
+                src={screenshot}
+                alt="screenshot"
+                width={200}
+                height={200}
+              />
+              {/* <div>
                 <RedButton
                   onClick={(e) => {
                     e.stopPropagation()
@@ -81,7 +106,7 @@ const UploadGameScreenshots: FC<Props> = ({ setFiles }) => {
                 >
                   Delete
                 </RedButton>
-              </div>
+              </div> */}
             </div>
           ))}
         </WrapperItem>
