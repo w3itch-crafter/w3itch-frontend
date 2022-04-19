@@ -385,7 +385,10 @@ const GameForm: FC<GameFormProps> = ({
         }
         // No re-upload screenshots Deleted game screenshots
         if (isEmpty(screenshotsFiles)) {
-          delete gameData.screenshots
+          // delete all game screenshots
+          if (!isEmpty(game.screenshots)) {
+            delete gameData.screenshots
+          }
         }
 
         // 更新游戏文件

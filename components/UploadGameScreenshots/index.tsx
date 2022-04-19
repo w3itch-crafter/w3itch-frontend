@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { RedButton } from 'components/buttons'
+import { PrimaryButton } from 'components/CustomizedButtons'
 import { isEmpty } from 'lodash'
 import Image from 'next/image'
 import {
@@ -75,6 +75,11 @@ const UploadGameScreenshots: FC<Props> = ({
   //   [setScreenshotsFiles, setFiles, screenshotsFiles]
   // )
 
+  const handleDeleteAllScreenshots = useCallback(() => {
+    setScreenshotsFiles([])
+    setFiles([])
+  }, [setFiles, setScreenshotsFiles])
+
   useEffect(() => {
     if (editorMode === EditorMode.EDIT && isEmpty(screenshotsFiles)) {
       setScreenshotsUrl(getValues('screenshots'))
@@ -113,8 +118,25 @@ const UploadGameScreenshots: FC<Props> = ({
       ) : null}
       <section {...getRootProps()}>
         <input {...getInputProps()} />
-        <RedButton type="button">Add screenshots</RedButton>
+        <PrimaryButton
+          sx={{
+            textTransform: 'capitalize',
+          }}
+          type="button"
+        >
+          {isEmpty(screenshotsUrl) ? 'Add Screenshots' : 'Change Screenshots'}
+        </PrimaryButton>
       </section>
+      <PrimaryButton
+        sx={{
+          marginTop: 1,
+          textTransform: 'capitalize',
+        }}
+        onClick={handleDeleteAllScreenshots}
+        type="button"
+      >
+        Delete screenshots
+      </PrimaryButton>
     </section>
   )
 }
