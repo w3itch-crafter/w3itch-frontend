@@ -3,11 +3,12 @@ import { validateUsername } from 'api/users'
 import { RedButton } from 'components/buttons'
 import { InputCheckbox, InputRow } from 'components/forms'
 import { ConnectWallet, PageCard, StatHeader } from 'components/pages'
+import { AuthenticationContext } from 'context'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { isBackendError, RegisterData } from 'types'
 import { useWallet } from 'use-wallet'
 import { isEmptyObj, userHostUrl } from 'utils'
@@ -110,6 +111,7 @@ const Register: NextPage = () => {
     'https://username.w3itch.io/'
   )
   const [invalidData, setInvalidData] = useState<Partial<InvalidData>>({})
+  const { dispatch } = useContext(AuthenticationContext)
   const handleRegisterData = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
@@ -144,7 +146,8 @@ const Register: NextPage = () => {
   const handleRegisterSubmit = async () => {
     const check = await checkRegisterData()
     if (!check) return
-    await signup(wallet, registerData.username)
+    const { user, account } = await signup(wallet, registerData.username)
+    dispatch({ type: 'LOGIN', payload: { user, account } })
     await router.replace('/games')
   }
 
