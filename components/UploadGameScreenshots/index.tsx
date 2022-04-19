@@ -1,7 +1,6 @@
 import styled from '@emotion/styled'
-import { RedButton } from 'components/buttons'
+import { PrimaryButton } from 'components/CustomizedButtons'
 import { isEmpty } from 'lodash'
-import Image from 'next/image'
 import {
   Dispatch,
   FC,
@@ -23,6 +22,11 @@ const WrapperItem = styled.section`
   background-color: #f4f4f4;
   margin: 10px 0;
   overflow: hidden;
+  display: grid;
+  gap: 10px;
+  img {
+    width: 100%;
+  }
 `
 
 interface Props {
@@ -75,6 +79,11 @@ const UploadGameScreenshots: FC<Props> = ({
   //   [setScreenshotsFiles, setFiles, screenshotsFiles]
   // )
 
+  const handleDeleteAllScreenshots = useCallback(() => {
+    setScreenshotsFiles([])
+    setFiles([])
+  }, [setFiles, setScreenshotsFiles])
+
   useEffect(() => {
     if (editorMode === EditorMode.EDIT && isEmpty(screenshotsFiles)) {
       setScreenshotsUrl(getValues('screenshots'))
@@ -89,32 +98,37 @@ const UploadGameScreenshots: FC<Props> = ({
     <section>
       {!isEmpty(screenshotsUrl) ? (
         <WrapperItem>
-          {screenshotsUrl?.map((screenshot) => (
-            <div key={screenshot} style={{ marginBottom: 10 }}>
-              <Image
-                src={screenshot}
-                alt="screenshot"
-                width={200}
-                height={200}
-              />
-              {/* <div>
-                <RedButton
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleDeleteItems(index)
-                  }}
-                >
-                  Delete
-                </RedButton>
-              </div> */}
-            </div>
+          {screenshotsUrl?.map((screenshot, index) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={`${index}-${screenshot}`}
+              src={screenshot}
+              alt="screenshot"
+            />
           ))}
         </WrapperItem>
       ) : null}
       <section {...getRootProps()}>
         <input {...getInputProps()} />
-        <RedButton type="button">Add screenshots</RedButton>
+        <PrimaryButton
+          sx={{
+            textTransform: 'capitalize',
+          }}
+          type="button"
+        >
+          {isEmpty(screenshotsUrl) ? 'Add Screenshots' : 'Change Screenshots'}
+        </PrimaryButton>
       </section>
+      <PrimaryButton
+        sx={{
+          marginTop: 1,
+          textTransform: 'capitalize',
+        }}
+        onClick={handleDeleteAllScreenshots}
+        type="button"
+      >
+        Delete screenshots
+      </PrimaryButton>
     </section>
   )
 }

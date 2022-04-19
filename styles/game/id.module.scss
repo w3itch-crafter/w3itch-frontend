@@ -74,11 +74,14 @@
   .screenshot_list {
     margin-right: 20px;
     box-sizing: border-box;
+    display: grid;
+    gap: 10px;
     a {
-      display: block;
-      width: 347px;
-      margin-bottom: 10px;
       box-shadow: 0 0 1px rgb(0, 0, 0, 0.3);
+      display: inline-flex;
+      img {
+        width: 100%;
+      }
     }
   }
   .formatted_description {
