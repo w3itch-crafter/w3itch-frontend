@@ -218,8 +218,14 @@ export const CurrentChainId = Number(
   UniswapSupportedChainId.RINKEBY
 ) as SupportedChainId
 
-export const WalletSupportedChainIds = [SupportedChainId.RINKEBY]
+const EnvSupportedChainId = process.env.NEXT_PUBLIC_CHAIN_ID
+  ? (process.env.NEXT_PUBLIC_CHAIN_ID.split(',').map((s) =>
+      Number(s)
+    ) as SupportedChainId[])
+  : [SupportedChainId.RINKEBY]
+
+export const WalletSupportedChainIds = EnvSupportedChainId
 
 export const WalletSupportedChainNames = WalletSupportedChainIds.map(
-  (chainId) => CHAIN_INFO[chainId].label
+  (chainId) => CHAIN_INFO[chainId]?.label
 )
