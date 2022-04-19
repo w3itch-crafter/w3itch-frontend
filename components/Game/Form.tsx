@@ -682,10 +682,6 @@ const GameForm: FC<GameFormProps> = ({
                     </div>
 
                     <div className={styles.input_row}>
-                      <FormCharset control={control} errors={errors} />
-                    </div>
-
-                    <div className={styles.input_row}>
                       <FormControl fullWidth>
                         <FormLabel id="form-releaseStatus">
                           Release status
@@ -761,7 +757,10 @@ const GameForm: FC<GameFormProps> = ({
                             </div>
                             <div>(Game name will not change)</div>
                             <div>
-                              Game name: <b>{getValues('gameName')}</b>
+                              Game name:
+                              <span style={{ fontWeight: 'bold' }}>
+                                {getValues('gameName')}
+                              </span>
                             </div>
                           </>
                         )}
@@ -770,6 +769,10 @@ const GameForm: FC<GameFormProps> = ({
                           {errors?.gameName?.message}
                         </FormHelperText>
                       </FormControl>
+                    </div>
+
+                    <div className={styles.input_row}>
+                      <FormCharset control={control} errors={errors} />
                     </div>
 
                     <div
