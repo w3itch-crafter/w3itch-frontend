@@ -40,11 +40,17 @@ export function Footer() {
         <Link href="https://docs.w3itch.io/faq.html" passHref>
           <PrimaryLink target="_blank">FAQ</PrimaryLink>
         </Link>
-        <Link href="/blog" passHref>
+        <Link href="https://blog.w3itch.io/" passHref>
           <PrimaryLink>Blog</PrimaryLink>
         </Link>
-        <Link href="/support" passHref>
+        <Link
+          href="https://docs.w3itch.io/support.html#bugs-feature-requests"
+          passHref
+        >
           <PrimaryLink>Contact us</PrimaryLink>
+        </Link>
+        <Link href="https://docs.w3itch.io/CONTRIBUTING.html" passHref>
+          <PrimaryLink>Repo</PrimaryLink>
         </Link>
       </Primary>
       <Secondary>
