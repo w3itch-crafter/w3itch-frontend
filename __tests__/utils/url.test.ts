@@ -23,7 +23,7 @@ describe('Parse user host url', () => {
     expect(username).toBe('xiaotian')
   })
 
-  it('Public host test.w3itch.io with username has test', () => {
+  it('Public host test.w3itch.io and username has test', () => {
     process.env.NEXT_PUBLIC_URL = 'https://test.w3itch.io'
     const url = userHostUrl('iamtest')
     const { host } = new URL(url)
