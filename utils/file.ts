@@ -65,9 +65,38 @@ export const parseFilename = (filename: string): string => {
   return filename.substring(0, filename.lastIndexOf('.'))
 }
 
+/**
+ * parse file extension
+ * @param filename
+ * @returns
+ */
 export const parseFileExtension = (filename: string): string => {
   if (!filename) {
     return ''
   }
   return filename.substring(filename.lastIndexOf('.'))
+}
+
+/**
+ * download file
+ * @param url
+ * @returns
+ */
+export function downloadFile(url: string): void {
+  if (!url) return
+
+  const link = document.createElement('a')
+  link.href = url
+
+  document.body.appendChild(link)
+
+  link.dispatchEvent(
+    new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+    })
+  )
+
+  document.body.removeChild(link)
 }
