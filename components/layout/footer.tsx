@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { IcoMoonIcon } from 'components/icons'
 import Link from 'next/link'
 
 export function Footer() {
@@ -10,7 +11,11 @@ export function Footer() {
     color: #858585;
   `
   const Primary = styled.div`
+    width: 100%;
     line-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   `
   const PrimaryLink = styled.a`
     padding: 0 15px;
@@ -19,8 +24,12 @@ export function Footer() {
     border: none;
     vertical-align: top;
     text-decoration: none;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     color: inherit;
+    & .icon {
+      font-size: 140%;
+    }
   `
   const Secondary = styled.div`
     margin-top: 10px;
@@ -34,6 +43,11 @@ export function Footer() {
   return (
     <Container>
       <Primary>
+        <Link href="https://twitter.com/w3itchio" passHref>
+          <PrimaryLink rel="me" target="_blank">
+            <IcoMoonIcon name="twitter" />
+          </PrimaryLink>
+        </Link>
         <Link href="https://docs.w3itch.io/" passHref>
           <PrimaryLink target="_blank">Docs</PrimaryLink>
         </Link>
