@@ -145,6 +145,13 @@ const GameForm: FC<GameFormProps> = ({
   // console.log(watch('genre'))
   // console.log('errors', errors)
 
+  const pageTitle =
+    editorMode === EditorMode.CREATE
+      ? 'Create a new project'
+      : editorMode === EditorMode.EDIT
+      ? 'Edit project'
+      : 'Create a new project'
+
   const handleAllImages = async () => {
     const promiseArray = []
 
@@ -541,7 +548,7 @@ const GameForm: FC<GameFormProps> = ({
   return (
     <Fragment>
       <Head>
-        <title>Create a new project - w3itch.io</title>
+        <title>{pageTitle} - w3itch.io</title>
       </Head>
       <div className={stylesCommon.main}>
         <div className={stylesCommon.inner_column}>
@@ -557,7 +564,7 @@ const GameForm: FC<GameFormProps> = ({
               </div>
               <div className={styles.stat_header_widget}>
                 <div className="text_content">
-                  <h2>Create a new project</h2>
+                  <h2>{pageTitle}</h2>
                 </div>
               </div>
             </div>
