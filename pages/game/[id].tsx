@@ -5,6 +5,8 @@ import {
   fetchGameRatingsMine,
   gameProjectByID,
 } from 'api'
+import Donation from 'components/Game/Donation'
+import Download from 'components/Game/Download'
 import EmbedWidget from 'components/Game/EmbedWidget'
 import GameRating from 'components/Game/GameRating'
 import MoreInformation from 'components/Game/MoreInformation'
@@ -32,9 +34,6 @@ const RenderMarkdown = dynamic(
   { ssr: false }
 )
 const CommentsDisqus = dynamic(() => import('components/Game/CommentsDisqus'), {
-  ssr: false,
-})
-const Donation = dynamic(() => import('components/Game/Donation'), {
   ssr: false,
 })
 
@@ -194,6 +193,10 @@ const GameId: NextPage<GameProps> = ({
                       />
                     </div>
                   ) : null}
+
+                  <div className={styles.row}>
+                    <Download gameProject={gameProject} />
+                  </div>
 
                   {gameProject.community === Community.DISQUS && (
                     <div className={styles.game_comments_widget}>
