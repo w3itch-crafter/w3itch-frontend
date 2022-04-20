@@ -40,11 +40,14 @@ import TokenList from 'components/TokenList'
 import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
-import { CurrentChainId } from 'constants/chains'
+import type { SupportedChainId } from 'constants/chains'
+import { WalletSupportedChainIds } from 'constants/chains'
 import { AuthenticationContext } from 'context'
 import { classifications, kindOfProjects, releaseStatus } from 'data'
-import { BigNumber as BigNumberEthers, utils } from 'ethers'
-import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
+import { utils } from 'ethers'
+import { getAddress } from 'ethers/lib/utils'
+import { useTitle } from 'hooks'
+import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -60,7 +63,7 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form'
-import { GameEntity } from 'types'
+import { GameEntity, Token } from 'types'
 import { Api } from 'types/Api'
 import {
   EditorMode,
@@ -129,14 +132,19 @@ const GameForm: FC<GameFormProps> = ({
   const [coverFileFile, setCoverFileFile] = useState<File>()
   const [screenshotsFiles, setScreenshotsFiles] = useState<File[]>()
   const [submitLoading, setSubmitLoading] = useState<boolean>(false)
-
   const [tokenListDialogOpen, setTtokenListDialogOpen] = useState(false)
-  const [currentSelectToken, setCurrentSelectToken] =
-    useState<ERC20MulticallTokenResult>({} as ERC20MulticallTokenResult)
+  const [currentSelectTokenChainId, setCurrentSelectTokenChainId] =
+    useState<SupportedChainId>(WalletSupportedChainIds[0])
+  const [currentSelectToken, setCurrentSelectToken] = useState<Token>(
+    {} as Token
+  )
   const [currentSelectTokenAmount, setCurrentSelectTokenAmount] =
     useState<string>('0')
   const [currentDonationAddress, setCurrentDonationAddress] =
     useState<string>('')
+  const { tokens } = useTokens()
+  const { createGamePageTitle } = useTitle()
+  const pageTitle = createGamePageTitle(editorMode)
 
   const { errors } = formState
   const watchPaymentMode = watch('paymentMode')
@@ -144,13 +152,6 @@ const GameForm: FC<GameFormProps> = ({
   // console.log(watch('paymentMode'))
   // console.log(watch('genre'))
   // console.log('errors', errors)
-
-  const pageTitle =
-    editorMode === EditorMode.CREATE
-      ? 'Create a new project'
-      : editorMode === EditorMode.EDIT
-      ? 'Edit project'
-      : 'Create a new project'
 
   const handleAllImages = async () => {
     const promiseArray = []
@@ -185,8 +186,8 @@ const GameForm: FC<GameFormProps> = ({
     }
   }
 
-  // handle create game
-  const handleCreateGame = async (game: Game) => {
+  // handle create/edit game
+  const handleGame = async (game: Game) => {
     // 先支持 编辑
     if (editorMode === EditorMode.CREATE && !uploadGameFile) {
       enqueueSnackbar('Please upload game files', {
@@ -261,7 +262,7 @@ const GameForm: FC<GameFormProps> = ({
 
       prices = [
         {
-          chainId: CurrentChainId,
+          chainId: currentSelectTokenChainId,
           amount: utils
             .parseUnits(currentSelectTokenAmount, currentSelectToken.decimals)
             .toString(),
@@ -466,7 +467,7 @@ const GameForm: FC<GameFormProps> = ({
 
   const onSubmit: SubmitHandler<Game> = async (data) => {
     console.log(data)
-    handleCreateGame(data)
+    handleGame(data)
 
     // const result = await handleAllImages()
     // console.log('result', result)
@@ -514,6 +515,7 @@ const GameForm: FC<GameFormProps> = ({
 
   // watch current token fill data
   // paymentMode
+  // edit mode has no data
   useEffect(() => {
     if (
       editorMode === EditorMode.EDIT &&
@@ -521,15 +523,39 @@ const GameForm: FC<GameFormProps> = ({
       isEmpty(currentSelectToken) &&
       !isEmpty(gameProject?.prices[0])
     ) {
+      const { address, name, symbol, decimals, chainId } =
+        gameProject.prices[0].token
+
       // balanceOf and totalSupply are not processed
       setCurrentSelectToken({
-        address: gameProject.prices[0].token.address,
-        name: gameProject.prices[0].token.name,
-        symbol: gameProject.prices[0].token.symbol,
-        decimals: gameProject.prices[0].token.decimals,
-        totalSupply: BigNumberEthers.from(0),
-        balanceOf: BigNumberEthers.from(0),
+        address: address,
+        name: name,
+        symbol: symbol,
+        decimals: decimals,
+        // totalSupply: BigNumberEthers.from(0),
+        // balanceOf: BigNumberEthers.from(0),
+        chainId: chainId,
+        logoURI:
+          tokens.find(
+            (token) =>
+              getAddress(token.address) === getAddress(address) &&
+              token.chainId === chainId
+          )?.logoURI || '',
       })
+    }
+
+    if (
+      editorMode === EditorMode.EDIT &&
+      getValues('paymentMode') === PaymentMode.PAID &&
+      (!currentSelectTokenAmount || currentSelectTokenAmount === '0') &&
+      !isEmpty(gameProject?.prices[0])
+    ) {
+      setCurrentSelectTokenAmount(
+        utils.formatUnits(
+          gameProject.prices[0].amount,
+          gameProject.prices[0].token.decimals
+        )
+      )
     }
   }, [
     currentSelectTokenAmount,
@@ -538,6 +564,26 @@ const GameForm: FC<GameFormProps> = ({
     currentSelectToken,
     watchPaymentMode,
     getValues,
+    tokens,
+  ])
+
+  useEffect(() => {
+    if (
+      editorMode === EditorMode.EDIT &&
+      getValues('paymentMode') === PaymentMode.FREE &&
+      !currentDonationAddress
+    ) {
+      setCurrentDonationAddress(
+        (gameProject?.donationAddress || account?.accountId) as string
+      )
+    }
+  }, [
+    currentDonationAddress,
+    editorMode,
+    getValues,
+    gameProject,
+    account,
+    watchPaymentMode,
   ])
 
   useEffect(() => {
@@ -715,18 +761,23 @@ const GameForm: FC<GameFormProps> = ({
 
                     <div className={styles.input_row}>
                       <FormPricing
-                        gameProject={gameProject}
                         control={control}
-                        getValues={getValues}
                         errors={errors}
                         watch={watch}
                         token={currentSelectToken}
                         setTtokenListDialogOpen={setTtokenListDialogOpen}
-                        tokenAmountChange={setCurrentSelectTokenAmount}
-                        donationAddressChange={setCurrentDonationAddress}
+                        setCurrentDonationAddress={setCurrentDonationAddress}
                         currentSelectTokenAmount={currentSelectTokenAmount}
+                        setCurrentSelectTokenAmount={
+                          setCurrentSelectTokenAmount
+                        }
                         currentDonationAddress={currentDonationAddress}
-                        editorMode={editorMode}
+                        currentSelectTokenChainId={currentSelectTokenChainId}
+                        setCurrentSelectTokenChainId={(chainId) => {
+                          setCurrentSelectTokenChainId(chainId)
+                          // Switch chainId to clear token
+                          setCurrentSelectToken({} as Token)
+                        }}
                       />
                     </div>
 
@@ -1013,6 +1064,7 @@ const GameForm: FC<GameFormProps> = ({
       <TokenList
         open={tokenListDialogOpen}
         setOpen={setTtokenListDialogOpen}
+        chainId={currentSelectTokenChainId}
         selectToken={(token) => {
           console.log(token)
           setCurrentSelectToken(token)

@@ -1,3 +1,4 @@
+import styled from '@emotion/styled'
 import CloseIcon from '@mui/icons-material/Close'
 import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
@@ -7,19 +8,27 @@ import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import TextField from '@mui/material/TextField'
-import { CurrentChainId } from 'constants/chains'
+import type { SupportedChainId } from 'constants/chains'
 import { getAddress, isAddress } from 'ethers/lib/utils'
-import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
-import useTokens from 'hooks/useTokens'
 import useTokensList from 'hooks/useTokensList'
+import { isEmpty } from 'lodash'
 import { FC, useCallback, useState } from 'react'
+import { Token } from 'types'
 
 import TokenItem from './TokenItem'
 
+const NoItem = styled.div`
+  text-align: center;
+  margin: 20px 0;
+  font-size: 14px;
+  color: #686868;
+`
+
 export interface GameRatingProps {
   readonly open: boolean
+  readonly chainId: SupportedChainId
   setOpen: (value: boolean) => void
-  selectToken: (token: ERC20MulticallTokenResult) => void
+  selectToken: (token: Token) => void
 }
 
 export interface DialogTitleProps {
@@ -52,13 +61,16 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
   )
 }
 
-const TokenList: FC<GameRatingProps> = ({ setOpen, open, selectToken }) => {
+const TokenList: FC<GameRatingProps> = ({
+  setOpen,
+  open,
+  chainId,
+  selectToken,
+}) => {
   // const { enqueueSnackbar } = useSnackbar()
-  const { tokens } = useTokens({ chainId: CurrentChainId })
-  console.log('tokens ', tokens)
   const [searchAddress, setSearchAddress] = useState('')
   const { tokens: tokensList } = useTokensList({
-    tokensAddress: tokens,
+    chainId: chainId,
     searchTokenAddress: searchAddress,
   })
 
@@ -101,6 +113,7 @@ const TokenList: FC<GameRatingProps> = ({ setOpen, open, selectToken }) => {
             padding: 0,
           }}
         >
+          {isEmpty(tokensList) && <NoItem>No data</NoItem>}
           {tokensList.map((token) => (
             <ListItem
               key={token.address}
@@ -108,10 +121,7 @@ const TokenList: FC<GameRatingProps> = ({ setOpen, open, selectToken }) => {
                 padding: 0,
               }}
             >
-              <TokenItem
-                token={token as ERC20MulticallTokenResult}
-                selectToken={selectToken}
-              />
+              <TokenItem token={token} selectToken={selectToken} />
             </ListItem>
           ))}
         </List>
