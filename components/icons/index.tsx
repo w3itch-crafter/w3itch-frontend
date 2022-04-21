@@ -1,6 +1,12 @@
 import styled from '@emotion/styled'
 import clsx from 'clsx'
-import Image from 'next/image'
+import NextImage from 'next/image'
+
+const Image = styled(NextImage)`
+  * {
+    user-select: none;
+  }
+`
 
 export declare interface IconProps {
   size: number
@@ -22,6 +28,28 @@ export function WalletConnectIcon({ size }: IconProps) {
     <Image
       src="/icons/walletconnect.svg"
       alt="Wallet Connect Icon"
+      width={`${size}px`}
+      height={`${size}px`}
+    />
+  )
+}
+
+export function EthereumIcon({ size }: IconProps) {
+  return (
+    <Image
+      src="/icons/ethereum-eth-logo.svg"
+      alt="Ethereum ETH Icon"
+      width={`${size}px`}
+      height={`${size}px`}
+    />
+  )
+}
+
+export function GitHubIcon({ size }: IconProps) {
+  return (
+    <Image
+      src="/icons/github-logo.svg"
+      alt="GitHub Icon"
       width={`${size}px`}
       height={`${size}px`}
     />
