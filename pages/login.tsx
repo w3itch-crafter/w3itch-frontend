@@ -1,14 +1,21 @@
 import styled from '@emotion/styled'
 import { RedButton } from 'components/buttons'
 import { InputRow } from 'components/forms'
-import { ConnectWallet, PageCard, StatHeader } from 'components/pages'
+import {
+  BackToSelect,
+  ConnectWallet,
+  LoginMethodChooser,
+  PageCard,
+  StatHeader,
+} from 'components/pages'
 import { AuthenticationContext } from 'context'
+import { useTopRightSnackbar } from 'hooks'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useSnackbar, VariantType } from 'notistack'
 import { Fragment, useCallback, useContext, useState } from 'react'
+import { LoginMethod } from 'types'
 import { useWallet } from 'use-wallet'
 import { Wallet } from 'use-wallet/dist/cjs/types'
 
@@ -26,27 +33,23 @@ const Login: NextPage = () => {
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-top: 20px;
     & a {
       color: #606060;
     }
   `
+  const StyledBackToSelect = styled(BackToSelect)`
+    margin-bottom: 20px;
+  `
   const wallet = useWallet()
   const router = useRouter()
-  const { enqueueSnackbar } = useSnackbar()
   const isConnected = wallet.isConnected()
   const accountId = wallet.account || 'No account'
   const [hasStarted, setHasStarted] = useState(false)
+  const [loginMethod, setLoginMethod] = useState<LoginMethod | null>(null)
   const { dispatch } = useContext(AuthenticationContext)
-  const showSnackbar = useCallback(
-    (message: string, status: VariantType) => {
-      enqueueSnackbar(message, {
-        anchorOrigin: { vertical: 'top', horizontal: 'right' },
-        variant: status,
-      })
-    },
-    [enqueueSnackbar]
-  )
-  const startLogin = useCallback(
+  const showSnackbar = useTopRightSnackbar()
+  const startWalletLogin = useCallback(
     async (wallet: Wallet) => {
       try {
         setHasStarted(true)
@@ -68,9 +71,15 @@ const Login: NextPage = () => {
     [dispatch, router, showSnackbar]
   )
   const handleLogin = () => {
-    if (isConnected && !hasStarted) {
-      startLogin(wallet)
+    if (loginMethod === 'metamask' && isConnected && !hasStarted) {
+      startWalletLogin(wallet)
     }
+  }
+  const handleBackToSelect = () => {
+    setLoginMethod(null)
+  }
+  const handleMethodChange = (method: LoginMethod) => {
+    setLoginMethod(method)
   }
 
   return (
@@ -82,16 +91,26 @@ const Login: NextPage = () => {
         <PageCard>
           <StatHeader title="Log in to your w3itch.io account" />
           <Padded>
-            {!isConnected && <ConnectWallet />}
-            {isConnected && (
-              <Fragment>
-                <InputRow disabled label="Wallet account" value={accountId} />
-                <Buttons>
-                  <RedButton onClick={handleLogin}>Login</RedButton>
-                  or <Link href="/register">Create account</Link>
-                </Buttons>
-              </Fragment>
+            {loginMethod && <StyledBackToSelect onClick={handleBackToSelect} />}
+            {!loginMethod && (
+              <LoginMethodChooser
+                methodType="login"
+                onChoose={handleMethodChange}
+              />
             )}
+            {loginMethod === 'metamask' && !isConnected && <ConnectWallet />}
+            {loginMethod === 'metamask' && isConnected && (
+              <InputRow disabled label="Wallet account" value={accountId} />
+            )}
+            <Buttons>
+              <RedButton
+                disabled={!loginMethod || !isConnected}
+                onClick={handleLogin}
+              >
+                {loginMethod ? 'Login' : 'Select a method'}
+              </RedButton>
+              or <Link href="/register">Create account</Link>
+            </Buttons>
           </Padded>
         </PageCard>
       </Container>
