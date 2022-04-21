@@ -47,6 +47,9 @@ const Login: NextPage = () => {
   const accountId = wallet.account || 'No account'
   const [hasStarted, setHasStarted] = useState(false)
   const [loginMethod, setLoginMethod] = useState<LoginMethod | null>(null)
+  const canMetaMaskLogin = loginMethod === 'metamask' && isConnected
+  const canGitHubLogin = loginMethod === 'github' && false // TODO: check if can logged in
+  const canLogin = canMetaMaskLogin || canGitHubLogin
   const { dispatch } = useContext(AuthenticationContext)
   const showSnackbar = useTopRightSnackbar()
   const startWalletLogin = useCallback(
@@ -71,9 +74,8 @@ const Login: NextPage = () => {
     [dispatch, router, showSnackbar]
   )
   const handleLogin = () => {
-    if (loginMethod === 'metamask' && isConnected && !hasStarted) {
-      startWalletLogin(wallet)
-    }
+    if (!canLogin || hasStarted) return
+    if (canMetaMaskLogin) startWalletLogin(wallet)
   }
   const handleBackToSelect = () => {
     setLoginMethod(null)
@@ -103,10 +105,7 @@ const Login: NextPage = () => {
               <InputRow disabled label="Wallet account" value={accountId} />
             )}
             <Buttons>
-              <RedButton
-                disabled={!loginMethod || !isConnected}
-                onClick={handleLogin}
-              >
+              <RedButton disabled={!canLogin} onClick={handleLogin}>
                 {loginMethod ? 'Login' : 'Select a method'}
               </RedButton>
               or <Link href="/register">Create account</Link>
