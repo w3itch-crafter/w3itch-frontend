@@ -197,3 +197,17 @@ export type Token = {
   decimals: number
   logoURI: string
 }
+
+export type Tokens = {
+  name: string
+  timestamp: Date
+  version: {
+    major: 3
+    minor: 1
+    patch: 0
+  }
+  tags: object
+  logoURI: string
+  keywords: ['uniswap', 'default']
+  tokens: Token[]
+}

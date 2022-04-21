@@ -1,4 +1,6 @@
 import styled from '@emotion/styled'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useMount } from 'ahooks'
 import {
   fetchGameRatingsCount,
@@ -11,6 +13,7 @@ import EmbedWidget from 'components/Game/EmbedWidget'
 import GameRating from 'components/Game/GameRating'
 import MoreInformation from 'components/Game/MoreInformation'
 import Purchase from 'components/Game/Purchase'
+import Screenshots from 'components/Game/Screenshots'
 import UserTools from 'components/Game/UserTools'
 import {
   ERC20MulticallTokenResult,
@@ -19,8 +22,9 @@ import {
 import { isEmpty } from 'lodash'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { NextSeo } from 'next-seo'
+import { OpenGraphMedia } from 'next-seo/lib/types'
 import { useCallback, useEffect, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
@@ -28,6 +32,8 @@ import { GameEntity } from 'types'
 import { Api } from 'types/Api'
 import { Community, PaymentMode } from 'types/enum'
 import { BackendError } from 'utils'
+
+import SEO from '../../next-seo.config'
 
 const RenderMarkdown = dynamic(
   () => import('components/RenderMarkdown/index'),
@@ -57,6 +63,8 @@ const GameId: NextPage<GameProps> = ({
   const router = useRouter()
   const id = router.query.id
   const { fetchTokensAddress } = useERC20Multicall()
+  const theme = useTheme()
+  const matchesMd = useMediaQuery(theme.breakpoints.up('md'))
 
   const [gameProject, setGameProject] = useState<GameEntity | null>(
     gameProjectData
@@ -116,7 +124,11 @@ const GameId: NextPage<GameProps> = ({
     if (gameProject && gameProject.paymentMode === PaymentMode.PAID) {
       // map address
       const address = gameProject.prices.map((price) => price.token.address)
-      const tokensResponse = await fetchTokensAddress(address)
+      // @TODO Need to judge multiple chains
+      const tokensResponse = await fetchTokensAddress(
+        address,
+        gameProject.prices[0].token.chainId
+      )
       console.log('tokensResponse', tokensResponse)
       const tokens: ERC20MulticallTokenResult[] = (tokensResponse || []).map(
         (token) => ({
@@ -145,9 +157,21 @@ const GameId: NextPage<GameProps> = ({
 
   return (
     <>
-      <Head>
-        <title>{gameTitle}</title>
-      </Head>
+      <NextSeo
+        title={gameTitle}
+        description={gameProject?.description}
+        openGraph={{
+          images: (gameProject
+            ? [gameProject.cover, gameProject.screenshots]
+                .flat(1)
+                .filter((image) => !!image)
+                .map((image) => ({
+                  url: image,
+                  alt: gameTitle,
+                }))
+            : SEO.openGraph.images) as OpenGraphMedia[],
+        }}
+      />
       {gameProject ? (
         <div className={`main ${styles.wrapper}`}>
           <div
@@ -171,6 +195,15 @@ const GameId: NextPage<GameProps> = ({
                   >
                     <RenderMarkdown md={gameProject.description} />
                   </div>
+
+                  {!matchesMd && !isEmpty(gameProject.screenshots) && (
+                    <div className={styles.row}>
+                      <Screenshots
+                        screenshots={gameProject.screenshots}
+                      ></Screenshots>
+                    </div>
+                  )}
+
                   <div className={styles.row}>
                     <MoreInformation
                       gameProject={gameProject}
@@ -205,23 +238,15 @@ const GameId: NextPage<GameProps> = ({
                     </div>
                   )}
                 </div>
-                {gameProject.screenshots.length ? (
+                {matchesMd && (
                   <div className={`${styles.right_col} ${styles.column}`}>
-                    <div className={styles.screenshot_list}>
-                      {gameProject.screenshots.map((screenshot, index) => (
-                        <a
-                          key={`${index}-${screenshot}`}
-                          href={screenshot}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={screenshot} alt="screenshot" />
-                        </a>
-                      ))}
-                    </div>
+                    {!isEmpty(gameProject.screenshots) && (
+                      <Screenshots
+                        screenshots={gameProject.screenshots}
+                      ></Screenshots>
+                    )}
                   </div>
-                ) : null}
+                )}
               </div>
             </div>
           </div>

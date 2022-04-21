@@ -39,11 +39,6 @@
       margin-right: 5px;
     }
   }
-  .game_frame {
-    margin: 0 auto;
-    position: relative;
-    background-position: 50% 50%;
-  }
   .iframe_placeholder,
   .restore_wrapper {
     width: 100%;
@@ -56,9 +51,7 @@
     box-sizing: border-box;
   }
 }
-.game_frame {
-  background: #e5e5e5;
-}
+
 .view_game_page {
   &.view_flash_game_page .embed_wrapper,
   &.view_html_game_page .embed_wrapper {
@@ -72,7 +65,6 @@
     margin-bottom: 10px;
   }
   .screenshot_list {
-    margin-right: 20px;
     box-sizing: border-box;
     display: grid;
     gap: 10px;
@@ -148,6 +140,7 @@
   }
   .right_col {
     width: 367px;
+    padding-right: 20px;
   }
 }
 

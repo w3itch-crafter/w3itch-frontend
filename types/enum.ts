@@ -77,6 +77,7 @@ export enum UniswapSupportedChainId {
 
 export enum PancakeSwapSupportedChainId {
   BSC_MAINNET = 56,
+  BSC_TESTNET = 97,
 }
 
 export enum EditorMode {

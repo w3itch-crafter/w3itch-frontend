@@ -25,6 +25,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.OPTIMISM]: 'optimism',
   [SupportedChainId.OPTIMISTIC_KOVAN]: 'optimistic_kovan',
   [SupportedChainId.BSC_MAINNET]: 'binance',
+  [SupportedChainId.BSC_TESTNET]: 'binance_test',
 }
 
 /**
@@ -211,6 +212,16 @@ export const CHAIN_INFO: ChainInfoMap = {
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.BSC_MAINNET],
     logoUrl: binanceLogoUrl,
     nativeCurrency: { name: 'Binance Coin', symbol: 'BNB', decimals: 18 },
+  },
+  [SupportedChainId.BSC_TESTNET]: {
+    docs: 'https://docs.pancakeswap.finance/',
+    explorer: 'https://testnet.bscscan.com/',
+    swapLink: 'https://pancakeswap.finance/swap',
+    infoLink: 'https://pancakeswap.finance/info/',
+    label: 'Binance Smart Chain Testnet',
+    name: CHAIN_IDS_TO_NAMES[SupportedChainId.BSC_TESTNET],
+    logoUrl: binanceLogoUrl,
+    nativeCurrency: { name: 'Binance Coin Test', symbol: 'tBNB', decimals: 18 },
   },
 }
 

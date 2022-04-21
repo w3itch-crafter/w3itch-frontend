@@ -1,3 +1,4 @@
+import styled from '@emotion/styled'
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
@@ -17,6 +18,18 @@ import { GameEntity } from 'types'
 import { PriceEntity } from 'types'
 import { PaymentMode } from 'types/enum'
 import { balanceDecimal } from 'utils'
+
+const Wrapper = styled.div`
+  max-width: 640px;
+  height: 480px;
+  background: #e5e5e5;
+  margin: 0 auto;
+  position: relative;
+  background-position: 50% 50%;
+  @media screen and (max-width: 640px) {
+    height: 80vw;
+  }
+`
 
 interface Props {
   readonly gameProject: GameEntity
@@ -102,12 +115,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
       id="html_embed_widget_78140"
       className={`${styles.html_embed_widget} ${styles.embed_wrapper}`}
     >
-      <div
-        data-height="480"
-        data-width="640"
-        className={`${styles.game_frame} game_pending`}
-        style={{ width: '640px', height: '480px' }}
-      >
+      <Wrapper>
         {runGameFlag ? (
           <div className={`${styles.iframe_wrapper}`} ref={ref}>
             <iframe
@@ -156,7 +164,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
             </button>
           </div>
         )}
-      </div>
+      </Wrapper>
     </div>
   )
 }
