@@ -17,7 +17,9 @@ export const MULTICALL_NETWORKS: AddressBookForNetwork = {
   [UniswapSupportedChainId.RINKEBY]:
     '0x42Ad527de7d4e9d9d011aC45B31D8551f8Fe9821',
   [PancakeSwapSupportedChainId.BSC_MAINNET]:
-    '0xe348b292e8eA5FAB54340656f3D374b259D658b8',
+    '0x1Ee38d535d541c55C9dae27B12edf090C608E6Fb',
+  [PancakeSwapSupportedChainId.BSC_TESTNET]:
+    '0x3A09ad1B8535F25b48e6Fa0CFd07dB6B017b31B2',
   // @TODO add when needed
   3: '',
   5: '',

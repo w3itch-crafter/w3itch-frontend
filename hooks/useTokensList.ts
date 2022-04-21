@@ -31,8 +31,12 @@ export default function useTokensList({
       )
       if (!token) {
         // @TODO need set chainId
-        fetchTokensAddress(searchTokenAddress ? [searchTokenAddress] : []).then(
-          (response) => {
+        fetchTokensAddress(
+          searchTokenAddress ? [searchTokenAddress] : [],
+          chainId
+        )
+          .then((response) => {
+            console.log('response', response)
             const searchTokens = response?.map((token) => ({
               chainId: chainId,
               address: token.address,
@@ -42,13 +46,16 @@ export default function useTokensList({
               logoURI: '',
             }))
             setSearchTokenData(searchTokens || [])
-          }
-        )
+          })
+          .catch((err) => {
+            console.log('err', err)
+            setSearchTokenData([])
+          })
       }
     } else {
       setSearchTokenData([])
     }
-  }, [searchTokenAddress, fetchTokensAddress, tokensList, chainId])
+  }, [searchTokenAddress, fetchTokensAddress, chainId, tokensList])
 
   const tokens = useMemo(() => {
     if (!chainId) {
@@ -69,7 +76,7 @@ export default function useTokensList({
     } else {
       return tokensList.filter((token) => token.chainId === chainId)
     }
-  }, [searchTokenAddress, tokensList, chainId, searchTokenData])
+  }, [searchTokenAddress, chainId, searchTokenData, tokensList])
 
   return { tokens }
 }

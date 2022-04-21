@@ -12,7 +12,7 @@ import type { SupportedChainId } from 'constants/chains'
 import { getAddress, isAddress } from 'ethers/lib/utils'
 import useTokensList from 'hooks/useTokensList'
 import { isEmpty } from 'lodash'
-import { FC, useCallback, useState } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { Token } from 'types'
 
 import TokenItem from './TokenItem'
@@ -84,6 +84,12 @@ const TokenList: FC<GameRatingProps> = ({
       setSearchAddress('')
     }
   }, [])
+
+  useEffect(() => {
+    if (!open) {
+      setSearchAddress('')
+    }
+  }, [open])
 
   return (
     <Dialog onClose={() => setOpen(false)} open={open}>

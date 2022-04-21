@@ -1,3 +1,4 @@
+import type { SupportedChainId } from 'constants/chains'
 import { AuthenticationContext } from 'context'
 import { _abi } from 'contracts/BaseErc20Factory'
 import { BigNumber, ethers, utils } from 'ethers'
@@ -5,7 +6,7 @@ import { getAddress, isAddress } from 'ethers/lib/utils'
 import { chunk } from 'lodash'
 import { useCallback, useContext } from 'react'
 
-import { staticMulticall } from './useMulticall'
+import { staticMulticallByChainId } from './useMulticall'
 
 export interface ERC20MulticallResult {
   address: string
@@ -46,7 +47,10 @@ export function useERC20Multicall() {
   console.log('useERC20Multicall account', account)
 
   const fetchTokensAddress = useCallback(
-    async (address: string[]): Promise<ERC20MulticallResult[] | undefined> => {
+    async (
+      address: string[],
+      chainId: SupportedChainId
+    ): Promise<ERC20MulticallResult[] | undefined> => {
       if (!address.length) {
         return
       }
@@ -78,7 +82,10 @@ export function useERC20Multicall() {
       }
 
       // aggregate
-      const { returnData } = await staticMulticall.callStatic.aggregate(calls)
+      const staticMulticallChainId = staticMulticallByChainId(chainId)
+      const { returnData } = await staticMulticallChainId.callStatic.aggregate(
+        calls
+      )
 
       // merged
       const chunkReturnData = chunk(returnData, len)
