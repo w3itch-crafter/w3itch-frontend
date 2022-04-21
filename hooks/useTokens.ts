@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { AxiosResponse } from 'axios'
 import { tokenList } from 'constants/index'
-import { uniqBy } from 'lodash'
+import { isEqual, uniqWith } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { Token, Tokens } from 'types'
 
@@ -24,7 +24,7 @@ export default function useTokens() {
         (tokenResult) => tokenResult.data.tokens
       )
       const listsFlat = lists.flat(1)
-      const listsFilter = uniqBy(listsFlat, 'address')
+      const listsFilter = uniqWith(listsFlat, isEqual)
 
       // @TODO need virtual-list
       // @TODO list cache
