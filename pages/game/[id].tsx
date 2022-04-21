@@ -22,8 +22,9 @@ import {
 import { isEmpty } from 'lodash'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { NextSeo } from 'next-seo'
+import { OpenGraphMedia } from 'next-seo/lib/types'
 import { useCallback, useEffect, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
@@ -31,6 +32,9 @@ import { GameEntity } from 'types'
 import { Api } from 'types/Api'
 import { Community, PaymentMode } from 'types/enum'
 import { BackendError } from 'utils'
+
+import SEO from '../../next-seo.config'
+
 const RenderMarkdown = dynamic(
   () => import('components/RenderMarkdown/index'),
   { ssr: false }
@@ -153,9 +157,21 @@ const GameId: NextPage<GameProps> = ({
 
   return (
     <>
-      <Head>
-        <title>{gameTitle}</title>
-      </Head>
+      <NextSeo
+        title={gameTitle}
+        description={gameProject?.description}
+        openGraph={{
+          images: (gameProject
+            ? [gameProject.cover, gameProject.screenshots]
+                .flat(1)
+                .filter((image) => !!image)
+                .map((image) => ({
+                  url: image,
+                  alt: gameTitle,
+                }))
+            : SEO.openGraph.images) as OpenGraphMedia[],
+        }}
+      />
       {gameProject ? (
         <div className={`main ${styles.wrapper}`}>
           <div

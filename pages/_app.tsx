@@ -5,11 +5,15 @@ import { Layout } from 'components/layout'
 import { AuthenticationProvider } from 'components/pages'
 import { WalletSupportedChainIds } from 'constants/index'
 import type { AppProps } from 'next/app'
+import { DefaultSeo } from 'next-seo'
 import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
 import { NextPageWithLayout } from 'types'
 import { UseWalletProvider } from 'use-wallet'
 
+import SEO from '../next-seo.config'
+
+// import your default seo configuration
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
@@ -35,6 +39,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         <SnackbarProvider maxSnack={3} autoHideDuration={5000}>
           <Fragment>
             <CssBaseline />
+            <DefaultSeo {...SEO} />
             {getLayout(<Component {...pageProps} />)}
           </Fragment>
         </SnackbarProvider>

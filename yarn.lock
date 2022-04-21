@@ -13053,6 +13053,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"next-seo@npm:^5.4.0":
+  version: 5.4.0
+  resolution: "next-seo@npm:5.4.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fnext-seo%2F-%2Fnext-seo-5.4.0.tgz"
+  peerDependencies:
+    next: ^8.1.1-canary.54 || >=9.0.0
+    react: ">=16.0.0"
+    react-dom: ">=16.0.0"
+  checksum: fe19b4f7237111d6e8c2f3e9128946480f1b6e2d7ffab5902e8a4a1114721142daa187175334fa7d6da25605658e63cd8c6e3a68a9d9678fd7fbd4fb4b061391
+  languageName: node
+  linkType: hard
+
 "next-tick@npm:^1.1.0":
   version: 1.1.0
   resolution: "next-tick@npm:1.1.0"
@@ -17538,6 +17549,7 @@ __metadata:
     lint-staged: ^12.3.7
     lodash: ^4.17.21
     next: 12.1.5
+    next-seo: ^5.4.0
     notistack: ^2.0.4
     prettier: ^2.6.2
     react: 17.0.2
