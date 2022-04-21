@@ -28,7 +28,7 @@ import { PaymentMode } from 'types/enum'
 import { Game } from 'utils/validator'
 
 interface FormPricingProps {
-  readonly token: Token
+  readonly currentSelectToken: Token
   readonly errors: FieldErrors<Game>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly control: Control<Game, any>
@@ -43,17 +43,17 @@ interface FormPricingProps {
 }
 
 const FormPricing: FC<FormPricingProps> = ({
-  token,
+  currentSelectToken,
   errors,
   control,
   watch,
-  setTtokenListDialogOpen,
   currentDonationAddress,
   currentSelectTokenChainId,
-  setCurrentSelectTokenChainId,
   currentSelectTokenAmount,
-  setCurrentSelectTokenAmount,
+  setTtokenListDialogOpen,
   setCurrentDonationAddress,
+  setCurrentSelectTokenChainId,
+  setCurrentSelectTokenAmount,
 }) => {
   return (
     <div>
@@ -112,29 +112,35 @@ const FormPricing: FC<FormPricingProps> = ({
           </Box>
         ) : watch('paymentMode') === PaymentMode.PAID ? (
           <Stack spacing={1}>
-            <Select
-              size="small"
-              value={currentSelectTokenChainId as unknown as string}
-              onChange={(event: SelectChangeEvent) => {
-                setCurrentSelectTokenChainId(
-                  event.target.value as unknown as SupportedChainId
-                )
-              }}
-            >
-              {WalletSupportedChainIds.map((chainId, index) => (
-                <MenuItem value={chainId} key={chainId}>
-                  {WalletSupportedChainNames[index] || 'Unknown'}
-                </MenuItem>
-              ))}
-            </Select>
+            {currentSelectTokenChainId && (
+              <Select
+                size="small"
+                value={currentSelectTokenChainId as unknown as string}
+                onChange={(event: SelectChangeEvent) => {
+                  setCurrentSelectTokenChainId(
+                    event.target.value as unknown as SupportedChainId
+                  )
+                }}
+              >
+                {WalletSupportedChainIds.map((chainId, index) => (
+                  <MenuItem value={chainId} key={chainId}>
+                    {WalletSupportedChainNames[index] || 'Unknown'}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+
             <PrimaryButton
               onClick={() => setTtokenListDialogOpen(true)}
               variant="contained"
             >
               Select
             </PrimaryButton>
-            {!isEmpty(token) && (
-              <TokenItem token={token} selectToken={() => void 0} />
+            {!isEmpty(currentSelectToken) && (
+              <TokenItem
+                token={currentSelectToken}
+                selectToken={() => void 0}
+              />
             )}
             <TextField
               value={currentSelectTokenAmount}

@@ -135,9 +135,13 @@ const GameForm: FC<GameFormProps> = ({
   const [tokenListDialogOpen, setTtokenListDialogOpen] = useState(false)
   const [currentSelectTokenChainId, setCurrentSelectTokenChainId] =
     useState<SupportedChainId>(WalletSupportedChainIds[0])
+  const [currentSelectTokenChainIdFlag, setCurrentSelectTokenChainIdFlag] =
+    useState<boolean>(false)
   const [currentSelectToken, setCurrentSelectToken] = useState<Token>(
     {} as Token
   )
+  const [currentSelectTokenFlag, setCurrentSelectTokenFlag] =
+    useState<boolean>(false)
   const [currentSelectTokenAmount, setCurrentSelectTokenAmount] =
     useState<string>('0')
   const [currentDonationAddress, setCurrentDonationAddress] =
@@ -218,6 +222,17 @@ const GameForm: FC<GameFormProps> = ({
 
     let prices: Api.GameProjectPricesDto[] = []
     if (game.paymentMode === PaymentMode.PAID) {
+      if (!currentSelectTokenChainId) {
+        enqueueSnackbar('Please select chainId', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'warning',
+        })
+        return
+      }
+
       if (isEmpty(currentSelectToken)) {
         enqueueSnackbar('Please select Token', {
           anchorOrigin: {
@@ -519,55 +534,52 @@ const GameForm: FC<GameFormProps> = ({
   useEffect(() => {
     if (
       editorMode === EditorMode.EDIT &&
-      getValues('paymentMode') === PaymentMode.PAID &&
-      isEmpty(currentSelectToken) &&
-      !isEmpty(gameProject?.prices[0])
+      getValues('paymentMode') === PaymentMode.PAID
     ) {
-      const { address, name, symbol, decimals, chainId } =
-        gameProject.prices[0].token
+      if (!currentSelectTokenChainId && !currentSelectTokenChainIdFlag) {
+        setCurrentSelectTokenChainId(gameProject?.prices[0].token.chainId)
+        setCurrentSelectTokenChainIdFlag(true)
+      }
 
-      // balanceOf and totalSupply are not processed
-      setCurrentSelectToken({
-        address: address,
-        name: name,
-        symbol: symbol,
-        decimals: decimals,
-        // totalSupply: BigNumberEthers.from(0),
-        // balanceOf: BigNumberEthers.from(0),
-        chainId: chainId,
-        logoURI:
-          tokens.find(
-            (token) =>
-              getAddress(token.address) === getAddress(address) &&
-              token.chainId === chainId
-          )?.logoURI || '',
-      })
-    }
+      if (
+        isEmpty(currentSelectToken) &&
+        !isEmpty(gameProject?.prices[0]) &&
+        !currentSelectTokenFlag
+      ) {
+        const { address, name, symbol, decimals, chainId } =
+          gameProject.prices[0].token
+        // balanceOf and totalSupply are not processed
+        setCurrentSelectToken({
+          address: address,
+          name: name,
+          symbol: symbol,
+          decimals: decimals,
+          // totalSupply: BigNumberEthers.from(0),
+          // balanceOf: BigNumberEthers.from(0),
+          chainId: chainId,
+          logoURI:
+            tokens.find(
+              (token) =>
+                getAddress(token.address) === getAddress(address) &&
+                token.chainId === chainId
+            )?.logoURI || '',
+        })
+        setCurrentSelectTokenFlag(true)
+      }
 
-    if (
-      editorMode === EditorMode.EDIT &&
-      getValues('paymentMode') === PaymentMode.PAID &&
-      (!currentSelectTokenAmount || currentSelectTokenAmount === '0') &&
-      !isEmpty(gameProject?.prices[0])
-    ) {
-      setCurrentSelectTokenAmount(
-        utils.formatUnits(
-          gameProject.prices[0].amount,
-          gameProject.prices[0].token.decimals
+      if (
+        (!currentSelectTokenAmount || currentSelectTokenAmount === '0') &&
+        !isEmpty(gameProject?.prices[0])
+      ) {
+        setCurrentSelectTokenAmount(
+          utils.formatUnits(
+            gameProject.prices[0].amount,
+            gameProject.prices[0].token.decimals
+          )
         )
-      )
+      }
     }
-  }, [
-    currentSelectTokenAmount,
-    gameProject,
-    editorMode,
-    currentSelectToken,
-    watchPaymentMode,
-    getValues,
-    tokens,
-  ])
 
-  useEffect(() => {
     if (
       editorMode === EditorMode.EDIT &&
       getValues('paymentMode') === PaymentMode.FREE &&
@@ -578,12 +590,19 @@ const GameForm: FC<GameFormProps> = ({
       )
     }
   }, [
-    currentDonationAddress,
-    editorMode,
-    getValues,
+    currentSelectTokenAmount,
     gameProject,
+    editorMode,
+    currentSelectToken,
+    watchPaymentMode,
+    getValues,
+    tokens,
+    currentDonationAddress,
     account,
     watchPaymentMode,
+    currentSelectTokenChainId,
+    currentSelectTokenFlag,
+    currentSelectTokenChainIdFlag,
   ])
 
   useEffect(() => {
@@ -764,15 +783,15 @@ const GameForm: FC<GameFormProps> = ({
                         control={control}
                         errors={errors}
                         watch={watch}
-                        token={currentSelectToken}
+                        currentDonationAddress={currentDonationAddress}
+                        currentSelectTokenChainId={currentSelectTokenChainId}
+                        currentSelectToken={currentSelectToken}
                         setTtokenListDialogOpen={setTtokenListDialogOpen}
                         setCurrentDonationAddress={setCurrentDonationAddress}
                         currentSelectTokenAmount={currentSelectTokenAmount}
                         setCurrentSelectTokenAmount={
                           setCurrentSelectTokenAmount
                         }
-                        currentDonationAddress={currentDonationAddress}
-                        currentSelectTokenChainId={currentSelectTokenChainId}
                         setCurrentSelectTokenChainId={(chainId) => {
                           setCurrentSelectTokenChainId(chainId)
                           // Switch chainId to clear token

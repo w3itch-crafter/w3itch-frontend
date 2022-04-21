@@ -19,6 +19,10 @@ export default function useTokensList({
 
   // watch searchTokenAddress
   useEffect(() => {
+    if (!chainId) {
+      return
+    }
+
     if (searchTokenAddress) {
       const token = tokensList.find(
         (token) =>
@@ -47,6 +51,10 @@ export default function useTokensList({
   }, [searchTokenAddress, fetchTokensAddress, tokensList, chainId])
 
   const tokens = useMemo(() => {
+    if (!chainId) {
+      return []
+    }
+
     if (searchTokenAddress) {
       const token = tokensList.find(
         (token) =>
