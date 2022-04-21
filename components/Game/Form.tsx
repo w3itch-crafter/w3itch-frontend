@@ -144,8 +144,13 @@ const GameForm: FC<GameFormProps> = ({
     useState<boolean>(false)
   const [currentSelectTokenAmount, setCurrentSelectTokenAmount] =
     useState<string>('0')
+  const [currentSelectTokenAmountFlag, setCurrentSelectTokenAmountFlag] =
+    useState<boolean>(false)
   const [currentDonationAddress, setCurrentDonationAddress] =
     useState<string>('')
+  const [currentDonationAddressFlag, setCurrentDonationAddressFlag] =
+    useState<boolean>(false)
+
   const { tokens } = useTokens()
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
@@ -536,11 +541,13 @@ const GameForm: FC<GameFormProps> = ({
       editorMode === EditorMode.EDIT &&
       getValues('paymentMode') === PaymentMode.PAID
     ) {
-      if (!currentSelectTokenChainId && !currentSelectTokenChainIdFlag) {
+      // execute only once
+      if (!currentSelectTokenChainIdFlag) {
         setCurrentSelectTokenChainId(gameProject?.prices[0].token.chainId)
         setCurrentSelectTokenChainIdFlag(true)
       }
 
+      // execute only once
       if (
         isEmpty(currentSelectToken) &&
         !isEmpty(gameProject?.prices[0]) &&
@@ -567,7 +574,9 @@ const GameForm: FC<GameFormProps> = ({
         setCurrentSelectTokenFlag(true)
       }
 
+      // execute only once
       if (
+        !currentSelectTokenAmountFlag &&
         (!currentSelectTokenAmount || currentSelectTokenAmount === '0') &&
         !isEmpty(gameProject?.prices[0])
       ) {
@@ -577,10 +586,13 @@ const GameForm: FC<GameFormProps> = ({
             gameProject.prices[0].token.decimals
           )
         )
+        setCurrentSelectTokenAmountFlag(true)
       }
     }
 
+    // execute only once
     if (
+      !currentDonationAddressFlag &&
       editorMode === EditorMode.EDIT &&
       getValues('paymentMode') === PaymentMode.FREE &&
       !currentDonationAddress
@@ -588,6 +600,7 @@ const GameForm: FC<GameFormProps> = ({
       setCurrentDonationAddress(
         (gameProject?.donationAddress || account?.accountId) as string
       )
+      setCurrentDonationAddressFlag(true)
     }
   }, [
     currentSelectTokenAmount,
@@ -603,6 +616,8 @@ const GameForm: FC<GameFormProps> = ({
     currentSelectTokenChainId,
     currentSelectTokenFlag,
     currentSelectTokenChainIdFlag,
+    currentSelectTokenAmountFlag,
+    currentDonationAddressFlag,
   ])
 
   useEffect(() => {
