@@ -116,7 +116,11 @@ const GameId: NextPage<GameProps> = ({
     if (gameProject && gameProject.paymentMode === PaymentMode.PAID) {
       // map address
       const address = gameProject.prices.map((price) => price.token.address)
-      const tokensResponse = await fetchTokensAddress(address)
+      // @TODO Need to judge multiple chains
+      const tokensResponse = await fetchTokensAddress(
+        address,
+        gameProject.prices[0].token.chainId
+      )
       console.log('tokensResponse', tokensResponse)
       const tokens: ERC20MulticallTokenResult[] = (tokensResponse || []).map(
         (token) => ({
