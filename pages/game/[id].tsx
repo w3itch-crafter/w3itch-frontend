@@ -1,4 +1,6 @@
 import styled from '@emotion/styled'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useMount } from 'ahooks'
 import {
   fetchGameRatingsCount,
@@ -11,6 +13,7 @@ import EmbedWidget from 'components/Game/EmbedWidget'
 import GameRating from 'components/Game/GameRating'
 import MoreInformation from 'components/Game/MoreInformation'
 import Purchase from 'components/Game/Purchase'
+import Screenshots from 'components/Game/Screenshots'
 import UserTools from 'components/Game/UserTools'
 import {
   ERC20MulticallTokenResult,
@@ -28,7 +31,6 @@ import { GameEntity } from 'types'
 import { Api } from 'types/Api'
 import { Community, PaymentMode } from 'types/enum'
 import { BackendError } from 'utils'
-
 const RenderMarkdown = dynamic(
   () => import('components/RenderMarkdown/index'),
   { ssr: false }
@@ -57,6 +59,8 @@ const GameId: NextPage<GameProps> = ({
   const router = useRouter()
   const id = router.query.id
   const { fetchTokensAddress } = useERC20Multicall()
+  const theme = useTheme()
+  const matchesMd = useMediaQuery(theme.breakpoints.up('md'))
 
   const [gameProject, setGameProject] = useState<GameEntity | null>(
     gameProjectData
@@ -175,6 +179,15 @@ const GameId: NextPage<GameProps> = ({
                   >
                     <RenderMarkdown md={gameProject.description} />
                   </div>
+
+                  {!matchesMd && !isEmpty(gameProject.screenshots) && (
+                    <div className={styles.row}>
+                      <Screenshots
+                        screenshots={gameProject.screenshots}
+                      ></Screenshots>
+                    </div>
+                  )}
+
                   <div className={styles.row}>
                     <MoreInformation
                       gameProject={gameProject}
@@ -209,23 +222,15 @@ const GameId: NextPage<GameProps> = ({
                     </div>
                   )}
                 </div>
-                {gameProject.screenshots.length ? (
+                {matchesMd && (
                   <div className={`${styles.right_col} ${styles.column}`}>
-                    <div className={styles.screenshot_list}>
-                      {gameProject.screenshots.map((screenshot, index) => (
-                        <a
-                          key={`${index}-${screenshot}`}
-                          href={screenshot}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={screenshot} alt="screenshot" />
-                        </a>
-                      ))}
-                    </div>
+                    {!isEmpty(gameProject.screenshots) && (
+                      <Screenshots
+                        screenshots={gameProject.screenshots}
+                      ></Screenshots>
+                    )}
                   </div>
-                ) : null}
+                )}
               </div>
             </div>
           </div>
