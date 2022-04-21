@@ -1,4 +1,7 @@
 import axios from 'axios'
+import { AxiosResponse } from 'axios'
+import { tokenList } from 'constants/index'
+import { uniqBy } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { Token, Tokens } from 'types'
 
@@ -7,20 +10,25 @@ export default function useTokens() {
 
   const fetchTokens = useCallback(async () => {
     try {
-      const fetchTokensResult = await axios.get<Tokens>(
-        'https://tokens.uniswap.org'
-      )
-      console.log(fetchTokensResult)
-      if (fetchTokensResult.status === 200) {
-        console.log('fetchTokensResult', fetchTokensResult)
-        // setTokens([
-        //   '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735',
-        //   '0xc778417e063141139fce010982780140aa0cd5ab',
-        //   '0xf9ba5210f91d0474bd1e1dcdaec4c58e359aad85',
-        // ])
+      const promiseTokens: Promise<AxiosResponse<Tokens>>[] = []
 
-        setTokens(fetchTokensResult.data.tokens)
-      }
+      tokenList.forEach((token) => {
+        promiseTokens.push(axios.get(token))
+      })
+
+      const fetchTokensResult = await Promise.all(promiseTokens)
+
+      console.log('fetchTokensResult', fetchTokensResult)
+
+      const lists = fetchTokensResult.map(
+        (tokenResult) => tokenResult.data.tokens
+      )
+      const listsFlat = lists.flat(1)
+      const listsFilter = uniqBy(listsFlat, 'address')
+
+      // @TODO need virtual-list
+      // @TODO list cache
+      setTokens(listsFilter)
     } catch (error) {
       console.log(error)
     }
