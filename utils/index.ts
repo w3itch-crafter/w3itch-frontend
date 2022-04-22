@@ -3,6 +3,7 @@ export * from './error'
 export * from './explorer'
 export * from './file'
 export * from './game'
+export * from './seo'
 export * from './tags'
 export * from './url'
 
