@@ -19,7 +19,7 @@ import { LoginMethod } from 'types'
 import { useWallet } from 'use-wallet'
 import { Wallet } from 'use-wallet/dist/cjs/types'
 
-import { login } from '../api/account'
+import { loginGitHub, loginWallet } from '../api/account'
 
 const Login: NextPage = () => {
   const Container = styled.div`
@@ -48,7 +48,7 @@ const Login: NextPage = () => {
   const [hasStarted, setHasStarted] = useState(false)
   const [loginMethod, setLoginMethod] = useState<LoginMethod | null>(null)
   const canMetaMaskLogin = loginMethod === 'metamask' && isConnected
-  const canGitHubLogin = loginMethod === 'github' && false // TODO: check if can logged in
+  const canGitHubLogin = loginMethod === 'github' // TODO: check if can logged in
   const canLogin = canMetaMaskLogin || canGitHubLogin
   const { dispatch } = useContext(AuthenticationContext)
   const showSnackbar = useTopRightSnackbar()
@@ -62,7 +62,7 @@ const Login: NextPage = () => {
         showSnackbar(
           'If your wallet not response for long time, please refresh this page.'
         )
-        const { user, account } = await login(wallet)
+        const { user, account } = await loginWallet(wallet)
         dispatch({ type: 'LOGIN', payload: { user, account } })
         await router.replace('/games')
       } catch (error) {
@@ -75,9 +75,23 @@ const Login: NextPage = () => {
     },
     [dispatch, router, showSnackbar]
   )
+  const startGitHubLogin = useCallback(async () => {
+    try {
+      setHasStarted(true)
+      const oAuthUrl = await loginGitHub()
+      window.location.href = oAuthUrl
+    } catch (error) {
+      if (error instanceof Error) {
+        showSnackbar(error.message, 'error')
+      }
+    } finally {
+      setHasStarted(false)
+    }
+  }, [showSnackbar])
   const handleLogin = () => {
     if (!canLogin || hasStarted) return
     if (canMetaMaskLogin) startWalletLogin(wallet)
+    if (canGitHubLogin) startGitHubLogin()
   }
   const handleBackToSelect = () => {
     setLoginMethod(null)
@@ -108,7 +122,9 @@ const Login: NextPage = () => {
             )}
             <Buttons>
               <RedButton disabled={!canLogin} onClick={handleLogin}>
-                {loginMethod ? 'Login' : 'Select a method'}
+                {!loginMethod && 'Select a method'}
+                {loginMethod === 'metamask' && 'Login'}
+                {loginMethod === 'github' && 'Log in with GitHub'}
               </RedButton>
               or <Link href="/register">Create account</Link>
             </Buttons>

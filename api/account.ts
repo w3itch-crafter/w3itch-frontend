@@ -5,7 +5,7 @@ import type { Wallet } from 'use-wallet/dist/cjs/types'
 
 import backend from './backend'
 
-async function service(
+async function walletAccountService(
   wallet: Wallet,
   action: 'login' | 'signup',
   username?: string
@@ -37,17 +37,35 @@ async function service(
   }
 }
 
-export async function signup(
+export async function signupWallet(
   wallet: Wallet,
   username: string
 ): Promise<Api.AccountsMetamaskActionResponse> {
-  return await service(wallet, 'signup', username)
+  return await walletAccountService(wallet, 'signup', username)
 }
 
-export async function login(
+export async function loginWallet(
   wallet: Wallet
 ): Promise<Api.AccountsMetamaskActionResponse> {
-  return await service(wallet, 'login')
+  return await walletAccountService(wallet, 'login')
+}
+
+async function githubAccountService(
+  action: 'login' | 'signup',
+  username?: string
+): Promise<string> {
+  const res = await backend.post<string>(`/accounts/github/${action}`, {
+    username,
+  })
+  return res.data
+}
+
+export async function signupGitHub(username: string): Promise<string> {
+  return await githubAccountService('signup', username)
+}
+
+export async function loginGitHub(): Promise<string> {
+  return await githubAccountService('login')
 }
 
 export async function refresh(): Promise<UserEntity | null> {

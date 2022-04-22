@@ -19,7 +19,7 @@ import { LoginMethod, RegisterData } from 'types'
 import { useWallet } from 'use-wallet'
 import { isEmptyObj, userHostUrl } from 'utils'
 
-import { signup } from '../api/account'
+import { signupGitHub, signupWallet } from '../api/account'
 
 declare type InvalidData = {
   [key in keyof RegisterData]: {
@@ -158,10 +158,17 @@ const Register: NextPage = () => {
         showSnackbar(
           'If your wallet not response for long time, please refresh this page.'
         )
-        const { user, account } = await signup(wallet, registerData.username)
+        const { user, account } = await signupWallet(
+          wallet,
+          registerData.username
+        )
         dispatch({ type: 'LOGIN', payload: { user, account } })
+        await router.replace('/games')
       }
-      await router.replace('/games')
+      if (registerMethod === 'github') {
+        const oAuthUrl = await signupGitHub(registerData.username)
+        window.location.href = oAuthUrl
+      }
     } catch (error) {
       if (error instanceof Error) {
         return showSnackbar(error.message, 'error')
