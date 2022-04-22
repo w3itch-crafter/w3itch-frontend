@@ -8,6 +8,7 @@ export function useTopRightSnackbar() {
       enqueueSnackbar(message, {
         variant,
         anchorOrigin: { vertical: 'top', horizontal: 'right' },
+        preventDuplicate: true,
       })
     },
     [enqueueSnackbar]

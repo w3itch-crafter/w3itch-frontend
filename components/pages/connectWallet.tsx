@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { WalletSupportedChainNames } from 'constants/index'
-import { useSnackbar } from 'notistack'
+import { useTopRightSnackbar } from 'hooks'
 import { Fragment } from 'react'
 import { useWallet } from 'use-wallet'
 
@@ -8,7 +8,7 @@ import { MetaMaskIcon, WalletConnectIcon } from '../icons'
 
 export function ConnectWallet() {
   const wallet = useWallet()
-  const { enqueueSnackbar } = useSnackbar()
+  const showSnackbar = useTopRightSnackbar()
   const checkWalletStatus = () => {
     if (wallet.status === 'error' && wallet.error) {
       if (wallet.error?.name === 'ChainUnsupportedError') {
@@ -17,15 +17,9 @@ export function ConnectWallet() {
         } are ${WalletSupportedChainNames.join(
           ', '
         )}, please switch your wallet network.`
-        enqueueSnackbar(message, {
-          anchorOrigin: { vertical: 'top', horizontal: 'right' },
-          variant: 'error',
-        })
+        return showSnackbar(message, 'error')
       } else {
-        enqueueSnackbar(wallet.error.message, {
-          anchorOrigin: { vertical: 'top', horizontal: 'right' },
-          variant: 'error',
-        })
+        return showSnackbar(wallet.error.message, 'error')
       }
     }
   }

@@ -57,8 +57,10 @@ const Login: NextPage = () => {
       try {
         setHasStarted(true)
         showSnackbar(
-          "You're already started login, if your wallet not response, please refresh this page.",
-          'info'
+          'Your wallet will show you "Signature Request" message that you need to sign.'
+        )
+        showSnackbar(
+          'If your wallet not response for long time, please refresh this page.'
         )
         const { user, account } = await login(wallet)
         dispatch({ type: 'LOGIN', payload: { user, account } })
