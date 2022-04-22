@@ -1,5 +1,4 @@
 import styled from '@emotion/styled'
-import { validateUsername } from 'api/users'
 import { RedButton } from 'components/buttons'
 import { InputCheckbox, InputRow } from 'components/forms'
 import {
@@ -16,7 +15,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { Fragment, useContext, useEffect, useState } from 'react'
-import { isBackendError, LoginMethod, RegisterData } from 'types'
+import { LoginMethod, RegisterData } from 'types'
 import { useWallet } from 'use-wallet'
 import { isEmptyObj, userHostUrl } from 'utils'
 
@@ -141,15 +140,6 @@ const Register: NextPage = () => {
     }
     if (!username) {
       invalid.username = { message: 'Username is required' }
-    } else {
-      const validate = await validateUsername(registerData.username)
-      if (isBackendError(validate)) {
-        invalid.username = {
-          message: validate.message?.toString().replace('username', 'Username'),
-        }
-      } else if (validate.isExists) {
-        invalid.username = { message: 'Username already exists' }
-      }
     }
 
     setInvalidData(invalid)
@@ -160,11 +150,23 @@ const Register: NextPage = () => {
       return showSnackbar('Please select a method', 'warning')
     const check = await checkRegisterData()
     if (!check) return
-    if (registerMethod === 'metamask') {
-      const { user, account } = await signup(wallet, registerData.username)
-      dispatch({ type: 'LOGIN', payload: { user, account } })
+    try {
+      if (registerMethod === 'metamask') {
+        showSnackbar(
+          'Your wallet will show you "Signature Request" message that you need to sign.'
+        )
+        showSnackbar(
+          'If your wallet not response for long time, please refresh this page.'
+        )
+        const { user, account } = await signup(wallet, registerData.username)
+        dispatch({ type: 'LOGIN', payload: { user, account } })
+      }
+      await router.replace('/games')
+    } catch (error) {
+      if (error instanceof Error) {
+        return showSnackbar(error.message, 'error')
+      }
     }
-    await router.replace('/games')
   }
   const handleBackToSelect = () => {
     setRegisterMethod(null)
