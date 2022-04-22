@@ -22,7 +22,7 @@ export function GameCell({
   small = false,
   collectionLink,
 }: GameCellProps) {
-  const Container = styled.div<Pick<Required<GameCellProps>, 'width'>>`
+  const Container = styled.div<Pick<GameCellProps, 'width'>>`
     display: inline-block;
     position: relative;
     vertical-align: top;
@@ -38,7 +38,7 @@ export function GameCell({
     text-decoration: none;
   `
   const GameThumb = styled.div<
-    Pick<Required<GameCellProps>, 'width' | 'height'> & { cover: string }
+    Pick<GameCellProps, 'width' | 'height'> & { cover: string }
   >`
     background-image: ${(p) => `url(${p.cover})`};
     background-position: 50% 50%;
