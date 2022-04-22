@@ -62,7 +62,7 @@ const GameId: NextPage<GameProps> = ({
   const id = router.query.id
   const { fetchTokensAddress } = useERC20Multicall()
   const theme = useTheme()
-  const matchesMd = useMediaQuery(theme.breakpoints.up('md'))
+  const matchesMd = useMediaQuery(theme.breakpoints.up('md'), { noSsr: true })
 
   const [gameProject, setGameProject] = useState<GameEntity | null>(
     gameProjectData
