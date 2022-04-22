@@ -241,13 +241,11 @@ const GameId: NextPage<GameProps> = ({
                     </div>
                   )}
                 </div>
-                {matchesMd && (
+                {matchesMd && !isEmpty(gameProject.screenshots) && (
                   <div className={`${styles.right_col} ${styles.column}`}>
-                    {!isEmpty(gameProject.screenshots) && (
-                      <Screenshots
-                        screenshots={gameProject.screenshots}
-                      ></Screenshots>
-                    )}
+                    <Screenshots
+                      screenshots={gameProject.screenshots}
+                    ></Screenshots>
                   </div>
                 )}
               </div>
