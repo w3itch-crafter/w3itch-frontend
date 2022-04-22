@@ -122,11 +122,12 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
     <Fragment>
       <NextSeo title={'Browse games - w3itch.io'} />
       <Container>
-        {matchesMd && (
+        <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <FilterColumn>
             <GameFilter />
           </FilterColumn>
-        )}
+        </Box>
+
         <GridColumn>
           <BrowseHeader>
             <Box
