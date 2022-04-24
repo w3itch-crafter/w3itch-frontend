@@ -1,27 +1,22 @@
 import styled from '@emotion/styled'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Box } from '@mui/material'
-import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemText from '@mui/material/ListItemText'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Fragment, useState } from 'react'
+import { Dispatch, Fragment, SetStateAction } from 'react'
 import { NavLinks } from 'types'
 
 import { UserPanel } from './userPanel'
-const defaultLinks: NavLinks = [
-  { href: '/games', name: 'Browse Games' },
-  { href: '/dashboard', name: 'Dashboard' },
-]
-export declare interface NavbarProps {
-  navLinks?: NavLinks
-}
 
-export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
+export declare interface NavbarProps {
+  navLinks: NavLinks
+  setNavLinksDrawer: Dispatch<SetStateAction<boolean>>
+}
+export function Navbar({
+  navLinks = defaultLinks,
+  setNavLinksDrawer,
+}: NavbarProps) {
   const HeaderWidget = styled.nav`
     height: 50px;
     position: relative;
@@ -65,7 +60,6 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
   `
   const { NEXT_PUBLIC_URL } = process.env
   const router = useRouter()
-  const [navLinksDrawer, setNavLinksDrawer] = useState<boolean>(false)
   const isHref = (href: string) => router.route === href
 
   return (
@@ -99,23 +93,6 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
             >
               <MenuIcon />
             </IconButton>
-            <Drawer
-              anchor={'right'}
-              open={navLinksDrawer}
-              onClose={() => setNavLinksDrawer(false)}
-            >
-              <List>
-                {navLinks.map((nav) => (
-                  <Link href={nav.href} passHref key={nav.href}>
-                    <ListItem disablePadding>
-                      <ListItemButton>
-                        <ListItemText primary={nav.name} />
-                      </ListItemButton>
-                    </ListItem>
-                  </Link>
-                ))}
-              </List>
-            </Drawer>
           </Fragment>
         )}
       </PrimaryHeader>
