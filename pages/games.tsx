@@ -55,10 +55,12 @@ const SortByItems = [
     name: 'Most Recent',
   },
 ]
+// Reference SortOptionItem Components
 const sortValueDefault = (value: string) => {
   const defaultItem = SortByItems[0]
   return value === defaultItem.value ? '' : value
 }
+const SortKey = 'sortBy'
 
 const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   const Container = styled.div`
@@ -133,7 +135,7 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   const href = useCallback(
     (value: string) => {
       return `${router.route}${buildQuerySting(
-        'sortBy',
+        SortKey,
         value,
         router.query as Record<string, string>
       )}`
@@ -207,7 +209,7 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
                 },
               }}
             >
-              <StyledSortOptions sortKey="sortBy">
+              <StyledSortOptions sortKey={SortKey}>
                 {SortByItems.map((item) => (
                   <SortOptionItem
                     key={item.value}
