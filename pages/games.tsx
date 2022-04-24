@@ -3,10 +3,13 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Drawer from '@mui/material/Drawer'
+import MenuItem from '@mui/material/MenuItem'
 import Pagination from '@mui/material/Pagination'
+import Select from '@mui/material/Select'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { getGames, getTags } from 'api'
+import { SortIcon } from 'components/icons'
 import {
   FilterGroup,
   FilterGroupItem,
@@ -21,14 +24,40 @@ import { GetServerSideProps, NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { NextSeo } from 'next-seo'
-import { Fragment, useState } from 'react'
+import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { GameEntity, GameInfo, PaginationMeta, TagOption } from 'types'
 import { buildQuerySting, findTags, isEmptyObj } from 'utils'
-
 declare interface GamesProps {
   tags: TagOption[]
   games: GameInfo[]
   pageMeta: PaginationMeta<GameEntity>
+}
+
+const SortByItems = [
+  {
+    value: 'popular',
+    name: 'Popular',
+  },
+  {
+    value: 'new',
+    name: 'New & Popular',
+  },
+  {
+    value: 'sellers',
+    name: 'Top sellers',
+  },
+  {
+    value: 'rating',
+    name: 'Top rated',
+  },
+  {
+    value: 'updatedAt',
+    name: 'Most Recent',
+  },
+]
+const sortValueDefault = (value: string) => {
+  const defaultItem = SortByItems[0]
+  return value === defaultItem.value ? '' : value
 }
 
 const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
@@ -101,6 +130,21 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
     }
   `
   const router = useRouter()
+  const href = useCallback(
+    (value: string) => {
+      return `${router.route}${buildQuerySting(
+        'sortBy',
+        value,
+        router.query as Record<string, string>
+      )}`
+    },
+    [router]
+  )
+  const sortDefault = useMemo(() => {
+    return router.asPath === href(router.query.sortBy as string)
+      ? router.query.sortBy || SortByItems[0].value
+      : SortByItems[0].value
+  }, [router, href])
   const theme = useTheme()
   const matchesMd = useMediaQuery(theme.breakpoints.up('md'), { noSsr: true })
   const [filterDrawer, setFilterDrawer] = useState<boolean>(false)
@@ -155,13 +199,60 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
                 </Button>
               )}
             </Box>
-            <StyledSortOptions sortKey="sortBy">
-              <SortOptionItem name="Popular" />
-              <SortOptionItem value="new" name="New & Popular" />
-              <SortOptionItem value="sellers" name="Top sellers" />
-              <SortOptionItem value="rating" name="Top rated" />
-              <SortOptionItem value="updatedAt" name="Most Recent" />
-            </StyledSortOptions>
+            <Box
+              sx={{
+                display: {
+                  xs: 'none',
+                  sm: 'block',
+                },
+              }}
+            >
+              <StyledSortOptions sortKey="sortBy">
+                {SortByItems.map((item) => (
+                  <SortOptionItem
+                    key={item.value}
+                    value={sortValueDefault(item.value)}
+                    name={item.name}
+                  />
+                ))}
+              </StyledSortOptions>
+            </Box>
+
+            <Box
+              sx={{
+                display: {
+                  xs: 'inline-flex',
+                  sm: 'none',
+                },
+                padding: '0 20px',
+              }}
+            >
+              <Select
+                size="small"
+                value={sortDefault}
+                renderValue={(value) => (
+                  <Box display="flex" alignItems="center">
+                    <SortIcon
+                      sx={{ fontSize: 16, mr: 1 }}
+                      fill="currentColor"
+                      viewBox="0 0 455 488"
+                    ></SortIcon>
+                    Sort -{' '}
+                    {SortByItems.find((item) => item.value === value)?.name}
+                  </Box>
+                )}
+              >
+                {SortByItems.map((item) => (
+                  <Link
+                    key={item.value}
+                    href={href(sortValueDefault(item.value))}
+                    passHref
+                  >
+                    <MenuItem value={item.value}>{item.name}</MenuItem>
+                  </Link>
+                ))}
+              </Select>
+            </Box>
             <RelatedTags tags={tags} placeholder="Select a tag..." />
           </BrowseHeader>
           <GameGrid>
