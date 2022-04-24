@@ -16,6 +16,7 @@ export function Footer() {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
   `
   const PrimaryLink = styled.a`
     padding: 0 15px;

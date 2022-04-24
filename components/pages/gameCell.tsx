@@ -17,18 +17,19 @@ export declare interface GameCellProps {
 
 export function GameCell({
   game,
-  width = 316,
+  width,
   height = 250,
   small = false,
   collectionLink,
 }: GameCellProps) {
-  const Container = styled.div<Pick<Required<GameCellProps>, 'width'>>`
+  const Container = styled.div<Pick<GameCellProps, 'width'>>`
     display: inline-block;
     position: relative;
     vertical-align: top;
     text-align: left;
     margin: 0 20px 40px 0;
-    width: ${(p) => `${p.width}px`};
+    overflow: hidden;
+    width: ${(p) => (p.width ? `${p.width}px` : '100%')};
     &:hover .game-cell-tools {
       opacity: 1;
     }
@@ -37,16 +38,21 @@ export function GameCell({
     text-decoration: none;
   `
   const GameThumb = styled.div<
-    Pick<Required<GameCellProps>, 'width' | 'height'> & { cover: string }
+    Pick<GameCellProps, 'width' | 'height'> & { cover: string }
   >`
     background-image: ${(p) => `url(${p.cover})`};
     background-position: 50% 50%;
     background-size: cover;
+    background-color: #dedede;
     display: block;
     position: relative;
-    width: ${(p) => `${p.width}px`};
+    width: 100%;
     height: ${(p) => `${p.height}px`};
     box-shadow: 0 0 2px rgb(0 0 0 / 15%);
+    // @TODO need to be reused
+    @media screen and (max-width: 600px) {
+      height: 151px;
+    }
   `
   const GameCellTools = styled.div`
     position: absolute;

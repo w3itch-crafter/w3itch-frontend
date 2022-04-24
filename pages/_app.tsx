@@ -41,6 +41,11 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           <Fragment>
             <CssBaseline />
             <Head>
+              {/* Tip: Put the viewport head meta tag into _app.js rather than in _document.js if you need it. */}
+              <meta
+                name="viewport"
+                content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+              />
               <meta
                 httpEquiv="Content-Type"
                 content="text/html; charset=utf-8"
