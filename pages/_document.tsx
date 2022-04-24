@@ -65,6 +65,8 @@ export default function Document() {
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
+        <link href="https://twitter.com/w3itchio" rel="me" />
+        <link href="https://github.com/w3itch" rel="me" />
       </Head>
       <body>
         <Main />

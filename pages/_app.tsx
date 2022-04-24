@@ -46,6 +46,10 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
                 name="viewport"
                 content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
               />
+              <meta
+                httpEquiv="Content-Type"
+                content="text/html; charset=utf-8"
+              />
             </Head>
             <DefaultSeo {...SEO} />
             {getLayout(<Component {...pageProps} />)}
