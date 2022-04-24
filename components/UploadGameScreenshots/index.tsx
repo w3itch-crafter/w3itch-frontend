@@ -111,6 +111,7 @@ const UploadGameScreenshots: FC<Props> = ({
       <section {...getRootProps()}>
         <input {...getInputProps()} />
         <PrimaryButton
+          size={'small'}
           sx={{
             textTransform: 'capitalize',
           }}
@@ -120,6 +121,7 @@ const UploadGameScreenshots: FC<Props> = ({
         </PrimaryButton>
       </section>
       <PrimaryButton
+        size={'small'}
         sx={{
           marginTop: 1,
           textTransform: 'capitalize',

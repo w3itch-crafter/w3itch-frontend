@@ -131,6 +131,7 @@ const FormPricing: FC<FormPricingProps> = ({
             )}
 
             <PrimaryButton
+              size="small"
               onClick={() => setTtokenListDialogOpen(true)}
               variant="contained"
             >

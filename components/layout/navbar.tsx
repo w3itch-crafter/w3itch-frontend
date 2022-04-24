@@ -1,11 +1,18 @@
 import styled from '@emotion/styled'
+import MenuIcon from '@mui/icons-material/Menu'
+import { Box } from '@mui/material'
+import Drawer from '@mui/material/Drawer'
+import IconButton from '@mui/material/IconButton'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { NavLinks } from 'types'
 
 import { UserPanel } from './userPanel'
-
 const defaultLinks: NavLinks = [
   { href: '/games', name: 'Browse Games' },
   { href: '/dashboard', name: 'Dashboard' },
@@ -49,7 +56,7 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
     text-decoration: none;
     color: inherit;
   `
-  const HeaderButtons = styled.div`
+  const HeaderButtons = styled(Box)`
     margin-left: 10px;
     height: 100%;
     overflow: hidden;
@@ -58,6 +65,7 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
   `
   const { NEXT_PUBLIC_URL } = process.env
   const router = useRouter()
+  const [navLinksDrawer, setNavLinksDrawer] = useState<boolean>(false)
   const isHref = (href: string) => router.route === href
 
   return (
@@ -70,7 +78,7 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
         </HeaderTitle>
         {!isHref('/login') && (
           <Fragment>
-            <HeaderButtons>
+            <HeaderButtons sx={{ display: { xs: 'none', md: 'flex' } }}>
               {navLinks.map(({ href, name }) => (
                 <NavLink
                   href={href}
@@ -81,6 +89,33 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
               ))}
             </HeaderButtons>
             <UserPanel />
+            <IconButton
+              onClick={() => setNavLinksDrawer(true)}
+              size="small"
+              sx={{ ml: 2, display: { xs: 'inline-flex', md: 'none' } }}
+              aria-controls={'account-menu'}
+              aria-haspopup="true"
+              aria-expanded="true"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Drawer
+              anchor={'right'}
+              open={navLinksDrawer}
+              onClose={() => setNavLinksDrawer(false)}
+            >
+              <List>
+                {navLinks.map((nav) => (
+                  <Link href={nav.href} passHref key={nav.href}>
+                    <ListItem disablePadding>
+                      <ListItemButton>
+                        <ListItemText primary={nav.name} />
+                      </ListItemButton>
+                    </ListItem>
+                  </Link>
+                ))}
+              </List>
+            </Drawer>
           </Fragment>
         )}
       </PrimaryHeader>
