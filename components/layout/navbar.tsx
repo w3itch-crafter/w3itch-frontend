@@ -13,10 +13,7 @@ export declare interface NavbarProps {
   navLinks: NavLinks
   setNavLinksDrawer: Dispatch<SetStateAction<boolean>>
 }
-export function Navbar({
-  navLinks = defaultLinks,
-  setNavLinksDrawer,
-}: NavbarProps) {
+export function Navbar({ navLinks, setNavLinksDrawer }: NavbarProps) {
   const HeaderWidget = styled.nav`
     height: 50px;
     position: relative;
