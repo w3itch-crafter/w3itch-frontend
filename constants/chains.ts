@@ -213,6 +213,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     logoUrl: binanceLogoUrl,
     nativeCurrency: { name: 'Binance Coin', symbol: 'BNB', decimals: 18 },
   },
+  //@TODO Content needs to be modified
   [SupportedChainId.BSC_TESTNET]: {
     docs: 'https://docs.pancakeswap.finance/',
     explorer: 'https://testnet.bscscan.com/',

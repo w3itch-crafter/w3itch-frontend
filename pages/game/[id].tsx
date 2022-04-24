@@ -24,7 +24,6 @@ import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { NextSeo } from 'next-seo'
-import { OpenGraphMedia } from 'next-seo/lib/types'
 import { useCallback, useEffect, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
@@ -32,8 +31,7 @@ import { GameEntity } from 'types'
 import { Api } from 'types/Api'
 import { Community, PaymentMode } from 'types/enum'
 import { BackendError } from 'utils'
-
-import SEO from '../../next-seo.config'
+import { SeoDescription, SeoImages } from 'utils'
 
 const RenderMarkdown = dynamic(
   () => import('components/RenderMarkdown/index'),
@@ -64,7 +62,7 @@ const GameId: NextPage<GameProps> = ({
   const id = router.query.id
   const { fetchTokensAddress } = useERC20Multicall()
   const theme = useTheme()
-  const matchesMd = useMediaQuery(theme.breakpoints.up('md'))
+  const matchesMd = useMediaQuery(theme.breakpoints.up('md'), { noSsr: true })
 
   const [gameProject, setGameProject] = useState<GameEntity | null>(
     gameProjectData
@@ -159,17 +157,22 @@ const GameId: NextPage<GameProps> = ({
     <>
       <NextSeo
         title={gameTitle}
-        description={gameProject?.description}
+        description={SeoDescription(gameProject?.description)}
         openGraph={{
-          images: (gameProject
-            ? [gameProject.cover, gameProject.screenshots]
-                .flat(1)
-                .filter((image) => !!image)
-                .map((image) => ({
-                  url: image,
-                  alt: gameTitle,
-                }))
-            : SEO.openGraph.images) as OpenGraphMedia[],
+          /**
+           * Because most platforms use the last image address.
+           * An array of images (object) to be used by social media platforms, slack etc as a preview. If multiple supplied you can choose one when sharing. See Examples
+           */
+          images: SeoImages(
+            gameProject
+              ? ([
+                  gameProject.cover,
+                  gameProject.screenshots,
+                  gameProject.cover,
+                ] as string[])
+              : undefined,
+            gameTitle
+          ),
         }}
       />
       {gameProject ? (
@@ -238,13 +241,11 @@ const GameId: NextPage<GameProps> = ({
                     </div>
                   )}
                 </div>
-                {matchesMd && (
+                {matchesMd && !isEmpty(gameProject.screenshots) && (
                   <div className={`${styles.right_col} ${styles.column}`}>
-                    {!isEmpty(gameProject.screenshots) && (
-                      <Screenshots
-                        screenshots={gameProject.screenshots}
-                      ></Screenshots>
-                    )}
+                    <Screenshots
+                      screenshots={gameProject.screenshots}
+                    ></Screenshots>
                   </div>
                 )}
               </div>

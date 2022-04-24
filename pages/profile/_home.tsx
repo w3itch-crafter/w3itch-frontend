@@ -85,7 +85,6 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
                 small
                 key={`${game.id}-${index}`}
                 game={game}
-                width={306}
                 height={243}
               />
             ))}

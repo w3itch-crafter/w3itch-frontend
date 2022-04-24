@@ -51,6 +51,8 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
       },
     }
   )
+  // Adapt to IOS
+  const [gameFullscreen, setGameFullscreen] = useState<boolean>(false)
   const [runGameFlag, setRunGameFlag] = useState<boolean>(false)
   // hold unlock
   // false can play
@@ -70,7 +72,8 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
       }
       enterFullscreen()
     }
-  }, [enterFullscreen, exitFullscreen, isFullscreen])
+    setGameFullscreen(!gameFullscreen)
+  }, [enterFullscreen, exitFullscreen, isFullscreen, gameFullscreen])
 
   const handlePlay = useCallback(() => {
     if (gameProject.paymentMode === PaymentMode.PAID) {
@@ -117,7 +120,12 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
     >
       <Wrapper>
         {runGameFlag ? (
-          <div className={`${styles.iframe_wrapper}`} ref={ref}>
+          <div
+            className={`${styles.iframe_wrapper}${
+              gameFullscreen ? ' ' + styles.open : ''
+            }`}
+            ref={ref}
+          >
             <iframe
               style={{ width: '100%', height: '100%' }}
               frameBorder="0"
@@ -129,7 +137,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
               id="game_drop"
             ></iframe>
             <div className={styles.full_close} onClick={handleFullscreen}>
-              {isFullscreen ? (
+              {isFullscreen || gameFullscreen ? (
                 <FullscreenExitIcon></FullscreenExitIcon>
               ) : (
                 <FullscreenIcon></FullscreenIcon>

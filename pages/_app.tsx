@@ -5,6 +5,7 @@ import { Layout } from 'components/layout'
 import { AuthenticationProvider } from 'components/pages'
 import { WalletSupportedChainIds } from 'constants/index'
 import type { AppProps } from 'next/app'
+import Head from 'next/head'
 import { DefaultSeo } from 'next-seo'
 import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
@@ -39,6 +40,13 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         <SnackbarProvider maxSnack={3} autoHideDuration={5000}>
           <Fragment>
             <CssBaseline />
+            <Head>
+              {/* Tip: Put the viewport head meta tag into _app.js rather than in _document.js if you need it. */}
+              <meta
+                name="viewport"
+                content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+              />
+            </Head>
             <DefaultSeo {...SEO} />
             {getLayout(<Component {...pageProps} />)}
           </Fragment>
