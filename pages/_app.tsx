@@ -23,36 +23,35 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>)
 
   return (
-    <Fragment>
-      <Head>
-        {/** https://nextjs.org/docs/messages/no-document-viewport-meta */}
-        <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-      </Head>
-      <UseWalletProvider
-        connectors={{
-          injected: { chainId: WalletSupportedChainIds },
-          walletconnect: {
-            rpc: {
-              // 1: 'https://mainnet.infura.io/v3/a0d8c94ba9a946daa5ee149e52fa5ff1',
-              4: 'https://rinkeby.infura.io/v3/a0d8c94ba9a946daa5ee149e52fa5ff1',
-            },
-            bridge: 'https://bridge.walletconnect.org',
-            pollingInterval: 12000,
+    <UseWalletProvider
+      connectors={{
+        injected: { chainId: WalletSupportedChainIds },
+        walletconnect: {
+          rpc: {
+            // 1: 'https://mainnet.infura.io/v3/a0d8c94ba9a946daa5ee149e52fa5ff1',
+            4: 'https://rinkeby.infura.io/v3/a0d8c94ba9a946daa5ee149e52fa5ff1',
           },
-        }}
-      >
-        <AuthenticationProvider>
-          <SnackbarProvider maxSnack={3} autoHideDuration={5000}>
-            <Fragment>
-              <CssBaseline />
-              <DefaultSeo {...SEO} />
-              {getLayout(<Component {...pageProps} />)}
-            </Fragment>
-          </SnackbarProvider>
-        </AuthenticationProvider>
-      </UseWalletProvider>
-    </Fragment>
+          bridge: 'https://bridge.walletconnect.org',
+          pollingInterval: 12000,
+        },
+      }}
+    >
+      <AuthenticationProvider>
+        <SnackbarProvider maxSnack={3} autoHideDuration={5000}>
+          <Fragment>
+            <CssBaseline />
+            <Head>
+              <meta
+                httpEquiv="Content-Type"
+                content="text/html; charset=utf-8"
+              />
+            </Head>
+            <DefaultSeo {...SEO} />
+            {getLayout(<Component {...pageProps} />)}
+          </Fragment>
+        </SnackbarProvider>
+      </AuthenticationProvider>
+    </UseWalletProvider>
   )
 }
 
