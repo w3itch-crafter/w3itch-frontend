@@ -4,16 +4,20 @@ import { Box } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Dispatch, Fragment, SetStateAction } from 'react'
+import { Fragment, useState } from 'react'
 import { NavLinks } from 'types'
 
+import NavBarDrawer from './navBarDrawer'
 import { UserPanel } from './userPanel'
 
+const defaultLinks: NavLinks = [
+  { href: '/games', name: 'Browse Games' },
+  { href: '/dashboard', name: 'Dashboard' },
+]
 export declare interface NavbarProps {
-  navLinks: NavLinks
-  setNavLinksDrawer: Dispatch<SetStateAction<boolean>>
+  navLinks?: NavLinks
 }
-export function Navbar({ navLinks, setNavLinksDrawer }: NavbarProps) {
+export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
   const HeaderWidget = styled.nav`
     height: 50px;
     position: relative;
@@ -58,6 +62,7 @@ export function Navbar({ navLinks, setNavLinksDrawer }: NavbarProps) {
   const { NEXT_PUBLIC_URL } = process.env
   const router = useRouter()
   const isHref = (href: string) => router.route === href
+  const [navLinksDrawer, setNavLinksDrawer] = useState<boolean>(false)
 
   return (
     <HeaderWidget>
@@ -90,6 +95,14 @@ export function Navbar({ navLinks, setNavLinksDrawer }: NavbarProps) {
             >
               <MenuIcon />
             </IconButton>
+            {/* @TODO */}
+            {/* Don't know where re-render is triggered No transition effect */}
+            {/* Found that Navbar has too many definitions, put it on hold for the time being */}
+            <NavBarDrawer
+              navLinksDrawer={navLinksDrawer}
+              setNavLinksDrawer={setNavLinksDrawer}
+              navLinks={navLinks}
+            />
           </Fragment>
         )}
       </PrimaryHeader>
