@@ -78,7 +78,7 @@ const Login: NextPage = () => {
   const startGitHubLogin = useCallback(async () => {
     try {
       setHasStarted(true)
-      const oAuthUrl = await loginGitHub()
+      const oAuthUrl = await loginGitHub('/oauth')
       window.location.href = oAuthUrl
     } catch (error) {
       if (error instanceof Error) {

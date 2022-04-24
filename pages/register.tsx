@@ -166,7 +166,7 @@ const Register: NextPage = () => {
         await router.replace('/games')
       }
       if (registerMethod === 'github') {
-        const oAuthUrl = await signupGitHub(registerData.username)
+        const oAuthUrl = await signupGitHub(registerData.username, '/oauth')
         window.location.href = oAuthUrl
       }
     } catch (error) {

@@ -52,20 +52,25 @@ export async function loginWallet(
 
 async function githubAccountService(
   action: 'login' | 'signup',
-  username?: string
+  username?: string,
+  redirectUri?: string
 ): Promise<string> {
   const res = await backend.post<string>(`/accounts/github/${action}`, {
     username,
+    redirectUri,
   })
   return res.data
 }
 
-export async function signupGitHub(username: string): Promise<string> {
-  return await githubAccountService('signup', username)
+export async function signupGitHub(
+  username: string,
+  redirectUri?: string
+): Promise<string> {
+  return await githubAccountService('signup', username, redirectUri)
 }
 
-export async function loginGitHub(): Promise<string> {
-  return await githubAccountService('login')
+export async function loginGitHub(redirectUri?: string): Promise<string> {
+  return await githubAccountService('login', undefined, redirectUri)
 }
 
 export async function refresh(): Promise<UserEntity | null> {
