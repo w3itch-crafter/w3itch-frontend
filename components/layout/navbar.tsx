@@ -1,9 +1,13 @@
 import styled from '@emotion/styled'
+import MenuIcon from '@mui/icons-material/Menu'
+import { Box } from '@mui/material'
+import IconButton from '@mui/material/IconButton'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { NavLinks } from 'types'
 
+import NavBarDrawer from './navBarDrawer'
 import { UserPanel } from './userPanel'
 
 const defaultLinks: NavLinks = [
@@ -13,7 +17,6 @@ const defaultLinks: NavLinks = [
 export declare interface NavbarProps {
   navLinks?: NavLinks
 }
-
 export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
   const HeaderWidget = styled.nav`
     height: 50px;
@@ -49,7 +52,7 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
     text-decoration: none;
     color: inherit;
   `
-  const HeaderButtons = styled.div`
+  const HeaderButtons = styled(Box)`
     margin-left: 10px;
     height: 100%;
     overflow: hidden;
@@ -59,6 +62,7 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
   const { NEXT_PUBLIC_URL } = process.env
   const router = useRouter()
   const isHref = (href: string) => router.route === href
+  const [navLinksDrawer, setNavLinksDrawer] = useState<boolean>(false)
 
   return (
     <HeaderWidget>
@@ -70,7 +74,7 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
         </HeaderTitle>
         {!isHref('/login') && (
           <Fragment>
-            <HeaderButtons>
+            <HeaderButtons sx={{ display: { xs: 'none', md: 'flex' } }}>
               {navLinks.map(({ href, name }) => (
                 <NavLink
                   href={href}
@@ -81,6 +85,24 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
               ))}
             </HeaderButtons>
             <UserPanel />
+            <IconButton
+              onClick={() => setNavLinksDrawer(true)}
+              size="small"
+              sx={{ ml: 2, display: { xs: 'inline-flex', md: 'none' } }}
+              aria-controls={'account-menu'}
+              aria-haspopup="true"
+              aria-expanded="true"
+            >
+              <MenuIcon />
+            </IconButton>
+            {/* @TODO */}
+            {/* Don't know where re-render is triggered No transition effect */}
+            {/* Found that Navbar has too many definitions, put it on hold for the time being */}
+            <NavBarDrawer
+              navLinksDrawer={navLinksDrawer}
+              setNavLinksDrawer={setNavLinksDrawer}
+              navLinks={navLinks}
+            />
           </Fragment>
         )}
       </PrimaryHeader>

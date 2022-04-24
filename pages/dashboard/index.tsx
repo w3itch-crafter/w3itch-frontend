@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import { Box } from '@mui/material'
 import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack'
 import { deleteGameProject, getGamesMine } from 'api'
@@ -147,7 +148,15 @@ const HasGameProject: FC<HasGameProjectProps> = ({
           </a>
         </p>
       </div>
-      <div className={styles.right_col}></div>
+      <Box
+        sx={{
+          width: '430px',
+          display: {
+            xs: 'none',
+            md: 'block',
+          },
+        }}
+      ></Box>
     </div>
   )
 }

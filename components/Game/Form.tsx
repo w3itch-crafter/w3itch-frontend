@@ -542,7 +542,7 @@ const GameForm: FC<GameFormProps> = ({
       getValues('paymentMode') === PaymentMode.PAID
     ) {
       // execute only once
-      if (!currentSelectTokenChainIdFlag) {
+      if (!currentSelectTokenChainIdFlag && !isEmpty(gameProject?.prices[0])) {
         setCurrentSelectTokenChainId(gameProject?.prices[0].token.chainId)
         setCurrentSelectTokenChainIdFlag(true)
       }
@@ -1079,6 +1079,12 @@ const GameForm: FC<GameFormProps> = ({
                     variant="contained"
                     type="submit"
                     loading={submitLoading}
+                    sx={{
+                      width: {
+                        xs: '100%',
+                        sm: 'auto',
+                      },
+                    }}
                   >
                     {editorMode === EditorMode.CREATE
                       ? 'Save'
