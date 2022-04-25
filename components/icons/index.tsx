@@ -64,7 +64,12 @@ export declare interface IcoMoonIconProps {
 export function IcoMoonIcon({ name }: IcoMoonIconProps) {
   const Icon = styled.span``
 
-  return <Icon className={clsx('icon', `icon-${name}`)} />
+  return (
+    <Icon
+      className={clsx('icon', `icon-${name}`)}
+      aria-label={`icon-${name}`}
+    />
+  )
 }
 
 export const SortIcon = (props: SvgIconProps) => {
