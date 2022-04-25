@@ -31,7 +31,7 @@ import { GameEntity } from 'types'
 import { Api } from 'types/Api'
 import { Community, PaymentMode } from 'types/enum'
 import { BackendError } from 'utils'
-import { SeoDescription, SeoImages } from 'utils'
+import { SeoImages } from 'utils'
 
 const RenderMarkdown = dynamic(
   () => import('components/RenderMarkdown/index'),
@@ -157,7 +157,7 @@ const GameId: NextPage<GameProps> = ({
     <>
       <NextSeo
         title={gameTitle}
-        description={SeoDescription(gameProject?.description)}
+        description={gameProject?.subtitle}
         openGraph={{
           /**
            * Because most platforms use the last image address.
