@@ -15,9 +15,10 @@ declare interface ProfileHomeProps {
 
 const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
   const Container = styled.div`
-    max-width: 960px;
+    max-width: 1000px;
     margin: 0 auto;
     margin-bottom: 40px;
+    padding: 0 20px;
     & h1 {
       font-size: 48px;
       margin: 40px 0 5px 0;
@@ -29,12 +30,20 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
     font-size: 22px;
   `
   const GameColumn = styled.section`
-    margin-right: -20px;
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     gap: 40px 20px;
-    font-size: 22px;
+
+    font-size: 16px;
+    width: 100%;
+    display: grid;
+    gap: 20px 10px;
+    grid-template-columns: repeat(3, 1fr);
+    @media screen and (max-width: 900px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
     & .game-cell {
       margin: 0;
     }
@@ -80,11 +89,12 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
             <LinkGroup href={profileUrl} name={userInfoHeader} icon="globe" />
           </ProfileColumn>
           <GameColumn>
-            {games.map((game, index) => (
+            {[...games, ...games].map((game, index) => (
               <GameCell
                 small
                 key={`${game.id}-${index}`}
                 game={game}
+                // width={306}
                 height={243}
               />
             ))}
@@ -133,8 +143,8 @@ function Layout({ children, wildcard }: LayoutProps) {
     font-size: 12px;
   `
   const FooterInner = styled.div`
-    max-width: 960px;
-    padding: 10px 0;
+    max-width: 1000px;
+    padding: 10px 20px;
     margin: 0 auto;
   `
   const FooterNav = styled.a`

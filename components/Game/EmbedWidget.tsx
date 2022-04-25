@@ -40,6 +40,9 @@ interface Props {
 const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
   const { buyNow } = useBuyNow()
   const ref = useRef(null)
+  // Adapt to IOS
+  const [gameFullscreen, setGameFullscreen] = useState<boolean>(false)
+  const [runGameFlag, setRunGameFlag] = useState<boolean>(false)
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(
     ref,
     {
@@ -48,12 +51,11 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
         if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
           navigator.keyboard.unlock()
         }
+        setGameFullscreen(false)
       },
     }
   )
-  // Adapt to IOS
-  const [gameFullscreen, setGameFullscreen] = useState<boolean>(false)
-  const [runGameFlag, setRunGameFlag] = useState<boolean>(false)
+
   // hold unlock
   // false can play
   // true can't play

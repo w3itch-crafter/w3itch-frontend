@@ -19,6 +19,7 @@ import {
   SortOptionItem,
   SortOptions,
 } from 'components/pages'
+import { SortByItemDefault, SortByItems } from 'constants/index'
 import { genres } from 'data'
 import { GetServerSideProps, NextPage } from 'next'
 import Link from 'next/link'
@@ -27,38 +28,16 @@ import { NextSeo } from 'next-seo'
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { GameEntity, GameInfo, PaginationMeta, TagOption } from 'types'
 import { buildQuerySting, findTags, isEmptyObj } from 'utils'
+
 declare interface GamesProps {
   tags: TagOption[]
   games: GameInfo[]
   pageMeta: PaginationMeta<GameEntity>
 }
 
-const SortByItems = [
-  {
-    value: 'popular',
-    name: 'Popular',
-  },
-  {
-    value: 'new',
-    name: 'New & Popular',
-  },
-  {
-    value: 'sellers',
-    name: 'Top sellers',
-  },
-  {
-    value: 'rating',
-    name: 'Top rated',
-  },
-  {
-    value: 'updatedAt',
-    name: 'Most Recent',
-  },
-]
 // Reference SortOptionItem Components
 const sortValueDefault = (value: string) => {
-  const defaultItem = SortByItems[0]
-  return value === defaultItem.value ? '' : value
+  return value === SortByItemDefault.value ? '' : value
 }
 const SortKey = 'sortBy'
 
@@ -144,8 +123,8 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   )
   const sortDefault = useMemo(() => {
     return router.asPath === href(router.query.sortBy as string)
-      ? router.query.sortBy || SortByItems[0].value
-      : SortByItems[0].value
+      ? router.query.sortBy || SortByItemDefault.value
+      : SortByItemDefault.value
   }, [router, href])
   const theme = useTheme()
   const matchesMd = useMediaQuery(theme.breakpoints.up('md'), { noSsr: true })
