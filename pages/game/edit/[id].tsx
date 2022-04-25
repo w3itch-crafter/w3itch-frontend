@@ -41,6 +41,7 @@ const GameEdit: NextPage = () => {
     watch,
     formState,
     getValues,
+    trigger,
   } = useForm<Game>({
     resolver: resolverGame,
     defaultValues: defaultValue,
@@ -96,6 +97,7 @@ const GameEdit: NextPage = () => {
       watch={watch}
       formState={formState}
       getValues={getValues}
+      trigger={trigger}
       editorRef={editorRef}
       setEditorRef={setEditorRef}
     ></GameForm>
