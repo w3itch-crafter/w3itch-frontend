@@ -12,13 +12,19 @@ export const SeoDescription = (description?: string, length = 100) => {
   if (!description) {
     return ''
   }
-  const result =
-    description.length >= 100
-      ? description.slice(0, length - 3) + '...'
-      : description
+  try {
+    const result =
+      description.length >= 100
+        ? description.slice(0, length - 3) + '...'
+        : description
 
-  const regRule = /\n|\r\n/g
-  return result.replaceAll(regRule, '')
+    const regRule = /\n|\r\n/g
+    return result.replaceAll(regRule, '')
+  } catch (err) {
+    console.error('SeoDescription Error: ', err)
+    console.log('SeoDescription Result: ', description)
+    return ''
+  }
 }
 
 /**
