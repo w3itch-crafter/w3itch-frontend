@@ -1,15 +1,26 @@
+import styled from '@emotion/styled'
 import { FC } from 'react'
-import styles from 'styles/game/id.module.scss'
 
 interface Props {
   readonly screenshots: string[]
 }
-
+const Wrapper = styled.div`
+  box-sizing: border-box;
+  display: grid;
+  gap: 10px;
+`
+const Card = styled.a`
+  box-shadow: 0 0 1px rgb(0, 0, 0, 0.3);
+  display: inline-flex;
+  img {
+    width: 100%;
+  }
+`
 const Screenshots: FC<Props> = ({ screenshots }) => {
   return (
-    <div className={styles.screenshot_list}>
+    <Wrapper>
       {screenshots.map((screenshot, index) => (
-        <a
+        <Card
           key={`${index}-${screenshot}`}
           href={screenshot}
           target="_blank"
@@ -17,9 +28,9 @@ const Screenshots: FC<Props> = ({ screenshots }) => {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={screenshot} alt="screenshot" />
-        </a>
+        </Card>
       ))}
-    </div>
+    </Wrapper>
   )
 }
 

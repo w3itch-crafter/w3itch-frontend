@@ -1,3 +1,4 @@
+import { ethers } from 'ethers'
 import { NextPage } from 'next'
 import React from 'react'
 
@@ -213,4 +214,10 @@ export type Tokens = {
   logoURI: string
   keywords: ['uniswap', 'default']
   tokens: Token[]
+}
+
+export type TokenDetail = Token & {
+  readonly amount: string
+  readonly totalSupply: ethers.BigNumber
+  readonly balanceOf: ethers.BigNumber
 }

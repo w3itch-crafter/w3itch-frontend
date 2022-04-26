@@ -10,7 +10,17 @@ export function useTitle() {
       : 'Create a new project'
   }, [])
 
+  const gamePageTitle = useCallback(
+    (title?: string, username?: string): string => {
+      return title && username
+        ? `${title} | by ${username} | w3itch.io`
+        : 'Game - w3itch.io'
+    },
+    []
+  )
+
   return {
     createGamePageTitle,
+    gamePageTitle,
   }
 }
