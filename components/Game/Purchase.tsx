@@ -2,12 +2,14 @@ import styled from '@emotion/styled'
 import { Box } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { PrimaryButton } from 'components/CustomizedButtons'
+import { AuthenticationContext } from 'context'
 import { utils } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
 import { useBuyNow } from 'hooks/useBuyNow'
 import { isEmpty } from 'lodash'
 import Link from 'next/link'
-import { FC } from 'react'
+import { useSnackbar } from 'notistack'
+import { FC, useCallback, useContext } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { TokenDetail } from 'types'
 import { balanceDecimal, ExplorerDataType, getExplorerLink } from 'utils'
@@ -26,6 +28,39 @@ interface PurchaseProps {
 
 const Purchase: FC<PurchaseProps> = ({ pricesTokens, refresh }) => {
   const { buyNow } = useBuyNow()
+  const {
+    state: { user },
+  } = useContext(AuthenticationContext)
+  const { enqueueSnackbar } = useSnackbar()
+
+  const handleBuyNow = useCallback(
+    ({
+      chainId,
+      inputCurrency,
+      outputCurrency,
+    }: {
+      chainId: number
+      inputCurrency: string
+      outputCurrency: string
+    }) => {
+      if (user) {
+        buyNow({
+          chainId: chainId,
+          inputCurrency: inputCurrency,
+          outputCurrency: outputCurrency,
+        })
+      } else {
+        enqueueSnackbar('please sign in!', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'info',
+        })
+      }
+    },
+    [buyNow, enqueueSnackbar, user]
+  )
 
   return (
     <Box>
@@ -41,7 +76,7 @@ const Purchase: FC<PurchaseProps> = ({ pricesTokens, refresh }) => {
             >
               <PrimaryButton
                 onClick={() =>
-                  buyNow({
+                  handleBuyNow({
                     chainId: pricesToken.chainId,
                     inputCurrency: '',
                     outputCurrency: getAddress(pricesToken.address),

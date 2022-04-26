@@ -5,17 +5,17 @@ import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import { useFullscreen } from 'ahooks'
 import { gameProjectPlayer } from 'api'
 import BigNumber from 'bignumber.js'
+import { AuthenticationContext } from 'context'
 import { utils } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
 import { useBuyNow } from 'hooks/useBuyNow'
-import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
 import { isEmpty } from 'lodash'
-import { FC, useCallback, useEffect } from 'react'
+import { useSnackbar } from 'notistack'
+import { FC, useCallback, useContext, useEffect } from 'react'
 import { useRef, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
-import { GameEntity } from 'types'
-import { PriceEntity } from 'types'
+import { GameEntity, TokenDetail } from 'types'
 import { PaymentMode } from 'types/enum'
 import { balanceDecimal } from 'utils'
 
@@ -33,13 +33,17 @@ const Wrapper = styled.div`
 
 interface Props {
   readonly gameProject: GameEntity
-  readonly price: PriceEntity
-  readonly priceToken?: ERC20MulticallTokenResult
+  readonly pricesToken?: TokenDetail
 }
 
-const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
+const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   const { buyNow } = useBuyNow()
   const ref = useRef(null)
+  const {
+    state: { user },
+  } = useContext(AuthenticationContext)
+  const { enqueueSnackbar } = useSnackbar()
+
   // Adapt to IOS
   const [gameFullscreen, setGameFullscreen] = useState<boolean>(false)
   const [runGameFlag, setRunGameFlag] = useState<boolean>(false)
@@ -79,29 +83,39 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
 
   const handlePlay = useCallback(() => {
     if (gameProject.paymentMode === PaymentMode.PAID) {
-      if (holdUnlock) {
-        buyNow({
-          chainId: price.token.chainId,
-          inputCurrency: '',
-          outputCurrency: getAddress(price.token.address),
-        })
+      if (holdUnlock && pricesToken) {
+        if (user) {
+          buyNow({
+            chainId: pricesToken.chainId,
+            inputCurrency: '',
+            outputCurrency: getAddress(pricesToken.address),
+          })
+        } else {
+          enqueueSnackbar('please sign in!', {
+            anchorOrigin: {
+              vertical: 'top',
+              horizontal: 'center',
+            },
+            variant: 'info',
+          })
+        }
       } else {
         setRunGameFlag(true)
       }
     } else {
       setRunGameFlag(true)
     }
-  }, [gameProject, price, buyNow, holdUnlock])
+  }, [gameProject, buyNow, holdUnlock, pricesToken, user, enqueueSnackbar])
 
   const processHoldUnlock = useCallback(() => {
     if (gameProject.paymentMode === PaymentMode.PAID) {
-      if (isEmpty(priceToken) || !priceToken?.balanceOf) {
+      if (!pricesToken || isEmpty(pricesToken)) {
         return
       }
 
       const isUnlock = new BigNumber(
-        utils.formatUnits(priceToken.balanceOf, price.token.decimals)
-      ).gte(utils.formatUnits(price.amount, price.token.decimals))
+        utils.formatUnits(pricesToken.balanceOf, pricesToken.decimals)
+      ).gte(utils.formatUnits(pricesToken.amount, pricesToken.decimals))
 
       if (isUnlock) {
         setHoldUnlock(false)
@@ -109,7 +123,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
     } else {
       setHoldUnlock(false)
     }
-  }, [gameProject, price, priceToken])
+  }, [gameProject, pricesToken])
 
   useEffect(() => {
     processHoldUnlock()
@@ -153,12 +167,12 @@ const EmbedWidget: FC<Props> = ({ gameProject, price, priceToken }) => {
               className={`${stylesCommon.button} ${styles.button} ${styles.load_iframe_btn}`}
             >
               {holdUnlock ? (
-                isEmpty(price) ? (
+                isEmpty(pricesToken) || !pricesToken ? (
                   `Need to hold Token`
                 ) : (
                   `Need to hold ${balanceDecimal(
-                    utils.formatUnits(price.amount, price.token.decimals)
-                  )} ${price.token.symbol}`
+                    utils.formatUnits(pricesToken.amount, pricesToken.decimals)
+                  )} ${pricesToken.symbol}`
                 )
               ) : (
                 <>

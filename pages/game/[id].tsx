@@ -255,8 +255,8 @@ const GameId: NextPage<GameProps> = ({
             >
               <EmbedWidget
                 gameProject={gameProject}
-                price={gameProject.prices[0]}
-                priceToken={pricesTokens[0]}
+                // @TODO Temporarily support the first Token
+                pricesToken={pricesTokens[0]}
               />
               <div className={styles.columns}>
                 <div className={`${styles.left_col} ${styles.column}`}>
