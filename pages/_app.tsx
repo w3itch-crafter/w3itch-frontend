@@ -11,8 +11,13 @@ import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
 import { NextPageWithLayout } from 'types'
 import { UseWalletProvider } from 'use-wallet'
+import { getRpcUrl } from 'utils'
 
 import SEO from '../next-seo.config'
+
+export const WalletSupportedRpcUrls = WalletSupportedChainIds.map(
+  (chainId) => ({ [`${chainId}`]: getRpcUrl(chainId) })
+).reduce((result, current) => ({ ...result, ...current }), {})
 
 // import your default seo configuration
 type AppPropsWithLayout = AppProps & {
@@ -27,10 +32,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       connectors={{
         injected: { chainId: WalletSupportedChainIds },
         walletconnect: {
-          rpc: {
-            // 1: 'https://mainnet.infura.io/v3/a0d8c94ba9a946daa5ee149e52fa5ff1',
-            4: 'https://rinkeby.infura.io/v3/a0d8c94ba9a946daa5ee149e52fa5ff1',
-          },
+          rpc: WalletSupportedRpcUrls,
           bridge: 'https://bridge.walletconnect.org',
           pollingInterval: 12000,
         },
