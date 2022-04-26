@@ -51,6 +51,8 @@ interface BaseChainInfo {
   readonly logoUrl: string
   readonly label: string
   readonly name: string
+  readonly infuraNameKey?: string
+  readonly rpcUrl?: string
   readonly statusPage?: string
   readonly helpCenterUrl?: string
   readonly nativeCurrency: {
@@ -72,6 +74,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/',
     label: 'Ethereum',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.MAINNET],
+    infuraNameKey: 'mainnet',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   },
@@ -82,6 +85,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/',
     label: 'Rinkeby',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.RINKEBY],
+    infuraNameKey: 'rinkeby',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Rinkeby Ether', symbol: 'rETH', decimals: 18 },
   },
@@ -92,6 +96,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/',
     label: 'Ropsten',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.ROPSTEN],
+    infuraNameKey: 'ropsten',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Ropsten Ether', symbol: 'ropETH', decimals: 18 },
   },
@@ -102,6 +107,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/',
     label: 'Kovan',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.KOVAN],
+    infuraNameKey: 'kovan',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Kovan Ether', symbol: 'kovETH', decimals: 18 },
   },
@@ -112,6 +118,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/',
     label: 'Görli',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.GOERLI],
+    infuraNameKey: 'goerli',
     logoUrl: ethereumLogoUrl,
     nativeCurrency: { name: 'Görli Ether', symbol: 'görETH', decimals: 18 },
   },
@@ -123,6 +130,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/optimism/',
     label: 'Optimism',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.OPTIMISM],
+    infuraNameKey: 'optimism',
     logoUrl: optimismLogoUrl,
     statusPage: 'https://optimism.io/status',
     helpCenterUrl:
@@ -137,6 +145,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/optimism/',
     label: 'Optimistic Kovan',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.OPTIMISTIC_KOVAN],
+    infuraNameKey: 'optimism-kovan',
     logoUrl: optimismLogoUrl,
     statusPage: 'https://optimism.io/status',
     helpCenterUrl:
@@ -155,6 +164,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/arbitrum',
     label: 'Arbitrum',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.ARBITRUM_ONE],
+    infuraNameKey: 'arbitrum-mainnet',
     logoUrl: arbitrumLogoUrl,
     helpCenterUrl:
       'https://help.uniswap.org/en/collections/3137787-uniswap-on-arbitrum',
@@ -168,6 +178,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/arbitrum/',
     label: 'Arbitrum Rinkeby',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.ARBITRUM_RINKEBY],
+    infuraNameKey: 'arbitrum-rinkeby',
     logoUrl: arbitrumLogoUrl,
     helpCenterUrl:
       'https://help.uniswap.org/en/collections/3137787-uniswap-on-arbitrum',
@@ -185,6 +196,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/polygon/',
     label: 'Polygon',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.POLYGON],
+    infuraNameKey: 'polygon-mainnet',
     logoUrl: polygonLogoUrl,
     nativeCurrency: { name: 'Polygon Matic', symbol: 'MATIC', decimals: 18 },
   },
@@ -196,6 +208,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://info.uniswap.org/#/polygon/',
     label: 'Polygon Mumbai',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.POLYGON_MUMBAI],
+    infuraNameKey: 'polygon-mumbai',
     logoUrl: polygonLogoUrl,
     nativeCurrency: {
       name: 'Polygon Mumbai Matic',
@@ -210,6 +223,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://pancakeswap.finance/info/',
     label: 'Binance Smart Chain',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.BSC_MAINNET],
+    rpcUrl: 'https://bsc-dataseed.binance.org/',
     logoUrl: binanceLogoUrl,
     nativeCurrency: { name: 'Binance Coin', symbol: 'BNB', decimals: 18 },
   },
@@ -221,6 +235,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infoLink: 'https://pancakeswap.finance/info/',
     label: 'Binance Smart Chain Testnet',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.BSC_TESTNET],
+    rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
     logoUrl: binanceLogoUrl,
     nativeCurrency: { name: 'Binance Coin Test', symbol: 'tBNB', decimals: 18 },
   },

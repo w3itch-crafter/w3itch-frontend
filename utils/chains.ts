@@ -1,3 +1,4 @@
+import assert from 'assert'
 import {
   CHAIN_IDS_TO_NAMES,
   CHAIN_INFO,
@@ -36,6 +37,21 @@ export function getSwapURL(
   if (inputCurrency) query.set('inputCurrency', inputCurrency)
   if (outputCurrency) query.set('outputCurrency', outputCurrency)
   return `${swapLink}?${query.toString()}`
+}
+
+export function getRpcUrl(id: string | number): string | undefined {
+  const chainInfo = getChainInfoFromId(id)
+  if (!chainInfo) return undefined
+  if (chainInfo.infuraNameKey) {
+    const { NEXT_PUBLIC_INFURA_API_KEY } = process.env
+    assert(
+      NEXT_PUBLIC_INFURA_API_KEY,
+      new TypeError('NEXT_PUBLIC_INFURA_API_KEY not set')
+    )
+    return `https://${chainInfo.infuraNameKey}.infura.io/v3/${NEXT_PUBLIC_INFURA_API_KEY}`
+  }
+  if (chainInfo.rpcUrl) return chainInfo.rpcUrl
+  return undefined
 }
 
 /**
