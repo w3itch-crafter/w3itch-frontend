@@ -1,19 +1,25 @@
 import styled from '@emotion/styled'
-import { validateUsername } from 'api/users'
 import { RedButton } from 'components/buttons'
 import { InputCheckbox, InputRow } from 'components/forms'
-import { ConnectWallet, PageCard, StatHeader } from 'components/pages'
+import {
+  BackToSelect,
+  ConnectWallet,
+  LoginMethodChooser,
+  PageCard,
+  StatHeader,
+} from 'components/pages'
 import { AuthenticationContext } from 'context'
+import { useTopRightSnackbar } from 'hooks'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { Fragment, useContext, useEffect, useState } from 'react'
-import { isBackendError, RegisterData } from 'types'
+import { LoginMethod, RegisterData } from 'types'
 import { useWallet } from 'use-wallet'
 import { isEmptyObj, userHostUrl } from 'utils'
 
-import { signup } from '../api/account'
+import { signupGitHub, signupWallet } from '../api/account'
 
 declare type InvalidData = {
   [key in keyof RegisterData]: {
@@ -97,8 +103,12 @@ const Register: NextPage = () => {
   const Login = styled.a`
     color: #434343;
   `
+  const StyledBackToSelect = styled(BackToSelect)`
+    margin-bottom: 20px;
+  `
   const wallet = useWallet()
   const router = useRouter()
+  const showSnackbar = useTopRightSnackbar()
   const isConnected = wallet.isConnected()
   const defaultData: RegisterData = {
     address: '',
@@ -111,6 +121,7 @@ const Register: NextPage = () => {
     'https://username.w3itch.io/'
   )
   const [invalidData, setInvalidData] = useState<Partial<InvalidData>>({})
+  const [registerMethod, setRegisterMethod] = useState<LoginMethod | null>(null)
   const { dispatch } = useContext(AuthenticationContext)
   const handleRegisterData = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target
@@ -124,31 +135,51 @@ const Register: NextPage = () => {
   const checkRegisterData = async () => {
     const invalid: Partial<InvalidData> = {}
     const { username, address } = registerData
-    if (!address) {
+    if (registerMethod === 'metamask' && !address) {
       invalid.address = { message: 'Please connect wallet' }
     }
     if (!username) {
       invalid.username = { message: 'Username is required' }
-    } else {
-      const validate = await validateUsername(registerData.username)
-      if (isBackendError(validate)) {
-        invalid.username = {
-          message: validate.message?.toString().replace('username', 'Username'),
-        }
-      } else if (validate.isExists) {
-        invalid.username = { message: 'Username already exists' }
-      }
     }
 
     setInvalidData(invalid)
     return isEmptyObj(invalid)
   }
   const handleRegisterSubmit = async () => {
+    if (!registerMethod)
+      return showSnackbar('Please select a method', 'warning')
     const check = await checkRegisterData()
     if (!check) return
-    const { user, account } = await signup(wallet, registerData.username)
-    dispatch({ type: 'LOGIN', payload: { user, account } })
-    await router.replace('/games')
+    try {
+      if (registerMethod === 'metamask') {
+        showSnackbar(
+          'Your wallet will show you "Signature Request" message that you need to sign.'
+        )
+        showSnackbar(
+          'If your wallet not response for long time, please refresh this page.'
+        )
+        const { user, account } = await signupWallet(
+          wallet,
+          registerData.username
+        )
+        dispatch({ type: 'LOGIN', payload: { user, account } })
+        await router.replace('/games')
+      }
+      if (registerMethod === 'github') {
+        const oAuthUrl = await signupGitHub(registerData.username, '/oauth')
+        window.location.href = oAuthUrl
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        return showSnackbar(error.message, 'error')
+      }
+    }
+  }
+  const handleBackToSelect = () => {
+    setRegisterMethod(null)
+  }
+  const handleMethodChange = (method: LoginMethod) => {
+    setRegisterMethod(method)
   }
 
   useEffect(() => {
@@ -167,73 +198,93 @@ const Register: NextPage = () => {
           <StatHeader title="Create an account on w3itch.io" />
           <RegisterForm>
             <FormColumn>
-              {!isConnected && (
-                <ConnectWalletWrapper>
-                  <ConnectLabelWrapper>
-                    <ConnectLabel>Connect wallet</ConnectLabel>
-                    {invalidData.address && (
-                      <ConnectMessage>
-                        {invalidData.address.message}
-                      </ConnectMessage>
-                    )}
-                  </ConnectLabelWrapper>
-                  <ConnectWallet />
-                </ConnectWalletWrapper>
+              {registerMethod && (
+                <StyledBackToSelect onClick={handleBackToSelect} />
               )}
-              {isConnected && (
-                <InputRow
-                  disabled
-                  preview
-                  required
-                  label="Wallet address"
-                  name="address"
-                  type="text"
-                  value={registerData.address}
-                  onChange={handleRegisterData}
+              {!registerMethod && (
+                <LoginMethodChooser
+                  methodType="register"
+                  onChoose={handleMethodChange}
                 />
               )}
-              <InputRow
-                autoFocus
-                required
-                label="Username"
-                name="username"
-                type="text"
-                invalid={invalidData.username}
-                value={registerData.username}
-                onChange={handleRegisterData}
-              />
-              <InputRow
-                disabled
-                preview
-                center
-                label="Your profile page will be"
-                type="text"
-                placeholder="https://username.w3itch.io/"
-                value={profileUrl}
-              />
-              <UserConfigurator>
-                <strong>About you</strong>
-                <InputCheckbox
-                  label="I'm interested in playing or downloading games on w3itch.io"
-                  name="gamer"
-                  checked={registerData.gamer}
-                  onChange={handleRegisterData}
-                />
-                <InputCheckbox
-                  label="I'm interested in distributing content on w3itch.io"
-                  name="developer"
-                  checked={registerData.developer}
-                  onChange={handleRegisterData}
-                />
-                <p>
-                  You can change your responses to these questions later, they
-                  are used to hint w3itch.io in how it should present itself to
-                  you.
-                </p>
-              </UserConfigurator>
+              {registerMethod === 'metamask' && (
+                <Fragment>
+                  {!isConnected && (
+                    <ConnectWalletWrapper>
+                      <ConnectLabelWrapper>
+                        <ConnectLabel>Connect wallet</ConnectLabel>
+                        {invalidData.address && (
+                          <ConnectMessage>
+                            {invalidData.address.message}
+                          </ConnectMessage>
+                        )}
+                      </ConnectLabelWrapper>
+                      <ConnectWallet />
+                    </ConnectWalletWrapper>
+                  )}
+                  {isConnected && (
+                    <InputRow
+                      disabled
+                      preview
+                      required
+                      label="You're registering with the wallet address"
+                      name="address"
+                      type="text"
+                      value={registerData.address}
+                      onChange={handleRegisterData}
+                    />
+                  )}
+                </Fragment>
+              )}
+              {registerMethod && (
+                <Fragment>
+                  <InputRow
+                    autoFocus
+                    required
+                    label="Username"
+                    name="username"
+                    type="text"
+                    invalid={invalidData.username}
+                    value={registerData.username}
+                    onChange={handleRegisterData}
+                  />
+                  <InputRow
+                    disabled
+                    preview
+                    center
+                    label="Your profile page will be"
+                    type="text"
+                    placeholder="https://username.w3itch.io/"
+                    value={profileUrl}
+                  />
+                  <UserConfigurator>
+                    <strong>About you</strong>
+                    <InputCheckbox
+                      label="I'm interested in playing or downloading games on w3itch.io"
+                      name="gamer"
+                      checked={registerData.gamer}
+                      onChange={handleRegisterData}
+                    />
+                    <InputCheckbox
+                      label="I'm interested in distributing content on w3itch.io"
+                      name="developer"
+                      checked={registerData.developer}
+                      onChange={handleRegisterData}
+                    />
+                    <p>
+                      You can change your responses to these questions later,
+                      they are used to hint w3itch.io in how it should present
+                      itself to you.
+                    </p>
+                  </UserConfigurator>
+                </Fragment>
+              )}
               <Buttons>
-                <RedButton onClick={() => handleRegisterSubmit()}>
-                  Create account
+                <RedButton
+                  disabled={!registerMethod}
+                  onClick={() => handleRegisterSubmit()}
+                >
+                  {registerMethod ? 'Create account' : 'Select a method'}
                 </RedButton>
                 <LoginMessage>
                   or already have an account?{' '}

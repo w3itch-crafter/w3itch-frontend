@@ -177,6 +177,8 @@ export declare type TagOption = Omit<TagEntity, 'createdAt' | 'updatedAt'>
 export declare type NavLink = { href: string; name: string }
 export declare type NavLinks = NavLink[]
 
+export declare type LoginMethod = 'metamask' | 'github'
+
 interface Keyboard {
   lock(keyCodes?: Iterable<string>): Promise<void>
   unlock(): void

@@ -178,7 +178,12 @@ export function GameCell({
     <Container className="game-cell" width={width}>
       <Link href={link} passHref>
         <GameThumbLink>
-          <GameThumb cover={cover} width={width} height={height} />
+          <GameThumb
+            cover={cover}
+            width={width}
+            height={height}
+            aria-label="Game Thumb"
+          />
         </GameThumbLink>
       </Link>
       {collectionLink && (

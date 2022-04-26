@@ -1,7 +1,13 @@
 import styled from '@emotion/styled'
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon'
 import clsx from 'clsx'
-import Image from 'next/image'
+import NextImage from 'next/image'
+
+const Image = styled(NextImage)`
+  * {
+    user-select: none;
+  }
+`
 
 export declare interface IconProps {
   size: number
@@ -29,6 +35,28 @@ export function WalletConnectIcon({ size }: IconProps) {
   )
 }
 
+export function EthereumIcon({ size }: IconProps) {
+  return (
+    <Image
+      src="/icons/ethereum-eth-logo.svg"
+      alt="Ethereum ETH Icon"
+      width={`${size}px`}
+      height={`${size}px`}
+    />
+  )
+}
+
+export function GitHubIcon({ size }: IconProps) {
+  return (
+    <Image
+      src="/icons/github-logo.svg"
+      alt="GitHub Icon"
+      width={`${size}px`}
+      height={`${size}px`}
+    />
+  )
+}
+
 export declare interface IcoMoonIconProps {
   name: string
 }
@@ -36,7 +64,12 @@ export declare interface IcoMoonIconProps {
 export function IcoMoonIcon({ name }: IcoMoonIconProps) {
   const Icon = styled.span``
 
-  return <Icon className={clsx('icon', `icon-${name}`)} />
+  return (
+    <Icon
+      className={clsx('icon', `icon-${name}`)}
+      aria-label={`icon-${name}`}
+    />
+  )
 }
 
 export const SortIcon = (props: SvgIconProps) => {
