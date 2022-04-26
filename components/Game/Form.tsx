@@ -24,6 +24,7 @@ import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
 const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
+import { useDebounceFn } from 'ahooks'
 import {
   createGame,
   gameValidate,
@@ -61,6 +62,7 @@ import {
   UseFormHandleSubmit,
   UseFormRegister,
   UseFormSetValue,
+  UseFormTrigger,
   UseFormWatch,
 } from 'react-hook-form'
 import { GameEntity, Token } from 'types'
@@ -96,6 +98,7 @@ interface GameFormProps {
   readonly watch: UseFormWatch<Game>
   readonly formState: FormState<Game>
   readonly getValues: UseFormGetValues<Game>
+  readonly trigger: UseFormTrigger<Game>
   readonly editorRef: MutableRefObject<ToastUiEditor> | undefined
   setEditorRef: Dispatch<
     SetStateAction<MutableRefObject<ToastUiEditor> | undefined>
@@ -115,6 +118,7 @@ const GameForm: FC<GameFormProps> = ({
   watch,
   formState,
   getValues,
+  trigger,
   editorRef,
   setEditorRef,
 }) => {
@@ -158,6 +162,7 @@ const GameForm: FC<GameFormProps> = ({
   const { errors } = formState
   const watchPaymentMode = watch('paymentMode')
 
+  // console.log(watch('description'))
   // console.log(watch('paymentMode'))
   // console.log(watch('genre'))
   // console.log('errors', errors)
@@ -526,12 +531,22 @@ const GameForm: FC<GameFormProps> = ({
     [setValue]
   )
 
-  const handleDescription = useCallback(() => {
+  const { run: handleDescriptionTrigger } = useDebounceFn(
+    async () => {
+      await trigger('description')
+    },
+    {
+      wait: 800,
+    }
+  )
+
+  const handleDescription = useCallback(async () => {
     if (editorRef) {
       const description = editorRef.current?.getInstance().getMarkdown()
       setValue('description', trim(description))
     }
-  }, [editorRef, setValue])
+    await handleDescriptionTrigger()
+  }, [editorRef, setValue, handleDescriptionTrigger])
 
   // watch current token fill data
   // paymentMode
@@ -829,9 +844,10 @@ const GameForm: FC<GameFormProps> = ({
                           }
                         </section>
                         <UploadGame
-                          setFile={(file) =>
+                          setFile={async (file) => {
                             handleGameFile(file as File | undefined)
-                          }
+                            await trigger('gameName')
+                          }}
                         />
                         <TextField
                           style={{
@@ -1021,13 +1037,16 @@ const GameForm: FC<GameFormProps> = ({
                   </div>
                   <div className={`misc ${styles.right_col}`}>
                     <div className={styles.simulation_input}>
-                      <FormControl fullWidth error={Boolean(errors.gameName)}>
+                      <FormControl fullWidth error={Boolean(errors.cover)}>
                         <div className={styles.game_edit_cover_uploader_widget}>
                           <UploadGameCover
                             editorMode={editorMode}
                             getValues={getValues}
                             watch={watch}
-                            setFile={(file) => handleCoverValue(file as File)}
+                            setFile={async (file) => {
+                              handleCoverValue(file as File)
+                              await trigger('cover')
+                            }}
                           />
                           <p className={`${styles.sub} instructions`}>
                             The cover image is used whenever w3itch.io wants to
@@ -1067,8 +1086,9 @@ const GameForm: FC<GameFormProps> = ({
                         editorMode={editorMode}
                         getValues={getValues}
                         watch={watch}
-                        setFiles={(files) => {
+                        setFiles={async (files) => {
                           handleScreenshots(files as File[] | undefined)
+                          await trigger('screenshots')
                         }}
                       />
                     </section>

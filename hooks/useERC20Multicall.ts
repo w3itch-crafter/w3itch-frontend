@@ -44,13 +44,14 @@ export function useERC20Multicall() {
   const account = isAddress(accountInfo?.accountId || '')
     ? getAddress(accountInfo?.accountId || '')
     : ''
-  console.log('useERC20Multicall account', account)
 
   const fetchTokensAddress = useCallback(
     async (
       address: string[],
       chainId: SupportedChainId
     ): Promise<ERC20MulticallResult[] | undefined> => {
+      console.log('useERC20Multicall account', account)
+
       if (!address.length) {
         return
       }

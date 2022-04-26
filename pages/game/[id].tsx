@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { useMount } from 'ahooks'
+import { useInterval, useMount } from 'ahooks'
 import {
   fetchGameRatingsCount,
   fetchGameRatingsMine,
@@ -12,26 +12,24 @@ import Download from 'components/Game/Download'
 import EmbedWidget from 'components/Game/EmbedWidget'
 import GameRating from 'components/Game/GameRating'
 import MoreInformation from 'components/Game/MoreInformation'
-import Purchase from 'components/Game/Purchase'
 import Screenshots from 'components/Game/Screenshots'
 import UserTools from 'components/Game/UserTools'
-import {
-  ERC20MulticallTokenResult,
-  useERC20Multicall,
-} from 'hooks/useERC20Multicall'
-import { isEmpty } from 'lodash'
+import { useERC20Multicall } from 'hooks/useERC20Multicall'
+import { useTitle } from 'hooks/useTitle'
+import { groupBy, isEmpty } from 'lodash'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { NextSeo } from 'next-seo'
+import { useSnackbar } from 'notistack'
 import { useCallback, useEffect, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
-import { GameEntity } from 'types'
+import { GameEntity, TokenDetail } from 'types'
 import { Api } from 'types/Api'
 import { Community, PaymentMode } from 'types/enum'
 import { BackendError } from 'utils'
-import { SeoDescription, SeoImages } from 'utils'
+import { SeoImages } from 'utils'
 
 const RenderMarkdown = dynamic(
   () => import('components/RenderMarkdown/index'),
@@ -40,6 +38,10 @@ const RenderMarkdown = dynamic(
 const CommentsDisqus = dynamic(() => import('components/Game/CommentsDisqus'), {
   ssr: false,
 })
+const Purchase = dynamic(() => import('components/Game/Purchase'), {
+  ssr: false,
+})
+const PollingTime = 20 * 1000
 
 declare interface GameProps {
   readonly gameProjectData: GameEntity | null
@@ -62,8 +64,10 @@ const GameId: NextPage<GameProps> = ({
   const id = router.query.id
   const { fetchTokensAddress } = useERC20Multicall()
   const theme = useTheme()
+  const { gamePageTitle } = useTitle()
+  const { enqueueSnackbar } = useSnackbar()
+  const [interval, setInterval] = useState<number | undefined>(PollingTime)
   const matchesMd = useMediaQuery(theme.breakpoints.up('md'), { noSsr: true })
-
   const [gameProject, setGameProject] = useState<GameEntity | null>(
     gameProjectData
   )
@@ -76,14 +80,10 @@ const GameId: NextPage<GameProps> = ({
   const [gameRatingMine, setGameRatingMine] =
     useState<Api.GameProjectsRatingResponse>()
 
-  const gameTitle = gameProject
-    ? `${gameProject.title} | by ${gameProject.username} | w3itch.io`
-    : 'Game - w3itch.io'
+  const gameTitle = gamePageTitle(gameProject?.title, gameProject?.username)
 
   // hold unlock token
-  const [pricesTokens, setPricesTokens] = useState<ERC20MulticallTokenResult[]>(
-    []
-  )
+  const [pricesTokens, setPricesTokens] = useState<TokenDetail[]>([])
 
   const fetchGameRatingMineFn = useCallback(async () => {
     try {
@@ -118,23 +118,48 @@ const GameId: NextPage<GameProps> = ({
     }
   }, [id])
 
+  /**
+   * support...
+   * polling
+   * visibilitychange
+   * click refresh
+   */
   const fetchPricesToken = useCallback(async () => {
     if (gameProject && gameProject.paymentMode === PaymentMode.PAID) {
-      // map address
-      const address = gameProject.prices.map((price) => price.token.address)
-      // @TODO Need to judge multiple chains
-      const tokensResponse = await fetchTokensAddress(
-        address,
-        gameProject.prices[0].token.chainId
-      )
-      console.log('tokensResponse', tokensResponse)
-      const tokens: ERC20MulticallTokenResult[] = (tokensResponse || []).map(
-        (token) => ({
-          address: token.address,
-          ...token.data,
-        })
-      )
-      setPricesTokens(tokens)
+      // group by chainId
+      const tokenGroup = groupBy(gameProject.prices, 'chainId')
+      // console.log('tokenGroup', tokenGroup)
+
+      const tokensList: TokenDetail[] = []
+
+      for (const key in tokenGroup) {
+        if (Object.prototype.hasOwnProperty.call(tokenGroup, key)) {
+          const prices = tokenGroup[key]
+          const addresses = prices.map((price) => price.token.address)
+          const chainId = Number(prices[0].token.chainId)
+          const amount = prices[0].amount
+
+          const tokensResponse = await fetchTokensAddress(addresses, chainId)
+          // console.log('tokensResponse', tokensResponse)
+
+          const tokens: TokenDetail[] = (tokensResponse || []).map((token) => ({
+            amount: amount,
+            chainId: chainId,
+            address: token.address,
+            name: token.data.name,
+            symbol: token.data.symbol,
+            decimals: token.data.decimals,
+            // @TODO need token logo
+            logoURI: '',
+            totalSupply: token.data.totalSupply,
+            balanceOf: token.data.balanceOf,
+          }))
+
+          tokensList.push(...tokens)
+        }
+      }
+
+      setPricesTokens(tokensList)
     }
   }, [fetchTokensAddress, gameProject])
 
@@ -145,19 +170,61 @@ const GameId: NextPage<GameProps> = ({
     fetchGameRatingMineFn()
   }, [fetchGameProjectFn, fetchGameRatingMineFn, fetchGameRatingsCountFn])
 
+  // prices token
+  const refreshPricesToken = useCallback(async () => {
+    enqueueSnackbar('Get wallet balance...', {
+      anchorOrigin: {
+        vertical: 'top',
+        horizontal: 'center',
+      },
+      variant: 'info',
+    })
+    await fetchPricesToken()
+    enqueueSnackbar('Finish', {
+      anchorOrigin: {
+        vertical: 'top',
+        horizontal: 'center',
+      },
+      variant: 'success',
+    })
+  }, [fetchPricesToken, enqueueSnackbar])
+
+  // handle visibilitychange
+  const handleVisiblityChange = useCallback(async () => {
+    if (document.hidden) {
+      setInterval(undefined)
+    } else {
+      await fetchPricesToken()
+      setInterval(PollingTime)
+    }
+  }, [fetchPricesToken])
+
+  useInterval(async () => {
+    // console.log('useInterval', interval)
+    if (!document.hidden) {
+      await fetchPricesToken()
+    }
+  }, interval)
+
   useMount(() => {
     fetchGameRatingMineFn()
   })
 
   useEffect(() => {
     fetchPricesToken()
-  }, [fetchPricesToken])
+
+    document.addEventListener('visibilitychange', handleVisiblityChange)
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisiblityChange)
+    }
+  }, [fetchPricesToken, handleVisiblityChange])
 
   return (
     <>
       <NextSeo
         title={gameTitle}
-        description={SeoDescription(gameProject?.description)}
+        description={gameProject?.subtitle}
         openGraph={{
           /**
            * Because most platforms use the last image address.
@@ -188,8 +255,8 @@ const GameId: NextPage<GameProps> = ({
             >
               <EmbedWidget
                 gameProject={gameProject}
-                price={gameProject.prices[0]}
-                priceToken={pricesTokens[0]}
+                // @TODO Temporarily support the first Token
+                pricesToken={pricesTokens[0]}
               />
               <div className={styles.columns}>
                 <div className={`${styles.left_col} ${styles.column}`}>
@@ -217,8 +284,8 @@ const GameId: NextPage<GameProps> = ({
                     !isEmpty(gameProject.prices) && (
                       <div className={styles.row}>
                         <Purchase
-                          price={gameProject.prices[0]}
-                          priceToken={pricesTokens[0]}
+                          pricesTokens={pricesTokens}
+                          refresh={refreshPricesToken}
                         />
                       </div>
                     )

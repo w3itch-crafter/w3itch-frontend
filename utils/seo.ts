@@ -9,6 +9,7 @@ import SEO from '../next-seo.config'
  * @returns
  */
 export const SeoDescription = (description?: string, length = 100) => {
+  // @TODO Using the description, replaceAll is wrong. replaceAll is not a function
   if (!description) {
     return ''
   }
