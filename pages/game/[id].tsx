@@ -149,7 +149,7 @@ const GameId: NextPage<GameProps> = ({
             name: token.data.name,
             symbol: token.data.symbol,
             decimals: token.data.decimals,
-            // @TODO need token
+            // @TODO need token logo
             logoURI: '',
             totalSupply: token.data.totalSupply,
             balanceOf: token.data.balanceOf,
