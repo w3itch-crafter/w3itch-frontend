@@ -11,8 +11,8 @@ const Wrapper = styled.div`
 `
 const Card = styled.a`
   box-shadow: 0 0 1px rgb(0, 0, 0, 0.3);
-  display: inline-flex;
   img {
+    display: block;
     width: 100%;
   }
 `
