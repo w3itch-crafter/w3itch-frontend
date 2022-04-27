@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import { Box } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { PrimaryButton } from 'components/CustomizedButtons'
+import { CHAIN_INFO } from 'constants'
 import { AuthenticationContext } from 'context'
 import { utils } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
@@ -16,7 +17,6 @@ import { balanceDecimal, ExplorerDataType, getExplorerLink } from 'utils'
 
 const ExplorerLink = styled.a`
   font-size: 120%;
-  margin-right: 6px;
   font-weight: bold;
   color: inherit;
 `
@@ -90,9 +90,9 @@ const Purchase: FC<PurchaseProps> = ({ pricesTokens, refresh }) => {
               </PrimaryButton>
               <Typography
                 sx={{
-                  marginLeft: '10px',
                   display: 'inline-flex',
                   alignItems: 'center',
+                  marginLeft: 1,
                 }}
                 component="span"
               >
@@ -114,6 +114,17 @@ const Purchase: FC<PurchaseProps> = ({ pricesTokens, refresh }) => {
                     {pricesToken.symbol}
                   </ExplorerLink>
                 </Link>
+                <Typography
+                  component="span"
+                  sx={{
+                    color: 'inherit',
+                    opacity: 0.9,
+                    marginLeft: 0.5,
+                    marginRight: 0.5,
+                  }}
+                >
+                  ({CHAIN_INFO[pricesToken.chainId].label})
+                </Typography>
                 <Typography
                   component="span"
                   sx={{
