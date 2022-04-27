@@ -231,7 +231,7 @@ export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.BSC_TESTNET]: {
     docs: 'https://docs.pancakeswap.finance/',
     explorer: 'https://testnet.bscscan.com/',
-    swapLink: 'https://pancakeswap.finance/swap',
+    swapLink: 'https://pancakeswap.ibhagwan.workers.dev/#/swap',
     infoLink: 'https://pancakeswap.finance/info/',
     label: 'Binance Smart Chain Testnet',
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.BSC_TESTNET],

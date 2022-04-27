@@ -243,94 +243,96 @@ const GameId: NextPage<GameProps> = ({
         }}
       />
       {gameProject ? (
-        <div className={`main ${styles.wrapper}`}>
-          <div
-            className={`${stylesCommon.inner_column} ${styles.inner_column} ${styles.size_large} family_lato`}
-            id="inner_column"
-            style={{ minHeight: '767px' }}
-          >
+        <>
+          <UserTools
+            setGameRatingDialogOpen={setGameRatingDialogOpen}
+            gameRatingMine={gameRatingMine}
+          />
+          <div className={`main ${styles.wrapper}`}>
             <div
-              id="view_html_game_page_667"
-              className={`${styles.view_html_game_page} ${styles.view_game_page} page_widget direct_download ready`}
+              className={`${stylesCommon.inner_column} ${styles.inner_column} ${styles.size_large} family_lato`}
+              id="inner_column"
+              style={{ minHeight: '767px' }}
             >
-              <EmbedWidget
-                gameProject={gameProject}
-                // @TODO Temporarily support the first Token
-                pricesToken={pricesTokens[0]}
-              />
-              <div className={styles.columns}>
-                <div className={`${styles.left_col} ${styles.column}`}>
-                  <div
-                    className={`${styles.formatted_description} ${styles.user_formatted}`}
-                  >
-                    <RenderMarkdown md={gameProject.description} />
-                  </div>
+              <div
+                id="view_html_game_page_667"
+                className={`${styles.view_html_game_page} ${styles.view_game_page} page_widget direct_download ready`}
+              >
+                <EmbedWidget
+                  gameProject={gameProject}
+                  // @TODO Temporarily support the first Token
+                  pricesToken={pricesTokens[0]}
+                />
+                <div className={styles.columns}>
+                  <div className={`${styles.left_col} ${styles.column}`}>
+                    <div
+                      className={`${styles.formatted_description} ${styles.user_formatted}`}
+                    >
+                      <RenderMarkdown md={gameProject.description} />
+                    </div>
 
-                  {!matchesMd && !isEmpty(gameProject.screenshots) && (
+                    {!matchesMd && !isEmpty(gameProject.screenshots) && (
+                      <div className={styles.row}>
+                        <Screenshots
+                          screenshots={gameProject.screenshots}
+                        ></Screenshots>
+                      </div>
+                    )}
+
                     <div className={styles.row}>
+                      <MoreInformation
+                        gameProject={gameProject}
+                        gameRatingsCount={gameRatingsCount}
+                      />
+                    </div>
+                    {gameProject.paymentMode === PaymentMode.PAID ? (
+                      !isEmpty(gameProject.prices) && (
+                        <div className={styles.row}>
+                          <Purchase
+                            pricesTokens={pricesTokens}
+                            refresh={refreshPricesToken}
+                          />
+                        </div>
+                      )
+                    ) : gameProject.paymentMode === PaymentMode.FREE ? (
+                      <div className={styles.row}>
+                        <Donation
+                          donationAddress={gameProject.donationAddress || ''}
+                        />
+                      </div>
+                    ) : null}
+
+                    <div className={styles.row}>
+                      <Download gameProject={gameProject} />
+                    </div>
+
+                    {gameProject.community === Community.DISQUS && (
+                      <div className={styles.game_comments_widget}>
+                        <h2 className={styles.row_title}>Comments</h2>
+                        <CommentsDisqus title={gameProject.title} />
+                      </div>
+                    )}
+                  </div>
+                  {matchesMd && !isEmpty(gameProject.screenshots) && (
+                    <div className={`${styles.right_col} ${styles.column}`}>
                       <Screenshots
                         screenshots={gameProject.screenshots}
                       ></Screenshots>
                     </div>
                   )}
-
-                  <div className={styles.row}>
-                    <MoreInformation
-                      gameProject={gameProject}
-                      gameRatingsCount={gameRatingsCount}
-                    />
-                  </div>
-                  {gameProject.paymentMode === PaymentMode.PAID ? (
-                    !isEmpty(gameProject.prices) && (
-                      <div className={styles.row}>
-                        <Purchase
-                          pricesTokens={pricesTokens}
-                          refresh={refreshPricesToken}
-                        />
-                      </div>
-                    )
-                  ) : gameProject.paymentMode === PaymentMode.FREE ? (
-                    <div className={styles.row}>
-                      <Donation
-                        donationAddress={gameProject.donationAddress || ''}
-                      />
-                    </div>
-                  ) : null}
-
-                  <div className={styles.row}>
-                    <Download gameProject={gameProject} />
-                  </div>
-
-                  {gameProject.community === Community.DISQUS && (
-                    <div className={styles.game_comments_widget}>
-                      <h2 className={styles.row_title}>Comments</h2>
-                      <CommentsDisqus title={gameProject.title} />
-                    </div>
-                  )}
                 </div>
-                {matchesMd && !isEmpty(gameProject.screenshots) && (
-                  <div className={`${styles.right_col} ${styles.column}`}>
-                    <Screenshots
-                      screenshots={gameProject.screenshots}
-                    ></Screenshots>
-                  </div>
-                )}
               </div>
             </div>
-          </div>
 
-          <UserTools
-            setGameRatingDialogOpen={setGameRatingDialogOpen}
-            gameRatingMine={gameRatingMine}
-          />
-          <GameRating
-            id={gameProject.id}
-            gameRatingMine={gameRatingMine}
-            gameRatingDialogOpen={gameRatingDialogOpen}
-            setGameRatingDialogOpen={setGameRatingDialogOpen}
-            handleRefresh={handleRefresh}
-          />
-        </div>
+            <GameRating
+              id={gameProject.id}
+              gameRatingMine={gameRatingMine}
+              gameRatingDialogOpen={gameRatingDialogOpen}
+              setGameRatingDialogOpen={setGameRatingDialogOpen}
+              handleRefresh={handleRefresh}
+            />
+          </div>
+        </>
       ) : (
         <NoGame>
           <h1>No Game</h1>

@@ -12,11 +12,15 @@ import { useSnackbar } from 'notistack'
 import { FC, useCallback, useContext } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { TokenDetail } from 'types'
-import { balanceDecimal, ExplorerDataType, getExplorerLink } from 'utils'
+import {
+  balanceDecimal,
+  ExplorerDataType,
+  getChainInfoFromId,
+  getExplorerLink,
+} from 'utils'
 
 const ExplorerLink = styled.a`
   font-size: 120%;
-  margin-right: 6px;
   font-weight: bold;
   color: inherit;
 `
@@ -90,9 +94,9 @@ const Purchase: FC<PurchaseProps> = ({ pricesTokens, refresh }) => {
               </PrimaryButton>
               <Typography
                 sx={{
-                  marginLeft: '10px',
                   display: 'inline-flex',
                   alignItems: 'center',
+                  marginLeft: 1,
                 }}
                 component="span"
               >
@@ -114,6 +118,17 @@ const Purchase: FC<PurchaseProps> = ({ pricesTokens, refresh }) => {
                     {pricesToken.symbol}
                   </ExplorerLink>
                 </Link>
+                <Typography
+                  component="span"
+                  sx={{
+                    color: 'inherit',
+                    opacity: 0.9,
+                    marginLeft: 0.5,
+                    marginRight: 0.5,
+                  }}
+                >
+                  ({getChainInfoFromId(pricesToken.chainId)?.label})
+                </Typography>
                 <Typography
                   component="span"
                   sx={{
