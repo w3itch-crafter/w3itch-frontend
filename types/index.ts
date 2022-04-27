@@ -1,3 +1,4 @@
+import { SupportedChainId } from 'constants/index'
 import { ethers } from 'ethers'
 import { NextPage } from 'next'
 import React from 'react'
@@ -194,7 +195,7 @@ declare global {
 }
 
 export type Token = {
-  chainId: number
+  chainId: SupportedChainId
   address: string
   name: string
   symbol: string
