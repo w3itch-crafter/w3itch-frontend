@@ -28,7 +28,7 @@ import { useDebounceFn } from 'ahooks'
 import {
   createGame,
   gameValidate,
-  storagesUploadToIPFS,
+  storagesUploadToAWS,
   updateGame,
 } from 'api/index'
 import BigNumber from 'bignumber.js'
@@ -175,7 +175,7 @@ const GameForm: FC<GameFormProps> = ({
       const formDataCover = new FormData()
       formDataCover.append('file', filenameHandle(coverFileFile))
 
-      promiseArray.push(storagesUploadToIPFS(formDataCover))
+      promiseArray.push(storagesUploadToAWS(formDataCover))
     }
 
     // screenshots
@@ -183,7 +183,7 @@ const GameForm: FC<GameFormProps> = ({
       const formDataScreenshot = new FormData()
       formDataScreenshot.append('file', filenameHandle(screenshotsFile))
 
-      promiseArray.push(storagesUploadToIPFS(formDataScreenshot))
+      promiseArray.push(storagesUploadToAWS(formDataScreenshot))
     })
 
     const resultAllImages = await Promise.all(promiseArray)
