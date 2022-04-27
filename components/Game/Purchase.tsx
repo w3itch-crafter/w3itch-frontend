@@ -2,7 +2,6 @@ import styled from '@emotion/styled'
 import { Box } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { PrimaryButton } from 'components/CustomizedButtons'
-import { CHAIN_INFO } from 'constants/index'
 import { AuthenticationContext } from 'context'
 import { utils } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
@@ -13,7 +12,12 @@ import { useSnackbar } from 'notistack'
 import { FC, useCallback, useContext } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { TokenDetail } from 'types'
-import { balanceDecimal, ExplorerDataType, getExplorerLink } from 'utils'
+import {
+  balanceDecimal,
+  ExplorerDataType,
+  getChainInfoFromId,
+  getExplorerLink,
+} from 'utils'
 
 const ExplorerLink = styled.a`
   font-size: 120%;
@@ -123,7 +127,7 @@ const Purchase: FC<PurchaseProps> = ({ pricesTokens, refresh }) => {
                     marginRight: 0.5,
                   }}
                 >
-                  ({CHAIN_INFO[pricesToken.chainId].label})
+                  ({getChainInfoFromId(pricesToken.chainId)?.label})
                 </Typography>
                 <Typography
                   component="span"
