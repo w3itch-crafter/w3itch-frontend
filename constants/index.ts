@@ -1,5 +1,5 @@
 export * from './chains'
 export * from './contracts'
 export * from './links'
+export * from './lists'
 export * from './providers'
-export * from './tokenList'
