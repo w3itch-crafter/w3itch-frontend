@@ -89,7 +89,7 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
             <LinkGroup href={profileUrl} name={userInfoHeader} icon="globe" />
           </ProfileColumn>
           <GameColumn>
-            {[...games, ...games].map((game, index) => (
+            {games.map((game, index) => (
               <GameCell
                 small
                 key={`${game.id}-${index}`}
