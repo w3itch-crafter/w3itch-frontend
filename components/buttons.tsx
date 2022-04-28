@@ -18,4 +18,9 @@ export const RedButton = styled.button`
   line-height: 33px;
   font-weight: bold;
   height: 35px;
+  &:disabled {
+    background-color: #ccc;
+    text-shadow: none;
+    box-shadow: none;
+  }
 `

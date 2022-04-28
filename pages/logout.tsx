@@ -21,7 +21,7 @@ const Logout: NextPage = () => {
 
   return (
     <Head>
-      <title>Register account - w3itch.io</title>
+      <title>Logout - w3itch.io</title>
     </Head>
   )
 }

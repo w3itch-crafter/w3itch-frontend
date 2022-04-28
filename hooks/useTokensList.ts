@@ -1,76 +1,83 @@
+import type { SupportedChainId } from 'constants/chains'
 import { getAddress } from 'ethers/lib/utils'
-import {
-  ERC20MulticallResult,
-  useERC20Multicall,
-} from 'hooks/useERC20Multicall'
+import { useERC20Multicall } from 'hooks/useERC20Multicall'
 import { useEffect, useMemo, useState } from 'react'
+import { Token } from 'types'
+
+import useTokens from './useTokens'
 
 export default function useTokensList({
-  tokensAddress,
+  chainId,
   searchTokenAddress,
 }: {
-  tokensAddress: string[]
+  chainId: SupportedChainId
   searchTokenAddress: string
 }) {
-  const [tokensData, setTokensData] = useState<ERC20MulticallResult[]>([])
-  const [searchTokenData, setSearchTokenData] = useState<
-    ERC20MulticallResult[]
-  >([])
-
   const { fetchTokensAddress } = useERC20Multicall()
-
-  // watch tokensAddress
-  useEffect(() => {
-    fetchTokensAddress(tokensAddress).then((response) => {
-      setTokensData(response || [])
-    })
-  }, [tokensAddress, fetchTokensAddress])
+  const { tokens: tokensList } = useTokens()
+  const [searchTokenData, setSearchTokenData] = useState<Token[]>([])
 
   // watch searchTokenAddress
   useEffect(() => {
+    if (!chainId) {
+      return
+    }
+
+    // @TODO Need to search for name
     if (searchTokenAddress) {
-      const token = tokensData.find(
-        (token) => getAddress(token.address) === getAddress(searchTokenAddress)
+      const token = tokensList.find(
+        (token) =>
+          getAddress(token.address) === getAddress(searchTokenAddress) &&
+          token.chainId === chainId
       )
-      if (token) {
-        setSearchTokenData([token])
-      } else {
-        fetchTokensAddress(searchTokenAddress ? [searchTokenAddress] : []).then(
-          (response) => {
-            setSearchTokenData(response || [])
-          }
+      if (!token) {
+        // @TODO need set chainId
+        fetchTokensAddress(
+          searchTokenAddress ? [searchTokenAddress] : [],
+          chainId
         )
+          .then((response) => {
+            console.log('response', response)
+            const searchTokens = response?.map((token) => ({
+              chainId: chainId,
+              address: token.address,
+              name: token.data.name,
+              symbol: token.data.symbol,
+              decimals: token.data.decimals,
+              logoURI: '',
+            }))
+            setSearchTokenData(searchTokens || [])
+          })
+          .catch((err) => {
+            console.log('err', err)
+            setSearchTokenData([])
+          })
       }
     } else {
       setSearchTokenData([])
     }
-  }, [searchTokenAddress, fetchTokensAddress, tokensData])
+  }, [searchTokenAddress, fetchTokensAddress, chainId, tokensList])
 
   const tokens = useMemo(() => {
+    if (!chainId) {
+      return []
+    }
+
     if (searchTokenAddress) {
-      const token = tokensData.find(
-        (token) => getAddress(token.address) === getAddress(searchTokenAddress)
+      const token = tokensList.find(
+        (token) =>
+          getAddress(token.address) === getAddress(searchTokenAddress) &&
+          token.chainId === chainId
       )
       if (token) {
-        return [
-          {
-            address: token.address,
-            ...token.data,
-          },
-        ]
+        return [token]
       } else {
-        return searchTokenData.map((token) => ({
-          address: token.address,
-          ...token.data,
-        }))
+        return searchTokenData
       }
     } else {
-      return tokensData.map((token) => ({
-        address: token.address,
-        ...token.data,
-      }))
+      return tokensList.filter((token) => token.chainId === chainId)
     }
-  }, [searchTokenAddress, tokensData, searchTokenData])
+  }, [searchTokenAddress, chainId, searchTokenData, tokensList])
 
   return { tokens }
 }

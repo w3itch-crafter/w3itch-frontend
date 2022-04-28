@@ -48,6 +48,7 @@ export function SortOptions({
     margin: 0;
     padding: 0;
     display: flex;
+    flex-wrap: wrap;
   `
   const context: Pick<SortOptionsProps, 'sortKey'> = { sortKey }
 

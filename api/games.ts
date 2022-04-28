@@ -73,6 +73,19 @@ export const gameProjectPlayer = ({
   `${process.env.NEXT_PUBLIC_API_URL}/player?game=${gameName}&engine=${kind}`
 
 /**
+ * game download url
+ * @param param0
+ * @returns
+ */
+export const gameDownloadUrl = ({
+  gameName,
+  file,
+}: {
+  gameName: string
+  file: string
+}) => `${process.env.NEXT_PUBLIC_API_URL}/downloads/${gameName}/${file}`
+
+/**
  * game project validate
  * @param data
  * @returns

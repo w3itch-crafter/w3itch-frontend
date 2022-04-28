@@ -1,6 +1,15 @@
 import styled from '@emotion/styled'
+import FilterAltIcon from '@mui/icons-material/FilterAlt'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Drawer from '@mui/material/Drawer'
+import MenuItem from '@mui/material/MenuItem'
 import Pagination from '@mui/material/Pagination'
+import Select from '@mui/material/Select'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { getGames, getTags } from 'api'
+import { SortIcon } from 'components/icons'
 import {
   FilterGroup,
   FilterGroupItem,
@@ -10,12 +19,13 @@ import {
   SortOptionItem,
   SortOptions,
 } from 'components/pages'
+import { SortByItemDefault, SortByItems } from 'constants/index'
 import { genres } from 'data'
 import { GetServerSideProps, NextPage } from 'next'
-import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Fragment } from 'react'
+import { NextSeo } from 'next-seo'
+import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { GameEntity, GameInfo, PaginationMeta, TagOption } from 'types'
 import { buildQuerySting, findTags, isEmptyObj } from 'utils'
 
@@ -24,6 +34,12 @@ declare interface GamesProps {
   games: GameInfo[]
   pageMeta: PaginationMeta<GameEntity>
 }
+
+// Reference SortOptionItem Components
+const sortValueDefault = (value: string) => {
+  return value === SortByItemDefault.value ? '' : value
+}
+const SortKey = 'sortBy'
 
 const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   const Container = styled.div`
@@ -54,6 +70,14 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
       color: #434343;
     }
   `
+  const BrowseHeaderTitle = styled.h2`
+    font-size: 24px;
+    line-height: 1.8;
+    font-weight: 900;
+    margin: 0;
+    padding: 0;
+    color: #434343;
+  `
   const GameCount = styled.span`
     font-weight: normal;
     color: #858585;
@@ -65,9 +89,15 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
     padding: 20px 20px 40px 20px;
     font-size: 16px;
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     gap: 20px 10px;
+    grid-template-columns: repeat(4, 1fr);
+    @media screen and (max-width: 1536px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @media screen and (max-width: 1200px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
     & .game-cell {
       margin: 0;
     }
@@ -81,6 +111,24 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
     }
   `
   const router = useRouter()
+  const href = useCallback(
+    (value: string) => {
+      return `${router.route}${buildQuerySting(
+        SortKey,
+        value,
+        router.query as Record<string, string>
+      )}`
+    },
+    [router]
+  )
+  const sortDefault = useMemo(() => {
+    return router.asPath === href(router.query.sortBy as string)
+      ? router.query.sortBy || SortByItemDefault.value
+      : SortByItemDefault.value
+  }, [router, href])
+  const theme = useTheme()
+  const matchesMd = useMediaQuery(theme.breakpoints.up('md'), { noSsr: true })
+  const [filterDrawer, setFilterDrawer] = useState<boolean>(false)
   const { currentPage, totalPages } = pageMeta
   const handlePaginationChange = (
     _: React.ChangeEvent<unknown>,
@@ -97,26 +145,95 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
 
   return (
     <Fragment>
-      <Head>
-        <title>Browse games - w3itch.io</title>
-      </Head>
+      <NextSeo title={'Browse games - w3itch.io'} />
       <Container>
-        <FilterColumn>
-          <GameFilter />
-        </FilterColumn>
+        <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+          <FilterColumn>
+            <GameFilter />
+          </FilterColumn>
+        </Box>
+
         <GridColumn>
           <BrowseHeader>
-            <h2>
-              Top Games{tagged}
-              <GameCount> ({games.length} results)</GameCount>
-            </h2>
-            <StyledSortOptions sortKey="sortBy">
-              <SortOptionItem name="Popular" />
-              <SortOptionItem value="new" name="New & Popular" />
-              <SortOptionItem value="sellers" name="Top sellers" />
-              <SortOptionItem value="rating" name="Top rated" />
-              <SortOptionItem value="updatedAt" name="Most Recent" />
-            </StyledSortOptions>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              p="16px 20px 20px"
+            >
+              <BrowseHeaderTitle>
+                Top Games{tagged}
+                <GameCount> ({games.length} results)</GameCount>
+              </BrowseHeaderTitle>
+              {!matchesMd && (
+                <Button
+                  sx={{
+                    textTransform: 'capitalize',
+                  }}
+                  variant="outlined"
+                  startIcon={<FilterAltIcon />}
+                  color="info"
+                  size="small"
+                  onClick={() => setFilterDrawer(true)}
+                >
+                  Filter
+                </Button>
+              )}
+            </Box>
+            <Box
+              sx={{
+                display: {
+                  xs: 'none',
+                  sm: 'block',
+                },
+              }}
+            >
+              <StyledSortOptions sortKey={SortKey}>
+                {SortByItems.map((item) => (
+                  <SortOptionItem
+                    key={item.value}
+                    value={sortValueDefault(item.value)}
+                    name={item.name}
+                  />
+                ))}
+              </StyledSortOptions>
+            </Box>
+
+            <Box
+              sx={{
+                display: {
+                  xs: 'inline-flex',
+                  sm: 'none',
+                },
+                padding: '0 20px',
+              }}
+            >
+              <Select
+                size="small"
+                value={sortDefault}
+                renderValue={(value) => (
+                  <Box display="flex" alignItems="center">
+                    <SortIcon
+                      sx={{ fontSize: 16, mr: 1 }}
+                      fill="currentColor"
+                      viewBox="0 0 455 488"
+                    ></SortIcon>
+                    Sort -{' '}
+                    {SortByItems.find((item) => item.value === value)?.name}
+                  </Box>
+                )}
+              >
+                {SortByItems.map((item) => (
+                  <Link
+                    key={item.value}
+                    href={href(sortValueDefault(item.value))}
+                    passHref
+                  >
+                    <MenuItem value={item.value}>{item.name}</MenuItem>
+                  </Link>
+                ))}
+              </Select>
+            </Box>
             <RelatedTags tags={tags} placeholder="Select a tag..." />
           </BrowseHeader>
           <GameGrid>
@@ -133,6 +250,15 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
           />
         </GridColumn>
       </Container>
+      {!matchesMd && (
+        <Drawer
+          anchor={'left'}
+          open={filterDrawer}
+          onClose={() => setFilterDrawer(false)}
+        >
+          <GameFilter />
+        </Drawer>
+      )}
     </Fragment>
   )
 }
@@ -190,6 +316,7 @@ function GameFilter() {
     color: inherit;
   `
   const router = useRouter()
+
   const buildHref = (key: string, value?: string): string => {
     const query = router.query as Record<string, string>
     const queryString = buildQuerySting(key, value, query)

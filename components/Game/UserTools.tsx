@@ -1,4 +1,5 @@
 import StarBorderIcon from '@mui/icons-material/StarBorder'
+import Box from '@mui/material/Box'
 import { Dispatch, FC, SetStateAction } from 'react'
 import styles from 'styles/game/userTools.module.scss'
 import { Api } from 'types/Api'
@@ -16,19 +17,15 @@ const UserTools: FC<Props> = ({ setGameRatingDialogOpen, gameRatingMine }) => {
           className={styles.action_btn}
           onClick={() => setGameRatingDialogOpen(true)}
         >
-          <StarBorderIcon />
-
-          {gameRatingMine ? (
-            <span className="on_edit">
-              <span className="full_label">Edit Your Rating</span>
-              {/* <span className="mobile_label">Edit Rating</span> */}
-            </span>
-          ) : (
-            <span className="on_create">
-              <span className="full_label">Rate this game</span>
-              {/* <span className="mobile_label">Rate</span> */}
-            </span>
-          )}
+          <StarBorderIcon className={styles.action_icon} />
+          <span className="on_edit">
+            <Box component="span" className={styles.full_label}>
+              {gameRatingMine ? 'Edit Your Rating' : 'Rate this game'}
+            </Box>
+            <Box component="span" className={styles.mobile_label}>
+              {gameRatingMine ? 'Edit Rating' : 'Rate'}
+            </Box>
+          </span>
         </span>
       </li>
     </ul>

@@ -1,3 +1,5 @@
+import { SupportedChainId } from 'constants/index'
+import { ethers } from 'ethers'
 import { NextPage } from 'next'
 import React from 'react'
 
@@ -177,6 +179,8 @@ export declare type TagOption = Omit<TagEntity, 'createdAt' | 'updatedAt'>
 export declare type NavLink = { href: string; name: string }
 export declare type NavLinks = NavLink[]
 
+export declare type LoginMethod = 'metamask' | 'github'
+
 interface Keyboard {
   lock(keyCodes?: Iterable<string>): Promise<void>
   unlock(): void
@@ -186,14 +190,35 @@ declare global {
   interface Navigator {
     // See https://wicg.github.io/keyboard-lock/
     readonly keyboard: Keyboard
+    readonly standalone: unknown
   }
 }
 
 export type Token = {
-  chainId: number
+  chainId: SupportedChainId
   address: string
   name: string
   symbol: string
   decimals: number
   logoURI: string
+}
+
+export type Tokens = {
+  name: string
+  timestamp: Date
+  version: {
+    major: 3
+    minor: 1
+    patch: 0
+  }
+  tags: object
+  logoURI: string
+  keywords: ['uniswap', 'default']
+  tokens: Token[]
+}
+
+export type TokenDetail = Token & {
+  readonly amount: string
+  readonly totalSupply: ethers.BigNumber
+  readonly balanceOf: ethers.BigNumber
 }

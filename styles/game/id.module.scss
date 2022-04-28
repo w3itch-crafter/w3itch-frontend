@@ -39,11 +39,6 @@
       margin-right: 5px;
     }
   }
-  .game_frame {
-    margin: 0 auto;
-    position: relative;
-    background-position: 50% 50%;
-  }
   .iframe_placeholder,
   .restore_wrapper {
     width: 100%;
@@ -56,9 +51,7 @@
     box-sizing: border-box;
   }
 }
-.game_frame {
-  background: #e5e5e5;
-}
+
 .view_game_page {
   &.view_flash_game_page .embed_wrapper,
   &.view_html_game_page .embed_wrapper {
@@ -70,16 +63,6 @@
   .video_embed {
     margin-right: 20px;
     margin-bottom: 10px;
-  }
-  .screenshot_list {
-    margin-right: 20px;
-    box-sizing: border-box;
-    a {
-      display: block;
-      width: 347px;
-      margin-bottom: 10px;
-      box-shadow: 0 0 1px rgb(0, 0, 0, 0.3);
-    }
   }
   .formatted_description {
     margin: 20px;
@@ -145,6 +128,7 @@
   }
   .right_col {
     width: 367px;
+    padding-right: 20px;
   }
 }
 
@@ -152,6 +136,17 @@
   position: relative;
   width: 100%;
   height: 100%;
+
+  // Adapt to IOS
+  &.open {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+  }
+
   .full_close {
     width: 32px;
     height: 32px;

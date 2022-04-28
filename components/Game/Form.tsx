@@ -24,10 +24,11 @@ import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
 const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
+import { useDebounceFn } from 'ahooks'
 import {
   createGame,
   gameValidate,
-  storagesUploadToIPFS,
+  storagesUploadToAWS,
   updateGame,
 } from 'api/index'
 import BigNumber from 'bignumber.js'
@@ -40,11 +41,14 @@ import TokenList from 'components/TokenList'
 import UploadGame from 'components/UploadGame/index'
 import UploadGameCover from 'components/UploadGameCover/index'
 import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
-import { CurrentChainId } from 'constants/chains'
+import type { SupportedChainId } from 'constants/chains'
+import { WalletSupportedChainIds } from 'constants/chains'
 import { AuthenticationContext } from 'context'
 import { classifications, kindOfProjects, releaseStatus } from 'data'
-import { BigNumber as BigNumberEthers, utils } from 'ethers'
-import { ERC20MulticallTokenResult } from 'hooks/useERC20Multicall'
+import { utils } from 'ethers'
+import { getAddress } from 'ethers/lib/utils'
+import { useTitle } from 'hooks'
+import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -58,9 +62,10 @@ import {
   UseFormHandleSubmit,
   UseFormRegister,
   UseFormSetValue,
+  UseFormTrigger,
   UseFormWatch,
 } from 'react-hook-form'
-import { GameEntity } from 'types'
+import { GameEntity, Token } from 'types'
 import { Api } from 'types/Api'
 import {
   EditorMode,
@@ -93,6 +98,7 @@ interface GameFormProps {
   readonly watch: UseFormWatch<Game>
   readonly formState: FormState<Game>
   readonly getValues: UseFormGetValues<Game>
+  readonly trigger: UseFormTrigger<Game>
   readonly editorRef: MutableRefObject<ToastUiEditor> | undefined
   setEditorRef: Dispatch<
     SetStateAction<MutableRefObject<ToastUiEditor> | undefined>
@@ -112,6 +118,7 @@ const GameForm: FC<GameFormProps> = ({
   watch,
   formState,
   getValues,
+  trigger,
   editorRef,
   setEditorRef,
 }) => {
@@ -129,18 +136,33 @@ const GameForm: FC<GameFormProps> = ({
   const [coverFileFile, setCoverFileFile] = useState<File>()
   const [screenshotsFiles, setScreenshotsFiles] = useState<File[]>()
   const [submitLoading, setSubmitLoading] = useState<boolean>(false)
-
   const [tokenListDialogOpen, setTtokenListDialogOpen] = useState(false)
-  const [currentSelectToken, setCurrentSelectToken] =
-    useState<ERC20MulticallTokenResult>({} as ERC20MulticallTokenResult)
+  const [currentSelectTokenChainId, setCurrentSelectTokenChainId] =
+    useState<SupportedChainId>(WalletSupportedChainIds[0])
+  const [currentSelectTokenChainIdFlag, setCurrentSelectTokenChainIdFlag] =
+    useState<boolean>(false)
+  const [currentSelectToken, setCurrentSelectToken] = useState<Token>(
+    {} as Token
+  )
+  const [currentSelectTokenFlag, setCurrentSelectTokenFlag] =
+    useState<boolean>(false)
   const [currentSelectTokenAmount, setCurrentSelectTokenAmount] =
     useState<string>('0')
+  const [currentSelectTokenAmountFlag, setCurrentSelectTokenAmountFlag] =
+    useState<boolean>(false)
   const [currentDonationAddress, setCurrentDonationAddress] =
     useState<string>('')
+  const [currentDonationAddressFlag, setCurrentDonationAddressFlag] =
+    useState<boolean>(false)
+
+  const { tokens } = useTokens()
+  const { createGamePageTitle } = useTitle()
+  const pageTitle = createGamePageTitle(editorMode)
 
   const { errors } = formState
   const watchPaymentMode = watch('paymentMode')
 
+  // console.log(watch('description'))
   // console.log(watch('paymentMode'))
   // console.log(watch('genre'))
   // console.log('errors', errors)
@@ -153,7 +175,7 @@ const GameForm: FC<GameFormProps> = ({
       const formDataCover = new FormData()
       formDataCover.append('file', filenameHandle(coverFileFile))
 
-      promiseArray.push(storagesUploadToIPFS(formDataCover))
+      promiseArray.push(storagesUploadToAWS(formDataCover))
     }
 
     // screenshots
@@ -161,7 +183,7 @@ const GameForm: FC<GameFormProps> = ({
       const formDataScreenshot = new FormData()
       formDataScreenshot.append('file', filenameHandle(screenshotsFile))
 
-      promiseArray.push(storagesUploadToIPFS(formDataScreenshot))
+      promiseArray.push(storagesUploadToAWS(formDataScreenshot))
     })
 
     const resultAllImages = await Promise.all(promiseArray)
@@ -178,8 +200,8 @@ const GameForm: FC<GameFormProps> = ({
     }
   }
 
-  // handle create game
-  const handleCreateGame = async (game: Game) => {
+  // handle create/edit game
+  const handleGame = async (game: Game) => {
     // 先支持 编辑
     if (editorMode === EditorMode.CREATE && !uploadGameFile) {
       enqueueSnackbar('Please upload game files', {
@@ -210,6 +232,17 @@ const GameForm: FC<GameFormProps> = ({
 
     let prices: Api.GameProjectPricesDto[] = []
     if (game.paymentMode === PaymentMode.PAID) {
+      if (!currentSelectTokenChainId) {
+        enqueueSnackbar('Please select chainId', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center',
+          },
+          variant: 'warning',
+        })
+        return
+      }
+
       if (isEmpty(currentSelectToken)) {
         enqueueSnackbar('Please select Token', {
           anchorOrigin: {
@@ -254,7 +287,7 @@ const GameForm: FC<GameFormProps> = ({
 
       prices = [
         {
-          chainId: CurrentChainId,
+          chainId: currentSelectTokenChainId,
           amount: utils
             .parseUnits(currentSelectTokenAmount, currentSelectToken.decimals)
             .toString(),
@@ -385,7 +418,10 @@ const GameForm: FC<GameFormProps> = ({
         }
         // No re-upload screenshots Deleted game screenshots
         if (isEmpty(screenshotsFiles)) {
-          delete gameData.screenshots
+          // delete all game screenshots
+          if (!isEmpty(game.screenshots)) {
+            delete gameData.screenshots
+          }
         }
 
         // 更新游戏文件
@@ -456,7 +492,7 @@ const GameForm: FC<GameFormProps> = ({
 
   const onSubmit: SubmitHandler<Game> = async (data) => {
     console.log(data)
-    handleCreateGame(data)
+    handleGame(data)
 
     // const result = await handleAllImages()
     // console.log('result', result)
@@ -495,31 +531,91 @@ const GameForm: FC<GameFormProps> = ({
     [setValue]
   )
 
-  const handleDescription = useCallback(() => {
+  const { run: handleDescriptionTrigger } = useDebounceFn(
+    async () => {
+      await trigger('description')
+    },
+    {
+      wait: 800,
+    }
+  )
+
+  const handleDescription = useCallback(async () => {
     if (editorRef) {
       const description = editorRef.current?.getInstance().getMarkdown()
       setValue('description', trim(description))
     }
-  }, [editorRef, setValue])
+    await handleDescriptionTrigger()
+  }, [editorRef, setValue, handleDescriptionTrigger])
 
   // watch current token fill data
   // paymentMode
+  // edit mode has no data
   useEffect(() => {
     if (
       editorMode === EditorMode.EDIT &&
-      getValues('paymentMode') === PaymentMode.PAID &&
-      isEmpty(currentSelectToken) &&
-      !isEmpty(gameProject?.prices[0])
+      getValues('paymentMode') === PaymentMode.PAID
     ) {
-      // balanceOf and totalSupply are not processed
-      setCurrentSelectToken({
-        address: gameProject.prices[0].token.address,
-        name: gameProject.prices[0].token.name,
-        symbol: gameProject.prices[0].token.symbol,
-        decimals: gameProject.prices[0].token.decimals,
-        totalSupply: BigNumberEthers.from(0),
-        balanceOf: BigNumberEthers.from(0),
-      })
+      // execute only once
+      if (!currentSelectTokenChainIdFlag && !isEmpty(gameProject?.prices[0])) {
+        setCurrentSelectTokenChainId(gameProject?.prices[0].token.chainId)
+        setCurrentSelectTokenChainIdFlag(true)
+      }
+
+      // execute only once
+      if (
+        isEmpty(currentSelectToken) &&
+        !isEmpty(gameProject?.prices[0]) &&
+        !currentSelectTokenFlag
+      ) {
+        const { address, name, symbol, decimals, chainId } =
+          gameProject.prices[0].token
+        // balanceOf and totalSupply are not processed
+        setCurrentSelectToken({
+          address: address,
+          name: name,
+          symbol: symbol,
+          decimals: decimals,
+          // totalSupply: BigNumberEthers.from(0),
+          // balanceOf: BigNumberEthers.from(0),
+          chainId: chainId,
+          logoURI:
+            tokens.find(
+              (token) =>
+                getAddress(token.address) === getAddress(address) &&
+                token.chainId === chainId
+            )?.logoURI || '',
+        })
+        setCurrentSelectTokenFlag(true)
+      }
+
+      // execute only once
+      if (
+        !currentSelectTokenAmountFlag &&
+        (!currentSelectTokenAmount || currentSelectTokenAmount === '0') &&
+        !isEmpty(gameProject?.prices[0])
+      ) {
+        setCurrentSelectTokenAmount(
+          utils.formatUnits(
+            gameProject.prices[0].amount,
+            gameProject.prices[0].token.decimals
+          )
+        )
+        setCurrentSelectTokenAmountFlag(true)
+      }
+    }
+
+    // execute only once
+    if (
+      !currentDonationAddressFlag &&
+      editorMode === EditorMode.EDIT &&
+      getValues('paymentMode') === PaymentMode.FREE &&
+      !currentDonationAddress
+    ) {
+      setCurrentDonationAddress(
+        (gameProject?.donationAddress || account?.accountId) as string
+      )
+      setCurrentDonationAddressFlag(true)
     }
   }, [
     currentSelectTokenAmount,
@@ -528,6 +624,15 @@ const GameForm: FC<GameFormProps> = ({
     currentSelectToken,
     watchPaymentMode,
     getValues,
+    tokens,
+    currentDonationAddress,
+    account,
+    watchPaymentMode,
+    currentSelectTokenChainId,
+    currentSelectTokenFlag,
+    currentSelectTokenChainIdFlag,
+    currentSelectTokenAmountFlag,
+    currentDonationAddressFlag,
   ])
 
   useEffect(() => {
@@ -538,7 +643,7 @@ const GameForm: FC<GameFormProps> = ({
   return (
     <Fragment>
       <Head>
-        <title>Create a new project - w3itch.io</title>
+        <title>{pageTitle} - w3itch.io</title>
       </Head>
       <div className={stylesCommon.main}>
         <div className={stylesCommon.inner_column}>
@@ -554,7 +659,7 @@ const GameForm: FC<GameFormProps> = ({
               </div>
               <div className={styles.stat_header_widget}>
                 <div className="text_content">
-                  <h2>Create a new project</h2>
+                  <h2>{pageTitle}</h2>
                 </div>
               </div>
             </div>
@@ -679,10 +784,6 @@ const GameForm: FC<GameFormProps> = ({
                     </div>
 
                     <div className={styles.input_row}>
-                      <FormCharset control={control} errors={errors} />
-                    </div>
-
-                    <div className={styles.input_row}>
                       <FormControl fullWidth>
                         <FormLabel id="form-releaseStatus">
                           Release status
@@ -709,18 +810,23 @@ const GameForm: FC<GameFormProps> = ({
 
                     <div className={styles.input_row}>
                       <FormPricing
-                        gameProject={gameProject}
                         control={control}
-                        getValues={getValues}
                         errors={errors}
                         watch={watch}
-                        token={currentSelectToken}
-                        setTtokenListDialogOpen={setTtokenListDialogOpen}
-                        tokenAmountChange={setCurrentSelectTokenAmount}
-                        donationAddressChange={setCurrentDonationAddress}
-                        currentSelectTokenAmount={currentSelectTokenAmount}
                         currentDonationAddress={currentDonationAddress}
-                        editorMode={editorMode}
+                        currentSelectTokenChainId={currentSelectTokenChainId}
+                        currentSelectToken={currentSelectToken}
+                        setTtokenListDialogOpen={setTtokenListDialogOpen}
+                        setCurrentDonationAddress={setCurrentDonationAddress}
+                        currentSelectTokenAmount={currentSelectTokenAmount}
+                        setCurrentSelectTokenAmount={
+                          setCurrentSelectTokenAmount
+                        }
+                        setCurrentSelectTokenChainId={(chainId) => {
+                          setCurrentSelectTokenChainId(chainId)
+                          // Switch chainId to clear token
+                          setCurrentSelectToken({} as Token)
+                        }}
                       />
                     </div>
 
@@ -738,9 +844,10 @@ const GameForm: FC<GameFormProps> = ({
                           }
                         </section>
                         <UploadGame
-                          setFile={(file) =>
+                          setFile={async (file) => {
                             handleGameFile(file as File | undefined)
-                          }
+                            await trigger('gameName')
+                          }}
                         />
                         <TextField
                           style={{
@@ -758,7 +865,10 @@ const GameForm: FC<GameFormProps> = ({
                             </div>
                             <div>(Game name will not change)</div>
                             <div>
-                              Game name: <b>{getValues('gameName')}</b>
+                              Game name:
+                              <span style={{ fontWeight: 'bold' }}>
+                                {getValues('gameName')}
+                              </span>
                             </div>
                           </>
                         )}
@@ -767,6 +877,10 @@ const GameForm: FC<GameFormProps> = ({
                           {errors?.gameName?.message}
                         </FormHelperText>
                       </FormControl>
+                    </div>
+
+                    <div className={styles.input_row}>
+                      <FormCharset control={control} errors={errors} />
                     </div>
 
                     <div
@@ -923,13 +1037,16 @@ const GameForm: FC<GameFormProps> = ({
                   </div>
                   <div className={`misc ${styles.right_col}`}>
                     <div className={styles.simulation_input}>
-                      <FormControl fullWidth error={Boolean(errors.gameName)}>
+                      <FormControl fullWidth error={Boolean(errors.cover)}>
                         <div className={styles.game_edit_cover_uploader_widget}>
                           <UploadGameCover
                             editorMode={editorMode}
                             getValues={getValues}
                             watch={watch}
-                            setFile={(file) => handleCoverValue(file as File)}
+                            setFile={async (file) => {
+                              handleCoverValue(file as File)
+                              await trigger('cover')
+                            }}
                           />
                           <p className={`${styles.sub} instructions`}>
                             The cover image is used whenever w3itch.io wants to
@@ -969,8 +1086,9 @@ const GameForm: FC<GameFormProps> = ({
                         editorMode={editorMode}
                         getValues={getValues}
                         watch={watch}
-                        setFiles={(files) => {
+                        setFiles={async (files) => {
                           handleScreenshots(files as File[] | undefined)
+                          await trigger('screenshots')
                         }}
                       />
                     </section>
@@ -981,6 +1099,12 @@ const GameForm: FC<GameFormProps> = ({
                     variant="contained"
                     type="submit"
                     loading={submitLoading}
+                    sx={{
+                      width: {
+                        xs: '100%',
+                        sm: 'auto',
+                      },
+                    }}
                   >
                     {editorMode === EditorMode.CREATE
                       ? 'Save'
@@ -1000,6 +1124,7 @@ const GameForm: FC<GameFormProps> = ({
       <TokenList
         open={tokenListDialogOpen}
         setOpen={setTtokenListDialogOpen}
+        chainId={currentSelectTokenChainId}
         selectToken={(token) => {
           console.log(token)
           setCurrentSelectToken(token)

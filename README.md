@@ -1,5 +1,11 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Edit Environment Variable
+
+Rename `.env.local.example` to `.env.local` and fill all env value.
+
+For more infomation, you can see Next.js [Environment Variables](https://nextjs.org/docs/basic-features/environment-variables) ducument.
+
 ## Getting Started
 
 First, run the development server:

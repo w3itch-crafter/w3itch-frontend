@@ -146,12 +146,16 @@
     font-size: 13px;
     width: 542px;
     margin-right: 20px;
+    @media screen and (max-width: 980px) {
+      width: 100%;
+      margin-right: 0;
+    }
   }
   .right_col {
     display: inline-block;
     vertical-align: top;
     font-size: 13px;
-    width: 317px;
+    max-width: 317px;
     margin-right: 20px;
     &:last-child,
     &.last {

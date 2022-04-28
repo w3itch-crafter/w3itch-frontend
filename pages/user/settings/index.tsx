@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { Alert, AlertColor, CircularProgress, Snackbar } from '@mui/material'
-import { storagesUploadToIPFS } from 'api'
+import { storagesUploadToAWS } from 'api'
 import { updateMe } from 'api/users'
 import { RedButton } from 'components/buttons'
 import { InputCheckbox, InputRow } from 'components/forms'
@@ -76,7 +76,7 @@ const Settings: NextPageWithLayout = () => {
       const avatar = new FormData()
       avatar.append('file', file, `${uuid()}${ext}`)
       try {
-        const res = await storagesUploadToIPFS(avatar)
+        const res = await storagesUploadToAWS(avatar)
         const { publicUrl } = res.data
         setUser((u) => ({ ...u, avatar: publicUrl }))
         setUpdateUser((u) => ({ ...u, avatar: publicUrl }))
