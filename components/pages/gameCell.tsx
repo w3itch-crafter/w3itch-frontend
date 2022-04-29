@@ -2,8 +2,7 @@ import styled from '@emotion/styled'
 import { formatUnits } from 'ethers/lib/utils'
 import Link from 'next/link'
 import { GameInfo } from 'types'
-import { userHostUrl } from 'utils'
-import { enumWord } from 'utils/word'
+import { enumWord, userHostUrl } from 'utils'
 
 import { IcoMoonIcon } from '../icons'
 

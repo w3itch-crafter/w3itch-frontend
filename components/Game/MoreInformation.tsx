@@ -6,9 +6,7 @@ import Link from 'next/link'
 import { FC } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
-import { userHostUrl } from 'utils'
-import { calcRating } from 'utils'
-import { enumWord } from 'utils/word'
+import { calcRating, enumWord, userHostUrl } from 'utils'
 
 interface Props {
   readonly gameProject: GameEntity
