@@ -6,6 +6,7 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     domains: [
+      'image.w3itch.io',
       's3.amazonaws.com',
       'storageapi.fleek.co',
       'img.itch.zone',
