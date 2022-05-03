@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import MenuIcon from '@mui/icons-material/Menu'
-import { Box } from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
+import { Box, Input } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -14,10 +15,19 @@ const defaultLinks: NavLinks = [
   { href: '/games', name: 'Browse Games' },
   { href: '/dashboard', name: 'Dashboard' },
 ]
+
 export declare interface NavbarProps {
   navLinks?: NavLinks
 }
+
 export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
+  const Flex1 = styled.div`
+    flex: 1;
+  `
+  const SearchBar = styled.form`
+    display: flex;
+    align-items: center;
+  `
   const HeaderWidget = styled.nav`
     height: 50px;
     position: relative;
@@ -84,27 +94,46 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
                 />
               ))}
             </HeaderButtons>
-            <UserPanel />
-            <IconButton
-              onClick={() => setNavLinksDrawer(true)}
-              size="small"
-              sx={{ ml: 2, display: { xs: 'inline-flex', md: 'none' } }}
-              aria-controls={'account-menu'}
-              aria-haspopup="true"
-              aria-expanded="true"
-            >
-              <MenuIcon />
-            </IconButton>
-            {/* @TODO */}
-            {/* Don't know where re-render is triggered No transition effect */}
-            {/* Found that Navbar has too many definitions, put it on hold for the time being */}
-            <NavBarDrawer
-              navLinksDrawer={navLinksDrawer}
-              setNavLinksDrawer={setNavLinksDrawer}
-              navLinks={navLinks}
-            />
           </Fragment>
         )}
+        <Flex1 />
+        <SearchBar
+          method={'get'}
+          autoComplete={'on'}
+          action={'https://google.com/search'}
+          onSubmit={(e) => {
+            const formData = Object.fromEntries(
+              new FormData(e.target as HTMLFormElement)
+            )
+            window.open(
+              `https://google.com/search?q=${encodeURIComponent(
+                'site:w3itch-frontend.vercel.app ' + formData.q
+              )}`
+            )
+            e.preventDefault()
+          }}
+        >
+          <Input type={'text'} name={'q'} placeholder="Search in this site" />
+          <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
+            <SearchIcon />
+          </IconButton>
+        </SearchBar>
+        <UserPanel />
+        <IconButton
+          onClick={() => setNavLinksDrawer(true)}
+          size="small"
+          sx={{ ml: 2, display: { xs: 'inline-flex', md: 'none' } }}
+        >
+          <MenuIcon />
+        </IconButton>
+        {/* @TODO */}
+        {/* Don't know where re-render is triggered No transition effect */}
+        {/* Found that Navbar has too many definitions, put it on hold for the time being */}
+        <NavBarDrawer
+          navLinksDrawer={navLinksDrawer}
+          setNavLinksDrawer={setNavLinksDrawer}
+          navLinks={navLinks}
+        />
       </PrimaryHeader>
     </HeaderWidget>
   )
@@ -113,11 +142,13 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
 declare interface HeaderButtonProps {
   active: boolean
 }
+
 declare interface NavLinkProps {
   href: string
   name: string
   active: boolean
 }
+
 function NavLink({ href, name, active }: NavLinkProps) {
   const HeaderButton = styled.a<HeaderButtonProps>`
     display: flex;
