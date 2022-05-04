@@ -14,6 +14,7 @@ import { UserPanel } from './userPanel'
 const defaultLinks: NavLinks = [
   { href: '/games', name: 'Browse Games' },
   { href: '/dashboard', name: 'Dashboard' },
+  { href: 'https://discord.gg/UaHazgHc8q', name: 'Community' },
 ]
 
 export declare interface NavbarProps {

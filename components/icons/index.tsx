@@ -57,6 +57,17 @@ export function GitHubIcon({ size }: IconProps) {
   )
 }
 
+export function DiscordIcon({ size }: IconProps) {
+  return (
+    <Image
+      src="/icons/discord-logo.svg"
+      alt="Discord Icon"
+      width={`${size}px`}
+      height={`${size}px`}
+    />
+  )
+}
+
 export declare interface IcoMoonIconProps {
   name: string
 }

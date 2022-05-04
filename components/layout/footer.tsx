@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { IcoMoonIcon } from 'components/icons'
+import { IcoMoonIcon, DiscordIcon } from 'components/icons'
 import Link from 'next/link'
 
 export function Footer() {
@@ -47,6 +47,11 @@ export function Footer() {
         <Link href="https://twitter.com/w3itchio" passHref>
           <PrimaryLink rel="me" target="_blank">
             <IcoMoonIcon name="twitter" />
+          </PrimaryLink>
+        </Link>
+        <Link href="https://discord.gg/UaHazgHc8q" passHref>
+          <PrimaryLink rel="me" target="_blank">
+          <DiscordIcon size={19.6}/>
           </PrimaryLink>
         </Link>
         <Link href="https://docs.w3itch.io/" passHref>

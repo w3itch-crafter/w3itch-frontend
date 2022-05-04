@@ -163,6 +163,7 @@ function Layout({ children, wildcard }: LayoutProps) {
   const navLinks: NavLinks = [
     { href: `${NEXT_PUBLIC_URL}/games`, name: 'Browse Games' },
     { href: `${NEXT_PUBLIC_URL}/dashboard`, name: 'Dashboard' },
+    { href: `https://discord.gg/UaHazgHc8q`, name: 'Community' },
   ]
 
   return (
