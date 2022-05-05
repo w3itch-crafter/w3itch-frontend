@@ -5,6 +5,7 @@ import { updateMe } from 'api/users'
 import { RedButton } from 'components/buttons'
 import { InputCheckbox, InputRow } from 'components/forms'
 import { AuthenticationContext } from 'context'
+import { useAuthentication } from 'hooks'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import path from 'path'
@@ -43,10 +44,8 @@ const Settings: NextPageWithLayout = () => {
     color: #858585;
   `
   const router = useRouter()
-  const {
-    state: { user: userData, account, isAuthenticated },
-    dispatch,
-  } = useContext(AuthenticationContext)
+  const { user: userData, account } = useAuthentication()
+  const { dispatch } = useContext(AuthenticationContext)
   const [user, setUser] = useState<Partial<UserEntity> | null>(userData)
   const [updateUser, setUpdateUser] = useState<Partial<UserEntity>>({})
   const [uploading, setUploading] = useState<boolean>(false)
@@ -110,8 +109,8 @@ const Settings: NextPageWithLayout = () => {
   }
 
   useEffect(() => {
-    if (!isAuthenticated) router.replace('/login')
-  }, [isAuthenticated, router])
+    setUser(userData)
+  }, [userData])
 
   return (
     <Fragment>

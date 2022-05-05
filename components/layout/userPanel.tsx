@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { useRefresh } from 'hooks'
+import { useAuthentication } from 'hooks'
 import Link from 'next/link'
 import { Fragment, useState } from 'react'
 import { userHostUrl } from 'utils'
@@ -12,7 +12,6 @@ export function UserPanel() {
     align-items: center;
     justify-content: flex-end;
     z-index: 102;
-    flex: 1;
   `
   const PanelButton = styled.a`
     box-sizing: border-box;
@@ -29,6 +28,7 @@ export function UserPanel() {
     font-weight: bold;
     border-radius: 3px;
     margin-left: 10px;
+
     &:hover {
       background-color: rgba(255, 255, 255, 0.8);
       color: #ff2449;
@@ -39,6 +39,7 @@ export function UserPanel() {
     text-decoration: none;
     display: flex;
     align-items: center;
+
     &:hover {
       text-decoration: underline;
     }
@@ -68,12 +69,13 @@ export function UserPanel() {
     letter-spacing: 0.03em;
     position: relative;
     font-size: 15px;
+
     &:hover {
       background-color: #fff0f0;
       color: #da2c49;
     }
   `
-  const { user } = useRefresh()
+  const { user } = useAuthentication()
   const profile = userHostUrl(user?.username?.toLowerCase())
 
   return (
@@ -132,6 +134,7 @@ declare interface DropMenuProps {
   open?: boolean
   children: React.ReactNode
 }
+
 function DropMenu({ open = false, children }: DropMenuProps) {
   const DropMenuWrap = styled.div`
     position: relative;
@@ -144,9 +147,11 @@ function DropMenu({ open = false, children }: DropMenuProps) {
     border-radius: 4px;
     border: 0;
     color: inherit;
+
     &:hover {
       background-color: rgba(0, 0, 0, 0.1);
     }
+
     & > .svgicon {
       display: inline-block;
       vertical-align: middle;
@@ -205,6 +210,7 @@ declare interface DropMenuGroupProps {
   header: string
   children: React.ReactNode
 }
+
 function DropMenuGroup({ header, children }: DropMenuGroupProps) {
   const MenuGroup = styled.div`
     padding-bottom: 5px;
