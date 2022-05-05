@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { useRefresh } from 'hooks'
+import { useAuthentication } from 'hooks'
 import Link from 'next/link'
 import { Fragment, useState } from 'react'
 import { userHostUrl } from 'utils'
@@ -75,7 +75,7 @@ export function UserPanel() {
       color: #da2c49;
     }
   `
-  const { user } = useRefresh()
+  const { user } = useAuthentication()
   const profile = userHostUrl(user?.username?.toLowerCase())
 
   return (
