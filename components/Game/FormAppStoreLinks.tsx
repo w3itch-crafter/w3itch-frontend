@@ -31,6 +31,8 @@ const MAX_LINKS = 5
 const FormAppStoreLinks: FC<Props> = ({ errors, control }) => {
   const { fields, append, remove } = useFieldArray({
     control,
+    // @TODO type fix
+    // @ts-expect-error: Unreachable code error
     name: 'appStoreLinks',
   })
 

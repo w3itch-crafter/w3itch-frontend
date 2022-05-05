@@ -15,6 +15,8 @@ export const calcRating = (rating: number) => parseInt(String(rating / 100))
  */
 export const linkDomainParser = (link: string): string => {
   try {
+    // @TODO type fix
+    // @ts-expect-error: Unreachable code error
     const { domain } = parseDomain(fromUrl(link))
     return toUnicode(domain)
   } catch (error) {
