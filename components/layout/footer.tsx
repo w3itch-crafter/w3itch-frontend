@@ -1,14 +1,23 @@
 import styled from '@emotion/styled'
 import { IcoMoonIcon, DiscordIcon } from 'components/icons'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 export function Footer() {
-  const Container = styled.footer`
+  const Container = styled.footer<{ gameDetail: boolean }>`
     margin: 20px 0 40px 0;
     padding: 0 20px;
     font-size: 14px;
     text-align: center;
     color: #858585;
+
+    ${(p) =>
+      p.gameDetail &&
+      `
+        @media screen and (max-width: 600px) {
+          padding-bottom: 50px;
+        }
+      `}
   `
   const Primary = styled.div`
     width: 100%;
@@ -41,8 +50,10 @@ export function Footer() {
   //   margin: 0 10px;
   // `
 
+  const router = useRouter()
+
   return (
-    <Container>
+    <Container gameDetail={router.pathname === '/game/[id]'}>
       <Primary>
         <Link href="https://twitter.com/w3itchio" passHref>
           <PrimaryLink rel="me" target="_blank">
