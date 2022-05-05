@@ -1,8 +1,27 @@
+import WifiOffIcon from '@mui/icons-material/WifiOff'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+
 const Offline = () => (
-  <>
-    <h1>This is offline fallback page</h1>
-    <h2>When offline, any page route will fallback to this page</h2>
-  </>
+  <Box
+    sx={{
+      minHeight: '500px',
+      textAlign: 'center',
+      padding: '50px 0',
+    }}
+  >
+    <WifiOffIcon
+      sx={{
+        fontSize: '50px',
+      }}
+    />
+    <Typography variant="h5" gutterBottom component="div">
+      Not connected to the internet
+    </Typography>
+    <Typography variant="body1" gutterBottom>
+      Your device is offline
+    </Typography>
+  </Box>
 )
 
 export default Offline
