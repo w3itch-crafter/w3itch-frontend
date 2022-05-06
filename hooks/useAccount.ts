@@ -3,6 +3,17 @@ import { AuthenticationContext } from 'context'
 import { useRouter } from 'next/router'
 import { useCallback, useContext, useEffect } from 'react'
 
+const routeWhiteList = [
+  '/',
+  '/login',
+  '/logout',
+  '/oauth',
+  '/register',
+  '/games',
+  '/game/[id]',
+  '/profile/[username]',
+]
+
 export function useAuthentication() {
   const router = useRouter()
   const { state, dispatch } = useContext(AuthenticationContext)
@@ -10,7 +21,8 @@ export function useAuthentication() {
     if (!state.isAuthenticated && !state.isLogout) {
       const user = await getMe()
       const account = await getMine()
-      if (user === null && account === null) {
+      const isWhiteListPath = routeWhiteList.includes(router.pathname)
+      if (user === null && account === null && !isWhiteListPath) {
         return router.push('/login')
       }
       dispatch({ type: 'LOGIN', payload: { user, account } })

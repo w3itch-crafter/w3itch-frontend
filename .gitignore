@@ -15,6 +15,12 @@
 # production
 /build
 
+# next-pwa https://github.com/shadowwalker/next-pwa/tree/master/examples/custom-worker#recommend-gitignore
+**/public/sw.js
+**/public/fallback-*.js
+**/public/workbox-*.js
+**/public/worker-*.js
+
 # misc
 .DS_Store
 *.pem
