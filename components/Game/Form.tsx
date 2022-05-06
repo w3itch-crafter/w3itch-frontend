@@ -64,6 +64,7 @@ import {
   UseFormSetValue,
   UseFormTrigger,
   UseFormWatch,
+  useWatch,
 } from 'react-hook-form'
 import { GameEntity, Token } from 'types'
 import { Api } from 'types/Api'
@@ -161,11 +162,21 @@ const GameForm: FC<GameFormProps> = ({
 
   const { errors } = formState
   const watchPaymentMode = watch('paymentMode')
+  const watchAppStoreLinks = useWatch({
+    control,
+    name: 'appStoreLinks',
+  })
 
   // console.log(watch('description'))
   // console.log(watch('paymentMode'))
   // console.log(watch('genre'))
   // console.log('errors', errors)
+
+  // Watch appStoreLinks change then trigger
+  useEffect(() => {
+    // console.log('watchAppStoreLinks', watchAppStoreLinks)
+    trigger('appStoreLinks')
+  }, [watchAppStoreLinks, trigger])
 
   const handleAllImages = async () => {
     const promiseArray = []
@@ -930,16 +941,7 @@ const GameForm: FC<GameFormProps> = ({
                     </div>
 
                     <div className={styles.input_row}>
-                      <FormAppStoreLinks
-                        editorMode={editorMode}
-                        getValues={getValues}
-                        errors={errors}
-                        watch={watch}
-                        control={control}
-                        changeLinks={(value) => {
-                          setValue('appStoreLinks', value)
-                        }}
-                      />
+                      <FormAppStoreLinks errors={errors} control={control} />
                     </div>
 
                     {/* <div className={styles.input_row}>

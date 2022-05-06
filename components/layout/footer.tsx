@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { IcoMoonIcon, DiscordIcon } from 'components/icons'
+import { DiscordIcon, IcoMoonIcon } from 'components/icons'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
@@ -62,7 +62,7 @@ export function Footer() {
         </Link>
         <Link href="https://discord.gg/UaHazgHc8q" passHref>
           <PrimaryLink rel="me" target="_blank">
-          <DiscordIcon size={19.6}/>
+            <DiscordIcon size={19.6} />
           </PrimaryLink>
         </Link>
         <Link href="https://docs.w3itch.io/" passHref>

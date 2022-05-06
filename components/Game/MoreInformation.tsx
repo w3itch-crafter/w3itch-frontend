@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { FC } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
-import { calcRating, enumWord, userHostUrl } from 'utils'
+import { calcRating, enumWord, linkDomainParser, userHostUrl } from 'utils'
 
 interface Props {
   readonly gameProject: GameEntity
@@ -103,7 +103,7 @@ const MoreInformation: FC<Props> = ({ gameProject, gameRatingsCount }) => {
                       target="_blank"
                       href={appStoreLink}
                     >
-                      Links
+                      {linkDomainParser(appStoreLink)}
                     </a>
                   ))}
                 </td>

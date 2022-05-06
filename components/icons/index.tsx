@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon'
 import clsx from 'clsx'
+import Image from 'next/image'
 
 export declare interface IconProps {
   size: number
