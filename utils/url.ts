@@ -34,3 +34,25 @@ export function parseUsernameFromHost(host?: string): string | null {
   if (!hasUsername) return null
   return host.replace(wildcardHostRegex, '')
 }
+
+/**
+ * url hostname parse
+ * @param url
+ * @returns
+ */
+export const urlHostnameParse = (url: string) => new URL(url).hostname
+
+/**
+ * url GoogleSearch
+ * @param query
+ * @returns
+ */
+export const urlGoogleSearch = (query: string): string => {
+  const searchContent = encodeURIComponent(
+    `site:${urlHostnameParse(process.env.NEXT_PUBLIC_URL as string)}` +
+      ' ' +
+      query
+  )
+
+  return `https://google.com/search?q=${searchContent}`
+}

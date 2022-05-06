@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
 import { NavLinks } from 'types'
+import { urlGoogleSearch } from 'utils'
 
 import NavBarDrawer from './navBarDrawer'
 import { UserPanel } from './userPanel'
@@ -106,11 +107,7 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
             const formData = Object.fromEntries(
               new FormData(e.target as HTMLFormElement)
             )
-            window.open(
-              `https://google.com/search?q=${encodeURIComponent(
-                'site:w3itch-frontend.vercel.app ' + formData.q
-              )}`
-            )
+            window.open(urlGoogleSearch(formData.q as string))
             e.preventDefault()
           }}
         >
