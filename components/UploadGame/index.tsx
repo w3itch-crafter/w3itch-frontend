@@ -25,7 +25,7 @@ interface Props {
 
 const UploadGame: FC<Props> = ({ setFile }) => {
   const onDrop = useCallback(
-    (acceptedFiles) => {
+    (acceptedFiles: File[]) => {
       // Do something with the files
       console.log('acceptedFiles', acceptedFiles)
       if (acceptedFiles.length) {
