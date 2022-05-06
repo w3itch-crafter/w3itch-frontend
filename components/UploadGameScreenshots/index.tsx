@@ -48,7 +48,7 @@ const UploadGameScreenshots: FC<Props> = ({
   const watchScreenshots = watch('screenshots')
 
   const onDrop = useCallback(
-    (acceptedFiles) => {
+    (acceptedFiles: File[]) => {
       // Do something with the files
       console.log('acceptedFiles', acceptedFiles)
 

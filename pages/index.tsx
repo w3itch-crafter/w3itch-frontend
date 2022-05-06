@@ -13,7 +13,7 @@ declare interface IndexProps {
 const Index: NextPageWithLayout<IndexProps> = (props) => {
   const { wildcard } = props
   if (wildcard) return <ProfileHome {...props} />
-  return <Home {...props} />
+  return <Home />
 }
 
 Index.getLayout = function getLayout(page: React.ReactElement) {

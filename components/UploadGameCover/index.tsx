@@ -90,7 +90,7 @@ const UploadGameCover: FC<Props> = ({
   }, [coverFile, editorMode, getValues, watchCover])
 
   const onDrop = useCallback(
-    (acceptedFiles) => {
+    (acceptedFiles: File[]) => {
       // Do something with the files
       console.log('acceptedFiles', acceptedFiles)
 
