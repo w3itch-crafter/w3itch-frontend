@@ -3,7 +3,16 @@ import { AuthenticationContext } from 'context'
 import { useRouter } from 'next/router'
 import { useCallback, useContext, useEffect } from 'react'
 
-const routeWhiteList = ['/login', '/register', '/games']
+const routeWhiteList = [
+  '/',
+  '/login',
+  '/logout',
+  '/oauth',
+  '/register',
+  '/games',
+  '/game/[id]',
+  '/profile/[username]',
+]
 
 export function useAuthentication() {
   const router = useRouter()
