@@ -73,6 +73,27 @@ export async function loginGitHub(redirectUri?: string): Promise<string> {
   return await githubAccountService('login', undefined, redirectUri)
 }
 
+async function discordAccountService(
+  action: 'login' | 'signup',
+  username?: string,
+  redirectUri?: string
+): Promise<string> {
+  const res = await backend.post<string>(`/accounts/discord/${action}`, {
+    username,
+    redirectUri,
+  })
+  return res.data
+}
+export async function signupDiscord(
+  username: string,
+  redirectUri?: string
+): Promise<string> {
+  return await discordAccountService('signup', username, redirectUri)
+}
+export async function loginDiscord(redirectUri?: string): Promise<string> {
+  return await discordAccountService('login', undefined, redirectUri)
+}
+
 export async function refresh(): Promise<UserEntity | null> {
   try {
     const res = await backend.patch<UserEntity>('/accounts/tokens')

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { EthereumIcon, GitHubIcon } from 'components/icons'
+import { DiscordIcon, EthereumIcon, GitHubIcon } from 'components/icons'
 import { LoginMethod } from 'types'
 
 export declare interface LoginMethodChooserProps {
@@ -56,6 +56,10 @@ export function LoginMethodChooser({
         <GitHubIcon size={32} />
         <span>{method} with GitHub account</span>
       </GitHubChooseButton>
+      <ChooseButton color="#5865F2" onClick={() => onChoose('discord')}>
+        <DiscordIcon size={32} />
+        <span>{method} with Discord account</span>
+      </ChooseButton>
     </Container>
   )
 }

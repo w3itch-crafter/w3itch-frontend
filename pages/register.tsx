@@ -19,7 +19,7 @@ import { LoginMethod, RegisterData } from 'types'
 import { useWallet } from 'use-wallet'
 import { isEmptyObj, userHostUrl } from 'utils'
 
-import { signupGitHub, signupWallet } from '../api/account'
+import { signupDiscord, signupGitHub, signupWallet } from '../api/account'
 
 declare type InvalidData = {
   [key in keyof RegisterData]: {
@@ -167,6 +167,10 @@ const Register: NextPage = () => {
       }
       if (registerMethod === 'github') {
         const oAuthUrl = await signupGitHub(registerData.username, '/oauth')
+        window.location.href = oAuthUrl
+      }
+      if (registerMethod === 'discord') {
+        const oAuthUrl = await signupDiscord(registerData.username, '/oauth')
         window.location.href = oAuthUrl
       }
     } catch (error) {
