@@ -50,7 +50,7 @@ const Login: NextPage = () => {
   const canMetaMaskLogin = loginMethod === 'metamask' && isConnected
   const canGitHubLogin = loginMethod === 'github' // TODO: check if can logged in
   const canDiscordLogin = loginMethod === 'discord'
-  const canLogin = canMetaMaskLogin || canGitHubLogin
+  const canLogin = canMetaMaskLogin || canGitHubLogin || canDiscordLogin
   const { dispatch } = useContext(AuthenticationContext)
   const showSnackbar = useTopRightSnackbar()
   const startWalletLogin = useCallback(
