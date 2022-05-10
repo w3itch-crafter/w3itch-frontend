@@ -19,7 +19,7 @@ import { LoginMethod } from 'types'
 import { useWallet } from 'use-wallet'
 import { Wallet } from 'use-wallet/dist/cjs/types'
 
-import { loginGitHub, loginWallet } from '../api/account'
+import { loginDiscord, loginGitHub, loginWallet } from '../api/account'
 
 const Login: NextPage = () => {
   const Container = styled.div`
@@ -49,7 +49,8 @@ const Login: NextPage = () => {
   const [loginMethod, setLoginMethod] = useState<LoginMethod | null>(null)
   const canMetaMaskLogin = loginMethod === 'metamask' && isConnected
   const canGitHubLogin = loginMethod === 'github' // TODO: check if can logged in
-  const canLogin = canMetaMaskLogin || canGitHubLogin
+  const canDiscordLogin = loginMethod === 'discord'
+  const canLogin = canMetaMaskLogin || canGitHubLogin || canDiscordLogin
   const { dispatch } = useContext(AuthenticationContext)
   const showSnackbar = useTopRightSnackbar()
   const startWalletLogin = useCallback(
@@ -88,10 +89,23 @@ const Login: NextPage = () => {
       setHasStarted(false)
     }
   }, [showSnackbar])
+  const startDiscordLogin = useCallback(async () => {
+    try {
+      setHasStarted(true)
+      window.location.href = await loginDiscord('/oauth')
+    } catch (error) {
+      if (error instanceof Error) {
+        showSnackbar(error.message, 'error')
+      }
+    } finally {
+      setHasStarted(false)
+    }
+  }, [showSnackbar])
   const handleLogin = () => {
     if (!canLogin || hasStarted) return
     if (canMetaMaskLogin) startWalletLogin(wallet)
     if (canGitHubLogin) startGitHubLogin()
+    if (canDiscordLogin) startDiscordLogin()
   }
   const handleBackToSelect = () => {
     setLoginMethod(null)
@@ -125,6 +139,7 @@ const Login: NextPage = () => {
                 {!loginMethod && 'Select a method'}
                 {loginMethod === 'metamask' && 'Login'}
                 {loginMethod === 'github' && 'Log in with GitHub'}
+                {loginMethod === 'discord' && 'Log in with Discord'}
               </RedButton>
               or <Link href="/register">Create account</Link>
             </Buttons>
