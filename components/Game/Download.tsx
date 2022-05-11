@@ -90,6 +90,7 @@ const Download: FC<DownloadProps> = ({ gameProject, pricesToken }) => {
     user,
   ])
 
+  // @TODO Use more to keep unlocked then extract to public files
   // process hold unlock
   const processHoldUnlock = useCallback(() => {
     if (gameProject.paymentMode === PaymentMode.PAID) {
