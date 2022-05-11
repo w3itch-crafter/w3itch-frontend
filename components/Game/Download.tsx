@@ -97,6 +97,12 @@ const Download: FC<DownloadProps> = ({ gameProject, pricesToken }) => {
         return
       }
 
+      // Publisher works do not need to hold unlock
+      if (gameProject.username === user?.username) {
+        setHoldUnlock(false)
+        return
+      }
+
       const isUnlock = new BigNumber(
         utils.formatUnits(pricesToken.balanceOf, pricesToken.decimals)
       ).gte(utils.formatUnits(pricesToken.amount, pricesToken.decimals))
@@ -107,7 +113,7 @@ const Download: FC<DownloadProps> = ({ gameProject, pricesToken }) => {
     } else {
       setHoldUnlock(false)
     }
-  }, [gameProject, pricesToken])
+  }, [gameProject, pricesToken, user])
 
   useEffect(() => {
     processHoldUnlock()
