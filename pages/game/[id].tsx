@@ -303,7 +303,11 @@ const GameId: NextPage<GameProps> = ({
                     ) : null}
 
                     <div className={styles.row}>
-                      <Download gameProject={gameProject} />
+                      <Download
+                        gameProject={gameProject}
+                        // @TODO Temporarily support the first Token
+                        pricesToken={pricesTokens[0]}
+                      />
                     </div>
 
                     {gameProject.community === Community.DISQUS && (
