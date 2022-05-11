@@ -62,7 +62,7 @@ const MoreInformation: FC<Props> = ({ gameProject, gameRatingsCount }) => {
               </td>
             </tr>
             <tr>
-              <td>Author</td>
+              <td>Submitter</td>
               <td>
                 <Link href={userHostUrl(gameProject.username) || '/'}>
                   <a>{gameProject.username}</a>

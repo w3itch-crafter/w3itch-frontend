@@ -140,14 +140,14 @@ export function GameCell({
     font-size: 14px;
     display: ${(p) => (p.small ? 'none' : 'block')};
   `
-  const GameAuthor = styled.div<Pick<Required<GameCellProps>, 'small'>>`
+  const GameSubmitter = styled.div<Pick<Required<GameCellProps>, 'small'>>`
     display: flex;
     align-items: center;
     font-size: 14px;
     color: #606060;
     display: ${(p) => (p.small ? 'none' : 'block')};
   `
-  const GameAuthorLink = styled.a`
+  const GameSubmitterLink = styled.a`
     min-width: 0;
     white-space: nowrap;
     overflow: hidden;
@@ -214,11 +214,11 @@ export function GameCell({
         </GameTitle>
         {subtitle && <GameText small={small}>{subtitle}</GameText>}
         {user && (
-          <GameAuthor small={small}>
+          <GameSubmitter small={small}>
             <Link href={profileUrl} passHref>
-              <GameAuthorLink>{user.username}</GameAuthorLink>
+              <GameSubmitterLink>{user.username}</GameSubmitterLink>
             </Link>
-          </GameAuthor>
+          </GameSubmitter>
         )}
         {genre && <GameGenre small={small}>{enumWord(genre)}</GameGenre>}
         {platform && <GamePlatform small={small}></GamePlatform>}
