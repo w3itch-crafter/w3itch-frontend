@@ -2608,12 +2608,12 @@ __metadata:
   linkType: hard
 
 "@jridgewell/trace-mapping@npm:^0.3.9":
-  version: 0.3.11
-  resolution: "@jridgewell/trace-mapping@npm:0.3.11"
+  version: 0.3.12
+  resolution: "@jridgewell/trace-mapping@npm:0.3.12"
   dependencies:
     "@jridgewell/resolve-uri": ^3.0.3
     "@jridgewell/sourcemap-codec": ^1.4.10
-  checksum: 0f1f807e33a23280c538574028af30f8173d7622704799b0d97fcfcacc45864e348ba40692488bb9afb606a21a14ac955fbe0bba02a6e0f021e52869f0fd2d65
+  checksum: 746a44f868e90c79ff940d7772d0a473e4580f40af246c46bee14b6b047265963c8fe3e4726b3f362913dc69f021f1389da707aa4ea4b5a34eb6bdc7309657fd
   languageName: node
   linkType: hard
 
@@ -10124,9 +10124,9 @@ __metadata:
   linkType: hard
 
 "foreach@npm:^2.0.5":
-  version: 2.0.5
-  resolution: "foreach@npm:2.0.5"
-  checksum: dab4fbfef0b40b69ee5eab81bcb9626b8fa8b3469c8cfa26480f3e5e1ee08c40eae07048c9a967c65aeda26e774511ccc70b3f10a604c01753c6ef24361f0fc8
+  version: 2.0.6
+  resolution: "foreach@npm:2.0.6"
+  checksum: f7b68494545ee41cbd0b0425ebf5386c265dc38ef2a9b0d5cd91a1b82172e939b4cf9387f8e0ebf6db4e368fc79ed323f2198424d5c774515ac3ed9b08901c0e
   languageName: node
   linkType: hard
 
