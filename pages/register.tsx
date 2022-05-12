@@ -14,6 +14,8 @@ import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { LoginMethod, RegisterData } from 'types'
 import { useWallet } from 'use-wallet'
@@ -28,6 +30,8 @@ declare type InvalidData = {
 }
 
 const Register: NextPage = () => {
+  const { t } = useTranslation()
+
   const Container = styled.div``
   const RegisterForm = styled.div`
     display: flex;
@@ -38,12 +42,15 @@ const Register: NextPage = () => {
     box-sizing: border-box;
     border-right: 1px solid;
     border-color: #dadada;
+
     &:last-child {
       border-right: 0;
     }
+
     h2 {
       margin: 0 0 20px 0;
     }
+
     h3,
     h4,
     h5 {
@@ -51,6 +58,7 @@ const Register: NextPage = () => {
       font-weight: 900;
       color: #434343;
     }
+
     p {
       font-size: 14px;
       margin: 0 0 20px 0;
@@ -81,10 +89,12 @@ const Register: NextPage = () => {
     padding: 10px;
     border-radius: 2px;
     margin-bottom: 20px;
+
     & > strong {
       display: block;
       margin-bottom: 10px;
     }
+
     & > p {
       margin: 0;
       color: #606060;
@@ -199,7 +209,7 @@ const Register: NextPage = () => {
       </Head>
       <Container>
         <PageCard>
-          <StatHeader title="Create an account on w3itch.io" />
+          <StatHeader title={t('Create an account on w3itch.io')} />
           <RegisterForm>
             <FormColumn>
               {registerMethod && (
@@ -329,5 +339,11 @@ const Register: NextPage = () => {
     </Fragment>
   )
 }
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'])),
+  },
+})
 
 export default Register
