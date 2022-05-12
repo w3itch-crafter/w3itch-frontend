@@ -1,16 +1,13 @@
 // pages/server-sitemap-index.xml/index.tsx
 import { getGames } from 'api'
 import { GetServerSideProps } from 'next'
-import { getServerSideSitemap } from 'next-sitemap'
+import { getServerSideSitemap, ISitemapField } from 'next-sitemap'
 import { GameEntity } from 'types'
 import { userHostUrl } from 'utils'
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   // Method to get URL from /api * 1000
-  let sitemapFields: {
-    loc: string
-    lastmod: string
-  }[] = []
+  let sitemapFields: ISitemapField[] = []
 
   try {
     const gamesResult = await getGames({
