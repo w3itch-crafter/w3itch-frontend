@@ -7,6 +7,7 @@ import { WalletSupportedChainIds } from 'constants/index'
 import type { AppProps } from 'next/app'
 import type { NextWebVitalsMetric } from 'next/app'
 import Head from 'next/head'
+import { Router } from 'next/router'
 import { appWithTranslation } from 'next-i18next'
 import { DefaultSeo } from 'next-seo'
 import { event, GoogleAnalytics, usePagesViews } from 'nextjs-google-analytics'
@@ -15,7 +16,7 @@ import { Fragment } from 'react'
 import { NextPageWithLayout } from 'types'
 import { UseWalletProvider } from 'use-wallet'
 import { getRpcUrl } from 'utils'
-import { Router } from 'next/router'
+
 import SEO from '../next-seo.config'
 
 export const WalletSupportedRpcUrls = WalletSupportedChainIds.map(
@@ -100,8 +101,11 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 // Handle baidu analytics
 Router.events.on('routeChangeComplete', (url) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(window as any)._hmt.push(['_trackPageview', url])
-  } catch (e) {}
+  } catch (e) {
+    console.error('router event routeChangeComplete', e)
+  }
 })
 
 export default appWithTranslation(MyApp)
