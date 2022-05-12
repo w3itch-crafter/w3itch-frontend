@@ -15,16 +15,16 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       page: 1,
     })
 
-    // game urls
-    const gameUrls = gamesResult.data.map(
-      (game: GameEntity) => `${process.env.NEXT_PUBLIC_URL}/game${game.id}`
-    )
-    // game username urls
-    const gameUsernameUrls = gamesResult.data.map((game: GameEntity) =>
-      userHostUrl(game?.username.toLowerCase())
-    )
+    // game id, username urls
+    const gameAndUsernameUrls = gamesResult.data.map((game: GameEntity) => {
+      return [
+        `${process.env.NEXT_PUBLIC_URL}/game${game.id}`,
+        userHostUrl(game?.username.toLowerCase()),
+      ]
+    })
+
     // merged
-    sitemapUrls = [...gameUrls, ...new Set(gameUsernameUrls)]
+    sitemapUrls = [...new Set(gameAndUsernameUrls.flat())]
   } catch (e) {
     console.log('fetch games error', e)
     return getServerSideSitemapIndex(ctx, [])
