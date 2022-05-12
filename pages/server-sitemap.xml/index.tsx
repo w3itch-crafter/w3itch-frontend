@@ -27,7 +27,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       lastmod: new Date().toISOString(),
       changefreq: 'daily',
       priority: 0.7,
-    }))
+    })) as ISitemapField[]
   } catch (e) {
     console.log('fetch games error', e)
     return getServerSideSitemap(ctx, [])
