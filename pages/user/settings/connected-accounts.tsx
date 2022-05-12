@@ -1,29 +1,65 @@
-import { InputRow } from 'components/forms'
-import { SupportedChainId } from 'constants/index'
+import styled from '@emotion/styled'
+import { LoginChooseButton } from 'components/buttons'
+import { DiscordIcon, EthereumIcon, GitHubIcon } from 'components/icons'
 import { AuthenticationContext } from 'context'
-import { ethers } from 'ethers'
-import { useERC20, useERC20Balance, useProvider } from 'hooks'
 import { Fragment, useContext } from 'react'
-import { NextPageWithLayout } from 'types'
+import { LoginMethod, NextPageWithLayout } from 'types'
+import { shortAddress } from 'utils'
 
 import Layout from './_layout'
 
+const OAuthContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 400px;
+`
+
+const GitHubChooseButton = styled(LoginChooseButton)`
+  svg {
+    border-radius: 100%;
+    background-color: #fff;
+  }
+`
+
+const loginMethods: Record<LoginMethod, string> = {
+  metamask: 'Ethereum',
+  github: 'GitHub',
+  discord: 'Discord',
+}
+const renderText = (
+  account: string | number,
+  platform: LoginMethod
+): string => {
+  const commonText = ` ${loginMethods[platform]} account`
+  if (!account) return `Bind ${commonText}`
+  return `Unbind ${commonText}`
+}
+
 const ConnectedAccounts: NextPageWithLayout = () => {
-  const provider = useProvider(SupportedChainId.RINKEBY)
   const { state } = useContext(AuthenticationContext)
-  const dai = useERC20('0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735', provider)
   const accountId = state?.account?.accountId
-  const { balance: daiBalance, decimals: daiDecimals } = useERC20Balance(
-    dai,
-    accountId
-  )
-  const daiBalanceValue = ethers.utils.formatUnits(daiBalance, daiDecimals)
+  const shortAccountId = shortAddress(accountId)
 
   return (
     <Fragment>
       <h2>Connected accounts</h2>
-      <InputRow disabled label="Wallet account" value={accountId} />
-      <InputRow disabled label="Dai balance" value={daiBalanceValue} />
+      <OAuthContainer>
+        <LoginChooseButton size="small" color="#716b94">
+          <EthereumIcon size={32} />
+          <span>
+            {renderText(shortAccountId, 'metamask')} {shortAccountId}
+          </span>
+        </LoginChooseButton>
+        <GitHubChooseButton size="small" color="#161614">
+          <GitHubIcon size={32} />
+          <span>{renderText('', 'github')}</span>
+        </GitHubChooseButton>
+        <LoginChooseButton size="small" color="#5865F2">
+          <DiscordIcon size={32} />
+          <span>{renderText('', 'discord')}</span>
+        </LoginChooseButton>
+      </OAuthContainer>
     </Fragment>
   )
 }
