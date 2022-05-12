@@ -7,7 +7,6 @@ import { WalletSupportedChainIds } from 'constants/index'
 import type { AppProps } from 'next/app'
 import type { NextWebVitalsMetric } from 'next/app'
 import Head from 'next/head'
-import { Router } from 'next/router'
 import { appWithTranslation } from 'next-i18next'
 import { DefaultSeo } from 'next-seo'
 import { event, GoogleAnalytics, usePagesViews } from 'nextjs-google-analytics'
@@ -43,20 +42,6 @@ export function reportWebVitals({
   })
 }
 
-// Baidu Analytics
-const getAnalyticsTag = () => {
-  return {
-    __html: `
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "https://hm.baidu.com/hm.js?${process.env.NEXT_PUBLIC_BAIDU_ANALYTICS_ID}";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();`,
-  }
-}
-
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>)
   usePagesViews()
@@ -86,7 +71,6 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
                 httpEquiv="Content-Type"
                 content="text/html; charset=utf-8"
               />
-              <script dangerouslySetInnerHTML={getAnalyticsTag()} />
             </Head>
             <DefaultSeo {...SEO} />
             <GoogleAnalytics />
@@ -97,15 +81,5 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     </UseWalletProvider>
   )
 }
-
-// Handle baidu analytics
-Router.events.on('routeChangeComplete', (url) => {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ;(window as any)._hmt.push(['_trackPageview', url])
-  } catch (e) {
-    console.error('router event routeChangeComplete', e)
-  }
-})
 
 export default appWithTranslation(MyApp)
