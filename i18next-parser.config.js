@@ -1,13 +1,13 @@
 // i18next-parser.config.js
 
-export default {
+module.exports = {
   contextSeparator: '_',
   // Key separator used in your translation keys
 
   createOldCatalogs: true,
   // Save the \_old files
 
-  defaultNamespace: 'translation',
+  defaultNamespace: 'common',
   // Default namespace used in your i18next config
 
   defaultValue: '',
@@ -20,7 +20,7 @@ export default {
   keepRemoved: false,
   // Keep keys from the catalog that are no longer in code
 
-  keySeparator: '.',
+  keySeparator: false,
   // Key separator used in your translation keys
   // If you want to use plain english keys, separators such as `.` and `:` will conflict. You might want to set `keySeparator: false` and `namespaceSeparator: false`. That way, `t('Status: Loading...')` will not think that there are a namespace and three separator dots for instance.
 
@@ -51,7 +51,7 @@ export default {
   // Namespace separator used in your translation keys
   // If you want to use plain english keys, separators such as `.` and `:` will conflict. You might want to set `keySeparator: false` and `namespaceSeparator: false`. That way, `t('Status: Loading...')` will not think that there are a namespace and three separator dots for instance.
 
-  output: 'locales/$LOCALE/$NAMESPACE.json',
+  output: 'public/locales/$LOCALE/$NAMESPACE.json',
   // Supports $LOCALE and $NAMESPACE injection
   // Supports JSON (.json) and YAML (.yml) file formats
   // Where to write the locale files relative to process.cwd()
@@ -71,7 +71,7 @@ export default {
   // Whether to ignore default values
   // You may also specify a function accepting the locale and namespace as arguments
 
-  useKeysAsDefaultValue: false,
+  useKeysAsDefaultValue: true,
   // Whether to use the keys as the default value; ex. "Hello": "Hello", "World": "World"
   // This option takes precedence over the `defaultValue` and `skipDefaultValues` options
   // You may also specify a function accepting the locale and namespace as arguments

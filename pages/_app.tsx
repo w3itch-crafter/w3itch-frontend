@@ -6,6 +6,7 @@ import { AuthenticationProvider } from 'components/pages'
 import { WalletSupportedChainIds } from 'constants/index'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import { appWithTranslation } from 'next-i18next'
 import { DefaultSeo } from 'next-seo'
 import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
@@ -62,4 +63,4 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   )
 }
 
-export default MyApp
+export default appWithTranslation(MyApp)
