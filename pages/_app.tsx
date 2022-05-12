@@ -7,11 +7,13 @@ import { WalletSupportedChainIds } from 'constants/index'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { DefaultSeo } from 'next-seo'
+import { GoogleAnalytics, event, usePagesViews } from 'nextjs-google-analytics'
 import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
 import { NextPageWithLayout } from 'types'
 import { UseWalletProvider } from 'use-wallet'
 import { getRpcUrl } from 'utils'
+import type { NextWebVitalsMetric } from 'next/app'
 
 import SEO from '../next-seo.config'
 
@@ -24,8 +26,23 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
 
+export function reportWebVitals({
+  id,
+  name,
+  label,
+  value,
+}: NextWebVitalsMetric) {
+  event(name, {
+    category: label === 'web-vital' ? 'Web Vitals' : 'Next.js custom metric',
+    value: Math.round(name === 'CLS' ? value * 1000 : value), // values must be integers
+    label: id, // id unique to current page load
+    nonInteraction: true, // avoids affecting bounce rate.
+  })
+}
+
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>)
+  usePagesViews()
 
   return (
     <UseWalletProvider
@@ -54,6 +71,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               />
             </Head>
             <DefaultSeo {...SEO} />
+            <GoogleAnalytics />
             {getLayout(<Component {...pageProps} />)}
           </Fragment>
         </SnackbarProvider>

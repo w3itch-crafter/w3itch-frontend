@@ -14800,6 +14800,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nextjs-google-analytics@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "nextjs-google-analytics@npm:1.2.0"
+  peerDependencies:
+    next: ">=11.0.0"
+    react: ">=17.0.0"
+  checksum: aab11f28ed88016600af79503ce55e3bc65c33d4b77f538f3bc287a818c2ca1bc151da1607c375e6923af00b8ae2cc73ba8f1aadf798269967ba7322ee5402e4
+  languageName: node
+  linkType: hard
+
 "nice-try@npm:^1.0.4":
   version: 1.0.5
   resolution: "nice-try@npm:1.0.5"
@@ -19787,6 +19797,7 @@ __metadata:
     next-pwa: ^5.5.2
     next-seo: ^5.4.0
     next-sitemap: ^2.5.20
+    nextjs-google-analytics: ^1.2.0
     notistack: ^2.0.4
     parse-domain: ^7.0.0
     prettier: ^2.6.2
