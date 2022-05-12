@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "yarn run postbuild && yarn run next-build",
+    "next-build": "next build",
     "start": "next start",
     "format": "prettier '**/*.{ts,tsx}' --write",
     "lint": "yarn lint:eslint && yarn lint:next",
