@@ -15,7 +15,7 @@ import { Fragment } from 'react'
 import { NextPageWithLayout } from 'types'
 import { UseWalletProvider } from 'use-wallet'
 import { getRpcUrl } from 'utils'
-
+import { Router } from 'next/router'
 import SEO from '../next-seo.config'
 
 export const WalletSupportedRpcUrls = WalletSupportedChainIds.map(
@@ -27,6 +27,7 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
 
+// Google Analytics
 export function reportWebVitals({
   id,
   name,
@@ -39,6 +40,20 @@ export function reportWebVitals({
     label: id, // id unique to current page load
     nonInteraction: true, // avoids affecting bounce rate.
   })
+}
+
+// Baidu Analytics
+const getAnalyticsTag = () => {
+  return {
+    __html: `
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?${process.env.NEXT_PUBLIC_BAIDU_ANALYTICS_ID}";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();`,
+  }
 }
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
@@ -70,6 +85,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
                 httpEquiv="Content-Type"
                 content="text/html; charset=utf-8"
               />
+              <script dangerouslySetInnerHTML={getAnalyticsTag()} />
             </Head>
             <DefaultSeo {...SEO} />
             <GoogleAnalytics />
@@ -80,5 +96,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     </UseWalletProvider>
   )
 }
+
+// Handle baidu analytics
+Router.events.on('routeChangeComplete', (url) => {
+  try {
+    ;(window as any)._hmt.push(['_trackPageview', url])
+  } catch (e) {}
+})
 
 export default appWithTranslation(MyApp)
