@@ -1,13 +1,16 @@
 // pages/server-sitemap-index.xml/index.tsx
 import { getGames } from 'api'
 import { GetServerSideProps } from 'next'
-import { getServerSideSitemapIndex } from 'next-sitemap'
+import { getServerSideSitemap } from 'next-sitemap'
 import { GameEntity } from 'types'
 import { userHostUrl } from 'utils'
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   // Method to get URL from /api * 1000
-  let sitemapUrls: string[] = []
+  let sitemapFields: {
+    loc: string
+    lastmod: string
+  }[] = []
 
   try {
     const gamesResult = await getGames({
@@ -22,18 +25,23 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     ])
 
     // merged
-    sitemapUrls = [...new Set(gameAndUsernameUrls.flat())]
+    sitemapFields = [...new Set(gameAndUsernameUrls.flat())].map((i) => ({
+      loc: i,
+      lastmod: new Date().toISOString(),
+      changefreq: 'daily',
+      priority: 0.7,
+    }))
   } catch (e) {
     console.log('fetch games error', e)
-    return getServerSideSitemapIndex(ctx, [])
+    return getServerSideSitemap(ctx, [])
   }
 
-  // console.log('sitemapUrls', sitemapUrls)
-  return getServerSideSitemapIndex(ctx, sitemapUrls)
+  // console.log('sitemapFields', sitemapFields)
+  return getServerSideSitemap(ctx, sitemapFields)
 }
 
 // Default export to prevent next.js errors
-export default function SitemapIndex() {
-  // handle Error: Unexpected empty function 'SitemapIndex'.  @typescript-eslint/no-empty-function
+export default function Sitemap() {
+  // handle Error: Unexpected empty function 'Sitemap'.  @typescript-eslint/no-empty-function
   return null
 }
