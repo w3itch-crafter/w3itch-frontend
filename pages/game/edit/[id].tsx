@@ -46,6 +46,8 @@ const GameEdit: NextPage = () => {
     resolver: resolverGame,
     defaultValues: defaultValue,
   })
+
+  // Fetch game project
   const fetchGameProjectFn = useCallback(
     async (id: number) => {
       const gameProjectResult = await gameProjectByID(id)
