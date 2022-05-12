@@ -16,12 +16,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     })
 
     // game id, username urls
-    const gameAndUsernameUrls = gamesResult.data.map((game: GameEntity) => {
-      return [
-        `${process.env.NEXT_PUBLIC_URL}/game${game.id}`,
-        userHostUrl(game?.username.toLowerCase()),
-      ]
-    })
+    const gameAndUsernameUrls = gamesResult.data.map((game: GameEntity) => [
+      `${process.env.NEXT_PUBLIC_URL}/game${game.id}`,
+      userHostUrl(game?.username.toLowerCase()),
+    ])
 
     // merged
     sitemapUrls = [...new Set(gameAndUsernameUrls.flat())]
