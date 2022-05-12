@@ -1870,6 +1870,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@corex/deepmerge@npm:^2.6.148":
+  version: 2.6.148
+  resolution: "@corex/deepmerge@npm:2.6.148"
+  checksum: b80b6b3e408901151de26e27b519a43cda1771a81e5390ff10cd6b47add0139bb315ca44112ff076d68ac887d7cfe237c9fb33868efb04839c4afb7c38864385
+  languageName: node
+  linkType: hard
+
 "@cspotcode/source-map-consumer@npm:0.8.0":
   version: 0.8.0
   resolution: "@cspotcode/source-map-consumer@npm:0.8.0"
@@ -14708,6 +14715,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"next-sitemap@npm:^2.5.20":
+  version: 2.5.20
+  resolution: "next-sitemap@npm:2.5.20"
+  dependencies:
+    "@corex/deepmerge": ^2.6.148
+    minimist: ^1.2.6
+  peerDependencies:
+    next: "*"
+  bin:
+    next-sitemap: bin/next-sitemap
+  checksum: b2a770575117d709bf0c90ca6f6e76a6602980472480cbaa1f60104dae01428ce2491e4e06a19365014dec32629b19b8d627c40df0137ee126390aa8da42c30e
+  languageName: node
+  linkType: hard
+
 "next-tick@npm:^1.1.0":
   version: 1.1.0
   resolution: "next-tick@npm:1.1.0"
@@ -19765,6 +19786,7 @@ __metadata:
     next: ^12.1.6
     next-pwa: ^5.5.2
     next-seo: ^5.4.0
+    next-sitemap: ^2.5.20
     notistack: ^2.0.4
     parse-domain: ^7.0.0
     prettier: ^2.6.2
