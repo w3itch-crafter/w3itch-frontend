@@ -7,6 +7,7 @@ import { WalletSupportedChainIds } from 'constants/index'
 import type { AppProps } from 'next/app'
 import type { NextWebVitalsMetric } from 'next/app'
 import Head from 'next/head'
+import { appWithTranslation } from 'next-i18next'
 import { DefaultSeo } from 'next-seo'
 import { event, GoogleAnalytics, usePagesViews } from 'nextjs-google-analytics'
 import { SnackbarProvider } from 'notistack'
@@ -103,4 +104,4 @@ Router.events.on('routeChangeComplete', (url) => {
   } catch (e) {}
 })
 
-export default MyApp
+export default appWithTranslation(MyApp)
