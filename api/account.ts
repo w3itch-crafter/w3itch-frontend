@@ -1,12 +1,12 @@
-import { AccountEntity, UserEntity } from 'types'
+import { AccountEntity, AccountServiceAction, UserEntity } from 'types'
 import { Api } from 'types/Api'
 import type { Wallet } from 'use-wallet/dist/cjs/types'
 
 import backend from './backend'
 
 async function walletAccountService(
+  action: AccountServiceAction,
   wallet: Wallet,
-  action: 'login' | 'signup',
   username?: string
 ): Promise<Api.AccountsMetamaskActionResponse> {
   const walletAccount = wallet.account
@@ -28,22 +28,20 @@ async function walletAccountService(
   )
   return res.data
 }
-
 export async function signupWallet(
   wallet: Wallet,
   username: string
 ): Promise<Api.AccountsMetamaskActionResponse> {
-  return await walletAccountService(wallet, 'signup', username)
+  return await walletAccountService('signup', wallet, username)
 }
-
 export async function loginWallet(
   wallet: Wallet
 ): Promise<Api.AccountsMetamaskActionResponse> {
-  return await walletAccountService(wallet, 'login')
+  return await walletAccountService('login', wallet)
 }
 
 async function githubAccountService(
-  action: 'login' | 'signup',
+  action: AccountServiceAction,
   username?: string,
   redirectUri?: string
 ): Promise<string> {
@@ -53,20 +51,24 @@ async function githubAccountService(
   })
   return res.data
 }
-
 export async function signupGitHub(
   username: string,
   redirectUri?: string
 ): Promise<string> {
   return await githubAccountService('signup', username, redirectUri)
 }
-
 export async function loginGitHub(redirectUri?: string): Promise<string> {
   return await githubAccountService('login', undefined, redirectUri)
 }
+export async function bindGitHub(redirectUri?: string): Promise<string> {
+  return await githubAccountService('bind', undefined, redirectUri)
+}
+export async function unbindGitHub(): Promise<void> {
+  await githubAccountService('unbind')
+}
 
 async function discordAccountService(
-  action: 'login' | 'signup',
+  action: AccountServiceAction,
   username?: string,
   redirectUri?: string
 ): Promise<string> {
@@ -84,6 +86,12 @@ export async function signupDiscord(
 }
 export async function loginDiscord(redirectUri?: string): Promise<string> {
   return await discordAccountService('login', undefined, redirectUri)
+}
+export async function bindDiscord(redirectUri?: string): Promise<string> {
+  return await discordAccountService('bind', undefined, redirectUri)
+}
+export async function unbindDiscord(): Promise<void> {
+  await discordAccountService('unbind')
 }
 
 export async function refresh(): Promise<UserEntity | null> {

@@ -181,6 +181,12 @@ export declare type NavLinks = NavLink[]
 
 export declare type LoginMethod = 'metamask' | 'github' | 'discord'
 
+export declare type AccountServiceAction =
+  | 'login'
+  | 'signup'
+  | 'bind'
+  | 'unbind'
+
 interface Keyboard {
   lock(keyCodes?: Iterable<string>): Promise<void>
   unlock(): void
