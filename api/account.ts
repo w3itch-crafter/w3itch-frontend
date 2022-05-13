@@ -39,6 +39,12 @@ export async function loginWallet(
 ): Promise<Api.AccountsMetamaskActionResponse> {
   return await walletAccountService('login', wallet)
 }
+export async function bindWallet(wallet: Wallet): Promise<void> {
+  await walletAccountService('bind', wallet)
+}
+export async function unbindWallet(): Promise<void> {
+  await backend.post(`/accounts/metamask/unbind`)
+}
 
 async function githubAccountService(
   action: AccountServiceAction,
