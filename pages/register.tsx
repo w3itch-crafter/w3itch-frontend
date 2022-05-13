@@ -172,7 +172,7 @@ const Register: NextPage = () => {
           wallet,
           registerData.username
         )
-        dispatch({ type: 'LOGIN', payload: { user, account } })
+        dispatch({ type: 'LOGIN', payload: { user, account: [account] } })
         await router.replace('/games')
       }
       if (registerMethod === 'github') {

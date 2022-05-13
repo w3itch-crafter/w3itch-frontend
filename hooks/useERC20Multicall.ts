@@ -1,11 +1,11 @@
 import type { SupportedChainId } from 'constants/chains'
-import { AuthenticationContext } from 'context'
 import { _abi } from 'contracts/BaseErc20Factory'
 import { BigNumber, ethers, utils } from 'ethers'
 import { getAddress, isAddress } from 'ethers/lib/utils'
 import { chunk } from 'lodash'
-import { useCallback, useContext } from 'react'
+import { useCallback } from 'react'
 
+import { useAccountInfo } from './useAccount'
 import { staticMulticallByChainId } from './useMulticall'
 
 export interface ERC20MulticallResult {
@@ -37,9 +37,7 @@ const ERC20Interface = new utils.Interface(_abi)
  * @returns
  */
 export function useERC20Multicall() {
-  const {
-    state: { account: accountInfo },
-  } = useContext(AuthenticationContext)
+  const accountInfo = useAccountInfo('metamask')
 
   const account = isAddress(accountInfo?.accountId || '')
     ? getAddress(accountInfo?.accountId || '')

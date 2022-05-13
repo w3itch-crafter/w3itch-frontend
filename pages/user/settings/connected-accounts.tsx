@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 import { LoginChooseButton } from 'components/buttons'
 import { DiscordIcon, EthereumIcon, GitHubIcon } from 'components/icons'
-import { AuthenticationContext } from 'context'
-import { Fragment, useContext } from 'react'
+import { useAccountInfo } from 'hooks'
+import { Fragment } from 'react'
 import { LoginMethod, NextPageWithLayout } from 'types'
 import { shortAddress } from 'utils'
 
@@ -37,9 +37,8 @@ const renderText = (
 }
 
 const ConnectedAccounts: NextPageWithLayout = () => {
-  const { state } = useContext(AuthenticationContext)
-  const accountId = state?.account?.accountId
-  const shortAccountId = shortAddress(accountId)
+  const metamask = useAccountInfo('metamask')
+  const shortAccountId = shortAddress(metamask?.accountId)
 
   return (
     <Fragment>

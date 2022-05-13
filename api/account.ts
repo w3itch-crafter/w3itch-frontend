@@ -1,4 +1,3 @@
-import { ethers } from 'ethers'
 import { AccountEntity, UserEntity } from 'types'
 import { Api } from 'types/Api'
 import type { Wallet } from 'use-wallet/dist/cjs/types'
@@ -27,14 +26,7 @@ async function walletAccountService(
     `/accounts/metamask/${action}`,
     { account: walletAccount, signature, username }
   )
-  const { user, account } = res.data
-  return {
-    user,
-    account: {
-      ...account,
-      accountId: ethers.utils.getAddress(account.accountId),
-    },
-  }
+  return res.data
 }
 
 export async function signupWallet(
@@ -107,10 +99,10 @@ export async function logout(): Promise<void> {
   await backend.delete('/accounts/tokens')
 }
 
-export async function getMine(): Promise<AccountEntity | null> {
+export async function getMine(): Promise<AccountEntity[] | null> {
   try {
-    const { data } = await backend.get<AccountEntity>('/accounts/mine')
-    return { ...data, accountId: ethers.utils.getAddress(data.accountId) }
+    const res = await backend.get<AccountEntity[]>('/accounts/mine')
+    return res.data
   } catch (error) {
     return null
   }
