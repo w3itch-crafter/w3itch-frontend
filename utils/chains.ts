@@ -73,6 +73,7 @@ export const balanceDecimal = (amount: string, decimal = 6) => {
   return amount
 }
 
-export function shortAddress(address: string): string {
+export function shortAddress(address?: string): string {
+  if (!address) return ''
   return stringSlice(address, 6, 4)
 }

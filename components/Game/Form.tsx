@@ -47,7 +47,7 @@ import { AuthenticationContext } from 'context'
 import { classifications, kindOfProjects, releaseStatus } from 'data'
 import { utils } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
-import { useTitle } from 'hooks'
+import { useAccountInfo, useTitle } from 'hooks'
 import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
@@ -129,8 +129,9 @@ const GameForm: FC<GameFormProps> = ({
   console.log('form router', router)
 
   const {
-    state: { isAuthenticated, account },
+    state: { isAuthenticated },
   } = useContext(AuthenticationContext)
+  const account = useAccountInfo('metamask')
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const [uploadGameFile, setUploadGameFile] = useState<File>()

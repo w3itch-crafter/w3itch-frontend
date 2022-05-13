@@ -64,7 +64,7 @@ const Login: NextPage = () => {
           'If your wallet not response for long time, please refresh this page.'
         )
         const { user, account } = await loginWallet(wallet)
-        dispatch({ type: 'LOGIN', payload: { user, account } })
+        dispatch({ type: 'LOGIN', payload: { user, account: [account] } })
         await router.replace('/games')
       } catch (error) {
         if (error instanceof Error) {

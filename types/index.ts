@@ -96,7 +96,7 @@ declare type BaseEntity = {
 export declare type AccountEntity = BaseEntity & {
   userId: number
   accountId: string
-  platform: 'metamask' | string
+  platform: LoginMethod
 }
 export declare type GameEntity = BaseEntity & {
   /** Creator's username */
@@ -180,6 +180,12 @@ export declare type NavLink = { href: string; name: string }
 export declare type NavLinks = NavLink[]
 
 export declare type LoginMethod = 'metamask' | 'github' | 'discord'
+
+export declare type AccountServiceAction =
+  | 'login'
+  | 'signup'
+  | 'bind'
+  | 'unbind'
 
 interface Keyboard {
   lock(keyCodes?: Iterable<string>): Promise<void>

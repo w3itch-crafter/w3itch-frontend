@@ -2,6 +2,7 @@ import { getMe, getMine } from 'api'
 import { AuthenticationContext } from 'context'
 import { useRouter } from 'next/router'
 import { useCallback, useContext, useEffect } from 'react'
+import { AccountEntity, LoginMethod } from 'types'
 
 const routeWhiteList = [
   '/',
@@ -34,4 +35,13 @@ export function useAuthentication() {
   }, [fetchUser])
 
   return state
+}
+
+export function useAccountInfo(platform: LoginMethod): AccountEntity | null {
+  const {
+    state: { account },
+  } = useContext(AuthenticationContext)
+  if (!account) return null
+  const findAccount = account.find((i) => i.platform === platform)
+  return findAccount || null
 }
