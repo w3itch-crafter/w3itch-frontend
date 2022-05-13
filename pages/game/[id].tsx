@@ -21,7 +21,8 @@ import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { NextSeo } from 'next-seo'
-import { seoKeywords } from 'next-seo.config'
+import { ArticleJsonLd } from 'next-seo'
+import { seoKeywords, seoLogo } from 'next-seo.config'
 import { useSnackbar } from 'notistack'
 import { useCallback, useEffect, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
@@ -29,7 +30,7 @@ import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'
 import { Api } from 'types/Api'
 import { Community, PaymentMode } from 'types/enum'
-import { BackendError } from 'utils'
+import { BackendError, SeoArticleJsonLdImages } from 'utils'
 import { SeoImages } from 'utils'
 
 const RenderMarkdown = dynamic(
@@ -254,6 +255,21 @@ const GameId: NextPage<GameProps> = ({
             gameTitle
           ),
         }}
+      />
+      <ArticleJsonLd
+        url={process.env.NEXT_PUBLIC_URL as string}
+        title={gameProject?.title || 'W3itch'}
+        images={SeoArticleJsonLdImages([
+          gameProject?.cover,
+          gameProject?.screenshots,
+        ] as string[])}
+        datePublished={gameProject?.createdAt as string}
+        dateModified={gameProject?.updatedAt as string}
+        // Warning, author url is temporarily not supported
+        authorName={[gameProject?.username || 'W3itch']}
+        publisherName="W3itch"
+        publisherLogo={seoLogo}
+        description={gameProject?.subtitle || 'W3itch game description'}
       />
       {gameProject ? (
         <>

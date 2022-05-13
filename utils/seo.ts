@@ -1,6 +1,6 @@
 import { OpenGraphMedia } from 'next-seo/lib/types'
 
-import SEO from '../next-seo.config'
+import SEO, { seoLogo } from '../next-seo.config'
 
 /**
  * seo description
@@ -47,4 +47,18 @@ export const SeoImages = (
           alt: alt,
         }))
     : (SEO.openGraph.images as OpenGraphMedia[])
+}
+
+/**
+ * seo ArticleJsonLd
+ * @param images
+ * @returns
+ */
+export const SeoArticleJsonLdImages = (images: string[]): string[] => {
+  return images
+    ? images
+        .flat(1)
+        .filter((image) => !!image)
+        .map((image) => image)
+    : [seoLogo]
 }

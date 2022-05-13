@@ -9,14 +9,19 @@ import type { NextWebVitalsMetric } from 'next/app'
 import Head from 'next/head'
 import { appWithTranslation } from 'next-i18next'
 import { DefaultSeo } from 'next-seo'
+import {
+  BreadcrumbJsonLd,
+  LogoJsonLd,
+  SiteLinksSearchBoxJsonLd,
+} from 'next-seo'
 import { event, GoogleAnalytics, usePagesViews } from 'nextjs-google-analytics'
 import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
 import { NextPageWithLayout } from 'types'
 import { UseWalletProvider } from 'use-wallet'
-import { getRpcUrl } from 'utils'
+import { getRpcUrl, urlHostnameParse } from 'utils'
 
-import SEO from '../next-seo.config'
+import SEO, { seoLogo } from '../next-seo.config'
 
 export const WalletSupportedRpcUrls = WalletSupportedChainIds.map(
   (chainId) => ({ [`${chainId}`]: getRpcUrl(chainId) })
@@ -74,6 +79,49 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             </Head>
             <DefaultSeo {...SEO} />
             <GoogleAnalytics />
+            <LogoJsonLd
+              logo={seoLogo}
+              url={process.env.NEXT_PUBLIC_URL as string}
+            />
+            <SiteLinksSearchBoxJsonLd
+              url={process.env.NEXT_PUBLIC_URL as string}
+              potentialActions={[
+                {
+                  target: `${process.env.NEXT_PUBLIC_URL}/search?q`,
+                  queryInput: 'search_term_string',
+                },
+                {
+                  target: `android-app://com.example/https/${urlHostnameParse(
+                    process.env.NEXT_PUBLIC_URL as string
+                  )}/search/?q`,
+                  queryInput: 'search_term_string',
+                },
+              ]}
+            />
+            <BreadcrumbJsonLd
+              itemListElements={[
+                {
+                  position: 1,
+                  name: 'Games',
+                  item: `${process.env.NEXT_PUBLIC_URL}/games`,
+                },
+                {
+                  position: 2,
+                  name: 'Comment Policy',
+                  item: `${process.env.NEXT_PUBLIC_URL}/comment-policy`,
+                },
+                {
+                  position: 3,
+                  name: 'Login',
+                  item: `${process.env.NEXT_PUBLIC_URL}/login`,
+                },
+                {
+                  position: 4,
+                  name: 'Dashboard',
+                  item: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
+                },
+              ]}
+            />
             {getLayout(<Component {...pageProps} />)}
           </Fragment>
         </SnackbarProvider>

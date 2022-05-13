@@ -1,5 +1,7 @@
 export const seoKeywords =
   'w3itch, w3itch.io, itch, games, free, creator, freedom open marketplace, gitcoin'
+export const seoLogo =
+  'https://image.w3itch.io/w3itch-test/attachment/5/80582a6c13665edcd8ddb65505b883fb.82c7b620-d291-11ec-bbc4-4d6223bea812.png'
 
 export default {
   title: 'w3itch',
