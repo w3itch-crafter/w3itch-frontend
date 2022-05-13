@@ -21,6 +21,7 @@ import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { NextSeo } from 'next-seo'
+import { seoKeywords } from 'next-seo.config'
 import { useSnackbar } from 'notistack'
 import { useCallback, useEffect, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
@@ -225,6 +226,18 @@ const GameId: NextPage<GameProps> = ({
       <NextSeo
         title={gameTitle}
         description={gameProject?.subtitle}
+        additionalMetaTags={[
+          {
+            property: 'keywords',
+            content:
+              `${gameProject?.title}, ` +
+              `${gameProject?.username}, ` +
+              `${gameProject?.gameName}, ` +
+              `${gameProject?.file}, ` +
+              `${gameProject?.tags.map((i) => i.label).join(', ')}, ` +
+              seoKeywords,
+          },
+        ]}
         openGraph={{
           /**
            * Because most platforms use the last image address.
