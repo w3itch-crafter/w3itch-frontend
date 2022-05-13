@@ -55,10 +55,5 @@ export const SeoImages = (
  * @returns
  */
 export const SeoArticleJsonLdImages = (images: string[]): string[] => {
-  return images
-    ? images
-        .flat(1)
-        .filter((image) => !!image)
-        .map((image) => image)
-    : [seoLogo]
+  return images ? images.flat(1).filter((image) => !!image) : [seoLogo]
 }
