@@ -22,6 +22,7 @@ import { UseWalletProvider } from 'use-wallet'
 import { getRpcUrl, urlHostnameParse } from 'utils'
 
 import SEO, { seoLogo } from '../next-seo.config'
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export const WalletSupportedRpcUrls = WalletSupportedChainIds.map(
   (chainId) => ({ [`${chainId}`]: getRpcUrl(chainId) })
@@ -129,5 +130,11 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     </UseWalletProvider>
   )
 }
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'])),
+  },
+})
 
 export default appWithTranslation(MyApp)
