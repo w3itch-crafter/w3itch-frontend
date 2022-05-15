@@ -30,6 +30,8 @@ import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { GameEntity, GameInfo, PaginationMeta, TagOption } from 'types'
 import { buildQuerySting, findTags, isEmptyObj } from 'utils'
 
+import nextI18NextConfig from '../next-i18next.config'
+
 declare interface GamesProps {
   tags: TagOption[]
   games: GameInfo[]
@@ -400,7 +402,11 @@ export const getServerSideProps: GetServerSideProps<GamesProps> = async (
       tags: tagsRes.data,
       games,
       pageMeta: meta,
-      ...(await serverSideTranslations(context.locale as string, ['common'])),
+      ...(await serverSideTranslations(
+        context.locale as string,
+        ['common'],
+        nextI18NextConfig
+      )),
     },
   }
 }

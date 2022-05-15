@@ -1,11 +1,9 @@
 {
-  "Browse Games": "Browse Games1",
-  "Dashboard": "Dashboard11",
-  "Community": "Community11",
-  "Browse Game": "Browse Game",
+  "Browse Games": "Browse Games",
   "Dashboard": "Dashboard",
   "Community": "Community",
-  "Create an account on w3itch.io": "Create an account on w3itch.io",
-  "Log in": "Log in",
-  "Register": "Register"
+  "Search in this site": "Search in this site",
+  "login": "login",
+  "Register": "Register",
+  "Create an account on w3itch.io": "Create an account on w3itch.io"
 }

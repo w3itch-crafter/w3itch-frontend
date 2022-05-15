@@ -6,9 +6,9 @@ import { GameCell } from 'components/pages'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { GameEntity, GameInfo, UserEntity } from 'types'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 declare interface ProfileHomeProps {
   wildcard: string | null

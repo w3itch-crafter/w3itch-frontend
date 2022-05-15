@@ -21,8 +21,8 @@ import { NextPageWithLayout } from 'types'
 import { UseWalletProvider } from 'use-wallet'
 import { getRpcUrl, urlHostnameParse } from 'utils'
 
+import nextI18NextConfig from '../next-i18next.config.js'
 import SEO, { seoLogo } from '../next-seo.config'
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export const WalletSupportedRpcUrls = WalletSupportedChainIds.map(
   (chainId) => ({ [`${chainId}`]: getRpcUrl(chainId) })
@@ -131,10 +131,4 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   )
 }
 
-export const getStaticProps = async ({ locale }: { locale: string }) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ['common'])),
-  },
-})
-
-export default appWithTranslation(MyApp)
+export default appWithTranslation(MyApp, nextI18NextConfig)
