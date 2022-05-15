@@ -108,7 +108,11 @@ export function Navbar() {
             e.preventDefault()
           }}
         >
-          <Input type={'text'} name={'q'} placeholder="Search in this site" />
+          <Input
+            type={'text'}
+            name={'q'}
+            placeholder={t('Search in this site')}
+          />
           <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
             <SearchIcon />
           </IconButton>
