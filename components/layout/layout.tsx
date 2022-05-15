@@ -1,5 +1,7 @@
+import { useTranslation } from 'next-i18next'
 import React, { Fragment } from 'react'
 
+import { NavLinks } from '../../types'
 import { Footer } from './footer'
 import { Navbar } from './navbar'
 

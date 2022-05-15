@@ -24,6 +24,7 @@ import { genres } from 'data'
 import { GetServerSideProps, NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { NextSeo } from 'next-seo'
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { GameEntity, GameInfo, PaginationMeta, TagOption } from 'types'
@@ -394,7 +395,14 @@ export const getServerSideProps: GetServerSideProps<GamesProps> = async (
     ...g,
     link: `/game/${g.id}`,
   }))
-  return { props: { tags: tagsRes.data, games, pageMeta: meta } }
+  return {
+    props: {
+      tags: tagsRes.data,
+      games,
+      pageMeta: meta,
+      ...(await serverSideTranslations(context.locale as string, ['common'])),
+    },
+  }
 }
 
 export default Games

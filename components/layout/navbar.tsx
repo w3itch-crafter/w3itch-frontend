@@ -5,6 +5,7 @@ import { Box, Input } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { Fragment, useState } from 'react'
 import { NavLinks } from 'types'
 import { urlGoogleSearch } from 'utils'
@@ -12,17 +13,14 @@ import { urlGoogleSearch } from 'utils'
 import NavBarDrawer from './navBarDrawer'
 import { UserPanel } from './userPanel'
 
-const defaultLinks: NavLinks = [
-  { href: '/games', name: 'Browse Games' },
-  { href: '/dashboard', name: 'Dashboard' },
-  { href: 'https://discord.gg/UaHazgHc8q', name: 'Community' },
-]
-
-export declare interface NavbarProps {
-  navLinks?: NavLinks
-}
-
-export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
+export function Navbar() {
+  const { t } = useTranslation()
+  const { NEXT_PUBLIC_URL } = process.env
+  const navLinks: NavLinks = [
+    { href: `/games`, name: t('Browse Games') },
+    { href: `/dashboard`, name: t('Dashboard') },
+    { href: `https://discord.gg/UaHazgHc8q`, name: t('Community') },
+  ]
   const Flex1 = styled.div`
     flex: 1;
   `
@@ -71,7 +69,6 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
     display: flex;
     flex-wrap: wrap;
   `
-  const { NEXT_PUBLIC_URL } = process.env
   const router = useRouter()
   const isHref = (href: string) => router.route === href
   const [navLinksDrawer, setNavLinksDrawer] = useState<boolean>(false)
