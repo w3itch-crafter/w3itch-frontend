@@ -50,15 +50,16 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
     }
   }
 
-  if (_req.method === 'POST') {
-    saveGame()
-  } else if (_req.method === 'DELETE') {
-    deleteGame()
-  } else {
-    res.status(400).json({
-      code: -1,
-      message: 'Request method is not POST/DELETE',
-    })
+  switch (_req.method) {
+    case 'POST':
+      return saveGame()
+    case 'DELETE':
+      return deleteGame()
+    default:
+      return res.status(405).json({
+        code: -1,
+        message: `Method ${_req.method} not allowed`,
+      })
   }
 }
 
