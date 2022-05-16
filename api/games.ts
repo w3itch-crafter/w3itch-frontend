@@ -36,7 +36,7 @@ export async function getGamesMine(
  */
 export const createGame = async (
   data: FormData
-): Promise<AxiosResponse<unknown>> => {
+): Promise<AxiosResponse<GameEntity>> => {
   return await backend({
     url: '/game-projects',
     method: 'POST',
@@ -109,7 +109,7 @@ export const gameValidate = async (
 export const updateGame = async (
   id: number,
   data: FormData
-): Promise<AxiosResponse<unknown>> => {
+): Promise<AxiosResponse<GameEntity>> => {
   return await backend({
     url: `/game-projects/${id}`,
     method: 'PATCH',
