@@ -1,14 +1,15 @@
 import styled from '@emotion/styled'
 import MenuIcon from '@mui/icons-material/Menu'
-import SearchIcon from '@mui/icons-material/Search'
-import { Box, Input } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
+import Search from 'components/Search'
+import SearchGoogle from 'components/SearchGoogle'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { Fragment, useState } from 'react'
 import { NavLinks } from 'types'
-import { urlGoogleSearch } from 'utils'
+import { hasAlgoliaConfig } from 'utils'
 
 import NavBarDrawer from './navBarDrawer'
 import { UserPanel } from './userPanel'
@@ -23,10 +24,6 @@ export function Navbar() {
   ]
   const Flex1 = styled.div`
     flex: 1;
-  `
-  const SearchBar = styled.form`
-    display: flex;
-    align-items: center;
   `
   const HeaderWidget = styled.nav`
     height: 50px;
@@ -96,28 +93,10 @@ export function Navbar() {
           </Fragment>
         )}
         <Flex1 />
-        <SearchBar
-          method={'get'}
-          autoComplete={'on'}
-          action={'https://google.com/search'}
-          onSubmit={(e) => {
-            const formData = Object.fromEntries(
-              new FormData(e.target as HTMLFormElement)
-            )
-            window.open(urlGoogleSearch(formData.q as string))
-            e.preventDefault()
-          }}
-        >
-          <Input
-            type={'text'}
-            name={'q'}
-            placeholder={t('Search in this site')}
-          />
-          <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
-            <SearchIcon />
-          </IconButton>
-        </SearchBar>
-        <UserPanel />
+        <Stack direction="row" spacing={1}>
+          {hasAlgoliaConfig ? <Search /> : <SearchGoogle />}
+          <UserPanel />
+        </Stack>
         <IconButton
           onClick={() => setNavLinksDrawer(true)}
           size="small"

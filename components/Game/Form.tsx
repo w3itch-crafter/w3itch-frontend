@@ -31,6 +31,7 @@ import {
   storagesUploadToAWS,
   updateGame,
 } from 'api/index'
+import { saveAlgoliaGame } from 'api/server'
 import BigNumber from 'bignumber.js'
 import { PrimaryLoadingButton } from 'components/CustomizedButtons'
 import FormAppStoreLinks from 'components/Game/FormAppStoreLinks'
@@ -373,6 +374,8 @@ const GameForm: FC<GameFormProps> = ({
         console.log('createGameResult', createGameResult)
 
         if (createGameResult.status === 201) {
+          saveAlgoliaGame(Number(createGameResult.data.id))
+
           enqueueSnackbar('Uploaded successfully', {
             anchorOrigin: {
               vertical: 'top',
@@ -455,6 +458,8 @@ const GameForm: FC<GameFormProps> = ({
         console.log('updateGameResult', updateGameResult)
 
         if (updateGameResult.status === 200) {
+          saveAlgoliaGame(Number(updateGameResult.data.id))
+
           enqueueSnackbar('Update completed', {
             anchorOrigin: {
               vertical: 'top',

@@ -4,6 +4,7 @@ import { Box } from '@mui/material'
 import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack'
 import { deleteGameProject, getGamesMine } from 'api'
+import { deleteAlgoliaGame } from 'api/server'
 import Navigation from 'components/Dashboard/Navigation'
 import { AuthenticationContext } from 'context'
 import type { NextPage } from 'next'
@@ -69,6 +70,9 @@ const HasGameProject: FC<HasGameProjectProps> = ({
         })
         return setTimeout(() => router.replace('/login'), 1500)
       }
+
+      deleteAlgoliaGame(id)
+
       enqueueSnackbar('Game deleted', {
         anchorOrigin: { vertical: 'top', horizontal: 'center' },
         variant: 'success',
