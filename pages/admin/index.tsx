@@ -2,6 +2,7 @@ import LoadingButton from '@mui/lab/LoadingButton'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { initializationAlgoliaGame } from 'api/server'
+import { NextSeo } from 'next-seo'
 import { useSnackbar } from 'notistack'
 import { useCallback, useState } from 'react'
 
@@ -24,21 +25,24 @@ const Admin = () => {
   }, [enqueueSnackbar])
 
   return (
-    <Box m={2}>
-      <h3>algolia</h3>
-      <Stack direction="row" spacing={2}>
-        <LoadingButton
-          variant="contained"
-          style={{
-            textTransform: 'capitalize',
-          }}
-          onClick={algoliaInitialization}
-          loading={algoliaInitializationLoading}
-        >
-          initialization
-        </LoadingButton>
-      </Stack>
-    </Box>
+    <>
+      <NextSeo noindex={true} nofollow={true} />
+      <Box m={2}>
+        <h3>algolia</h3>
+        <Stack direction="row" spacing={2}>
+          <LoadingButton
+            variant="contained"
+            style={{
+              textTransform: 'capitalize',
+            }}
+            onClick={algoliaInitialization}
+            loading={algoliaInitializationLoading}
+          >
+            initialization
+          </LoadingButton>
+        </Stack>
+      </Box>
+    </>
   )
 }
 
