@@ -1808,6 +1808,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.17, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.9.2":
+  version: 7.17.9
+  resolution: "@babel/runtime@npm:7.17.9"
+  dependencies:
+    regenerator-runtime: ^0.13.4
+  checksum: 4d56bdb82890f386d5a57c40ef985a0ed7f0a78f789377a2d0c3e8826819e0f7f16ba0fe906d9b2241c5f7ca56630ef0653f5bb99f03771f7b87ff8af4bf5fe3
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.16.7, @babel/template@npm:^7.3.3":
   version: 7.16.7
   resolution: "@babel/template@npm:7.16.7"
@@ -12018,6 +12027,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"i18next-browser-languagedetector@npm:^6.1.4":
+  version: 6.1.4
+  resolution: "i18next-browser-languagedetector@npm:6.1.4"
+  dependencies:
+    "@babel/runtime": ^7.14.6
+  checksum: 379dba3527c359c3adeb26c1e16e6b7e007989763c4361d43662e4d9412c538ca35e28a6a12df0654edc0adb78b44ff5afdf4c5d842bbf0e83db59d5e9e02f55
+  languageName: node
+  linkType: hard
+
 "i18next-fs-backend@npm:^1.1.4":
   version: 1.1.4
   resolution: "i18next-fs-backend@npm:1.1.4"
@@ -21178,6 +21196,7 @@ __metadata:
     ethers: ^5.6.5
     husky: ^7.0.4
     i18next: ^21.8.0
+    i18next-browser-languagedetector: ^6.1.4
     i18next-parser: ^6.4.0
     jest: ^27.5.1
     lint-staged: ^12.4.1

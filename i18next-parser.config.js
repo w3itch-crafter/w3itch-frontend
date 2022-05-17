@@ -9,6 +9,6 @@ module.exports = {
   // Supports JSON (.json) and YAML (.yml) file formats
   // Where to write the locale files relative to process.cwd()
 
-  input: 'pages/**/*.{ts,tsx}',
+  input: ['pages/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}'],
   useKeysAsDefaultValue: true,
 }

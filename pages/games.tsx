@@ -24,10 +24,14 @@ import { genres } from 'data'
 import { GetServerSideProps, NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { NextSeo } from 'next-seo'
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { GameEntity, GameInfo, PaginationMeta, TagOption } from 'types'
 import { buildQuerySting, findTags, isEmptyObj } from 'utils'
+
+import nextI18NextConfig from '../next-i18next.config'
 
 declare interface GamesProps {
   tags: TagOption[]
@@ -61,6 +65,7 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   `
   const BrowseHeader = styled.div`
     position: relative;
+
     & > h2 {
       font-size: 24px;
       margin: 0 20px 20px 20px;
@@ -98,6 +103,7 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
     @media screen and (max-width: 1200px) {
       grid-template-columns: repeat(2, 1fr);
     }
+
     & .game-cell {
       margin: 0;
     }
@@ -105,6 +111,7 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   const StyledPagination = styled(Pagination)`
     display: flex;
     justify-content: center;
+
     & .Mui-selected,
     & .Mui-selected:hover {
       background-color: #da2c49 !important;
@@ -136,6 +143,7 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   ) => {
     router.push({ pathname: router.pathname, query: { ...router.query, page } })
   }
+  const { t } = useTranslation()
   const { tags: queryTags } = router.query
   const tagged = queryTags
     ? ` tagged ${findTags(queryTags, tags)
@@ -145,7 +153,7 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
 
   return (
     <Fragment>
-      <NextSeo title={'Browse games - w3itch.io'} />
+      <NextSeo title={t('Browse games - w3itch.io')} />
       <Container>
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <FilterColumn>
@@ -289,12 +297,14 @@ const GenreFilters: FilterGroupItems = genres.map((genre) => ({
   name: `${genre.label}`,
   href: `${genre.value}`,
 }))
+
 function GameFilter() {
   const FilterHeader = styled.div`
     padding: 20px 20px 0 20px;
     margin-bottom: 8px;
     display: flex;
     align-items: center;
+
     & > h2 {
       font-size: 15px;
       text-transform: uppercase;
@@ -394,7 +404,18 @@ export const getServerSideProps: GetServerSideProps<GamesProps> = async (
     ...g,
     link: `/game/${g.id}`,
   }))
-  return { props: { tags: tagsRes.data, games, pageMeta: meta } }
+  return {
+    props: {
+      tags: tagsRes.data,
+      games,
+      pageMeta: meta,
+      ...(await serverSideTranslations(
+        context.locale as string,
+        ['common'],
+        nextI18NextConfig
+      )),
+    },
+  }
 }
 
 export default Games

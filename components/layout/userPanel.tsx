@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import { useAuthentication } from 'hooks'
 import Link from 'next/link'
+import { useTranslation } from 'next-i18next'
 import { Fragment, useState } from 'react'
 import { userHostUrl } from 'utils'
 
@@ -77,16 +78,17 @@ export function UserPanel() {
   `
   const { user } = useAuthentication()
   const profile = userHostUrl(user?.username?.toLowerCase())
+  const { t } = useTranslation()
 
   return (
     <UserPanelWidget>
       {!user && (
         <Fragment>
           <Link href="/login" passHref>
-            <PanelButton>Log in</PanelButton>
+            <PanelButton>{t('login')}</PanelButton>
           </Link>
           <Link href="/register" passHref>
-            <PanelButton>Register</PanelButton>
+            <PanelButton>{t('Register')}</PanelButton>
           </Link>
         </Fragment>
       )}
