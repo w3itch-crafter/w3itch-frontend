@@ -7,7 +7,7 @@ const index = algoliaIndex()
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   const saveGame = async () => {
     try {
-      const { id } = _req.query
+      const { id } = _req.query as { id: string }
 
       const gameResult = await gameProjectByID(Number(id))
 
@@ -52,14 +52,18 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
 
   switch (_req.method) {
     case 'POST':
-      return saveGame()
+      saveGame()
+      break
     case 'DELETE':
-      return deleteGame()
+      deleteGame()
+      break
     default:
-      return res.status(405).json({
+      res.setHeader('Allow', ['POST', 'DELETE'])
+      res.status(405).json({
         code: -1,
         message: `Method ${_req.method} not allowed`,
       })
+      break
   }
 }
 

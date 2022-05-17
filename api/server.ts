@@ -23,3 +23,16 @@ export const deleteAlgoliaGame = (id: number) => {
     console.error('deleteAlgoliaGame error: ', error)
   }
 }
+
+/**
+ * initialization game to algolia
+ */
+export const initializationAlgoliaGame = async () => {
+  try {
+    return await axios.post<{ code: number; mmessage: string }>(
+      '/api/algolia/games/initialization'
+    )
+  } catch (error) {
+    console.error('initializationAlgoliaGame error: ', error)
+  }
+}

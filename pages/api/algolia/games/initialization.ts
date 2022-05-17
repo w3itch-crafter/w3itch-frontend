@@ -6,6 +6,7 @@ const index = algoliaIndex()
 
 const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   if (_req.method !== 'POST') {
+    res.setHeader('Allow', ['POST'])
     return res.status(405).json({
       code: -1,
       message: `Method ${_req.method} not allowed`,
