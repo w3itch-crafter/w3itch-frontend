@@ -1,10 +1,15 @@
 import axios from 'axios'
+import { hasAlgoliaConfig } from 'utils'
 
 /**
  * save game to algolia
  * @param id
  */
 export const saveAlgoliaGame = (id: number) => {
+  if (!hasAlgoliaConfig) {
+    return
+  }
+
   try {
     axios.post(`/api/algolia/games/${id}`)
   } catch (error) {
@@ -17,6 +22,10 @@ export const saveAlgoliaGame = (id: number) => {
  * @param id
  */
 export const deleteAlgoliaGame = (id: number) => {
+  if (!hasAlgoliaConfig) {
+    return
+  }
+
   try {
     axios.delete(`/api/algolia/games/${id}`)
   } catch (error) {
@@ -28,6 +37,10 @@ export const deleteAlgoliaGame = (id: number) => {
  * initialization game to algolia
  */
 export const initializationAlgoliaGame = async () => {
+  if (!hasAlgoliaConfig) {
+    return
+  }
+
   try {
     return await axios.post<{ code: number; mmessage: string }>(
       '/api/algolia/games/initialization'

@@ -290,10 +290,7 @@ body {
   white-space: nowrap;
 }
 
-.aa-ItemContent {
-  line-height: 1em;
-}
-
 .custom-search-wrapper {
   --aa-search-input-height: 36px;
 }
+/* Algolia end */
