@@ -30,14 +30,6 @@ const querySuggestionsPlugin = createQuerySuggestionsPlugin({
           >
             <div class="InterfaceDemoHit aa-ItemWrapper">
               <div class="aa-ItemContent">
-                <div class="aa-ItemIcon">
-                  <img
-                    src="${item.cover}"
-                    alt="${item.title}"
-                    width="40"
-                    height="40"
-                  />
-                </div>
                 <div class="aa-ItemContentBody">
                   <div
                     class="aa-ItemContentTitle custom-aa-ItemContentTitle PrimaryAttribute"
