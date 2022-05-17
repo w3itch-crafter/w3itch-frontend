@@ -48,14 +48,6 @@ const querySuggestionsPlugin = createQuerySuggestionsPlugin({
                       attribute: 'subtitle',
                     })}
                   </div>
-                  <div
-                    class="aa-ItemContentDescription custom-aa-ItemContentDescription ThirdAttribute"
-                  >
-                    ${components.Snippet({
-                      hit: item,
-                      attribute: 'username',
-                    })}
-                  </div>
                 </div>
               </div>
               <div class="aa-ItemActions">
