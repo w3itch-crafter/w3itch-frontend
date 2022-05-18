@@ -1,4 +1,4 @@
-import { parseUsernameFromHost, userHostUrl } from 'utils/url'
+import { parseUsernameFromHost, userHostUrl } from '../../utils/url'
 
 describe('Parse user host url', () => {
   it('Public host w3itch.io', () => {
