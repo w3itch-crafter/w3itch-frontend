@@ -143,7 +143,7 @@ const HasGameProject: FC<HasGameProjectProps> = ({
         <p className={styles.social_nag}>
           <FavoriteBorderIcon sx={{ fontSize: 20 }} />
           Follow w3itch.io on{' '}
-          <a data-label="social_twitter" href="https://twitter.com">
+          <a data-label="social_twitter" href="https://twitter.com/w3itchio">
             Twitter
           </a>{' '}
           and{' '}
