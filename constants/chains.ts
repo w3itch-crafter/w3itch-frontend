@@ -1,7 +1,7 @@
 import {
   PancakeSwapSupportedChainId,
   UniswapSupportedChainId,
-} from 'types/enum'
+} from '../types/enum'
 
 export type SupportedChainId =
   | UniswapSupportedChainId

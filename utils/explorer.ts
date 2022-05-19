@@ -1,6 +1,5 @@
 // github.com/Uniswap/interface/blob/e81e8a8f71/src/utils/getExplorerLink.ts
-import { SupportedChainId } from 'constants/index'
-
+import { SupportedChainId } from '../constants'
 import { getChainInfoFromId } from './chains'
 
 export enum ExplorerDataType {
