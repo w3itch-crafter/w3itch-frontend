@@ -104,19 +104,17 @@ const GameForm: FC<GameFormProps> = ({
     state: { isAuthenticated },
   } = useContext(AuthenticationContext)
 
-  const contextGame = useContext(GameFormContext)
-  console.log('context', contextGame)
   const {
     register,
     handleSubmit,
     setValue,
     control,
     watch,
-    formState,
+    formState: { errors },
     getValues,
     trigger,
-  } = contextGame
-  const { errors } = formState
+  } = useContext(GameFormContext)
+  // console.log('context', contextGame)
 
   const account = useAccountInfo('metamask')
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
