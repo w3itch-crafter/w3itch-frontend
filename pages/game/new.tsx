@@ -1,7 +1,14 @@
+import { classValidatorResolver } from '@hookform/resolvers/class-validator'
+import { Editor } from '@toast-ui/react-editor'
 import GameForm from 'components/Game/Form'
+import {
+  GameFormContextProvider,
+  GameFormContextType,
+} from 'context/gameFormContext'
 import type { NextPage } from 'next'
 import { MutableRefObject, useState } from 'react'
 import { DefaultValues, useForm } from 'react-hook-form'
+import { GameEntity } from 'types'
 import {
   Community,
   EditorMode,
@@ -10,10 +17,8 @@ import {
   PaymentMode,
 } from 'types/enum'
 import { Game } from 'utils/validator'
+
 const resolverGame = classValidatorResolver(Game)
-import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { Editor } from '@toast-ui/react-editor'
-import { GameEntity } from 'types'
 
 const GameCreate: NextPage = () => {
   const [editorRef, setEditorRef] = useState<MutableRefObject<Editor>>()
@@ -44,20 +49,27 @@ const GameCreate: NextPage = () => {
   })
 
   return (
-    <GameForm
-      gameProject={{} as GameEntity}
-      editorMode={EditorMode.CREATE}
-      register={register}
-      handleSubmit={handleSubmit}
-      setValue={setValue}
-      control={control}
-      watch={watch}
-      formState={formState}
-      getValues={getValues}
-      trigger={trigger}
-      editorRef={editorRef}
-      setEditorRef={setEditorRef}
-    ></GameForm>
+    <GameFormContextProvider
+      value={
+        {
+          register,
+          handleSubmit,
+          setValue,
+          control,
+          watch,
+          formState,
+          getValues,
+          trigger,
+        } as GameFormContextType
+      }
+    >
+      <GameForm
+        gameProject={{} as GameEntity}
+        editorMode={EditorMode.CREATE}
+        editorRef={editorRef}
+        setEditorRef={setEditorRef}
+      ></GameForm>
+    </GameFormContextProvider>
   )
 }
 
