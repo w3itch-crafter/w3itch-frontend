@@ -1,10 +1,10 @@
 import { Provider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
+
 import {
   PancakeSwapSupportedChainId,
   UniswapSupportedChainId,
-} from 'types/enum'
-
+} from '../types/enum'
 import { CurrentChainId, SupportedChainId } from './chains'
 
 export declare type Providers = {
