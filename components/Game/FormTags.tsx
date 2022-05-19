@@ -7,43 +7,32 @@ import {
   TextField,
 } from '@mui/material'
 import { getTags } from 'api'
+import { GameFormContext } from 'context/gameFormContext'
 import { trim } from 'lodash'
 import { isEmpty } from 'lodash'
-import { FC, useCallback, useEffect, useState } from 'react'
-import {
-  Control,
-  Controller,
-  FieldError,
-  FieldErrors,
-  UseFormGetValues,
-  UseFormWatch,
-} from 'react-hook-form'
+import { FC, useCallback, useContext, useEffect, useState } from 'react'
+import { Controller, FieldError } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
 import { Api } from 'types/Api'
 import { EditorMode } from 'types/enum'
-import { Game } from 'utils/validator'
 
 interface Props {
   readonly editorMode: EditorMode
-  readonly getValues: UseFormGetValues<Game>
-  readonly errors: FieldErrors<Game>
-  readonly watch: UseFormWatch<Game>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly control: Control<Game, any>
   changeTags: (value: string[]) => void
 }
 
-const FormTags: FC<Props> = ({
-  errors,
-  control,
-  editorMode,
-  watch,
-  getValues,
-  changeTags,
-}) => {
+const FormTags: FC<Props> = ({ editorMode, changeTags }) => {
   const [currentTags, setCurrentTags] = useState<string[]>([])
   const [inputTagValue, setInputTagValue] = useState('')
   const [tags, setTags] = useState<Api.Tag[]>([])
+
+  const {
+    control,
+    formState: { errors },
+    watch,
+    getValues,
+  } = useContext(GameFormContext)
+
   const watchTags = watch('tags')
 
   const fetchTags = useCallback(async () => {

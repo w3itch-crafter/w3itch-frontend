@@ -15,6 +15,10 @@ import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { Editor } from '@toast-ui/react-editor'
+import {
+  GameFormContextProvider,
+  GameFormContextType,
+} from 'context/gameFormContext'
 import { GameEntity } from 'types'
 
 const GameEdit: NextPage = () => {
@@ -89,20 +93,27 @@ const GameEdit: NextPage = () => {
   }, [id, fetchGameProjectFn])
 
   return (
-    <GameForm
-      gameProject={gameProject}
-      editorMode={EditorMode.EDIT}
-      register={register}
-      handleSubmit={handleSubmit}
-      setValue={setValue}
-      control={control}
-      watch={watch}
-      formState={formState}
-      getValues={getValues}
-      trigger={trigger}
-      editorRef={editorRef}
-      setEditorRef={setEditorRef}
-    ></GameForm>
+    <GameFormContextProvider
+      value={
+        {
+          register,
+          handleSubmit,
+          setValue,
+          control,
+          watch,
+          formState,
+          getValues,
+          trigger,
+        } as GameFormContextType
+      }
+    >
+      <GameForm
+        gameProject={gameProject}
+        editorMode={EditorMode.EDIT}
+        editorRef={editorRef}
+        setEditorRef={setEditorRef}
+      ></GameForm>
+    </GameFormContextProvider>
   )
 }
 
