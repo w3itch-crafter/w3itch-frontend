@@ -147,8 +147,8 @@ const HasGameProject: FC<HasGameProjectProps> = ({
             Twitter
           </a>{' '}
           and{' '}
-          <a data-label="social_facebook" href="https://facebook.com">
-            Facebook
+          <a data-label="social_discord" href="https://discord.gg/UaHazgHc8q">
+            Discord
           </a>
         </p>
       </div>

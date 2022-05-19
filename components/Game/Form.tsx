@@ -679,6 +679,7 @@ const GameForm: FC<GameFormProps> = ({
               >
                 <div className={styles.columns}>
                   <div className={`main ${styles.left_col} first`}>
+                    {/*
                     <p className={styles.content_guidelines}>
                       <strong>Make sure everyone can find your page</strong>
                       <br />
@@ -688,7 +689,7 @@ const GameForm: FC<GameFormProps> = ({
                       </a>{' '}
                       before posting your project
                     </p>
-
+                */}
                     <div className={styles.input_row}>
                       <FormControl fullWidth>
                         <FormLabel id="form-title">Title</FormLabel>
