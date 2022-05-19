@@ -10,25 +10,20 @@ import {
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { PrimaryButton } from 'components/CustomizedButtons'
-import { FC } from 'react'
-import {
-  Control,
-  Controller,
-  FieldError,
-  FieldErrors,
-  useFieldArray,
-} from 'react-hook-form'
+import { GameFormContext } from 'context/gameFormContext'
+import { FC, useContext } from 'react'
+import { Controller, FieldError, useFieldArray } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
-import { Game } from 'utils/validator'
-interface Props {
-  readonly errors: FieldErrors<Game>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly control: Control<Game, any>
-}
 
 const MAX_LINKS = 5
 
-const FormAppStoreLinks: FC<Props> = ({ errors, control }) => {
+const FormAppStoreLinks: FC = () => {
+  const contextGame = useContext(GameFormContext)
+  const {
+    control,
+    formState: { errors },
+  } = contextGame
+
   const { fields, append, remove } = useFieldArray({
     control,
     // @TODO type fix
