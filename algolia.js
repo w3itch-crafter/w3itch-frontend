@@ -41,7 +41,14 @@ const handler = async () => {
 }
 
 try {
-  handler()
+  if (
+    process.env.NEXT_PUBLIC_ALGOLIA_INDEX &&
+    process.env.NEXT_PUBLIC_ALGOLIA_APP_ID &&
+    process.env.ALGOLIA_SEARCH_ADMIN_KEY &&
+    process.env.NEXT_PUBLIC_API_URL
+  ) {
+    handler()
+  }
 } catch (err) {
   console.error(
     cowsay.say({
