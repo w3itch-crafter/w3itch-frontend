@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "npm-run-all check-env dev:next",
-    "build": "npm-run-all check-env build:next build:sitemap",
+    "build": "npm-run-all check-env build:algolia build:next build:sitemap",
     "dev:next": "next dev",
     "build:next": "next build",
     "build:sitemap": "next-sitemap",
+    "build:algolia": "node algolia.js",
     "start": "next start",
     "format": "prettier '**/*.{ts,tsx}' --write",
     "lint": "yarn lint:eslint && yarn lint:next",

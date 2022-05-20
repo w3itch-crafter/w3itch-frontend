@@ -2,12 +2,12 @@ import '@algolia/autocomplete-theme-classic'
 
 import { autocomplete } from '@algolia/autocomplete-js'
 import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions'
+import { searchClient } from 'constants/index'
 import { useEffect, useRef } from 'react'
-import { searchClient } from 'utils'
 
 const querySuggestionsPlugin = createQuerySuggestionsPlugin({
   searchClient,
-  indexName: 'games',
+  indexName: process.env.NEXT_PUBLIC_ALGOLIA_INDEX as string,
   getSearchParams() {
     return {
       hitsPerPage: 10,
