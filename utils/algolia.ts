@@ -9,7 +9,7 @@ export const algoliaIndex = (): SearchIndex => {
     process.env.NEXT_PUBLIC_ALGOLIA_APP_ID as string,
     process.env.ALGOLIA_SEARCH_ADMIN_KEY as string
   )
-  return client.initIndex('games')
+  return client.initIndex(process.env.NEXT_PUBLIC_ALGOLIA_INDEX as string)
 }
 
 /**

@@ -7,7 +7,7 @@ import { searchClient } from 'utils'
 
 const querySuggestionsPlugin = createQuerySuggestionsPlugin({
   searchClient,
-  indexName: 'games',
+  indexName: process.env.NEXT_PUBLIC_ALGOLIA_INDEX as string,
   getSearchParams() {
     return {
       hitsPerPage: 10,
