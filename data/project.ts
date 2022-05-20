@@ -1,5 +1,5 @@
 import { Genre } from 'types/enum'
-import { enumWord } from 'utils/word'
+import { enumWord } from 'utils'
 
 export const tags = [
   'horror',

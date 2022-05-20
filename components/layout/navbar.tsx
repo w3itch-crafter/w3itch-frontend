@@ -1,23 +1,30 @@
 import styled from '@emotion/styled'
 import MenuIcon from '@mui/icons-material/Menu'
-import { Box } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
+import Search from 'components/Search'
+import SearchGoogle from 'components/SearchGoogle'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { Fragment, useState } from 'react'
 import { NavLinks } from 'types'
+import { hasAlgoliaConfig } from 'utils'
 
 import NavBarDrawer from './navBarDrawer'
 import { UserPanel } from './userPanel'
 
-const defaultLinks: NavLinks = [
-  { href: '/games', name: 'Browse Games' },
-  { href: '/dashboard', name: 'Dashboard' },
-]
-export declare interface NavbarProps {
-  navLinks?: NavLinks
-}
-export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
+export function Navbar() {
+  const { t } = useTranslation()
+  const { NEXT_PUBLIC_URL } = process.env
+  const navLinks: NavLinks = [
+    { href: `/games`, name: t('Browse Games') },
+    { href: `/dashboard`, name: t('Dashboard') },
+    { href: `https://discord.gg/UaHazgHc8q`, name: t('Community') },
+  ]
+  const Flex1 = styled.div`
+    flex: 1;
+  `
   const HeaderWidget = styled.nav`
     height: 50px;
     position: relative;
@@ -59,7 +66,6 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
     display: flex;
     flex-wrap: wrap;
   `
-  const { NEXT_PUBLIC_URL } = process.env
   const router = useRouter()
   const isHref = (href: string) => router.route === href
   const [navLinksDrawer, setNavLinksDrawer] = useState<boolean>(false)
@@ -84,27 +90,28 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
                 />
               ))}
             </HeaderButtons>
-            <UserPanel />
-            <IconButton
-              onClick={() => setNavLinksDrawer(true)}
-              size="small"
-              sx={{ ml: 2, display: { xs: 'inline-flex', md: 'none' } }}
-              aria-controls={'account-menu'}
-              aria-haspopup="true"
-              aria-expanded="true"
-            >
-              <MenuIcon />
-            </IconButton>
-            {/* @TODO */}
-            {/* Don't know where re-render is triggered No transition effect */}
-            {/* Found that Navbar has too many definitions, put it on hold for the time being */}
-            <NavBarDrawer
-              navLinksDrawer={navLinksDrawer}
-              setNavLinksDrawer={setNavLinksDrawer}
-              navLinks={navLinks}
-            />
           </Fragment>
         )}
+        <Flex1 />
+        <Stack direction="row" spacing={1}>
+          {hasAlgoliaConfig ? <Search /> : <SearchGoogle />}
+          <UserPanel />
+        </Stack>
+        <IconButton
+          onClick={() => setNavLinksDrawer(true)}
+          size="small"
+          sx={{ ml: 2, display: { xs: 'inline-flex', md: 'none' } }}
+        >
+          <MenuIcon />
+        </IconButton>
+        {/* @TODO */}
+        {/* Don't know where re-render is triggered No transition effect */}
+        {/* Found that Navbar has too many definitions, put it on hold for the time being */}
+        <NavBarDrawer
+          navLinksDrawer={navLinksDrawer}
+          setNavLinksDrawer={setNavLinksDrawer}
+          navLinks={navLinks}
+        />
       </PrimaryHeader>
     </HeaderWidget>
   )
@@ -113,11 +120,13 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
 declare interface HeaderButtonProps {
   active: boolean
 }
+
 declare interface NavLinkProps {
   href: string
   name: string
   active: boolean
 }
+
 function NavLink({ href, name, active }: NavLinkProps) {
   const HeaderButton = styled.a<HeaderButtonProps>`
     display: flex;

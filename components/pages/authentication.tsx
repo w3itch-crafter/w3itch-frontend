@@ -1,4 +1,5 @@
 import { AuthenticationContext } from 'context'
+import { ethers } from 'ethers'
 import React from 'react'
 import { AccountEntity, UserEntity } from 'types'
 
@@ -7,27 +8,39 @@ export declare type AuthenticationState = {
   isLogin: boolean
   isLogout: boolean
   user: UserEntity | null
-  account: AccountEntity | null
+  account: AccountEntity[] | null
 }
 
 export declare type AuthenticationAction =
   | { type: 'LOGIN'; payload: Pick<AuthenticationState, 'user' | 'account'> }
   | { type: 'LOGOUT' }
 
+function processAccountInfo(accounts: AccountEntity[] | null): AccountEntity[] {
+  if (!Array.isArray(accounts)) return []
+  return accounts.map((account) => {
+    if (account.platform === 'metamask') {
+      account.accountId = ethers.utils.getAddress(account.accountId)
+    }
+    return account
+  })
+}
+
 function authenticationReducer(
   state: AuthenticationState,
   action: AuthenticationAction
 ): AuthenticationState {
   switch (action.type) {
-    case 'LOGIN':
+    case 'LOGIN': {
+      const account = processAccountInfo(action.payload.account)
       return {
         ...state,
         isAuthenticated: true,
         isLogin: true,
         isLogout: false,
         user: action.payload.user,
-        account: action.payload.account,
+        account,
       }
+    }
     case 'LOGOUT':
       return {
         ...state,

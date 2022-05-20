@@ -1,19 +1,19 @@
 import styled from '@emotion/styled'
 import { PrimaryButton } from 'components/CustomizedButtons'
+import { GameFormContext } from 'context/gameFormContext'
 import { isEmpty } from 'lodash'
 import {
   Dispatch,
   FC,
   SetStateAction,
   useCallback,
+  useContext,
   useEffect,
   useState,
 } from 'react'
 import { FileWithPath, useDropzone } from 'react-dropzone'
-import { UseFormGetValues, UseFormWatch } from 'react-hook-form'
 import { EditorMode } from 'types/enum'
 import { fileUrl } from 'utils'
-import { Game } from 'utils/validator'
 
 const WrapperItem = styled.section`
   height: auto;
@@ -31,24 +31,18 @@ const WrapperItem = styled.section`
 
 interface Props {
   readonly editorMode: EditorMode
-  readonly watch: UseFormWatch<Game>
-  readonly getValues: UseFormGetValues<Game>
   setFiles: Dispatch<SetStateAction<File[] | undefined>>
 }
 
-const UploadGameScreenshots: FC<Props> = ({
-  editorMode,
-  watch,
-  getValues,
-  setFiles,
-}) => {
+const UploadGameScreenshots: FC<Props> = ({ editorMode, setFiles }) => {
   const [screenshotsFiles, setScreenshotsFiles] = useState<FileWithPath[]>()
   const [screenshotsUrl, setScreenshotsUrl] = useState<string[]>([])
+  const { getValues, watch } = useContext(GameFormContext)
 
   const watchScreenshots = watch('screenshots')
 
   const onDrop = useCallback(
-    (acceptedFiles) => {
+    (acceptedFiles: File[]) => {
       // Do something with the files
       console.log('acceptedFiles', acceptedFiles)
 

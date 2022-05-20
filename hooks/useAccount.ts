@@ -1,21 +1,47 @@
-import { getMine, refresh } from 'api/account'
+import { getMe, getMine } from 'api'
 import { AuthenticationContext } from 'context'
-import { useCallback, useContext, useEffect, useMemo } from 'react'
+import { useRouter } from 'next/router'
+import { useCallback, useContext, useEffect } from 'react'
+import { AccountEntity, LoginMethod } from 'types'
 
-export function useRefresh() {
+const routeWhiteList = [
+  '/',
+  '/login',
+  '/logout',
+  '/oauth',
+  '/register',
+  '/games',
+  '/game/[id]',
+  '/profile/[username]',
+]
+
+export function useAuthentication() {
+  const router = useRouter()
   const { state, dispatch } = useContext(AuthenticationContext)
-  const memoState = useMemo(() => state, [state])
   const fetchUser = useCallback(async () => {
     if (!state.isAuthenticated && !state.isLogout) {
-      const user = await refresh()
+      const user = await getMe()
       const account = await getMine()
+      const isWhiteListPath = routeWhiteList.includes(router.pathname)
+      if (user === null && account === null && !isWhiteListPath) {
+        return router.push('/login')
+      }
       dispatch({ type: 'LOGIN', payload: { user, account } })
     }
-  }, [dispatch, state.isAuthenticated, state.isLogout])
+  }, [dispatch, router, state.isAuthenticated, state.isLogout])
 
   useEffect(() => {
     fetchUser()
   }, [fetchUser])
 
-  return memoState
+  return state
+}
+
+export function useAccountInfo(platform: LoginMethod): AccountEntity | null {
+  const {
+    state: { account },
+  } = useContext(AuthenticationContext)
+  if (!account) return null
+  const findAccount = account.find((i) => i.platform === platform)
+  return findAccount || null
 }

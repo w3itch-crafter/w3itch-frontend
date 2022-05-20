@@ -1,4 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+.idea
 
 # dependencies
 /node_modules
@@ -14,6 +15,12 @@
 
 # production
 /build
+
+# next-pwa https://github.com/shadowwalker/next-pwa/tree/master/examples/custom-worker#recommend-gitignore
+**/public/sw.js
+**/public/fallback-*.js
+**/public/workbox-*.js
+**/public/worker-*.js
 
 # misc
 .DS_Store
@@ -42,3 +49,9 @@ yarn-error.log*
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+
+# Sitemap
+/public/sitemap.xml
+/public/sitemap-0.xml
+/public/robots.txt

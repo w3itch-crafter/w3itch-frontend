@@ -31,6 +31,7 @@ import {
   storagesUploadToAWS,
   updateGame,
 } from 'api/index'
+import { saveAlgoliaGame } from 'api/server'
 import BigNumber from 'bignumber.js'
 import { PrimaryLoadingButton } from 'components/CustomizedButtons'
 import FormAppStoreLinks from 'components/Game/FormAppStoreLinks'
@@ -44,27 +45,17 @@ import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
 import type { SupportedChainId } from 'constants/chains'
 import { WalletSupportedChainIds } from 'constants/chains'
 import { AuthenticationContext } from 'context'
+import { GameFormContext } from 'context/gameFormContext'
 import { classifications, kindOfProjects, releaseStatus } from 'data'
 import { utils } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
-import { useTitle } from 'hooks'
+import { useAccountInfo, useTitle } from 'hooks'
 import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
-import {
-  Control,
-  FieldError,
-  FormState,
-  SubmitHandler,
-  UseFormGetValues,
-  UseFormHandleSubmit,
-  UseFormRegister,
-  UseFormSetValue,
-  UseFormTrigger,
-  UseFormWatch,
-} from 'react-hook-form'
+import { FieldError, SubmitHandler, useWatch } from 'react-hook-form'
 import { GameEntity, Token } from 'types'
 import { Api } from 'types/Api'
 import {
@@ -90,15 +81,6 @@ import FormGenre from './FormGenre'
 interface GameFormProps {
   readonly gameProject: GameEntity
   readonly editorMode: EditorMode
-  readonly register: UseFormRegister<Game>
-  readonly handleSubmit: UseFormHandleSubmit<Game>
-  readonly setValue: UseFormSetValue<Game>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly control: Control<Game, any>
-  readonly watch: UseFormWatch<Game>
-  readonly formState: FormState<Game>
-  readonly getValues: UseFormGetValues<Game>
-  readonly trigger: UseFormTrigger<Game>
   readonly editorRef: MutableRefObject<ToastUiEditor> | undefined
   setEditorRef: Dispatch<
     SetStateAction<MutableRefObject<ToastUiEditor> | undefined>
@@ -111,25 +93,30 @@ let MESSAGE_SUBMIT_KEY: any
 const GameForm: FC<GameFormProps> = ({
   gameProject,
   editorMode,
-  register,
-  handleSubmit,
-  setValue,
-  control,
-  watch,
-  formState,
-  getValues,
-  trigger,
   editorRef,
   setEditorRef,
 }) => {
   const router = useRouter()
   const id = router.query.id
-
-  console.log('form router', router)
+  // console.log('form router', router)
 
   const {
-    state: { isAuthenticated, account },
+    state: { isAuthenticated },
   } = useContext(AuthenticationContext)
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    watch,
+    formState: { errors },
+    getValues,
+    trigger,
+  } = useContext(GameFormContext)
+  // console.log('context', contextGame)
+
+  const account = useAccountInfo('metamask')
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const [uploadGameFile, setUploadGameFile] = useState<File>()
@@ -159,13 +146,22 @@ const GameForm: FC<GameFormProps> = ({
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
 
-  const { errors } = formState
   const watchPaymentMode = watch('paymentMode')
+  const watchAppStoreLinks = useWatch({
+    control,
+    name: 'appStoreLinks',
+  })
 
   // console.log(watch('description'))
   // console.log(watch('paymentMode'))
   // console.log(watch('genre'))
   // console.log('errors', errors)
+
+  // Watch appStoreLinks change then trigger
+  useEffect(() => {
+    // console.log('watchAppStoreLinks', watchAppStoreLinks)
+    trigger('appStoreLinks')
+  }, [watchAppStoreLinks, trigger])
 
   const handleAllImages = async () => {
     const promiseArray = []
@@ -361,6 +357,8 @@ const GameForm: FC<GameFormProps> = ({
         console.log('createGameResult', createGameResult)
 
         if (createGameResult.status === 201) {
+          saveAlgoliaGame(Number(createGameResult.data.id))
+
           enqueueSnackbar('Uploaded successfully', {
             anchorOrigin: {
               vertical: 'top',
@@ -443,6 +441,8 @@ const GameForm: FC<GameFormProps> = ({
         console.log('updateGameResult', updateGameResult)
 
         if (updateGameResult.status === 200) {
+          saveAlgoliaGame(Number(updateGameResult.data.id))
+
           enqueueSnackbar('Update completed', {
             anchorOrigin: {
               vertical: 'top',
@@ -679,6 +679,7 @@ const GameForm: FC<GameFormProps> = ({
               >
                 <div className={styles.columns}>
                   <div className={`main ${styles.left_col} first`}>
+                    {/*
                     <p className={styles.content_guidelines}>
                       <strong>Make sure everyone can find your page</strong>
                       <br />
@@ -688,7 +689,7 @@ const GameForm: FC<GameFormProps> = ({
                       </a>{' '}
                       before posting your project
                     </p>
-
+                */}
                     <div className={styles.input_row}>
                       <FormControl fullWidth>
                         <FormLabel id="form-title">Title</FormLabel>
@@ -810,9 +811,6 @@ const GameForm: FC<GameFormProps> = ({
 
                     <div className={styles.input_row}>
                       <FormPricing
-                        control={control}
-                        errors={errors}
-                        watch={watch}
                         currentDonationAddress={currentDonationAddress}
                         currentSelectTokenChainId={currentSelectTokenChainId}
                         currentSelectToken={currentSelectToken}
@@ -880,7 +878,7 @@ const GameForm: FC<GameFormProps> = ({
                     </div>
 
                     <div className={styles.input_row}>
-                      <FormCharset control={control} errors={errors} />
+                      <FormCharset />
                     </div>
 
                     <div
@@ -914,15 +912,11 @@ const GameForm: FC<GameFormProps> = ({
                     </div>
 
                     <div className={`${styles.input_row}`}>
-                      <FormGenre control={control} errors={errors} />
+                      <FormGenre />
                     </div>
                     <div className={`${styles.input_row} tags_input_row`}>
                       <FormTags
                         editorMode={editorMode}
-                        getValues={getValues}
-                        errors={errors}
-                        watch={watch}
-                        control={control}
                         changeTags={(tags) => {
                           setValue('tags', tags)
                         }}
@@ -930,16 +924,7 @@ const GameForm: FC<GameFormProps> = ({
                     </div>
 
                     <div className={styles.input_row}>
-                      <FormAppStoreLinks
-                        editorMode={editorMode}
-                        getValues={getValues}
-                        errors={errors}
-                        watch={watch}
-                        control={control}
-                        changeLinks={(value) => {
-                          setValue('appStoreLinks', value)
-                        }}
-                      />
+                      <FormAppStoreLinks />
                     </div>
 
                     {/* <div className={styles.input_row}>
@@ -964,7 +949,7 @@ const GameForm: FC<GameFormProps> = ({
                           </div> */}
 
                     <div className={styles.input_row}>
-                      <FormCommunity control={control} errors={errors} />
+                      <FormCommunity />
                     </div>
                     {/* <div className={styles.input_row}>
                             <FormControl>
@@ -1041,8 +1026,6 @@ const GameForm: FC<GameFormProps> = ({
                         <div className={styles.game_edit_cover_uploader_widget}>
                           <UploadGameCover
                             editorMode={editorMode}
-                            getValues={getValues}
-                            watch={watch}
                             setFile={async (file) => {
                               handleCoverValue(file as File)
                               await trigger('cover')
@@ -1084,8 +1067,6 @@ const GameForm: FC<GameFormProps> = ({
                       </FormHelperText>
                       <UploadGameScreenshots
                         editorMode={editorMode}
-                        getValues={getValues}
-                        watch={watch}
                         setFiles={async (files) => {
                           handleScreenshots(files as File[] | undefined)
                           await trigger('screenshots')
@@ -1126,7 +1107,7 @@ const GameForm: FC<GameFormProps> = ({
         setOpen={setTtokenListDialogOpen}
         chainId={currentSelectTokenChainId}
         selectToken={(token) => {
-          console.log(token)
+          // console.log(token)
           setCurrentSelectToken(token)
           setTtokenListDialogOpen(false)
         }}

@@ -65,6 +65,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   // true can't play
   const [holdUnlock, setHoldUnlock] = useState<boolean>(true)
 
+  // handle Fullscreen
   const handleFullscreen = useCallback(() => {
     // https://developer.mozilla.org/en-US/docs/Web/API/Lock
     if (isFullscreen) {
@@ -81,6 +82,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
     setGameFullscreen(!gameFullscreen)
   }, [enterFullscreen, exitFullscreen, isFullscreen, gameFullscreen])
 
+  // handle play
   const handlePlay = useCallback(() => {
     if (gameProject.paymentMode === PaymentMode.PAID) {
       if (holdUnlock && pricesToken) {
@@ -107,9 +109,17 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
     }
   }, [gameProject, buyNow, holdUnlock, pricesToken, user, enqueueSnackbar])
 
+  // @TODO Use more to keep unlocked then extract to public files
+  // process hold unlock
   const processHoldUnlock = useCallback(() => {
     if (gameProject.paymentMode === PaymentMode.PAID) {
       if (!pricesToken || isEmpty(pricesToken)) {
+        return
+      }
+
+      // Publisher works do not need to hold unlock
+      if (gameProject.username === user?.username) {
+        setHoldUnlock(false)
         return
       }
 
@@ -123,7 +133,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
     } else {
       setHoldUnlock(false)
     }
-  }, [gameProject, pricesToken])
+  }, [gameProject, pricesToken, user])
 
   useEffect(() => {
     processHoldUnlock()

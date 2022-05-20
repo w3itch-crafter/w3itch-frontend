@@ -1,10 +1,12 @@
 import assert from 'assert'
+
 import {
   CHAIN_IDS_TO_NAMES,
   CHAIN_INFO,
   ChainInfo,
   SupportedChainId,
-} from 'constants/chains'
+} from '../constants/chains'
+import { stringSlice } from './string'
 
 export function getChainIdFromName(name: string): number | undefined {
   const entry = Object.entries(CHAIN_IDS_TO_NAMES).find(([, n]) => n === name)
@@ -69,4 +71,9 @@ export const balanceDecimal = (amount: string, decimal = 6) => {
     return amount.slice(0, point + 1 + decimal)
   }
   return amount
+}
+
+export function shortAddress(address?: string): string {
+  if (!address) return ''
+  return stringSlice(address, 6, 4)
 }

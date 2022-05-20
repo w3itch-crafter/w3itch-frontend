@@ -1,13 +1,12 @@
-import { ethers } from 'ethers'
-import { AccountEntity, UserEntity } from 'types'
+import { AccountEntity, AccountServiceAction, UserEntity } from 'types'
 import { Api } from 'types/Api'
 import type { Wallet } from 'use-wallet/dist/cjs/types'
 
 import backend from './backend'
 
 async function walletAccountService(
+  action: AccountServiceAction,
   wallet: Wallet,
-  action: 'login' | 'signup',
   username?: string
 ): Promise<Api.AccountsMetamaskActionResponse> {
   const walletAccount = wallet.account
@@ -27,31 +26,28 @@ async function walletAccountService(
     `/accounts/metamask/${action}`,
     { account: walletAccount, signature, username }
   )
-  const { user, account } = res.data
-  return {
-    user,
-    account: {
-      ...account,
-      accountId: ethers.utils.getAddress(account.accountId),
-    },
-  }
+  return res.data
 }
-
 export async function signupWallet(
   wallet: Wallet,
   username: string
 ): Promise<Api.AccountsMetamaskActionResponse> {
-  return await walletAccountService(wallet, 'signup', username)
+  return await walletAccountService('signup', wallet, username)
 }
-
 export async function loginWallet(
   wallet: Wallet
 ): Promise<Api.AccountsMetamaskActionResponse> {
-  return await walletAccountService(wallet, 'login')
+  return await walletAccountService('login', wallet)
+}
+export async function bindWallet(wallet: Wallet): Promise<void> {
+  await walletAccountService('bind', wallet)
+}
+export async function unbindWallet(): Promise<void> {
+  await backend.post(`/accounts/metamask/unbind`)
 }
 
 async function githubAccountService(
-  action: 'login' | 'signup',
+  action: AccountServiceAction,
   username?: string,
   redirectUri?: string
 ): Promise<string> {
@@ -61,16 +57,47 @@ async function githubAccountService(
   })
   return res.data
 }
-
 export async function signupGitHub(
   username: string,
   redirectUri?: string
 ): Promise<string> {
   return await githubAccountService('signup', username, redirectUri)
 }
-
 export async function loginGitHub(redirectUri?: string): Promise<string> {
   return await githubAccountService('login', undefined, redirectUri)
+}
+export async function bindGitHub(redirectUri?: string): Promise<string> {
+  return await githubAccountService('bind', undefined, redirectUri)
+}
+export async function unbindGitHub(): Promise<void> {
+  await githubAccountService('unbind')
+}
+
+async function discordAccountService(
+  action: AccountServiceAction,
+  username?: string,
+  redirectUri?: string
+): Promise<string> {
+  const res = await backend.post<string>(`/accounts/discord/${action}`, {
+    username,
+    redirectUri,
+  })
+  return res.data
+}
+export async function signupDiscord(
+  username: string,
+  redirectUri?: string
+): Promise<string> {
+  return await discordAccountService('signup', username, redirectUri)
+}
+export async function loginDiscord(redirectUri?: string): Promise<string> {
+  return await discordAccountService('login', undefined, redirectUri)
+}
+export async function bindDiscord(redirectUri?: string): Promise<string> {
+  return await discordAccountService('bind', undefined, redirectUri)
+}
+export async function unbindDiscord(): Promise<void> {
+  await discordAccountService('unbind')
 }
 
 export async function refresh(): Promise<UserEntity | null> {
@@ -86,10 +113,10 @@ export async function logout(): Promise<void> {
   await backend.delete('/accounts/tokens')
 }
 
-export async function getMine(): Promise<AccountEntity | null> {
+export async function getMine(): Promise<AccountEntity[] | null> {
   try {
-    const { data } = await backend.get<AccountEntity>('/accounts/mine')
-    return { ...data, accountId: ethers.utils.getAddress(data.accountId) }
+    const res = await backend.get<AccountEntity[]>('/accounts/mine')
+    return res.data
   } catch (error) {
     return null
   }

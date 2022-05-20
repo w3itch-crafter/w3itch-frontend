@@ -6,9 +6,7 @@ import Link from 'next/link'
 import { FC } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity } from 'types'
-import { userHostUrl } from 'utils'
-import { calcRating } from 'utils'
-import { enumWord } from 'utils/word'
+import { calcRating, enumWord, linkDomainParser, userHostUrl } from 'utils'
 
 interface Props {
   readonly gameProject: GameEntity
@@ -64,7 +62,7 @@ const MoreInformation: FC<Props> = ({ gameProject, gameRatingsCount }) => {
               </td>
             </tr>
             <tr>
-              <td>Author</td>
+              <td>Submitter</td>
               <td>
                 <Link href={userHostUrl(gameProject.username) || '/'}>
                   <a>{gameProject.username}</a>
@@ -105,7 +103,7 @@ const MoreInformation: FC<Props> = ({ gameProject, gameRatingsCount }) => {
                       target="_blank"
                       href={appStoreLink}
                     >
-                      Links
+                      {linkDomainParser(appStoreLink)}
                     </a>
                   ))}
                 </td>

@@ -4,6 +4,7 @@ import { Box } from '@mui/material'
 import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack'
 import { deleteGameProject, getGamesMine } from 'api'
+import { deleteAlgoliaGame } from 'api/server'
 import Navigation from 'components/Dashboard/Navigation'
 import { AuthenticationContext } from 'context'
 import type { NextPage } from 'next'
@@ -69,6 +70,9 @@ const HasGameProject: FC<HasGameProjectProps> = ({
         })
         return setTimeout(() => router.replace('/login'), 1500)
       }
+
+      deleteAlgoliaGame(id)
+
       enqueueSnackbar('Game deleted', {
         anchorOrigin: { vertical: 'top', horizontal: 'center' },
         variant: 'success',
@@ -139,12 +143,12 @@ const HasGameProject: FC<HasGameProjectProps> = ({
         <p className={styles.social_nag}>
           <FavoriteBorderIcon sx={{ fontSize: 20 }} />
           Follow w3itch.io on{' '}
-          <a data-label="social_twitter" href="https://twitter.com">
+          <a data-label="social_twitter" href="https://twitter.com/w3itchio">
             Twitter
           </a>{' '}
           and{' '}
-          <a data-label="social_facebook" href="https://facebook.com">
-            Facebook
+          <a data-label="social_discord" href="https://discord.gg/UaHazgHc8q">
+            Discord
           </a>
         </p>
       </div>

@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import styles from '../styles/Home.module.css'
 
@@ -58,5 +59,12 @@ const Home: NextPage = () => (
     </footer>
   </div>
 )
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'])),
+  },
+})
+//每个pages页面都需要加这些不然没法正常i18n
 
 export default Home

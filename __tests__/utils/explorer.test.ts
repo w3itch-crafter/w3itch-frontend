@@ -1,4 +1,4 @@
-import { ExplorerDataType, getExplorerLink } from '../../utils'
+import { ExplorerDataType, getExplorerLink } from '../../utils/explorer'
 
 declare type ExpectedValue = { [key in ExplorerDataType]: string }
 

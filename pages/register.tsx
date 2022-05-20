@@ -14,12 +14,14 @@ import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { LoginMethod, RegisterData } from 'types'
 import { useWallet } from 'use-wallet'
 import { isEmptyObj, userHostUrl } from 'utils'
 
-import { signupGitHub, signupWallet } from '../api/account'
+import { signupDiscord, signupGitHub, signupWallet } from '../api/account'
 
 declare type InvalidData = {
   [key in keyof RegisterData]: {
@@ -28,6 +30,8 @@ declare type InvalidData = {
 }
 
 const Register: NextPage = () => {
+  const { t } = useTranslation()
+
   const Container = styled.div``
   const RegisterForm = styled.div`
     display: flex;
@@ -38,12 +42,15 @@ const Register: NextPage = () => {
     box-sizing: border-box;
     border-right: 1px solid;
     border-color: #dadada;
+
     &:last-child {
       border-right: 0;
     }
+
     h2 {
       margin: 0 0 20px 0;
     }
+
     h3,
     h4,
     h5 {
@@ -51,6 +58,7 @@ const Register: NextPage = () => {
       font-weight: 900;
       color: #434343;
     }
+
     p {
       font-size: 14px;
       margin: 0 0 20px 0;
@@ -81,10 +89,12 @@ const Register: NextPage = () => {
     padding: 10px;
     border-radius: 2px;
     margin-bottom: 20px;
+
     & > strong {
       display: block;
       margin-bottom: 10px;
     }
+
     & > p {
       margin: 0;
       color: #606060;
@@ -162,11 +172,15 @@ const Register: NextPage = () => {
           wallet,
           registerData.username
         )
-        dispatch({ type: 'LOGIN', payload: { user, account } })
+        dispatch({ type: 'LOGIN', payload: { user, account: [account] } })
         await router.replace('/games')
       }
       if (registerMethod === 'github') {
         const oAuthUrl = await signupGitHub(registerData.username, '/oauth')
+        window.location.href = oAuthUrl
+      }
+      if (registerMethod === 'discord') {
+        const oAuthUrl = await signupDiscord(registerData.username, '/oauth')
         window.location.href = oAuthUrl
       }
     } catch (error) {
@@ -195,7 +209,7 @@ const Register: NextPage = () => {
       </Head>
       <Container>
         <PageCard>
-          <StatHeader title="Create an account on w3itch.io" />
+          <StatHeader title={t('Create an account on w3itch.io')} />
           <RegisterForm>
             <FormColumn>
               {registerMethod && (
@@ -227,7 +241,7 @@ const Register: NextPage = () => {
                       disabled
                       preview
                       required
-                      label="You're registering with the wallet address"
+                      label={t("You're registering with the wallet address")}
                       name="address"
                       type="text"
                       value={registerData.address}
@@ -241,7 +255,7 @@ const Register: NextPage = () => {
                   <InputRow
                     autoFocus
                     required
-                    label="Username"
+                    label={t('Username')}
                     name="username"
                     type="text"
                     invalid={invalidData.username}
@@ -252,21 +266,25 @@ const Register: NextPage = () => {
                     disabled
                     preview
                     center
-                    label="Your profile page will be"
+                    label={t('Your profile page will be')}
                     type="text"
-                    placeholder="https://username.w3itch.io/"
+                    placeholder={t('https://username.w3itch.io/')}
                     value={profileUrl}
                   />
                   <UserConfigurator>
                     <strong>About you</strong>
                     <InputCheckbox
-                      label="I'm interested in playing or downloading games on w3itch.io"
+                      label={t(
+                        "I'm interested in playing or downloading games on w3itch.io"
+                      )}
                       name="gamer"
                       checked={registerData.gamer}
                       onChange={handleRegisterData}
                     />
                     <InputCheckbox
-                      label="I'm interested in distributing content on w3itch.io"
+                      label={t(
+                        "I'm interested in distributing content on w3itch.io"
+                      )}
                       name="developer"
                       checked={registerData.developer}
                       onChange={handleRegisterData}
@@ -284,12 +302,12 @@ const Register: NextPage = () => {
                   disabled={!registerMethod}
                   onClick={() => handleRegisterSubmit()}
                 >
-                  {registerMethod ? 'Create account' : 'Select a method'}
+                  {registerMethod ? t('Create account') : t('Select a method')}
                 </RedButton>
                 <LoginMessage>
-                  or already have an account?{' '}
+                  or already have an account?
                   <Link href="/login" passHref>
-                    <Login>Log in</Login>
+                    <Login>{t('login')}</Login>
                   </Link>
                 </LoginMessage>
               </Buttons>
@@ -325,5 +343,11 @@ const Register: NextPage = () => {
     </Fragment>
   )
 }
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'])),
+  },
+})
 
 export default Register
