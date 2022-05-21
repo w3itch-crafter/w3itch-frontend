@@ -32,6 +32,7 @@ import { Api } from 'types/Api'
 import { Community, PaymentMode } from 'types/enum'
 import { BackendError, SeoArticleJsonLdImages } from 'utils'
 import { SeoImages } from 'utils'
+import Konami from "konami/konami";
 
 const RenderMarkdown = dynamic(
   () => import('components/RenderMarkdown/index'),
@@ -221,6 +222,15 @@ const GameId: NextPage<GameProps> = ({
       document.removeEventListener('visibilitychange', handleVisiblityChange)
     }
   }, [fetchPricesToken, handleVisiblityChange])
+
+  /*
+    add konami js.
+  */
+  useEffect(()=>{
+    const easterEgg = Konami(() => {
+      alert('Meow!')
+    })
+  })
 
   return (
     <>
