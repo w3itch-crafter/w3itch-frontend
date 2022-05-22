@@ -12373,7 +12373,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^21.6.14, i18next@npm:^21.8.0":
+"i18next@npm:^21.6.14":
+  version: 21.8.2
+  resolution: "i18next@npm:21.8.2"
+  dependencies:
+    "@babel/runtime": ^7.17.2
+  checksum: 6114fafa9604073f783bdeb25c0b81cdadbe00ac7ae85a756576c52e4191f5ba3e4bc818bf57826493fc1770edfd69940fdcd337abb8a52dd50d0bc7819175cc
+  languageName: node
+  linkType: hard
+
+"i18next@npm:^21.8.0":
   version: 21.8.1
   resolution: "i18next@npm:21.8.1"
   dependencies:

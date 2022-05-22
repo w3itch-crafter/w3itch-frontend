@@ -1,13 +1,16 @@
 import styled from '@emotion/styled'
+import { Language } from '@mui/icons-material'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Box, Stack } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import Search from 'components/Search'
 import SearchGoogle from 'components/SearchGoogle'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { Fragment, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { NavLinks } from 'types'
 import { hasAlgoliaConfig } from 'utils'
 
@@ -69,6 +72,18 @@ export function Navbar() {
   const router = useRouter()
   const isHref = (href: string) => router.route === href
   const [navLinksDrawer, setNavLinksDrawer] = useState<boolean>(false)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const { pathname, asPath, query } = router
+  const handleClose = (locale?: 'zh' | 'en') => {
+    if (locale) {
+      router.replace({ pathname, query }, asPath, { locale })
+    }
+    setAnchorEl(null)
+  }
 
   return (
     <HeaderWidget>
@@ -97,6 +112,30 @@ export function Navbar() {
           {hasAlgoliaConfig ? <Search /> : <SearchGoogle />}
           <UserPanel />
         </Stack>
+        <IconButton
+          onClick={handleClick}
+          size="small"
+          aria-controls={open ? 'lang-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+        >
+          <Language />
+        </IconButton>
+        <Menu
+          id="lang-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={() => handleClose()}
+          MenuListProps={{
+            'aria-labelledby': 'lang-button',
+          }}
+        >
+          <MenuItem onClick={() => handleClose('zh')}>
+            {t('Chinese (Simplified)')}
+          </MenuItem>
+          <MenuItem onClick={() => handleClose('en')}>{t('English')}</MenuItem>
+        </Menu>
+        <UserPanel />
         <IconButton
           onClick={() => setNavLinksDrawer(true)}
           size="small"

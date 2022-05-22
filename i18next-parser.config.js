@@ -3,6 +3,7 @@
 module.exports = {
   defaultNamespace: 'common',
   keySeparator: false,
+  namespaceSeparator: false,
   locales: ['en', 'zh'],
   output: 'public/locales/$LOCALE/$NAMESPACE.json',
   // Supports $LOCALE and $NAMESPACE injection

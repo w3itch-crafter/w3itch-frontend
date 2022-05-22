@@ -3,6 +3,7 @@ const path = require('path')
 
 module.exports = {
   i18n: {
+    localeDetection: false,
     defaultLocale: 'zh',
     locales: ['en', 'zh'],
     serializeConfig: false,
