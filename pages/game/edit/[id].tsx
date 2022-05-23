@@ -1,6 +1,6 @@
 import { gameProjectByID } from 'api'
 import GameForm from 'components/Game/Form'
-import type { NextPage } from 'next'
+import { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { MutableRefObject, useCallback, useEffect, useState } from 'react'
 import { DefaultValues, useForm } from 'react-hook-form'
@@ -19,6 +19,7 @@ import {
   GameFormContextProvider,
   GameFormContextType,
 } from 'context/gameFormContext'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { GameEntity } from 'types'
 
 const GameEdit: NextPage = () => {
@@ -115,6 +116,14 @@ const GameEdit: NextPage = () => {
       ></GameForm>
     </GameFormContextProvider>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(ctx.locale as string, ['common'])),
+    },
+  }
 }
 
 export default GameEdit

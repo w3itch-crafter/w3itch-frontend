@@ -21,6 +21,7 @@ import { groupBy, isEmpty } from 'lodash'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { NextSeo } from 'next-seo'
 import { ArticleJsonLd } from 'next-seo'
 import { seoKeywords, seoLogo } from 'next-seo.config'
@@ -396,6 +397,7 @@ export const getServerSideProps: GetServerSideProps<GameProps> = async (
       props: {
         gameProjectData: gameProjectResult.data,
         gameRatingsCountData: gameRatingsCountResult.data,
+        ...(await serverSideTranslations(ctx.locale as string, ['common'])),
       },
     }
   } catch (error) {

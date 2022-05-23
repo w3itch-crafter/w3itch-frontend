@@ -3,6 +3,7 @@ import { getGamesMine, getUser } from 'api'
 import { GameCarousel, GameCell, PageCard, StatHeader } from 'components/pages'
 import { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Fragment } from 'react'
 import { GameEntity, GameInfo, UserEntity } from 'types'
 
@@ -106,7 +107,13 @@ export const getServerSideProps: GetServerSideProps<UserProfileProps> = async (
     ...g,
     link: `/game/${g.id}`,
   }))
-  return { props: { user: { ...user, ...userRes }, games } }
+  return {
+    props: {
+      user: { ...user, ...userRes },
+      games,
+      ...(await serverSideTranslations(context.locale as string, ['common'])),
+    },
+  }
 }
 
 export default UserProfile

@@ -4,10 +4,11 @@ import { Box, Stack } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import Search from 'components/Search'
 import SearchGoogle from 'components/SearchGoogle'
+import SwitchLanguage from 'components/SwitchLanguage'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { Fragment, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { NavLinks } from 'types'
 import { hasAlgoliaConfig } from 'utils'
 
@@ -68,6 +69,7 @@ export function Navbar() {
   `
   const router = useRouter()
   const isHref = (href: string) => router.route === href
+
   const [navLinksDrawer, setNavLinksDrawer] = useState<boolean>(false)
 
   return (
@@ -95,8 +97,10 @@ export function Navbar() {
         <Flex1 />
         <Stack direction="row" spacing={1}>
           {hasAlgoliaConfig ? <Search /> : <SearchGoogle />}
+          <SwitchLanguage />
           <UserPanel />
         </Stack>
+
         <IconButton
           onClick={() => setNavLinksDrawer(true)}
           size="small"

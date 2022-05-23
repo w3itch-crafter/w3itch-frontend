@@ -1,6 +1,7 @@
 import WifiOffIcon from '@mui/icons-material/WifiOff'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 const Offline = () => (
   <Box
@@ -23,5 +24,13 @@ const Offline = () => (
     </Typography>
   </Box>
 )
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
+}
 
 export default Offline

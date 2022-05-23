@@ -1,13 +1,9 @@
-const LanguageDetector = require('i18next-browser-languagedetector/dist/cjs/i18nextBrowserLanguageDetector')
 const path = require('path')
 
 module.exports = {
   i18n: {
-    defaultLocale: 'zh',
-    locales: ['en', 'zh'],
-    serializeConfig: false,
-    use: [LanguageDetector],
-    detection: ['localStorage', 'navigator'],
+    defaultLocale: 'en-US',
+    locales: ['en-US', 'zh-CN'],
     localePath: path.resolve('./public/locales'),
   },
 }

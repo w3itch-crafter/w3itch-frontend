@@ -16,12 +16,11 @@ import {
 } from 'next-seo'
 import { event, GoogleAnalytics, usePagesViews } from 'nextjs-google-analytics'
 import { SnackbarProvider } from 'notistack'
-import { Fragment } from 'react'
+import { Fragment, useCallback } from 'react'
 import { NextPageWithLayout } from 'types'
 import { UseWalletProvider } from 'use-wallet'
 import { getRpcUrl, urlHostnameParse } from 'utils'
 
-import nextI18NextConfig from '../next-i18next.config.js'
 import SEO, { seoLogo } from '../next-seo.config'
 
 export const WalletSupportedRpcUrls = WalletSupportedChainIds.map(
@@ -49,7 +48,7 @@ export function reportWebVitals({
 }
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>)
+  const getLayout = useCallback((page) => <Layout>{page}</Layout>, [])
   usePagesViews()
 
   return (
@@ -131,4 +130,4 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   )
 }
 
-export default appWithTranslation(MyApp, nextI18NextConfig)
+export default appWithTranslation(MyApp)
