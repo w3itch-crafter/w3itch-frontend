@@ -1,6 +1,6 @@
 import { gameProjectByID } from 'api'
 import GameForm from 'components/Game/Form'
-import type { NextPage } from 'next'
+import { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { MutableRefObject, useCallback, useEffect, useState } from 'react'
 import { DefaultValues, useForm } from 'react-hook-form'
@@ -118,10 +118,10 @@ const GameEdit: NextPage = () => {
   )
 }
 
-export async function getStaticProps({ locale }: { locale: string }) {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(ctx.locale as string, ['common'])),
     },
   }
 }
