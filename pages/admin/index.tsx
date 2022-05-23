@@ -2,6 +2,7 @@ import LoadingButton from '@mui/lab/LoadingButton'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { initializationAlgoliaGame } from 'api/server'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { NextSeo } from 'next-seo'
 import { useSnackbar } from 'notistack'
 import { useCallback, useState } from 'react'
@@ -44,6 +45,14 @@ const Admin = () => {
       </Box>
     </>
   )
+}
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default Admin

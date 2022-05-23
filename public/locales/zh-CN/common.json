@@ -8,13 +8,13 @@
   "login": "登入",
   "Register": "注册",
   "Browse games - w3itch.io": "Browse games - w3itch.io",
-  "Create an account on w3itch.io": "Create an account on w3itch.io",
-  "You're registering with the wallet address": "You're registering with the wallet address",
-  "Username": "Username",
-  "Your profile page will be": "Your profile page will be",
+  "Create an account on w3itch.io": "在 w3itch.io 创建账号",
+  "You're registering with the wallet address": "你使用了钱包地址注册",
+  "Username": "用户名",
+  "Your profile page will be": "你的个人主页是",
   "https://username.w3itch.io/": "https://username.w3itch.io/",
-  "I'm interested in playing or downloading games on w3itch.io": "I'm interested in playing or downloading games on w3itch.io",
+  "I'm interested in playing or downloading games on w3itch.io": "我在 w3itch.io 感兴趣的游戏",
   "I'm interested in distributing content on w3itch.io": "I'm interested in distributing content on w3itch.io",
-  "Create account": "Create account",
-  "Select a method": "Select a method"
+  "Create account": "创建账号",
+  "Select a method": "选择一种方法"
 }

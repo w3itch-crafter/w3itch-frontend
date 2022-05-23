@@ -12,6 +12,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import Router, { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useSnackbar } from 'notistack'
 import { FC, Fragment, useCallback, useContext } from 'react'
 import { Dispatch, SetStateAction, useState } from 'react'
@@ -276,6 +277,14 @@ const Dashboard: NextPage = () => {
       </div>
     </Fragment>
   )
+}
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default Dashboard

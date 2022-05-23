@@ -6,6 +6,7 @@ import {
   GameFormContextType,
 } from 'context/gameFormContext'
 import type { NextPage } from 'next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { MutableRefObject, useState } from 'react'
 import { DefaultValues, useForm } from 'react-hook-form'
 import { GameEntity } from 'types'
@@ -71,6 +72,14 @@ const GameCreate: NextPage = () => {
       ></GameForm>
     </GameFormContextProvider>
   )
+}
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default GameCreate

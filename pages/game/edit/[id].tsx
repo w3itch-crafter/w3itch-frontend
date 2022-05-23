@@ -19,6 +19,7 @@ import {
   GameFormContextProvider,
   GameFormContextType,
 } from 'context/gameFormContext'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { GameEntity } from 'types'
 
 const GameEdit: NextPage = () => {
@@ -115,6 +116,14 @@ const GameEdit: NextPage = () => {
       ></GameForm>
     </GameFormContextProvider>
   )
+}
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default GameEdit
