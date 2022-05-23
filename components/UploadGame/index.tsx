@@ -46,7 +46,7 @@ const UploadGame: FC<Props> = ({ setFile }) => {
 
   const files = acceptedFiles.map((file: FileWithPath) => (
     <li key={file.path}>
-      <b>{file.name}</b> - {(file.size / 2**20).toFixed(2)} MB
+      <b>{file.name}</b> - {(file.size / 2 ** 20).toFixed(2)} MB
     </li>
   ))
 
