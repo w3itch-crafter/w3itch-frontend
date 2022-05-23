@@ -25,20 +25,16 @@ const limit = 100 // api limit max is 100
 
 // fetch games
 const fetchGames = async ({ limit, page }) => {
-  try {
-    const gamesUrl = `${process.env.NEXT_PUBLIC_API_URL}/game-projects?limit=${limit}&page=${page}`
-    const gamesResult = await axios.get(gamesUrl)
-    // console.log('gamesResult: ', gamesResult.data.data.length, limit, page)
+  const gamesUrl = `${process.env.NEXT_PUBLIC_API_URL}/game-projects?limit=${limit}&page=${page}`
+  const gamesResult = await axios.get(gamesUrl)
+  // console.log('gamesResult: ', gamesResult.data.data.length, limit, page)
 
-    if (gamesResult.status === 200 && gamesResult.data.data.length > 0) {
-      list.push(...gamesResult.data.data)
+  if (gamesResult.status === 200 && gamesResult.data.data.length > 0) {
+    list.push(...gamesResult.data.data)
 
-      if (page < gamesResult.data.meta.totalPages) {
-        await fetchGames({ limit, page: page + 1 })
-      }
+    if (page < gamesResult.data.meta.totalPages) {
+      await fetchGames({ limit, page: page + 1 })
     }
-  } catch (error) {
-    console.error(error)
   }
 }
 

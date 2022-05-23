@@ -25,22 +25,18 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
 
   // fetch games
   const fetchGames = async ({ limit, page }: FetchGamesParams) => {
-    try {
-      const gamesResult = await getGames({
-        limit: limit,
-        page: page,
-      })
-      // console.log('gamesResult: ', gamesResult.data.length, limit, page)
+    const gamesResult = await getGames({
+      limit: limit,
+      page: page,
+    })
+    // console.log('gamesResult: ', gamesResult.data.length, limit, page)
 
-      if (gamesResult.data.length > 0) {
-        list.push(...gamesResult.data)
+    if (gamesResult.data.length > 0) {
+      list.push(...gamesResult.data)
 
-        if (page < gamesResult.meta.totalPages) {
-          await fetchGames({ limit, page: page + 1 })
-        }
+      if (page < gamesResult.meta.totalPages) {
+        await fetchGames({ limit, page: page + 1 })
       }
-    } catch (error) {
-      console.error(error)
     }
   }
 
