@@ -51,7 +51,6 @@ const handler = async () => {
   const clearObjectsResult = await index.clearObjects()
   const saveObjectsResult = await index.saveObjects(listData)
 
-  console.log('listData: ', listData.length)
   console.log('clear: ', clearObjectsResult)
   console.log('save: ', saveObjectsResult)
 }
