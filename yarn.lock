@@ -14408,6 +14408,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"konami@npm:^1.6.3":
+  version: 1.6.3
+  resolution: "konami@npm:1.6.3"
+  checksum: 629b02d3ce682b71cc803b2ddf34aa138486acc3f9de6ee86c389999e14d133853f5829eb4c2389c5095b25ccb79ff6aa87570bbdbd7f080ebf7100f8f2fad7e
+  languageName: node
+  linkType: hard
+
 "language-subtag-registry@npm:~0.3.2":
   version: 0.3.21
   resolution: "language-subtag-registry@npm:0.3.21"
@@ -21829,6 +21836,7 @@ __metadata:
     i18next-browser-languagedetector: ^6.1.4
     i18next-parser: ^6.4.0
     jest: ^27.5.1
+    konami: ^1.6.3
     lint-staged: ^12.4.1
     lodash: ^4.17.21
     next: ^12.1.6

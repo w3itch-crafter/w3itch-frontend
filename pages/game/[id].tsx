@@ -16,6 +16,7 @@ import Screenshots from 'components/Game/Screenshots'
 import UserTools from 'components/Game/UserTools'
 import { useERC20Multicall } from 'hooks/useERC20Multicall'
 import { useTitle } from 'hooks/useTitle'
+import Konami from 'konami'
 import { groupBy, isEmpty } from 'lodash'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
@@ -221,6 +222,15 @@ const GameId: NextPage<GameProps> = ({
       document.removeEventListener('visibilitychange', handleVisiblityChange)
     }
   }, [fetchPricesToken, handleVisiblityChange])
+
+  /*
+    add konami js.
+  */
+  useEffect(() => {
+    new Konami(() => {
+      alert('Meow!')
+    })
+  }, [])
 
   return (
     <>
