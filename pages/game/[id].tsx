@@ -16,6 +16,7 @@ import Screenshots from 'components/Game/Screenshots'
 import UserTools from 'components/Game/UserTools'
 import { useERC20Multicall } from 'hooks/useERC20Multicall'
 import { useTitle } from 'hooks/useTitle'
+import Konami from 'konami'
 import { groupBy, isEmpty } from 'lodash'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
@@ -32,7 +33,6 @@ import { Api } from 'types/Api'
 import { Community, PaymentMode } from 'types/enum'
 import { BackendError, SeoArticleJsonLdImages } from 'utils'
 import { SeoImages } from 'utils'
-import Konami from "konami/konami";
 
 const RenderMarkdown = dynamic(
   () => import('components/RenderMarkdown/index'),
@@ -226,11 +226,11 @@ const GameId: NextPage<GameProps> = ({
   /*
     add konami js.
   */
-  useEffect(()=>{
-    const easterEgg = Konami(() => {
+  useEffect(() => {
+    new Konami(() => {
       alert('Meow!')
     })
-  })
+  }, [])
 
   return (
     <>
