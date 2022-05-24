@@ -5,11 +5,15 @@ import MenuItem from '@mui/material/MenuItem'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import React, { Fragment, useState } from 'react'
+import React, { useMemo, useState } from 'react'
+import { setCookie } from 'utils'
+
+const COOKIE_NEXT_LOCALE = 'NEXT_LOCALE'
+const COOKIE_NEXT_LOCALE_EXPIRES = 365
 
 const SwitchLanguage = () => {
   const router = useRouter()
-
+  const { locales, pathname, query, asPath } = router
   const { t } = useTranslation()
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -20,6 +24,21 @@ const SwitchLanguage = () => {
   const handleClose = () => {
     setAnchorEl(null)
   }
+
+  const LanguageLocales = useMemo(() => {
+    const list = [
+      {
+        key: 'zh-CN',
+        value: 'Chinese (Simplified)',
+      },
+      {
+        key: 'en-US',
+        value: 'English',
+      },
+    ]
+
+    return list.filter(({ key }) => !!locales && locales.includes(key))
+  }, [locales])
 
   return (
     <>
@@ -42,32 +61,28 @@ const SwitchLanguage = () => {
           'aria-labelledby': 'lang-button',
         }}
       >
-        <MenuItem>
-          <Link href={router.asPath} passHref locale={'zh-CN'}>
-            <a
-              style={{
-                width: '100%',
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              {t('Chinese (Simplified)')}
-            </a>
-          </Link>
-        </MenuItem>
-        <MenuItem>
-          <Link href={router.asPath} passHref locale={'en-US'}>
-            <a
-              style={{
-                width: '100%',
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              {t('English')}
-            </a>
-          </Link>
-        </MenuItem>
+        {LanguageLocales.map((locale) => (
+          <MenuItem key={locale.key}>
+            <Link href={{ pathname, query }} as={asPath} locale={locale.key}>
+              <a
+                style={{
+                  width: '100%',
+                  color: 'inherit',
+                  textDecoration: 'none',
+                }}
+                onClick={() =>
+                  setCookie(
+                    COOKIE_NEXT_LOCALE,
+                    locale.key,
+                    COOKIE_NEXT_LOCALE_EXPIRES
+                  )
+                }
+              >
+                {t(locale.value)}
+              </a>
+            </Link>
+          </MenuItem>
+        ))}
       </Menu>
     </>
   )
