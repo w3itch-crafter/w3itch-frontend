@@ -57,7 +57,7 @@ function useHackathons() {
   }
 }
 
-const Calendar: NextPage = () => {
+const Jams: NextPage = () => {
   const CalendarHeader = styled.h3`
     display: flex;
     margin: 20px 40px;
@@ -128,6 +128,7 @@ const Calendar: NextPage = () => {
     color: #606060;
     text-transform: uppercase;
   `
+
   const MonthMarkers = styled.div`
     position: relative;
     height: 20px;
@@ -201,7 +202,7 @@ const Calendar: NextPage = () => {
     <Fragment>
       <section>
         <CalendarHeader>
-          <CalendarMonth style={{ marginRight: '10px' }} />
+          <CalendarMonth style={{ marginRight: 10 }} />
           Calendar
         </CalendarHeader>
         <FilteredCalendar>
@@ -210,7 +211,7 @@ const Calendar: NextPage = () => {
             <div></div>
           </Filter>
           <CalendarWidget ref={ref}>
-            <CalendarScrolling style={{ width: `${days.length * 120}px` }}>
+            <CalendarScrolling style={{ width: days.length * 120 }}>
               <CalendarRows>
                 {data?.map((x) => {
                   const lx = date.differenceInCalendarDays(
@@ -284,4 +285,4 @@ const Calendar: NextPage = () => {
   )
 }
 
-export default Calendar
+export default Jams

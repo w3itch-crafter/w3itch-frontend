@@ -19,6 +19,7 @@ export function Navbar() {
   const { t } = useTranslation()
   const navLinks: NavLinks = [
     { href: `/games`, name: t('Browse Games') },
+    { href: `/jams`, name: t('Game Jams') },
     { href: `/dashboard`, name: t('Dashboard') },
     { href: `https://discord.gg/UaHazgHc8q`, name: t('Community') },
   ]
