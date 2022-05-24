@@ -1781,7 +1781,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.17, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.17, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.9.2":
   version: 7.17.9
   resolution: "@babel/runtime@npm:7.17.9"
   dependencies:
@@ -12044,15 +12044,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-browser-languagedetector@npm:^6.1.4":
-  version: 6.1.4
-  resolution: "i18next-browser-languagedetector@npm:6.1.4"
-  dependencies:
-    "@babel/runtime": ^7.14.6
-  checksum: 379dba3527c359c3adeb26c1e16e6b7e007989763c4361d43662e4d9412c538ca35e28a6a12df0654edc0adb78b44ff5afdf4c5d842bbf0e83db59d5e9e02f55
-  languageName: node
-  linkType: hard
-
 "i18next-fs-backend@npm:^1.1.4":
   version: 1.1.4
   resolution: "i18next-fs-backend@npm:1.1.4"
@@ -13460,6 +13451,13 @@ __metadata:
   version: 2.2.1
   resolution: "js-cookie@npm:2.2.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fjs-cookie%2F-%2Fjs-cookie-2.2.1.tgz"
   checksum: 9b1fb980a1c5e624fd4b28ea4867bb30c71e04c4484bb3a42766344c533faa684de9498e443425479ec68609e96e27b60614bfe354877c449c631529b6d932f2
+  languageName: node
+  linkType: hard
+
+"js-cookie@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "js-cookie@npm:3.0.1"
+  checksum: bb48de67e2a6bd1ae3dfd6b2d5a167c33dd0c5a37e909206161eb0358c98f17cb55acd55827a58e9eea3630d89444e7479f7938ef4420dda443218b8c434a4c3
   languageName: node
   linkType: hard
 
@@ -21131,8 +21129,8 @@ __metadata:
     eslint-plugin-unused-imports: ^2.0.0
     ethers: ^5.6.5
     husky: ^7.0.4
-    i18next-browser-languagedetector: ^6.1.4
     jest: ^27.5.1
+    js-cookie: ^3.0.1
     konami: ^1.6.3
     lint-staged: ^12.4.1
     lodash: ^4.17.21
