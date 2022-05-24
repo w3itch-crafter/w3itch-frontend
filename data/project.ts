@@ -512,36 +512,20 @@ export const classifications = [
 
 export const kindOfProjects = [
   {
+    value: 'default',
+    label: 'Downloadable',
+    description: 'You only have files to be downloaded',
+  },  
+  {
     value: 'rm2k3e',
     label: 'RPG MAKER',
     description: 'RPG MAKER 2000/2003',
   },
   {
-    value: 'default',
-    label: 'Downloadable',
-    description: 'You only have files to be downloaded',
-  },
-  {
-    value: 'html',
-    label: 'HTML',
-    description:
-      'You have a ZIP or HTML file that will be played in the browser',
-  },
-  {
-    value: 'flash',
-    label: 'Flash',
-    description: 'You have an SWF that will be played in the browser',
-  },
-  {
-    value: 'java',
-    label: 'Java applet',
-    description: 'You have a JAR that will be played in the browser',
-  },
-  {
-    value: 'unity',
-    label: 'Unity ≤ 5.3',
-    description: 'You have a Unity3d file that will be played in the browser',
-  },
+    value: 'mt',
+    label: 'Minetest',
+    description: 'Minetest World',
+  },  
 ]
 
 export const releaseStatus = [
