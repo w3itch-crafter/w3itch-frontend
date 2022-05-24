@@ -11,6 +11,7 @@ import {
 import * as date from 'date-fns'
 import { concat, initial } from 'lodash'
 import { NextPage } from 'next'
+import Link from 'next/link'
 import { Fragment } from 'preact'
 import React, { useMemo, useState } from 'react'
 import useSWR from 'swr'
@@ -19,6 +20,7 @@ type Event = {
   title: string
   start: Date
   end: Date
+  link: string
 }
 
 function useHackathons() {
@@ -39,16 +41,18 @@ function useHackathons() {
           Array.from(upcoming)
         ).map((x: Element) => {
           const times = x.querySelectorAll(':scope .title-and-dates time')
-          const title = x
-            .querySelector(':scope .title-and-dates h4 a')
-            ?.textContent?.trim()
-          if (times.length !== 2 || !title) {
+          const titleAndDate = x.querySelector(':scope .title-and-dates h4 a')
+          const title = titleAndDate?.textContent?.trim()
+          const href = (titleAndDate as HTMLLinkElement)?.href?.trim()
+          if (times.length !== 2 || !title || !href) {
             return null
           }
           const start = (times[0] as HTMLTimeElement).dateTime
           const end = (times[1] as HTMLTimeElement).dateTime
+          const link = 'https://gitcoin.co' + new URL(href).pathname
           return {
-            title: title,
+            title,
+            link,
             start: new Date(start),
             end: new Date(end),
           }
@@ -159,6 +163,16 @@ const Jams: NextPage = () => {
     position: sticky;
     left: 0;
     padding: 0 20px;
+    font-weight: 600;
+
+    & > a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    & > a:hover {
+      text-decoration: underline;
+    }
   `
 
   const ElapsedTime = styled.div`
@@ -281,7 +295,9 @@ const Jams: NextPage = () => {
                       }}
                       key={`event-${x.title}`}
                     >
-                      <StickyLabel>{x.title}</StickyLabel>
+                      <StickyLabel>
+                        <Link href={x.link}>{x.title}</Link>
+                      </StickyLabel>
                     </CalendarRow>
                   )
                 })}
