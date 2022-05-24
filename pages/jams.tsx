@@ -1,11 +1,18 @@
 import styled from '@emotion/styled'
 import { CalendarMonth } from '@mui/icons-material'
-import { Box, CircularProgress } from '@mui/material'
+import {
+  Box,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from '@mui/material'
 import * as date from 'date-fns'
 import { concat, initial } from 'lodash'
 import { NextPage } from 'next'
 import { Fragment } from 'preact'
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import useSWR from 'swr'
 
 type Event = {
@@ -165,24 +172,37 @@ const Jams: NextPage = () => {
 
   const ref = useRef<HTMLDivElement>(null)
   const { data, isLoading } = useHackathons()
+  const [duration, setDuration] = useState(Number.MAX_SAFE_INTEGER)
+  const filteredData = useMemo(() => {
+    return data?.filter(
+      (x) => date.differenceInHours(x.end, x.start) < duration
+    )
+  }, [data, duration])
   const { interval, days, mouths, hours } = useMemo(() => {
     const now = new Date()
-    const interval = data
-      ? {
-          start: date.min(data.map((x) => x.start)),
-          end: date.max(data.map((x) => x.end)),
-        }
-      : {
-          start: now,
-          end: date.addDays(now, 12),
-        }
+    const interval =
+      filteredData && filteredData.length > 0
+        ? {
+            start: date.min(filteredData.map((x) => x.start)),
+            end: date.max(filteredData.map((x) => x.end)),
+          }
+        : {
+            start: now,
+            end: date.addDays(now, 12),
+          }
+    console.log({
+      interval,
+      days: initial(date.eachDayOfInterval(interval)),
+      mouths: date.eachMonthOfInterval(interval),
+      hours: date.differenceInHours(now, date.startOfDay(interval.start)),
+    })
     return {
       interval,
       days: initial(date.eachDayOfInterval(interval)),
       mouths: date.eachMonthOfInterval(interval),
       hours: date.differenceInHours(now, date.startOfDay(interval.start)),
     }
-  }, [data])
+  }, [filteredData])
 
   if (!data)
     return (
@@ -206,14 +226,46 @@ const Jams: NextPage = () => {
           Calendar
         </CalendarHeader>
         <FilteredCalendar>
-          <Filter>
-            <div>Filter</div>
-            <div></div>
+          <Filter
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <div
+              style={{
+                marginRight: 20,
+              }}
+            >
+              Filter
+            </div>
+            <FormControl
+              sx={{
+                minWidth: 120,
+              }}
+            >
+              <InputLabel>Duration</InputLabel>
+              <Select
+                labelId="filter-duration-label"
+                id="filter-duration"
+                value={duration}
+                label="Age"
+                onChange={(x) => setDuration(x.target.value as number)}
+              >
+                <MenuItem value={3}>Less Then 3 days</MenuItem>
+                <MenuItem value={7}>Less Then 7 days</MenuItem>
+                <MenuItem value={15}>Less Then 15 days</MenuItem>
+                <MenuItem value={Number.MAX_SAFE_INTEGER}>
+                  Greater Then 15 days
+                </MenuItem>
+              </Select>
+            </FormControl>
           </Filter>
           <CalendarWidget ref={ref}>
             <CalendarScrolling style={{ width: days.length * 120 }}>
               <CalendarRows>
-                {data?.map((x) => {
+                {filteredData?.map((x) => {
                   const lx = date.differenceInCalendarDays(
                     x.start,
                     interval.start
@@ -257,7 +309,7 @@ const Jams: NextPage = () => {
                   )
                   const k = date.differenceInCalendarDays(
                     date.min([interval.end, date.addMonths(d, 1)]),
-                    d
+                    date.max([d, interval.start])
                   )
                   return (
                     <MonthMarker
