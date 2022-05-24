@@ -14,10 +14,11 @@ const querySuggestionsPlugin = createQuerySuggestionsPlugin({
     }
   },
   transformSource({ source }) {
+    // @TODO Need to support internationalized routing
     return {
       ...source,
       getItemUrl({ item }) {
-        return `${process.env.NEXT_PUBLIC_URL}/game/${item.id}`
+        return `/game/${item.id}`
       },
       templates: {
         ...source.templates,
@@ -25,7 +26,7 @@ const querySuggestionsPlugin = createQuerySuggestionsPlugin({
           const { item, html, components } = params
           return html`<a
             class="custom-aa-ItemLink"
-            href="${process.env.NEXT_PUBLIC_URL}/game/${item.id}"
+            href="/game/${item.id}"
             target="_blank"
           >
             <div class="InterfaceDemoHit aa-ItemWrapper">
