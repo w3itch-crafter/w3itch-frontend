@@ -190,12 +190,6 @@ const Jams: NextPage = () => {
             start: now,
             end: date.addDays(now, 12),
           }
-    console.log({
-      interval,
-      days: initial(date.eachDayOfInterval(interval)),
-      mouths: date.eachMonthOfInterval(interval),
-      hours: date.differenceInHours(now, date.startOfDay(interval.start)),
-    })
     return {
       interval,
       days: initial(date.eachDayOfInterval(interval)),
