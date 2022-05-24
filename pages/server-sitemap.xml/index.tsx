@@ -15,6 +15,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       page: 1,
     })
 
+    // @TODO Need to support internationalized routing
     // game id, username urls
     const gameAndUsernameUrls = gamesResult.data.map((game: GameEntity) => [
       `${process.env.NEXT_PUBLIC_URL}/game/${game.id}`,
