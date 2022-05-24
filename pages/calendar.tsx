@@ -1,9 +1,11 @@
 import styled from '@emotion/styled'
+import { CalendarMonth } from '@mui/icons-material'
+import { Box, CircularProgress } from '@mui/material'
 import * as date from 'date-fns'
-import { concat } from 'lodash'
+import { concat, initial } from 'lodash'
 import { NextPage } from 'next'
 import { Fragment } from 'preact'
-import { useMemo } from 'react'
+import React, { useMemo, useRef } from 'react'
 import useSWR from 'swr'
 
 type Event = {
@@ -56,7 +58,13 @@ function useHackathons() {
 }
 
 const Calendar: NextPage = () => {
-  const Filter = styled.div``
+  const CalendarHeader = styled.h3`
+    display: flex;
+    margin: 20px 40px;
+  `
+  const Filter = styled.div`
+    margin: 0 40px 20px;
+  `
   const FilteredCalendar = styled.div``
   const CalendarWidget = styled.div`
     overflow: hidden;
@@ -69,15 +77,32 @@ const Calendar: NextPage = () => {
     min-height: 960px;
     border-bottom: 1px solid #dadada;
   `
-  const CalendarRows = styled.div``
-  const CalendarRow = styled.div``
-  const DayMarkers = styled.div``
+  const CalendarRows = styled.div`
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 81px;
+    bottom: 30px;
+    z-index: 2;
+  `
+  const CalendarRow = styled.div`
+    height: 30px;
+    line-height: 30px;
+    position: relative;
+    margin: 3px 0;
+    color: white;
+  `
+
+  const DayMarkers = styled.div`
+    z-index: 1;
+  `
   const DayMarker = styled.div`
     position: absolute;
     border-left: 1px solid #dadada;
     width: 120px;
     top: 40px;
     bottom: 0;
+    z-index: 1;
   `
   const DayOrdinal = styled.div`
     position: absolute;
@@ -106,6 +131,7 @@ const Calendar: NextPage = () => {
   const MonthMarkers = styled.div`
     position: relative;
     height: 20px;
+    z-index: 3;
   `
   const MonthMarker = styled.div`
     position: absolute;
@@ -121,62 +147,102 @@ const Calendar: NextPage = () => {
     font-size: 14px;
   `
 
-  const MonthMarkerLabel = styled.span`
+  const StickyLabel = styled.span`
     position: sticky;
     left: 0;
     padding: 0 20px;
   `
 
-  const { data, isLoading, isError } = useHackathons()
-  const { interval, days, mouths } = useMemo(() => {
-    let start
-    let end
-    if (!data) {
-      start = new Date()
-      end = date.addDays(start, 12)
-    } else {
-      start = date.min(data.map((x) => x.start))
-      end = date.max(data.map((x) => x.end))
-    }
-    const interval = {
-      start,
-      end,
-    }
-    const result = {
-      interval: {
-        start,
-        end: date.addDays(end, 1),
-      },
-      days: date.eachDayOfInterval(interval),
+  const ElapsedTime = styled.div`
+    position: absolute;
+    background: #f4f4f4;
+    border-right: 6px solid #dadada;
+    top: 0;
+    bottom: 0;
+    left: 0;
+  `
+
+  const ref = useRef<HTMLDivElement>(null)
+  const { data, isLoading } = useHackathons()
+  const { interval, days, mouths, hours } = useMemo(() => {
+    const now = new Date()
+    const interval = data
+      ? {
+          start: date.min(data.map((x) => x.start)),
+          end: date.max(data.map((x) => x.end)),
+        }
+      : {
+          start: now,
+          end: date.addDays(now, 12),
+        }
+    return {
+      interval,
+      days: initial(date.eachDayOfInterval(interval)),
       mouths: date.eachMonthOfInterval(interval),
+      hours: date.differenceInHours(now, date.startOfDay(interval.start)),
     }
-    console.log(result)
-    return result
   }, [data])
 
-  if (isLoading) return <div>Loading</div>
-  if (isError) return <div>Error</div>
+  if (!data)
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: `center`,
+          minHeight: 960,
+        }}
+      >
+        {isLoading ? <CircularProgress /> : <div>Error</div>}
+      </Box>
+    )
 
   return (
     <Fragment>
       <section>
-        <h3>Calendar</h3>
+        <CalendarHeader>
+          <CalendarMonth style={{ marginRight: '10px' }} />
+          Calendar
+        </CalendarHeader>
         <FilteredCalendar>
           <Filter>
             <div>Filter</div>
             <div></div>
           </Filter>
-          <CalendarWidget>
-            <CalendarScrolling>
+          <CalendarWidget ref={ref}>
+            <CalendarScrolling style={{ width: `${days.length * 120}px` }}>
               <CalendarRows>
-                <CalendarRow></CalendarRow>
+                {data?.map((x) => {
+                  const lx = date.differenceInCalendarDays(
+                    x.start,
+                    interval.start
+                  )
+                  const k = date.differenceInCalendarDays(x.end, x.start)
+
+                  // magic color
+                  const s = x.start.getSeconds()
+                  const color = [0, 0, 0]
+                  color[s % 3] = 204
+                  color[(s + 1) % 3] = (s % 114) + 90
+                  color[(s + 2) % 3] = (s % 13) * 6 + 90
+
+                  return (
+                    <CalendarRow
+                      style={{
+                        left: lx * 120,
+                        width: k * 120,
+                        backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
+                      }}
+                      key={`event-${x.title}`}
+                    >
+                      <StickyLabel>{x.title}</StickyLabel>
+                    </CalendarRow>
+                  )
+                })}
               </CalendarRows>
               <DayMarkers>
                 {days.map((d, index: number) => (
-                  <DayMarker
-                    style={{ left: `${index * 120}px` }}
-                    key={`day-${index}`}
-                  >
+                  <DayMarker style={{ left: index * 120 }} key={`day-${index}`}>
                     <DayOrdinal>{date.format(d, 'do')}</DayOrdinal>
                     <DayName>{date.format(d, 'iii')}</DayName>
                   </DayMarker>
@@ -195,18 +261,21 @@ const Calendar: NextPage = () => {
                   return (
                     <MonthMarker
                       style={{
-                        left: `${lx * 120}px`,
-                        width: `${k * 120}px`,
+                        left: lx * 120,
+                        width: k * 120,
                       }}
                       key={`month-${index}`}
                     >
-                      <MonthMarkerLabel>
-                        {date.format(d, 'MMMM')}
-                      </MonthMarkerLabel>
+                      <StickyLabel>{date.format(d, 'MMMM')}</StickyLabel>
                     </MonthMarker>
                   )
                 })}
               </MonthMarkers>
+              <ElapsedTime
+                style={{
+                  width: hours * 5,
+                }}
+              />
             </CalendarScrolling>
           </CalendarWidget>
         </FilteredCalendar>
