@@ -12,7 +12,7 @@ import * as date from 'date-fns'
 import { concat, initial } from 'lodash'
 import { NextPage } from 'next'
 import { Fragment } from 'preact'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import useSWR from 'swr'
 
 type Event = {
@@ -170,7 +170,6 @@ const Jams: NextPage = () => {
     left: 0;
   `
 
-  const ref = useRef<HTMLDivElement>(null)
   const { data, isLoading } = useHackathons()
   const [duration, setDuration] = useState(Number.MAX_SAFE_INTEGER)
   const filteredData = useMemo(() => {
@@ -256,7 +255,7 @@ const Jams: NextPage = () => {
               </Select>
             </FormControl>
           </Filter>
-          <CalendarWidget ref={ref}>
+          <CalendarWidget>
             <CalendarScrolling style={{ width: days.length * 120 }}>
               <CalendarRows>
                 {filteredData?.map((x) => {
