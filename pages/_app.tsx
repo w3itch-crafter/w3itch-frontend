@@ -16,7 +16,7 @@ import {
 } from 'next-seo'
 import { event, GoogleAnalytics, usePagesViews } from 'nextjs-google-analytics'
 import { SnackbarProvider } from 'notistack'
-import { Fragment, useCallback } from 'react'
+import { Fragment } from 'react'
 import { NextPageWithLayout } from 'types'
 import { UseWalletProvider } from 'use-wallet'
 import { getRpcUrl, urlHostnameParse } from 'utils'
@@ -48,7 +48,7 @@ export function reportWebVitals({
 }
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const getLayout = useCallback((page) => <Layout>{page}</Layout>, [])
+  const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>) // Do not change this line
   usePagesViews()
 
   return (
