@@ -25,8 +25,13 @@ export const getServerSideProps: GetServerSideProps<IndexProps> = async (
 ) => {
   const { host } = context.req.headers
   const wildcard = parseUsernameFromHost(host)
-  if (wildcard === null)
-    context.res.writeHead(301, { Location: '/games' }).end()
+  if (wildcard === null) {
+    if (context?.locale !== context?.defaultLocale) {
+      context.res.writeHead(301, { Location: `/${context.locale}/games` }).end()
+    } else {
+      context.res.writeHead(301, { Location: `/games` }).end()
+    }
+  }
   return { props: { wildcard } }
 }
 
