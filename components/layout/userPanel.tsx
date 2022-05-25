@@ -1,4 +1,6 @@
 import styled from '@emotion/styled'
+import Button from '@mui/material/Button'
+import ButtonGroup from '@mui/material/ButtonGroup'
 import { useAuthentication } from 'hooks'
 import Link from 'next/link'
 import { Fragment, useState } from 'react'
@@ -75,6 +77,11 @@ export function UserPanel() {
       color: #da2c49;
     }
   `
+  const DarkModeSwitch = styled.div`
+    display: flex;
+    justify-content: center;
+  `
+
   const { user } = useAuthentication()
   const profile = userHostUrl(user?.username?.toLowerCase())
 
@@ -122,6 +129,18 @@ export function UserPanel() {
               <Link href="/logout" passHref>
                 <LinkRow>Log out</LinkRow>
               </Link>
+            </DropMenuGroup>
+            <DropMenuGroup header="darkMode switch">
+              <DarkModeSwitch>
+                <ButtonGroup
+                  color="inherit"
+                  variant="text"
+                  aria-label="darkModeChange"
+                >
+                  <Button>Dark</Button>
+                  <Button>White</Button>
+                </ButtonGroup>
+              </DarkModeSwitch>
             </DropMenuGroup>
           </DropMenu>
         </Fragment>
