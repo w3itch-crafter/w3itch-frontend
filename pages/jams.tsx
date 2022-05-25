@@ -294,7 +294,11 @@ const Jams: NextPage = () => {
                     key={`event-${x.title}`}
                   >
                     <StickyLabel>
-                      <Link href={x.link} target="_blank">{x.title}</Link>
+                      <Link href={x.link}>
+                        <a target="_blank" rel="noopener noreferrer">
+                          {x.title}
+                        </a>
+                      </Link>
                     </StickyLabel>
                   </CalendarRow>
                 )
