@@ -12,7 +12,6 @@ import * as date from 'date-fns'
 import { concat, initial } from 'lodash'
 import { NextPage } from 'next'
 import Link from 'next/link'
-import { Fragment } from 'preact'
 import React, { useMemo, useState } from 'react'
 import useSWR from 'swr'
 
@@ -226,123 +225,121 @@ const Jams: NextPage = () => {
     )
 
   return (
-    <Fragment>
-      <section>
-        <CalendarHeader>
-          <CalendarMonth style={{ marginRight: 10 }} />
-          Calendar
-        </CalendarHeader>
-        <FilteredCalendar>
-          <Filter
+    <section>
+      <CalendarHeader>
+        <CalendarMonth style={{ marginRight: 10 }} />
+        Calendar
+      </CalendarHeader>
+      <FilteredCalendar>
+        <Filter
+          style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <div
             style={{
-              position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
+              marginRight: 20,
             }}
           >
-            <div
+            Filter
+          </div>
+          <FormControl
+            sx={{
+              minWidth: 120,
+            }}
+          >
+            <InputLabel>Duration</InputLabel>
+            <Select
+              labelId="filter-duration-label"
+              id="filter-duration"
+              value={duration}
+              label="Age"
+              onChange={(x) => setDuration(x.target.value as number)}
+            >
+              <MenuItem value={3}>Less Then 3 days</MenuItem>
+              <MenuItem value={7}>Less Then 7 days</MenuItem>
+              <MenuItem value={15}>Less Then 15 days</MenuItem>
+              <MenuItem value={Number.MAX_SAFE_INTEGER}>
+                Greater Then 15 days
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Filter>
+        <CalendarWidget>
+          <CalendarScrolling style={{ width: days.length * 120 }}>
+            <CalendarRows>
+              {filteredData?.map((x) => {
+                const lx = date.differenceInCalendarDays(
+                  x.start,
+                  interval.start
+                )
+                const k = date.differenceInCalendarDays(x.end, x.start)
+
+                // magic color
+                const s = x.start.getSeconds()
+                const color = [0, 0, 0]
+                color[s % 3] = 204
+                color[(s + 1) % 3] = (s % 114) + 90
+                color[(s + 2) % 3] = (s % 13) * 6 + 90
+
+                return (
+                  <CalendarRow
+                    style={{
+                      left: lx * 120,
+                      width: k * 120,
+                      backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
+                    }}
+                    key={`event-${x.title}`}
+                  >
+                    <StickyLabel>
+                      <Link href={x.link}>{x.title}</Link>
+                    </StickyLabel>
+                  </CalendarRow>
+                )
+              })}
+            </CalendarRows>
+            <DayMarkers>
+              {days.map((d, index: number) => (
+                <DayMarker style={{ left: index * 120 }} key={`day-${index}`}>
+                  <DayOrdinal>{date.format(d, 'do')}</DayOrdinal>
+                  <DayName>{date.format(d, 'iii')}</DayName>
+                </DayMarker>
+              ))}
+            </DayMarkers>
+            <MonthMarkers>
+              {mouths.map((d, index) => {
+                const lx = date.differenceInCalendarDays(
+                  date.max([d, interval.start]),
+                  interval.start
+                )
+                const k = date.differenceInCalendarDays(
+                  date.min([interval.end, date.addMonths(d, 1)]),
+                  date.max([d, interval.start])
+                )
+                return (
+                  <MonthMarker
+                    style={{
+                      left: lx * 120,
+                      width: k * 120,
+                    }}
+                    key={`month-${index}`}
+                  >
+                    <StickyLabel>{date.format(d, 'MMMM')}</StickyLabel>
+                  </MonthMarker>
+                )
+              })}
+            </MonthMarkers>
+            <ElapsedTime
               style={{
-                marginRight: 20,
+                width: hours * 5,
               }}
-            >
-              Filter
-            </div>
-            <FormControl
-              sx={{
-                minWidth: 120,
-              }}
-            >
-              <InputLabel>Duration</InputLabel>
-              <Select
-                labelId="filter-duration-label"
-                id="filter-duration"
-                value={duration}
-                label="Age"
-                onChange={(x) => setDuration(x.target.value as number)}
-              >
-                <MenuItem value={3}>Less Then 3 days</MenuItem>
-                <MenuItem value={7}>Less Then 7 days</MenuItem>
-                <MenuItem value={15}>Less Then 15 days</MenuItem>
-                <MenuItem value={Number.MAX_SAFE_INTEGER}>
-                  Greater Then 15 days
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </Filter>
-          <CalendarWidget>
-            <CalendarScrolling style={{ width: days.length * 120 }}>
-              <CalendarRows>
-                {filteredData?.map((x) => {
-                  const lx = date.differenceInCalendarDays(
-                    x.start,
-                    interval.start
-                  )
-                  const k = date.differenceInCalendarDays(x.end, x.start)
-
-                  // magic color
-                  const s = x.start.getSeconds()
-                  const color = [0, 0, 0]
-                  color[s % 3] = 204
-                  color[(s + 1) % 3] = (s % 114) + 90
-                  color[(s + 2) % 3] = (s % 13) * 6 + 90
-
-                  return (
-                    <CalendarRow
-                      style={{
-                        left: lx * 120,
-                        width: k * 120,
-                        backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
-                      }}
-                      key={`event-${x.title}`}
-                    >
-                      <StickyLabel>
-                        <Link href={x.link}>{x.title}</Link>
-                      </StickyLabel>
-                    </CalendarRow>
-                  )
-                })}
-              </CalendarRows>
-              <DayMarkers>
-                {days.map((d, index: number) => (
-                  <DayMarker style={{ left: index * 120 }} key={`day-${index}`}>
-                    <DayOrdinal>{date.format(d, 'do')}</DayOrdinal>
-                    <DayName>{date.format(d, 'iii')}</DayName>
-                  </DayMarker>
-                ))}
-              </DayMarkers>
-              <MonthMarkers>
-                {mouths.map((d, index) => {
-                  const lx = date.differenceInCalendarDays(
-                    date.max([d, interval.start]),
-                    interval.start
-                  )
-                  const k = date.differenceInCalendarDays(
-                    date.min([interval.end, date.addMonths(d, 1)]),
-                    date.max([d, interval.start])
-                  )
-                  return (
-                    <MonthMarker
-                      style={{
-                        left: lx * 120,
-                        width: k * 120,
-                      }}
-                      key={`month-${index}`}
-                    >
-                      <StickyLabel>{date.format(d, 'MMMM')}</StickyLabel>
-                    </MonthMarker>
-                  )
-                })}
-              </MonthMarkers>
-              <ElapsedTime
-                style={{
-                  width: hours * 5,
-                }}
-              />
-            </CalendarScrolling>
-          </CalendarWidget>
-        </FilteredCalendar>
-      </section>
-    </Fragment>
+            />
+          </CalendarScrolling>
+        </CalendarWidget>
+      </FilteredCalendar>
+    </section>
   )
 }
 
