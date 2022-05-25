@@ -24,3 +24,36 @@ export const RedButton = styled.button`
     box-shadow: none;
   }
 `
+
+declare type Size = 'small' | 'medium'
+declare interface ChooseButtonProps {
+  color: string
+  outline?: boolean
+  size?: Size
+}
+const sizes: Record<Size, string> = {
+  small: '8px 16px',
+  medium: '16px 30px',
+}
+export const LoginChooseButton = styled.button<ChooseButtonProps>`
+  user-select: none;
+  box-sizing: border-box;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 10px;
+  border-radius: 3px;
+  border: 2px solid;
+  border-color: ${(p) => p.color};
+  background-color: ${(p) => (p.outline ? '#fff' : p.color)};
+  color: ${(p) => (p.outline ? p.color : '#fff')};
+  align-items: center;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  padding: ${(p) => sizes[p.size || 'medium']};
+  &:hover {
+    background-color: ${(p) => (p.outline ? p.color : '#fff')};
+    color: ${(p) => (p.outline ? '#fff' : p.color)};
+  }
+`

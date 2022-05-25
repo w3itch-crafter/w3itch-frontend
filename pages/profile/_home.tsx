@@ -6,8 +6,9 @@ import { GameCell } from 'components/pages'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Fragment, useCallback, useEffect, useState } from 'react'
-import { GameEntity, GameInfo, NavLinks, UserEntity } from 'types'
+import { GameEntity, GameInfo, UserEntity } from 'types'
 
 declare interface ProfileHomeProps {
   wildcard: string | null
@@ -160,15 +161,10 @@ function Layout({ children, wildcard }: LayoutProps) {
   `
   const { NEXT_PUBLIC_URL } = process.env
   const profileUrl = `${NEXT_PUBLIC_URL}/profile/${wildcard}`
-  const navLinks: NavLinks = [
-    { href: `${NEXT_PUBLIC_URL}/games`, name: 'Browse Games' },
-    { href: `${NEXT_PUBLIC_URL}/dashboard`, name: 'Dashboard' },
-    { href: `https://discord.gg/UaHazgHc8q`, name: 'Community' },
-  ]
 
   return (
     <Fragment>
-      <Navbar navLinks={navLinks} />
+      <Navbar />
       <main>{children}</main>
       <Footer>
         <FooterInner>
@@ -183,5 +179,11 @@ function Layout({ children, wildcard }: LayoutProps) {
     </Fragment>
   )
 }
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'])),
+  },
+})
 
 export default ProfileHome

@@ -1,8 +1,7 @@
 import {
   PancakeSwapSupportedChainId,
   UniswapSupportedChainId,
-} from 'types/enum'
-
+} from '../types/enum'
 import { CurrentChainId, SupportedChainId } from './chains'
 
 export type AddressBookForNetwork = {

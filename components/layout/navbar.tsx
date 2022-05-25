@@ -1,34 +1,30 @@
 import styled from '@emotion/styled'
 import MenuIcon from '@mui/icons-material/Menu'
-import SearchIcon from '@mui/icons-material/Search'
-import { Box, Input } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
+import Search from 'components/Search'
+import SearchGoogle from 'components/SearchGoogle'
+import SwitchLanguage from 'components/SwitchLanguage'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Fragment, useState } from 'react'
+import { useTranslation } from 'next-i18next'
+import React, { Fragment, useMemo, useState } from 'react'
 import { NavLinks } from 'types'
-import { urlGoogleSearch } from 'utils'
+import { hasAlgoliaConfig } from 'utils'
 
 import NavBarDrawer from './navBarDrawer'
 import { UserPanel } from './userPanel'
 
-const defaultLinks: NavLinks = [
-  { href: '/games', name: 'Browse Games' },
-  { href: '/dashboard', name: 'Dashboard' },
-  { href: 'https://discord.gg/UaHazgHc8q', name: 'Community' },
-]
-
-export declare interface NavbarProps {
-  navLinks?: NavLinks
-}
-
-export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
+export function Navbar() {
+  const { t } = useTranslation()
+  const navLinks: NavLinks = [
+    { href: `/games`, name: t('Browse Games') },
+    { href: `/jams`, name: t('Game Jams') },
+    { href: `/dashboard`, name: t('Dashboard') },
+    { href: `https://discord.gg/UaHazgHc8q`, name: t('Community') },
+  ]
   const Flex1 = styled.div`
     flex: 1;
-  `
-  const SearchBar = styled.form`
-    display: flex;
-    align-items: center;
   `
   const HeaderWidget = styled.nav`
     height: 50px;
@@ -71,16 +67,25 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
     display: flex;
     flex-wrap: wrap;
   `
-  const { NEXT_PUBLIC_URL } = process.env
   const router = useRouter()
+  const { locale, defaultLocale } = router
   const isHref = (href: string) => router.route === href
+
   const [navLinksDrawer, setNavLinksDrawer] = useState<boolean>(false)
+
+  const HomeLink = useMemo(() => {
+    if (locale !== defaultLocale) {
+      return `${process.env.NEXT_PUBLIC_URL || ''}/${locale}/games`
+    } else {
+      return `${process.env.NEXT_PUBLIC_URL || ''}/games`
+    }
+  }, [locale, defaultLocale])
 
   return (
     <HeaderWidget>
       <PrimaryHeader>
         <HeaderTitle>
-          <Link href={`${NEXT_PUBLIC_URL || ''}/games`} passHref>
+          <Link href={HomeLink} passHref locale={locale}>
             <HeaderLogo>W3itch.io</HeaderLogo>
           </Link>
         </HeaderTitle>
@@ -99,24 +104,12 @@ export function Navbar({ navLinks = defaultLinks }: NavbarProps) {
           </Fragment>
         )}
         <Flex1 />
-        <SearchBar
-          method={'get'}
-          autoComplete={'on'}
-          action={'https://google.com/search'}
-          onSubmit={(e) => {
-            const formData = Object.fromEntries(
-              new FormData(e.target as HTMLFormElement)
-            )
-            window.open(urlGoogleSearch(formData.q as string))
-            e.preventDefault()
-          }}
-        >
-          <Input type={'text'} name={'q'} placeholder="Search in this site" />
-          <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
-            <SearchIcon />
-          </IconButton>
-        </SearchBar>
-        <UserPanel />
+        <Stack direction="row" spacing={1}>
+          {hasAlgoliaConfig ? <Search /> : <SearchGoogle />}
+          <SwitchLanguage />
+          <UserPanel />
+        </Stack>
+
         <IconButton
           onClick={() => setNavLinksDrawer(true)}
           size="small"

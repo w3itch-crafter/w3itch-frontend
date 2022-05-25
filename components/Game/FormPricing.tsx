@@ -19,20 +19,16 @@ import {
   WalletSupportedChainIds,
   WalletSupportedChainNames,
 } from 'constants/chains'
+import { GameFormContext } from 'context/gameFormContext'
 import { isEmpty } from 'lodash'
-import { Dispatch, FC, SetStateAction } from 'react'
-import { Control, Controller, FieldErrors, UseFormWatch } from 'react-hook-form'
+import { Dispatch, FC, SetStateAction, useContext } from 'react'
+import { Controller } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
 import { Token } from 'types'
 import { PaymentMode } from 'types/enum'
-import { Game } from 'utils/validator'
 
 interface FormPricingProps {
   readonly currentSelectToken: Token
-  readonly errors: FieldErrors<Game>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly control: Control<Game, any>
-  readonly watch: UseFormWatch<Game>
   readonly currentDonationAddress: string
   readonly currentSelectTokenChainId: SupportedChainId
   readonly currentSelectTokenAmount: string
@@ -44,9 +40,6 @@ interface FormPricingProps {
 
 const FormPricing: FC<FormPricingProps> = ({
   currentSelectToken,
-  errors,
-  control,
-  watch,
   currentDonationAddress,
   currentSelectTokenChainId,
   currentSelectTokenAmount,
@@ -55,6 +48,12 @@ const FormPricing: FC<FormPricingProps> = ({
   setCurrentSelectTokenChainId,
   setCurrentSelectTokenAmount,
 }) => {
+  const {
+    control,
+    formState: { errors },
+    watch,
+  } = useContext(GameFormContext)
+
   return (
     <div>
       <Controller

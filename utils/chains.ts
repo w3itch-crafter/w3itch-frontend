@@ -1,11 +1,11 @@
 import assert from 'assert'
+
 import {
   CHAIN_IDS_TO_NAMES,
   CHAIN_INFO,
   ChainInfo,
   SupportedChainId,
-} from 'constants/chains'
-
+} from '../constants/chains'
 import { stringSlice } from './string'
 
 export function getChainIdFromName(name: string): number | undefined {
@@ -73,6 +73,7 @@ export const balanceDecimal = (amount: string, decimal = 6) => {
   return amount
 }
 
-export function shortAddress(address: string): string {
+export function shortAddress(address?: string): string {
+  if (!address) return ''
   return stringSlice(address, 6, 4)
 }

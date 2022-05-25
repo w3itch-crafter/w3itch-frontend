@@ -31,9 +31,9 @@ import {
   storagesUploadToAWS,
   updateGame,
 } from 'api/index'
+import { saveAlgoliaGame } from 'api/server'
 import BigNumber from 'bignumber.js'
 import { PrimaryLoadingButton } from 'components/CustomizedButtons'
-import FormAppStoreLinks from 'components/Game/FormAppStoreLinks'
 import FormCharset from 'components/Game/FormCharset'
 import FormPricing from 'components/Game/FormPricing'
 import FormTags from 'components/Game/FormTags'
@@ -44,28 +44,17 @@ import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
 import type { SupportedChainId } from 'constants/chains'
 import { WalletSupportedChainIds } from 'constants/chains'
 import { AuthenticationContext } from 'context'
-import { classifications, kindOfProjects, releaseStatus } from 'data'
+import { GameFormContext } from 'context/gameFormContext'
+import { classifications, releaseStatus } from 'data'
 import { utils } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
-import { useTitle } from 'hooks'
+import { useAccountInfo, useTitle } from 'hooks'
 import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
-import {
-  Control,
-  FieldError,
-  FormState,
-  SubmitHandler,
-  UseFormGetValues,
-  UseFormHandleSubmit,
-  UseFormRegister,
-  UseFormSetValue,
-  UseFormTrigger,
-  UseFormWatch,
-  useWatch,
-} from 'react-hook-form'
+import { FieldError, SubmitHandler, useWatch } from 'react-hook-form'
 import { GameEntity, Token } from 'types'
 import { Api } from 'types/Api'
 import {
@@ -87,19 +76,11 @@ import { Game } from 'utils/validator'
 
 import FormCommunity from './FormCommunity'
 import FormGenre from './FormGenre'
+import FormKind from './FormKind'
 
 interface GameFormProps {
   readonly gameProject: GameEntity
   readonly editorMode: EditorMode
-  readonly register: UseFormRegister<Game>
-  readonly handleSubmit: UseFormHandleSubmit<Game>
-  readonly setValue: UseFormSetValue<Game>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly control: Control<Game, any>
-  readonly watch: UseFormWatch<Game>
-  readonly formState: FormState<Game>
-  readonly getValues: UseFormGetValues<Game>
-  readonly trigger: UseFormTrigger<Game>
   readonly editorRef: MutableRefObject<ToastUiEditor> | undefined
   setEditorRef: Dispatch<
     SetStateAction<MutableRefObject<ToastUiEditor> | undefined>
@@ -112,25 +93,28 @@ let MESSAGE_SUBMIT_KEY: any
 const GameForm: FC<GameFormProps> = ({
   gameProject,
   editorMode,
-  register,
-  handleSubmit,
-  setValue,
-  control,
-  watch,
-  formState,
-  getValues,
-  trigger,
   editorRef,
   setEditorRef,
 }) => {
   const router = useRouter()
   const id = router.query.id
 
-  console.log('form router', router)
+  const {
+    state: { isAuthenticated },
+  } = useContext(AuthenticationContext)
 
   const {
-    state: { isAuthenticated, account },
-  } = useContext(AuthenticationContext)
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    watch,
+    formState: { errors },
+    getValues,
+    trigger,
+  } = useContext(GameFormContext)
+
+  const account = useAccountInfo('metamask')
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   const [uploadGameFile, setUploadGameFile] = useState<File>()
@@ -160,21 +144,15 @@ const GameForm: FC<GameFormProps> = ({
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
 
-  const { errors } = formState
+  const watchKind = watch('kind')
   const watchPaymentMode = watch('paymentMode')
   const watchAppStoreLinks = useWatch({
     control,
     name: 'appStoreLinks',
   })
 
-  // console.log(watch('description'))
-  // console.log(watch('paymentMode'))
-  // console.log(watch('genre'))
-  // console.log('errors', errors)
-
   // Watch appStoreLinks change then trigger
   useEffect(() => {
-    // console.log('watchAppStoreLinks', watchAppStoreLinks)
     trigger('appStoreLinks')
   }, [watchAppStoreLinks, trigger])
 
@@ -369,9 +347,11 @@ const GameForm: FC<GameFormProps> = ({
         }
 
         const createGameResult = await createGame(formData)
-        console.log('createGameResult', createGameResult)
+        // console.log('createGameResult', createGameResult)
 
         if (createGameResult.status === 201) {
+          saveAlgoliaGame(Number(createGameResult.data.id))
+
           enqueueSnackbar('Uploaded successfully', {
             anchorOrigin: {
               vertical: 'top',
@@ -436,9 +416,6 @@ const GameForm: FC<GameFormProps> = ({
         }
 
         // 更新游戏文件
-        console.log('file', uploadGameFile || '')
-        console.log('gameData', gameData)
-
         const formData = new FormData()
         formData.append('file', uploadGameFile || '')
         formData.append('game', JSON.stringify(gameData))
@@ -451,9 +428,10 @@ const GameForm: FC<GameFormProps> = ({
         }
 
         const updateGameResult = await updateGame(Number(id), formData)
-        console.log('updateGameResult', updateGameResult)
 
         if (updateGameResult.status === 200) {
+          saveAlgoliaGame(Number(updateGameResult.data.id))
+
           enqueueSnackbar('Update completed', {
             anchorOrigin: {
               vertical: 'top',
@@ -542,6 +520,7 @@ const GameForm: FC<GameFormProps> = ({
     [setValue]
   )
 
+  // Description change triggers validation
   const { run: handleDescriptionTrigger } = useDebounceFn(
     async () => {
       await trigger('description')
@@ -551,6 +530,7 @@ const GameForm: FC<GameFormProps> = ({
     }
   )
 
+  // Handle description change
   const handleDescription = useCallback(async () => {
     if (editorRef) {
       const description = editorRef.current?.getInstance().getMarkdown()
@@ -690,6 +670,7 @@ const GameForm: FC<GameFormProps> = ({
               >
                 <div className={styles.columns}>
                   <div className={`main ${styles.left_col} first`}>
+                    {/*
                     <p className={styles.content_guidelines}>
                       <strong>Make sure everyone can find your page</strong>
                       <br />
@@ -699,7 +680,7 @@ const GameForm: FC<GameFormProps> = ({
                       </a>{' '}
                       before posting your project
                     </p>
-
+                */}
                     <div className={styles.input_row}>
                       <FormControl fullWidth>
                         <FormLabel id="form-title">Title</FormLabel>
@@ -766,32 +747,7 @@ const GameForm: FC<GameFormProps> = ({
                     </div>
 
                     <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-kindOfProject">
-                          Kind of project
-                        </FormLabel>
-                        <Select
-                          id="form-kindOfProject"
-                          value={kindOfProjects[0].value}
-                          disabled
-                        >
-                          {kindOfProjects.map((kind) => (
-                            <MenuItem value={kind.value} key={kind.value}>
-                              {kind.label}
-                              {kind.description && (
-                                <span className="sub">
-                                  {' — '}
-                                  {kind.description}
-                                </span>
-                              )}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <div data-label="Tip" className={styles.hint}>
-                        You can add additional downloadable files for any of the
-                        types above
-                      </div>
+                      <FormKind />
                     </div>
 
                     <div className={styles.input_row}>
@@ -821,9 +777,6 @@ const GameForm: FC<GameFormProps> = ({
 
                     <div className={styles.input_row}>
                       <FormPricing
-                        control={control}
-                        errors={errors}
-                        watch={watch}
                         currentDonationAddress={currentDonationAddress}
                         currentSelectTokenChainId={currentSelectTokenChainId}
                         currentSelectToken={currentSelectToken}
@@ -890,9 +843,12 @@ const GameForm: FC<GameFormProps> = ({
                       </FormControl>
                     </div>
 
-                    <div className={styles.input_row}>
-                      <FormCharset control={control} errors={errors} />
-                    </div>
+                    {/* minetest doesn't need charset */}
+                    {!(watchKind === GameEngine.MINETEST) && (
+                      <div className={styles.input_row}>
+                        <FormCharset />
+                      </div>
+                    )}
 
                     <div
                       className={`${styles.input_row} ${styles.simulation_input}`}
@@ -925,24 +881,20 @@ const GameForm: FC<GameFormProps> = ({
                     </div>
 
                     <div className={`${styles.input_row}`}>
-                      <FormGenre control={control} errors={errors} />
+                      <FormGenre />
                     </div>
                     <div className={`${styles.input_row} tags_input_row`}>
                       <FormTags
                         editorMode={editorMode}
-                        getValues={getValues}
-                        errors={errors}
-                        watch={watch}
-                        control={control}
                         changeTags={(tags) => {
                           setValue('tags', tags)
                         }}
                       />
                     </div>
 
-                    <div className={styles.input_row}>
-                      <FormAppStoreLinks errors={errors} control={control} />
-                    </div>
+                    {/* <div className={styles.input_row}>
+                      <FormAppStoreLinks />
+                    </div> */}
 
                     {/* <div className={styles.input_row}>
                             <FormControl fullWidth>
@@ -966,7 +918,7 @@ const GameForm: FC<GameFormProps> = ({
                           </div> */}
 
                     <div className={styles.input_row}>
-                      <FormCommunity control={control} errors={errors} />
+                      <FormCommunity />
                     </div>
                     {/* <div className={styles.input_row}>
                             <FormControl>
@@ -1043,8 +995,6 @@ const GameForm: FC<GameFormProps> = ({
                         <div className={styles.game_edit_cover_uploader_widget}>
                           <UploadGameCover
                             editorMode={editorMode}
-                            getValues={getValues}
-                            watch={watch}
                             setFile={async (file) => {
                               handleCoverValue(file as File)
                               await trigger('cover')
@@ -1086,8 +1036,6 @@ const GameForm: FC<GameFormProps> = ({
                       </FormHelperText>
                       <UploadGameScreenshots
                         editorMode={editorMode}
-                        getValues={getValues}
-                        watch={watch}
                         setFiles={async (files) => {
                           handleScreenshots(files as File[] | undefined)
                           await trigger('screenshots')
@@ -1128,7 +1076,6 @@ const GameForm: FC<GameFormProps> = ({
         setOpen={setTtokenListDialogOpen}
         chainId={currentSelectTokenChainId}
         selectToken={(token) => {
-          console.log(token)
           setCurrentSelectToken(token)
           setTtokenListDialogOpen(false)
         }}

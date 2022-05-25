@@ -172,7 +172,7 @@ const Register: NextPage = () => {
           wallet,
           registerData.username
         )
-        dispatch({ type: 'LOGIN', payload: { user, account } })
+        dispatch({ type: 'LOGIN', payload: { user, account: [account] } })
         await router.replace('/games')
       }
       if (registerMethod === 'github') {
@@ -241,7 +241,7 @@ const Register: NextPage = () => {
                       disabled
                       preview
                       required
-                      label="You're registering with the wallet address"
+                      label={t("You're registering with the wallet address")}
                       name="address"
                       type="text"
                       value={registerData.address}
@@ -255,7 +255,7 @@ const Register: NextPage = () => {
                   <InputRow
                     autoFocus
                     required
-                    label="Username"
+                    label={t('Username')}
                     name="username"
                     type="text"
                     invalid={invalidData.username}
@@ -266,21 +266,25 @@ const Register: NextPage = () => {
                     disabled
                     preview
                     center
-                    label="Your profile page will be"
+                    label={t('Your profile page will be')}
                     type="text"
-                    placeholder="https://username.w3itch.io/"
+                    placeholder={t('https://username.w3itch.io/')}
                     value={profileUrl}
                   />
                   <UserConfigurator>
                     <strong>About you</strong>
                     <InputCheckbox
-                      label="I'm interested in playing or downloading games on w3itch.io"
+                      label={t(
+                        "I'm interested in playing or downloading games on w3itch.io"
+                      )}
                       name="gamer"
                       checked={registerData.gamer}
                       onChange={handleRegisterData}
                     />
                     <InputCheckbox
-                      label="I'm interested in distributing content on w3itch.io"
+                      label={t(
+                        "I'm interested in distributing content on w3itch.io"
+                      )}
                       name="developer"
                       checked={registerData.developer}
                       onChange={handleRegisterData}
@@ -298,12 +302,12 @@ const Register: NextPage = () => {
                   disabled={!registerMethod}
                   onClick={() => handleRegisterSubmit()}
                 >
-                  {registerMethod ? 'Create account' : 'Select a method'}
+                  {registerMethod ? t('Create account') : t('Select a method')}
                 </RedButton>
                 <LoginMessage>
-                  or already have an account?{' '}
+                  or already have an account?
                   <Link href="/login" passHref>
-                    <Login>Log in</Login>
+                    <Login>{t('login')}</Login>
                   </Link>
                 </LoginMessage>
               </Buttons>

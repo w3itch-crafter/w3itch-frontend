@@ -5,19 +5,19 @@ import {
   MenuItem,
   Select,
 } from '@mui/material'
-import { FC } from 'react'
-import { Control, Controller, FieldErrors } from 'react-hook-form'
+import { GameFormContext } from 'context/gameFormContext'
+import { FC, useContext } from 'react'
+import { Controller } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
 import { GameFileCharset } from 'types/enum'
-import { Game } from 'utils/validator'
 
-interface Props {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly control: Control<Game, any>
-  readonly errors: FieldErrors<Game>
-}
+const FormCharset: FC = () => {
+  const contextGame = useContext(GameFormContext)
+  const {
+    control,
+    formState: { errors },
+  } = contextGame
 
-const FormCharset: FC<Props> = ({ control, errors }) => {
   return (
     <Controller
       name="charset"

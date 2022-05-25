@@ -14,6 +14,7 @@ import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Fragment, useCallback, useContext, useState } from 'react'
 import { LoginMethod } from 'types'
 import { useWallet } from 'use-wallet'
@@ -64,7 +65,7 @@ const Login: NextPage = () => {
           'If your wallet not response for long time, please refresh this page.'
         )
         const { user, account } = await loginWallet(wallet)
-        dispatch({ type: 'LOGIN', payload: { user, account } })
+        dispatch({ type: 'LOGIN', payload: { user, account: [account] } })
         await router.replace('/games')
       } catch (error) {
         if (error instanceof Error) {
@@ -148,6 +149,14 @@ const Login: NextPage = () => {
       </Container>
     </Fragment>
   )
+}
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default Login

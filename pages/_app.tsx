@@ -5,16 +5,23 @@ import { Layout } from 'components/layout'
 import { AuthenticationProvider } from 'components/pages'
 import { WalletSupportedChainIds } from 'constants/index'
 import type { AppProps } from 'next/app'
+import type { NextWebVitalsMetric } from 'next/app'
 import Head from 'next/head'
 import { appWithTranslation } from 'next-i18next'
 import { DefaultSeo } from 'next-seo'
+import {
+  BreadcrumbJsonLd,
+  LogoJsonLd,
+  SiteLinksSearchBoxJsonLd,
+} from 'next-seo'
+import { event, GoogleAnalytics, usePagesViews } from 'nextjs-google-analytics'
 import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
 import { NextPageWithLayout } from 'types'
 import { UseWalletProvider } from 'use-wallet'
-import { getRpcUrl } from 'utils'
+import { getRpcUrl, urlHostnameParse } from 'utils'
 
-import SEO from '../next-seo.config'
+import SEO, { seoLogo } from '../next-seo.config'
 
 export const WalletSupportedRpcUrls = WalletSupportedChainIds.map(
   (chainId) => ({ [`${chainId}`]: getRpcUrl(chainId) })
@@ -25,8 +32,24 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
 
+// Google Analytics
+export function reportWebVitals({
+  id,
+  name,
+  label,
+  value,
+}: NextWebVitalsMetric) {
+  event(name, {
+    category: label === 'web-vital' ? 'Web Vitals' : 'Next.js custom metric',
+    value: Math.round(name === 'CLS' ? value * 1000 : value), // values must be integers
+    label: id, // id unique to current page load
+    nonInteraction: true, // avoids affecting bounce rate.
+  })
+}
+
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>)
+  const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>) // Do not change this line
+  usePagesViews()
 
   return (
     <UseWalletProvider
@@ -55,6 +78,50 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               />
             </Head>
             <DefaultSeo {...SEO} />
+            <GoogleAnalytics />
+            <LogoJsonLd
+              logo={seoLogo}
+              url={process.env.NEXT_PUBLIC_URL as string}
+            />
+            <SiteLinksSearchBoxJsonLd
+              url={process.env.NEXT_PUBLIC_URL as string}
+              potentialActions={[
+                {
+                  target: `${process.env.NEXT_PUBLIC_URL}/search?q`,
+                  queryInput: 'search_term_string',
+                },
+                {
+                  target: `android-app://com.example/https/${urlHostnameParse(
+                    process.env.NEXT_PUBLIC_URL as string
+                  )}/search/?q`,
+                  queryInput: 'search_term_string',
+                },
+              ]}
+            />
+            <BreadcrumbJsonLd
+              itemListElements={[
+                {
+                  position: 1,
+                  name: 'Games',
+                  item: `${process.env.NEXT_PUBLIC_URL}/games`,
+                },
+                {
+                  position: 2,
+                  name: 'Comment Policy',
+                  item: `${process.env.NEXT_PUBLIC_URL}/comment-policy`,
+                },
+                {
+                  position: 3,
+                  name: 'Login',
+                  item: `${process.env.NEXT_PUBLIC_URL}/login`,
+                },
+                {
+                  position: 4,
+                  name: 'Dashboard',
+                  item: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
+                },
+              ]}
+            />
             {getLayout(<Component {...pageProps} />)}
           </Fragment>
         </SnackbarProvider>

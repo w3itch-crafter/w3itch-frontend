@@ -1,12 +1,13 @@
 import { gameProjectByID } from 'api'
 import GameForm from 'components/Game/Form'
-import type { NextPage } from 'next'
+import { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { MutableRefObject, useCallback, useEffect, useState } from 'react'
 import { DefaultValues, useForm } from 'react-hook-form'
 import {
   Community,
   EditorMode,
+  GameEngine,
   GameFileCharset,
   Genre,
   PaymentMode,
@@ -15,6 +16,11 @@ import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { Editor } from '@toast-ui/react-editor'
+import {
+  GameFormContextProvider,
+  GameFormContextType,
+} from 'context/gameFormContext'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { GameEntity } from 'types'
 
 const GameEdit: NextPage = () => {
@@ -27,6 +33,7 @@ const GameEdit: NextPage = () => {
     paymentMode: PaymentMode.DISABLE_PAYMENTS,
     community: Community.DISABLED,
     genre: Genre.ROLE_PLAYING,
+    kind: GameEngine.RM2K3E,
     charset: GameFileCharset.UTF8,
     tags: [],
     appStoreLinks: [],
@@ -46,6 +53,8 @@ const GameEdit: NextPage = () => {
     resolver: resolverGame,
     defaultValues: defaultValue,
   })
+
+  // Fetch game project
   const fetchGameProjectFn = useCallback(
     async (id: number) => {
       const gameProjectResult = await gameProjectByID(id)
@@ -87,21 +96,36 @@ const GameEdit: NextPage = () => {
   }, [id, fetchGameProjectFn])
 
   return (
-    <GameForm
-      gameProject={gameProject}
-      editorMode={EditorMode.EDIT}
-      register={register}
-      handleSubmit={handleSubmit}
-      setValue={setValue}
-      control={control}
-      watch={watch}
-      formState={formState}
-      getValues={getValues}
-      trigger={trigger}
-      editorRef={editorRef}
-      setEditorRef={setEditorRef}
-    ></GameForm>
+    <GameFormContextProvider
+      value={
+        {
+          register,
+          handleSubmit,
+          setValue,
+          control,
+          watch,
+          formState,
+          getValues,
+          trigger,
+        } as GameFormContextType
+      }
+    >
+      <GameForm
+        gameProject={gameProject}
+        editorMode={EditorMode.EDIT}
+        editorRef={editorRef}
+        setEditorRef={setEditorRef}
+      ></GameForm>
+    </GameFormContextProvider>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(ctx.locale as string, ['common'])),
+    },
+  }
 }
 
 export default GameEdit

@@ -1,4 +1,6 @@
+export * from './algolia'
 export * from './chains'
+export * from './cookie'
 export * from './error'
 export * from './explorer'
 export * from './file'

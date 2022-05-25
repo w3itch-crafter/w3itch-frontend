@@ -5,19 +5,18 @@ import {
   MenuItem,
   Select,
 } from '@mui/material'
+import { GameFormContext } from 'context/gameFormContext'
 import { genres } from 'data'
-import { FC } from 'react'
-import { Control, Controller, FieldErrors } from 'react-hook-form'
+import { FC, useContext } from 'react'
+import { Controller } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
-import { Game } from 'utils/validator'
 
-interface Props {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly control: Control<Game, any>
-  readonly errors: FieldErrors<Game>
-}
+const FormGenre: FC = () => {
+  const {
+    control,
+    formState: { errors },
+  } = useContext(GameFormContext)
 
-const FormGenre: FC<Props> = ({ control, errors }) => {
   return (
     <Controller
       control={control}

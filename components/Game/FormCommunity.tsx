@@ -6,18 +6,18 @@ import {
   Radio,
   RadioGroup,
 } from '@mui/material'
-import { FC } from 'react'
-import { Control, Controller, FieldErrors } from 'react-hook-form'
+import { GameFormContext } from 'context/gameFormContext'
+import { FC, useContext } from 'react'
+import { Controller } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
-import { Game } from 'utils/validator'
 
-interface Props {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly control: Control<Game, any>
-  readonly errors: FieldErrors<Game>
-}
+const FormCommunity: FC = () => {
+  const contextGame = useContext(GameFormContext)
+  const {
+    control,
+    formState: { errors },
+  } = contextGame
 
-const FormCommunity: FC<Props> = ({ control, errors }) => {
   return (
     <Controller
       control={control}

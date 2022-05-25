@@ -4,6 +4,7 @@ import { Box } from '@mui/material'
 import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack'
 import { deleteGameProject, getGamesMine } from 'api'
+import { deleteAlgoliaGame } from 'api/server'
 import Navigation from 'components/Dashboard/Navigation'
 import { AuthenticationContext } from 'context'
 import type { NextPage } from 'next'
@@ -11,6 +12,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import Router, { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useSnackbar } from 'notistack'
 import { FC, Fragment, useCallback, useContext } from 'react'
 import { Dispatch, SetStateAction, useState } from 'react'
@@ -69,6 +71,9 @@ const HasGameProject: FC<HasGameProjectProps> = ({
         })
         return setTimeout(() => router.replace('/login'), 1500)
       }
+
+      deleteAlgoliaGame(id)
+
       enqueueSnackbar('Game deleted', {
         anchorOrigin: { vertical: 'top', horizontal: 'center' },
         variant: 'success',
@@ -139,12 +144,12 @@ const HasGameProject: FC<HasGameProjectProps> = ({
         <p className={styles.social_nag}>
           <FavoriteBorderIcon sx={{ fontSize: 20 }} />
           Follow w3itch.io on{' '}
-          <a data-label="social_twitter" href="https://twitter.com">
+          <a data-label="social_twitter" href="https://twitter.com/w3itchio">
             Twitter
           </a>{' '}
           and{' '}
-          <a data-label="social_facebook" href="https://facebook.com">
-            Facebook
+          <a data-label="social_discord" href="https://discord.gg/UaHazgHc8q">
+            Discord
           </a>
         </p>
       </div>
@@ -272,6 +277,14 @@ const Dashboard: NextPage = () => {
       </div>
     </Fragment>
   )
+}
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default Dashboard
