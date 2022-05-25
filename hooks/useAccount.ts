@@ -13,6 +13,7 @@ const routeWhiteList = [
   '/games',
   '/game/[id]',
   '/profile/[username]',
+  '/jams',
 ]
 
 export function useAuthentication() {
