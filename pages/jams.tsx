@@ -12,6 +12,7 @@ import * as date from 'date-fns'
 import { concat, initial } from 'lodash'
 import { NextPage } from 'next'
 import Link from 'next/link'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { useMemo, useState } from 'react'
 import useSWR from 'swr'
 
@@ -345,6 +346,14 @@ const Jams: NextPage = () => {
       </FilteredCalendar>
     </section>
   )
+}
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default Jams
