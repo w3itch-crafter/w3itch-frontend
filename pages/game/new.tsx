@@ -13,6 +13,7 @@ import { GameEntity } from 'types'
 import {
   Community,
   EditorMode,
+  GameEngine,
   GameFileCharset,
   Genre,
   PaymentMode,
@@ -28,6 +29,7 @@ const GameCreate: NextPage = () => {
     paymentMode: PaymentMode.DISABLE_PAYMENTS,
     community: Community.DISABLED,
     genre: Genre.ROLE_PLAYING,
+    kind: GameEngine.RM2K3E,
     charset: GameFileCharset.UTF8,
     tags: [],
     appStoreLinks: [],

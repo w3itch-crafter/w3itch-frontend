@@ -34,7 +34,6 @@ import {
 import { saveAlgoliaGame } from 'api/server'
 import BigNumber from 'bignumber.js'
 import { PrimaryLoadingButton } from 'components/CustomizedButtons'
-import FormAppStoreLinks from 'components/Game/FormAppStoreLinks'
 import FormCharset from 'components/Game/FormCharset'
 import FormPricing from 'components/Game/FormPricing'
 import FormTags from 'components/Game/FormTags'
@@ -46,7 +45,7 @@ import type { SupportedChainId } from 'constants/chains'
 import { WalletSupportedChainIds } from 'constants/chains'
 import { AuthenticationContext } from 'context'
 import { GameFormContext } from 'context/gameFormContext'
-import { classifications, kindOfProjects, releaseStatus } from 'data'
+import { classifications, releaseStatus } from 'data'
 import { utils } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
 import { useAccountInfo, useTitle } from 'hooks'
@@ -77,6 +76,7 @@ import { Game } from 'utils/validator'
 
 import FormCommunity from './FormCommunity'
 import FormGenre from './FormGenre'
+import FormKind from './FormKind'
 
 interface GameFormProps {
   readonly gameProject: GameEntity
@@ -144,6 +144,7 @@ const GameForm: FC<GameFormProps> = ({
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
 
+  const watchKind = watch('kind')
   const watchPaymentMode = watch('paymentMode')
   const watchAppStoreLinks = useWatch({
     control,
@@ -519,6 +520,7 @@ const GameForm: FC<GameFormProps> = ({
     [setValue]
   )
 
+  // Description change triggers validation
   const { run: handleDescriptionTrigger } = useDebounceFn(
     async () => {
       await trigger('description')
@@ -528,6 +530,7 @@ const GameForm: FC<GameFormProps> = ({
     }
   )
 
+  // Handle description change
   const handleDescription = useCallback(async () => {
     if (editorRef) {
       const description = editorRef.current?.getInstance().getMarkdown()
@@ -744,31 +747,7 @@ const GameForm: FC<GameFormProps> = ({
                     </div>
 
                     <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-kindOfProject">
-                          Kind of project
-                        </FormLabel>
-                        <Select
-                          id="form-kindOfProject"
-                          defaultValue={kindOfProjects[0].value}
-                        >
-                          {kindOfProjects.map((kind) => (
-                            <MenuItem value={kind.value} key={kind.value}>
-                              {kind.label}
-                              {kind.description && (
-                                <span className="sub">
-                                  {' — '}
-                                  {kind.description}
-                                </span>
-                              )}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <div data-label="Tip" className={styles.hint}>
-                        You can add additional downloadable files for any of the
-                        types above
-                      </div>
+                      <FormKind />
                     </div>
 
                     <div className={styles.input_row}>
@@ -864,9 +843,12 @@ const GameForm: FC<GameFormProps> = ({
                       </FormControl>
                     </div>
 
-                    <div className={styles.input_row}>
-                      <FormCharset />
-                    </div>
+                    {/* minetest doesn't need charset */}
+                    {!(watchKind === GameEngine.MINETEST) && (
+                      <div className={styles.input_row}>
+                        <FormCharset />
+                      </div>
+                    )}
 
                     <div
                       className={`${styles.input_row} ${styles.simulation_input}`}
@@ -910,9 +892,9 @@ const GameForm: FC<GameFormProps> = ({
                       />
                     </div>
 
-                    <div className={styles.input_row}>
+                    {/* <div className={styles.input_row}>
                       <FormAppStoreLinks />
-                    </div>
+                    </div> */}
 
                     {/* <div className={styles.input_row}>
                             <FormControl fullWidth>

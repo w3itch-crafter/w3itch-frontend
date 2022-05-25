@@ -9,6 +9,7 @@ export enum ProjectClassification {
 
 export enum GameEngine {
   RM2K3E = 'rm2k3e',
+  MINETEST = 'mt',
 }
 
 export enum PaymentMode {
