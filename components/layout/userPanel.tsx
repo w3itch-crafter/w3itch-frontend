@@ -76,10 +76,6 @@ export function UserPanel() {
       color: #da2c49;
     }
   `
-  const DarkModeSwitch = styled.div`
-    display: flex;
-    justify-content: center;
-  `
 
   const { user } = useAuthentication()
   const profile = userHostUrl(user?.username?.toLowerCase())
