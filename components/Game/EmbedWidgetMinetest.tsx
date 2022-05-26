@@ -105,28 +105,24 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
           })
         }
       } else {
-        if (process.env.NODE_ENV === 'development') {
-          openWindow({
-            url: gamePlayerMinetest({ username: 'Bob2' }),
-            title: gameProject.gameName,
-            w: 840,
-            h: 460,
-          })
-        } else {
-          setRunGameFlag(true)
-        }
-      }
-    } else {
-      if (process.env.NODE_ENV === 'development') {
+        // @TODO Cross-domain embedding policy, temporarily use open window
         openWindow({
           url: gamePlayerMinetest({ username: 'Bob2' }),
           title: gameProject.gameName,
           w: 840,
           h: 460,
         })
-      } else {
-        setRunGameFlag(true)
+        // setRunGameFlag(true)
       }
+    } else {
+      // @TODO Cross-domain embedding policy, temporarily use open window
+      openWindow({
+        url: gamePlayerMinetest({ username: 'Bob2' }),
+        title: gameProject.gameName,
+        w: 840,
+        h: 460,
+      })
+      // setRunGameFlag(true)
     }
   }, [gameProject, buyNow, holdUnlock, pricesToken, user, enqueueSnackbar])
 
