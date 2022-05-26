@@ -19,13 +19,16 @@ import { GameEntity, TokenDetail } from 'types'
 import { PaymentMode } from 'types/enum'
 import { balanceDecimal } from 'utils'
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ cover: string }>`
   max-width: 640px;
   height: 480px;
   background: #e5e5e5;
   margin: 0 auto;
   position: relative;
   background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: ${(p) => (p.cover ? `url(${p.cover})` : 'none')};
   @media screen and (max-width: 640px) {
     height: 80vw;
   }
@@ -144,7 +147,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
       id="html_embed_widget_78140"
       className={`${styles.html_embed_widget} ${styles.embed_wrapper}`}
     >
-      <Wrapper>
+      <Wrapper cover={gameProject.cover}>
         {runGameFlag ? (
           <div
             className={`${styles.iframe_wrapper}${
