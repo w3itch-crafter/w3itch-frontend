@@ -1,4 +1,6 @@
 import styled from '@emotion/styled'
+import DarkModeIcon from '@mui/icons-material/DarkMode'
+import LightModeIcon from '@mui/icons-material/LightMode'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Box, Stack } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
@@ -9,9 +11,12 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment, useMemo, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { NavLinks } from 'types'
 import { hasAlgoliaConfig } from 'utils'
 
+import { toggle } from '../../store/darkmode'
+import { RootState } from '../../store/store'
 import NavBarDrawer from './navBarDrawer'
 import { UserPanel } from './userPanel'
 
@@ -23,6 +28,8 @@ export function Navbar() {
     { href: `/dashboard`, name: t('Dashboard') },
     { href: `https://discord.gg/UaHazgHc8q`, name: t('Community') },
   ]
+  const {darkMode} = useSelector((state: RootState) => state.darkMode)
+  const dispatch = useDispatch()
   const Flex1 = styled.div`
     flex: 1;
   `
@@ -125,6 +132,11 @@ export function Navbar() {
           setNavLinksDrawer={setNavLinksDrawer}
           navLinks={navLinks}
         />
+        <div>
+          <IconButton onClick={() => dispatch(toggle())}>
+            {darkMode ? <DarkModeIcon /> : <LightModeIcon />}
+          </IconButton>
+        </div>
       </PrimaryHeader>
     </HeaderWidget>
   )

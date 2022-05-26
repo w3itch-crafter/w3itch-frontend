@@ -17,11 +17,13 @@ import {
 import { event, GoogleAnalytics, usePagesViews } from 'nextjs-google-analytics'
 import { SnackbarProvider } from 'notistack'
 import { Fragment } from 'react'
+import { Provider } from 'react-redux'
 import { NextPageWithLayout } from 'types'
 import { UseWalletProvider } from 'use-wallet'
 import { getRpcUrl, urlHostnameParse } from 'utils'
 
 import SEO, { seoLogo } from '../next-seo.config'
+import store from '../store/store'
 
 export const WalletSupportedRpcUrls = WalletSupportedChainIds.map(
   (chainId) => ({ [`${chainId}`]: getRpcUrl(chainId) })
@@ -52,33 +54,34 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   usePagesViews()
 
   return (
-    <UseWalletProvider
-      connectors={{
-        injected: { chainId: WalletSupportedChainIds },
-        walletconnect: {
-          rpc: WalletSupportedRpcUrls,
-          bridge: 'https://bridge.walletconnect.org',
-          pollingInterval: 12000,
-        },
-      }}
-    >
-      <AuthenticationProvider>
-        <SnackbarProvider maxSnack={3} autoHideDuration={5000}>
-          <Fragment>
-            <CssBaseline />
-            <Head>
-              {/* Tip: Put the viewport head meta tag into _app.js rather than in _document.js if you need it. */}
-              <meta
-                name="viewport"
-                content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
-              />
-              <meta
-                httpEquiv="Content-Type"
-                content="text/html; charset=utf-8"
-              />
-            </Head>
-            <DefaultSeo {...SEO} />
-            <GoogleAnalytics />
+    <Provider store={store}>
+      <UseWalletProvider
+        connectors={{
+          injected: { chainId: WalletSupportedChainIds },
+          walletconnect: {
+            rpc: WalletSupportedRpcUrls,
+            bridge: 'https://bridge.walletconnect.org',
+            pollingInterval: 12000,
+          },
+        }}
+      >
+        <AuthenticationProvider>
+          <SnackbarProvider maxSnack={3} autoHideDuration={5000}>
+            <Fragment>
+              <CssBaseline />
+              <Head>
+                {/* Tip: Put the viewport head meta tag into _app.js rather than in _document.js if you need it. */}
+                <meta
+                  name="viewport"
+                  content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+                />
+                <meta
+                  httpEquiv="Content-Type"
+                  content="text/html; charset=utf-8"
+                />
+              </Head>
+              <DefaultSeo {...SEO} />
+              <GoogleAnalytics />
             <LogoJsonLd
               logo={seoLogo}
               url={process.env.NEXT_PUBLIC_URL as string}
@@ -121,12 +124,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
                   item: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
                 },
               ]}
-            />
-            {getLayout(<Component {...pageProps} />)}
-          </Fragment>
-        </SnackbarProvider>
-      </AuthenticationProvider>
-    </UseWalletProvider>
+            />{getLayout(<Component {...pageProps} />)}
+            </Fragment>
+          </SnackbarProvider>
+        </AuthenticationProvider>
+      </UseWalletProvider>
+    </Provider>
   )
 }
 

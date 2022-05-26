@@ -1,6 +1,4 @@
 import styled from '@emotion/styled'
-import Button from '@mui/material/Button'
-import ButtonGroup from '@mui/material/ButtonGroup'
 import { useAuthentication } from 'hooks'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
@@ -131,18 +129,6 @@ export function UserPanel() {
               <Link href="/logout" passHref>
                 <LinkRow>Log out</LinkRow>
               </Link>
-            </DropMenuGroup>
-            <DropMenuGroup header="darkMode switch">
-              <DarkModeSwitch>
-                <ButtonGroup
-                  color="inherit"
-                  variant="text"
-                  aria-label="darkModeChange"
-                >
-                  <Button>Dark</Button>
-                  <Button>White</Button>
-                </ButtonGroup>
-              </DarkModeSwitch>
             </DropMenuGroup>
           </DropMenu>
         </Fragment>
