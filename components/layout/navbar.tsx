@@ -28,7 +28,7 @@ export function Navbar() {
     { href: `/dashboard`, name: t('Dashboard') },
     { href: `https://discord.gg/UaHazgHc8q`, name: t('Community') },
   ]
-  const {darkMode} = useSelector((state: RootState) => state.darkMode)
+  const { darkMode } = useSelector((state: RootState) => state.darkMode)
   const dispatch = useDispatch()
   const Flex1 = styled.div`
     flex: 1;

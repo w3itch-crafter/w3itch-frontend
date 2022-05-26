@@ -82,49 +82,50 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               </Head>
               <DefaultSeo {...SEO} />
               <GoogleAnalytics />
-            <LogoJsonLd
-              logo={seoLogo}
-              url={process.env.NEXT_PUBLIC_URL as string}
-            />
-            <SiteLinksSearchBoxJsonLd
-              url={process.env.NEXT_PUBLIC_URL as string}
-              potentialActions={[
-                {
-                  target: `${process.env.NEXT_PUBLIC_URL}/search?q`,
-                  queryInput: 'search_term_string',
-                },
-                {
-                  target: `android-app://com.example/https/${urlHostnameParse(
-                    process.env.NEXT_PUBLIC_URL as string
-                  )}/search/?q`,
-                  queryInput: 'search_term_string',
-                },
-              ]}
-            />
-            <BreadcrumbJsonLd
-              itemListElements={[
-                {
-                  position: 1,
-                  name: 'Games',
-                  item: `${process.env.NEXT_PUBLIC_URL}/games`,
-                },
-                {
-                  position: 2,
-                  name: 'Comment Policy',
-                  item: `${process.env.NEXT_PUBLIC_URL}/comment-policy`,
-                },
-                {
-                  position: 3,
-                  name: 'Login',
-                  item: `${process.env.NEXT_PUBLIC_URL}/login`,
-                },
-                {
-                  position: 4,
-                  name: 'Dashboard',
-                  item: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
-                },
-              ]}
-            />{getLayout(<Component {...pageProps} />)}
+              <LogoJsonLd
+                logo={seoLogo}
+                url={process.env.NEXT_PUBLIC_URL as string}
+              />
+              <SiteLinksSearchBoxJsonLd
+                url={process.env.NEXT_PUBLIC_URL as string}
+                potentialActions={[
+                  {
+                    target: `${process.env.NEXT_PUBLIC_URL}/search?q`,
+                    queryInput: 'search_term_string',
+                  },
+                  {
+                    target: `android-app://com.example/https/${urlHostnameParse(
+                      process.env.NEXT_PUBLIC_URL as string
+                    )}/search/?q`,
+                    queryInput: 'search_term_string',
+                  },
+                ]}
+              />
+              <BreadcrumbJsonLd
+                itemListElements={[
+                  {
+                    position: 1,
+                    name: 'Games',
+                    item: `${process.env.NEXT_PUBLIC_URL}/games`,
+                  },
+                  {
+                    position: 2,
+                    name: 'Comment Policy',
+                    item: `${process.env.NEXT_PUBLIC_URL}/comment-policy`,
+                  },
+                  {
+                    position: 3,
+                    name: 'Login',
+                    item: `${process.env.NEXT_PUBLIC_URL}/login`,
+                  },
+                  {
+                    position: 4,
+                    name: 'Dashboard',
+                    item: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
+                  },
+                ]}
+              />
+              {getLayout(<Component {...pageProps} />)}
             </Fragment>
           </SnackbarProvider>
         </AuthenticationProvider>
