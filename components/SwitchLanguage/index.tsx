@@ -35,6 +35,10 @@ const SwitchLanguage = () => {
         key: 'en-US',
         value: 'English',
       },
+      {
+        key: 'ja-JP',
+        value: 'Japanese',
+      },
     ]
 
     return list.filter(({ key }) => !!locales && locales.includes(key))
