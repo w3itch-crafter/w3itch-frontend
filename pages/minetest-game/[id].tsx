@@ -1,18 +1,24 @@
 import { fetchGameRatingsCount, gameProjectByID } from 'api'
-import EmbedWidget from 'components/Game/EmbedWidget'
+// import EmbedWidgetMinetest from 'components/Game/EmbedWidgetMinetest'
 import GameLayout from 'components/Game/GameLayout'
 import { GetServerSideProps, NextPage } from 'next'
+import dynamic from 'next/dynamic'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 import { GameEntity, TokenDetail } from 'types'
 import { BackendError } from 'utils'
+
+const EmbedWidgetMinetest = dynamic(
+  () => import('components/Game/EmbedWidgetMinetest'),
+  { ssr: false }
+)
 
 declare interface GameProps {
   readonly gameProjectData: GameEntity | null
   readonly gameRatingsCountData: number
 }
 
-const GameID: NextPage<GameProps> = ({
+const MinetestGameID: NextPage<GameProps> = ({
   gameProjectData,
   gameRatingsCountData,
 }) => {
@@ -31,7 +37,7 @@ const GameID: NextPage<GameProps> = ({
       setGameProject={setGameProject}
     >
       {gameProject && (
-        <EmbedWidget
+        <EmbedWidgetMinetest
           gameProject={gameProject}
           // @TODO Temporarily support the first Token
           pricesToken={pricesTokens[0]}
@@ -67,4 +73,4 @@ export const getServerSideProps: GetServerSideProps<GameProps> = async (
   }
 }
 
-export default GameID
+export default MinetestGameID

@@ -73,6 +73,14 @@ export const gameProjectPlayer = ({
   `${process.env.NEXT_PUBLIC_API_URL}/player?game=${gameName}&engine=${kind}`
 
 /**
+ * game player minetest
+ * @param param0
+ * @returns
+ */
+export const gamePlayerMinetest = ({ username }: { username: string }) =>
+  `https://backend-api.testenv.w3itch.io/minetest/?address=api.w3itch.io&name=${username}`
+
+/**
  * game download url
  * @param param0
  * @returns

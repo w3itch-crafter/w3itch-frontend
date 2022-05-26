@@ -12,6 +12,7 @@ const routeWhiteList = [
   '/register',
   '/games',
   '/game/[id]',
+  '/minetest-game/[id]',
   '/profile/[username]',
   '/jams',
 ]

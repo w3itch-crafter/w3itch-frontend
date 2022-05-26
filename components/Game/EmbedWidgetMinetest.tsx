@@ -3,7 +3,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import { useFullscreen } from 'ahooks'
-import { gameProjectPlayer } from 'api'
+import { gamePlayerMinetest } from 'api'
 import BigNumber from 'bignumber.js'
 import { AuthenticationContext } from 'context'
 import { utils } from 'ethers'
@@ -17,7 +17,7 @@ import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'
 import { PaymentMode } from 'types/enum'
-import { balanceDecimal } from 'utils'
+import { balanceDecimal, openWindow } from 'utils'
 
 const Wrapper = styled.div<{ cover: string }>`
   max-width: 640px;
@@ -105,10 +105,28 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
           })
         }
       } else {
-        setRunGameFlag(true)
+        if (process.env.NODE_ENV === 'development') {
+          openWindow({
+            url: gamePlayerMinetest({ username: 'Bob2' }),
+            title: gameProject.gameName,
+            w: 840,
+            h: 460,
+          })
+        } else {
+          setRunGameFlag(true)
+        }
       }
     } else {
-      setRunGameFlag(true)
+      if (process.env.NODE_ENV === 'development') {
+        openWindow({
+          url: gamePlayerMinetest({ username: 'Bob2' }),
+          title: gameProject.gameName,
+          w: 840,
+          h: 460,
+        })
+      } else {
+        setRunGameFlag(true)
+      }
     }
   }, [gameProject, buyNow, holdUnlock, pricesToken, user, enqueueSnackbar])
 
@@ -158,10 +176,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
             <iframe
               style={{ width: '100%', height: '100%' }}
               frameBorder="0"
-              src={gameProjectPlayer({
-                gameName: gameProject.gameName,
-                kind: gameProject.kind,
-              })}
+              src={gamePlayerMinetest({ username: 'Bob2' })}
               scrolling="no"
               id="game_drop"
             ></iframe>

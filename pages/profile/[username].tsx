@@ -6,6 +6,7 @@ import Head from 'next/head'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Fragment } from 'react'
 import { GameEntity, GameInfo, UserEntity } from 'types'
+import { GameEngine } from 'types/enum'
 
 declare interface UserProfileProps {
   user: UserEntity
@@ -105,7 +106,12 @@ export const getServerSideProps: GetServerSideProps<UserProfileProps> = async (
   const gamesData: GameEntity[] = res?.data || []
   const games: GameInfo[] = gamesData.map((g) => ({
     ...g,
-    link: `/game/${g.id}`,
+    link:
+      g.kind === GameEngine.RM2K3E
+        ? `/game/${g.id}`
+        : g.kind === GameEngine.MINETEST
+        ? `/minetest-game/${g.id}`
+        : `/game/${g.id}`,
   }))
   return {
     props: {
