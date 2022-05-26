@@ -49,6 +49,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
 
   // Adapt to IOS
   const [gameFullscreen, setGameFullscreen] = useState<boolean>(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [runGameFlag, setRunGameFlag] = useState<boolean>(false)
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(
     ref,
