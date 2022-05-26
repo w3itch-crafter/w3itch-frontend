@@ -16,10 +16,12 @@ import Screenshots from 'components/Game/Screenshots'
 import UserTools from 'components/Game/UserTools'
 import { useERC20Multicall } from 'hooks/useERC20Multicall'
 import { useTitle } from 'hooks/useTitle'
+import Konami from 'konami'
 import { groupBy, isEmpty } from 'lodash'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { NextSeo } from 'next-seo'
 import { ArticleJsonLd } from 'next-seo'
 import { seoKeywords, seoLogo } from 'next-seo.config'
@@ -222,6 +224,15 @@ const GameId: NextPage<GameProps> = ({
     }
   }, [fetchPricesToken, handleVisiblityChange])
 
+  /*
+    add konami js.
+  */
+  useEffect(() => {
+    new Konami(() => {
+      alert('Meow!')
+    })
+  }, [])
+
   return (
     <>
       <NextSeo
@@ -386,6 +397,7 @@ export const getServerSideProps: GetServerSideProps<GameProps> = async (
       props: {
         gameProjectData: gameProjectResult.data,
         gameRatingsCountData: gameRatingsCountResult.data,
+        ...(await serverSideTranslations(ctx.locale as string, ['common'])),
       },
     }
   } catch (error) {

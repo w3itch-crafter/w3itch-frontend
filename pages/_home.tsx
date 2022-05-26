@@ -65,6 +65,5 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
     ...(await serverSideTranslations(locale, ['common'])),
   },
 })
-//每个pages页面都需要加这些不然没法正常i18n
 
 export default Home

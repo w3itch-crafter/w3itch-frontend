@@ -19,22 +19,37 @@ const algoliaIndex = () => {
   return client.initIndex(process.env.NEXT_PUBLIC_ALGOLIA_INDEX)
 }
 
+let list = []
+let page = 1
+const limit = 100 // api limit max is 100
+
+// fetch games
+const fetchGames = async ({ limit, page }) => {
+  const gamesUrl = `${process.env.NEXT_PUBLIC_API_URL}/game-projects?limit=${limit}&page=${page}`
+  const gamesResult = await axios.get(gamesUrl)
+  // console.log('gamesResult: ', gamesResult.data.data.length, limit, page)
+
+  if (gamesResult.status === 200 && gamesResult.data.data.length > 0) {
+    list.push(...gamesResult.data.data)
+
+    if (page < gamesResult.data.meta.totalPages) {
+      await fetchGames({ limit, page: page + 1 })
+    }
+  }
+}
+
 // Handler
 const handler = async () => {
-  const index = algoliaIndex()
+  await fetchGames({ limit, page })
 
-  const clearObjectsResult = await index.clearObjects()
-
-  const limit = 1000
-  const gamesUrl = `${process.env.NEXT_PUBLIC_API_URL}/game-projects?limit=${limit}`
-  const gamesResult = await axios.get(gamesUrl)
-
-  const list = gamesResult.data.data.map((game) => ({
+  const listData = list.map((game) => ({
     objectID: game.id,
     ...game,
   }))
 
-  const saveObjectsResult = await index.saveObjects(list)
+  const index = algoliaIndex()
+  const clearObjectsResult = await index.clearObjects()
+  const saveObjectsResult = await index.saveObjects(listData)
 
   console.log('clear: ', clearObjectsResult)
   console.log('save: ', saveObjectsResult)

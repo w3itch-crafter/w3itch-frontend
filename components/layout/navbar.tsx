@@ -4,10 +4,11 @@ import { Box, Stack } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import Search from 'components/Search'
 import SearchGoogle from 'components/SearchGoogle'
+import SwitchLanguage from 'components/SwitchLanguage'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { Fragment, useState } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import { NavLinks } from 'types'
 import { hasAlgoliaConfig } from 'utils'
 
@@ -16,9 +17,9 @@ import { UserPanel } from './userPanel'
 
 export function Navbar() {
   const { t } = useTranslation()
-  const { NEXT_PUBLIC_URL } = process.env
   const navLinks: NavLinks = [
     { href: `/games`, name: t('Browse Games') },
+    { href: `/jams`, name: t('Jams') },
     { href: `/dashboard`, name: t('Dashboard') },
     { href: `https://discord.gg/UaHazgHc8q`, name: t('Community') },
   ]
@@ -67,14 +68,24 @@ export function Navbar() {
     flex-wrap: wrap;
   `
   const router = useRouter()
+  const { locale, defaultLocale } = router
   const isHref = (href: string) => router.route === href
+
   const [navLinksDrawer, setNavLinksDrawer] = useState<boolean>(false)
+
+  const HomeLink = useMemo(() => {
+    if (locale !== defaultLocale) {
+      return `${process.env.NEXT_PUBLIC_URL || ''}/${locale}/games`
+    } else {
+      return `${process.env.NEXT_PUBLIC_URL || ''}/games`
+    }
+  }, [locale, defaultLocale])
 
   return (
     <HeaderWidget>
       <PrimaryHeader>
         <HeaderTitle>
-          <Link href={`${NEXT_PUBLIC_URL || ''}/games`} passHref>
+          <Link href={HomeLink} passHref locale={locale}>
             <HeaderLogo>W3itch.io</HeaderLogo>
           </Link>
         </HeaderTitle>
@@ -95,8 +106,10 @@ export function Navbar() {
         <Flex1 />
         <Stack direction="row" spacing={1}>
           {hasAlgoliaConfig ? <Search /> : <SearchGoogle />}
+          <SwitchLanguage />
           <UserPanel />
         </Stack>
+
         <IconButton
           onClick={() => setNavLinksDrawer(true)}
           size="small"

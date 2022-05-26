@@ -34,7 +34,6 @@ import {
 import { saveAlgoliaGame } from 'api/server'
 import BigNumber from 'bignumber.js'
 import { PrimaryLoadingButton } from 'components/CustomizedButtons'
-import FormAppStoreLinks from 'components/Game/FormAppStoreLinks'
 import FormCharset from 'components/Game/FormCharset'
 import FormPricing from 'components/Game/FormPricing'
 import FormTags from 'components/Game/FormTags'
@@ -46,7 +45,7 @@ import type { SupportedChainId } from 'constants/chains'
 import { WalletSupportedChainIds } from 'constants/chains'
 import { AuthenticationContext } from 'context'
 import { GameFormContext } from 'context/gameFormContext'
-import { classifications, kindOfProjects, releaseStatus } from 'data'
+import { classifications, releaseStatus } from 'data'
 import { utils } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
 import { useAccountInfo, useTitle } from 'hooks'
@@ -77,6 +76,7 @@ import { Game } from 'utils/validator'
 
 import FormCommunity from './FormCommunity'
 import FormGenre from './FormGenre'
+import FormKind from './FormKind'
 
 interface GameFormProps {
   readonly gameProject: GameEntity
@@ -98,7 +98,6 @@ const GameForm: FC<GameFormProps> = ({
 }) => {
   const router = useRouter()
   const id = router.query.id
-  // console.log('form router', router)
 
   const {
     state: { isAuthenticated },
@@ -114,7 +113,6 @@ const GameForm: FC<GameFormProps> = ({
     getValues,
     trigger,
   } = useContext(GameFormContext)
-  // console.log('context', contextGame)
 
   const account = useAccountInfo('metamask')
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
@@ -146,20 +144,15 @@ const GameForm: FC<GameFormProps> = ({
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
 
+  const watchKind = watch('kind')
   const watchPaymentMode = watch('paymentMode')
   const watchAppStoreLinks = useWatch({
     control,
     name: 'appStoreLinks',
   })
 
-  // console.log(watch('description'))
-  // console.log(watch('paymentMode'))
-  // console.log(watch('genre'))
-  // console.log('errors', errors)
-
   // Watch appStoreLinks change then trigger
   useEffect(() => {
-    // console.log('watchAppStoreLinks', watchAppStoreLinks)
     trigger('appStoreLinks')
   }, [watchAppStoreLinks, trigger])
 
@@ -354,7 +347,7 @@ const GameForm: FC<GameFormProps> = ({
         }
 
         const createGameResult = await createGame(formData)
-        console.log('createGameResult', createGameResult)
+        // console.log('createGameResult', createGameResult)
 
         if (createGameResult.status === 201) {
           saveAlgoliaGame(Number(createGameResult.data.id))
@@ -423,9 +416,6 @@ const GameForm: FC<GameFormProps> = ({
         }
 
         // 更新游戏文件
-        console.log('file', uploadGameFile || '')
-        console.log('gameData', gameData)
-
         const formData = new FormData()
         formData.append('file', uploadGameFile || '')
         formData.append('game', JSON.stringify(gameData))
@@ -438,7 +428,6 @@ const GameForm: FC<GameFormProps> = ({
         }
 
         const updateGameResult = await updateGame(Number(id), formData)
-        console.log('updateGameResult', updateGameResult)
 
         if (updateGameResult.status === 200) {
           saveAlgoliaGame(Number(updateGameResult.data.id))
@@ -531,6 +520,7 @@ const GameForm: FC<GameFormProps> = ({
     [setValue]
   )
 
+  // Description change triggers validation
   const { run: handleDescriptionTrigger } = useDebounceFn(
     async () => {
       await trigger('description')
@@ -540,6 +530,7 @@ const GameForm: FC<GameFormProps> = ({
     }
   )
 
+  // Handle description change
   const handleDescription = useCallback(async () => {
     if (editorRef) {
       const description = editorRef.current?.getInstance().getMarkdown()
@@ -756,32 +747,7 @@ const GameForm: FC<GameFormProps> = ({
                     </div>
 
                     <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-kindOfProject">
-                          Kind of project
-                        </FormLabel>
-                        <Select
-                          id="form-kindOfProject"
-                          value={kindOfProjects[0].value}
-                          disabled
-                        >
-                          {kindOfProjects.map((kind) => (
-                            <MenuItem value={kind.value} key={kind.value}>
-                              {kind.label}
-                              {kind.description && (
-                                <span className="sub">
-                                  {' — '}
-                                  {kind.description}
-                                </span>
-                              )}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <div data-label="Tip" className={styles.hint}>
-                        You can add additional downloadable files for any of the
-                        types above
-                      </div>
+                      <FormKind />
                     </div>
 
                     <div className={styles.input_row}>
@@ -877,9 +843,12 @@ const GameForm: FC<GameFormProps> = ({
                       </FormControl>
                     </div>
 
-                    <div className={styles.input_row}>
-                      <FormCharset />
-                    </div>
+                    {/* minetest doesn't need charset */}
+                    {!(watchKind === GameEngine.MINETEST) && (
+                      <div className={styles.input_row}>
+                        <FormCharset />
+                      </div>
+                    )}
 
                     <div
                       className={`${styles.input_row} ${styles.simulation_input}`}
@@ -923,9 +892,9 @@ const GameForm: FC<GameFormProps> = ({
                       />
                     </div>
 
-                    <div className={styles.input_row}>
+                    {/* <div className={styles.input_row}>
                       <FormAppStoreLinks />
-                    </div>
+                    </div> */}
 
                     {/* <div className={styles.input_row}>
                             <FormControl fullWidth>
@@ -1107,7 +1076,6 @@ const GameForm: FC<GameFormProps> = ({
         setOpen={setTtokenListDialogOpen}
         chainId={currentSelectTokenChainId}
         selectToken={(token) => {
-          // console.log(token)
           setCurrentSelectToken(token)
           setTtokenListDialogOpen(false)
         }}

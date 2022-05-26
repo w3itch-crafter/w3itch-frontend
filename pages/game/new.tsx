@@ -6,12 +6,14 @@ import {
   GameFormContextType,
 } from 'context/gameFormContext'
 import type { NextPage } from 'next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { MutableRefObject, useState } from 'react'
 import { DefaultValues, useForm } from 'react-hook-form'
 import { GameEntity } from 'types'
 import {
   Community,
   EditorMode,
+  GameEngine,
   GameFileCharset,
   Genre,
   PaymentMode,
@@ -27,6 +29,7 @@ const GameCreate: NextPage = () => {
     paymentMode: PaymentMode.DISABLE_PAYMENTS,
     community: Community.DISABLED,
     genre: Genre.ROLE_PLAYING,
+    kind: GameEngine.RM2K3E,
     charset: GameFileCharset.UTF8,
     tags: [],
     appStoreLinks: [],
@@ -71,6 +74,14 @@ const GameCreate: NextPage = () => {
       ></GameForm>
     </GameFormContextProvider>
   )
+}
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default GameCreate

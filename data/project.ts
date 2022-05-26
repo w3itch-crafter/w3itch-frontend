@@ -1,4 +1,4 @@
-import { Genre } from 'types/enum'
+import { GameEngine, Genre } from 'types/enum'
 import { enumWord } from 'utils'
 
 export const tags = [
@@ -510,39 +510,27 @@ export const classifications = [
   },
 ]
 
-export const kindOfProjects = [
-  {
-    value: 'rm2k3e',
-    label: 'RPG MAKER',
-    description: 'RPG MAKER 2000/2003',
-  },
+const kindOfProjects = [
   {
     value: 'default',
     label: 'Downloadable',
     description: 'You only have files to be downloaded',
   },
   {
-    value: 'html',
-    label: 'HTML',
-    description:
-      'You have a ZIP or HTML file that will be played in the browser',
+    value: 'rm2k3e',
+    label: 'RPG MAKER',
+    description: 'RPG MAKER 2000/2003',
   },
   {
-    value: 'flash',
-    label: 'Flash',
-    description: 'You have an SWF that will be played in the browser',
-  },
-  {
-    value: 'java',
-    label: 'Java applet',
-    description: 'You have a JAR that will be played in the browser',
-  },
-  {
-    value: 'unity',
-    label: 'Unity ≤ 5.3',
-    description: 'You have a Unity3d file that will be played in the browser',
+    value: 'mt',
+    label: 'Minetest',
+    description: 'Minetest World',
   },
 ]
+const kindValues = Object.values(GameEngine)
+export const kinds = kindOfProjects.filter((engine) =>
+  kindValues.includes(engine.value as GameEngine)
+)
 
 export const releaseStatus = [
   {

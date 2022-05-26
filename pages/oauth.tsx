@@ -81,13 +81,23 @@ export const getServerSideProps: GetServerSideProps<OAuthProps> = async (
   context
 ) => {
   const { success, code } = context.query
+
+  // redirect
+  const redirect = () => {
+    if (context?.locale !== context?.defaultLocale) {
+      context.res.writeHead(302, { Location: `/${context.locale}/games` }).end()
+    } else {
+      context.res.writeHead(302, { Location: '/games' }).end()
+    }
+  }
+
   if (typeof success === 'string' && typeof code === 'string') {
     if (success === 'true' && code === '200') {
-      context.res.writeHead(302, { Location: '/games' }).end()
+      redirect()
     }
     return { props: { success, code } }
   } else {
-    context.res.writeHead(302, { Location: '/games' }).end()
+    redirect()
   }
   return { props: {} }
 }

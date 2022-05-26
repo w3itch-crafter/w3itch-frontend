@@ -14,6 +14,7 @@ import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Fragment, useCallback, useContext, useState } from 'react'
 import { LoginMethod } from 'types'
 import { useWallet } from 'use-wallet'
@@ -148,6 +149,14 @@ const Login: NextPage = () => {
       </Container>
     </Fragment>
   )
+}
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default Login

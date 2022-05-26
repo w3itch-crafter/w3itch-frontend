@@ -2,6 +2,7 @@ import { AuthenticationContext } from 'context'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useCallback, useContext, useEffect } from 'react'
 
 import { logout } from '../api/account'
@@ -24,6 +25,14 @@ const Logout: NextPage = () => {
       <title>Logout - w3itch.io</title>
     </Head>
   )
+}
+
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
 }
 
 export default Logout
