@@ -1,17 +1,11 @@
 import { fetchGameRatingsCount, gameProjectByID } from 'api'
-// import EmbedWidgetMinetest from 'components/Game/EmbedWidgetMinetest'
+import EmbedWidgetMinetest from 'components/Game/EmbedWidgetMinetest'
 import GameLayout from 'components/Game/GameLayout'
 import { GetServerSideProps, NextPage } from 'next'
-import dynamic from 'next/dynamic'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 import { GameEntity, TokenDetail } from 'types'
 import { BackendError } from 'utils'
-
-const EmbedWidgetMinetest = dynamic(
-  () => import('components/Game/EmbedWidgetMinetest'),
-  { ssr: false }
-)
 
 declare interface GameProps {
   readonly gameProjectData: GameEntity | null
