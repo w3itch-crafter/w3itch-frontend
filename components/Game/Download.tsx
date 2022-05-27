@@ -1,18 +1,11 @@
 import styled from '@emotion/styled'
 import Stack from '@mui/material/Stack'
 import { gameDownloadUrl } from 'api'
-import BigNumber from 'bignumber.js'
 import { PrimaryButton } from 'components/CustomizedButtons'
-import { AuthenticationContext } from 'context'
-import { utils } from 'ethers'
-import { getAddress } from 'ethers/lib/utils'
-import { useBuyNow } from 'hooks/useBuyNow'
-import { isEmpty } from 'lodash'
-import { useSnackbar } from 'notistack'
-import { FC, useCallback, useContext, useEffect, useState } from 'react'
+import { useHoldUnlock } from 'hooks/useHoldUnlock'
+import { FC, useCallback } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'
-import { PaymentMode } from 'types/enum'
 import { downloadFile } from 'utils'
 
 interface DownloadProps {
@@ -35,16 +28,10 @@ const GameInfo = styled.span`
 `
 
 const Download: FC<DownloadProps> = ({ gameProject, pricesToken }) => {
-  const {
-    state: { user },
-  } = useContext(AuthenticationContext)
-  const { buyNow } = useBuyNow()
-  const { enqueueSnackbar } = useSnackbar()
-
-  // hold unlock
-  // false can download
-  // true can't download
-  const [holdUnlock, setHoldUnlock] = useState<boolean>(true)
+  const { handleUnlock } = useHoldUnlock({
+    game: gameProject,
+    token: pricesToken,
+  })
 
   // download game file
   const download = useCallback(() => {
@@ -57,68 +44,10 @@ const Download: FC<DownloadProps> = ({ gameProject, pricesToken }) => {
 
   // handle download
   const handleDownload = useCallback(() => {
-    if (gameProject.paymentMode === PaymentMode.PAID) {
-      if (holdUnlock && pricesToken) {
-        if (user) {
-          buyNow({
-            chainId: pricesToken.chainId,
-            inputCurrency: '',
-            outputCurrency: getAddress(pricesToken.address),
-          })
-        } else {
-          enqueueSnackbar('please sign in!', {
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'center',
-            },
-            variant: 'info',
-          })
-        }
-      } else {
-        download()
-      }
-    } else {
+    handleUnlock(() => {
       download()
-    }
-  }, [
-    buyNow,
-    download,
-    enqueueSnackbar,
-    gameProject,
-    holdUnlock,
-    pricesToken,
-    user,
-  ])
-
-  // @TODO Use more to keep unlocked then extract to public files
-  // process hold unlock
-  const processHoldUnlock = useCallback(() => {
-    if (gameProject.paymentMode === PaymentMode.PAID) {
-      if (!pricesToken || isEmpty(pricesToken)) {
-        return
-      }
-
-      // Publisher works do not need to hold unlock
-      if (gameProject.username === user?.username) {
-        setHoldUnlock(false)
-        return
-      }
-
-      const isUnlock = new BigNumber(
-        utils.formatUnits(pricesToken.balanceOf, pricesToken.decimals)
-      ).gte(utils.formatUnits(pricesToken.amount, pricesToken.decimals))
-
-      if (isUnlock) {
-        setHoldUnlock(false)
-      }
-    } else {
-      setHoldUnlock(false)
-    }
-  }, [gameProject, pricesToken, user])
-
-  useEffect(() => {
-    processHoldUnlock()
-  }, [processHoldUnlock])
+    })
+  }, [download, handleUnlock])
 
   return (
     <Stack spacing={1}>
