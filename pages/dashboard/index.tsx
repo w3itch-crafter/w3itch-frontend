@@ -7,6 +7,7 @@ import { deleteGameProject, getGamesMine } from 'api'
 import { deleteAlgoliaGame } from 'api/server'
 import Navigation from 'components/Dashboard/Navigation'
 import { AuthenticationContext } from 'context'
+import { kinds } from 'data'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -20,6 +21,7 @@ import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/dashboard.module.scss'
 import useSWR from 'swr'
 import { GameEntity, PaginationMeta } from 'types'
+import { GameEngine } from 'types/enum'
 
 interface HasGameProjectProps {
   items: GameEntity[]
@@ -83,13 +85,31 @@ const HasGameProject: FC<HasGameProjectProps> = ({
     [enqueueSnackbar, router]
   )
 
+  // @TODO Be a public method
+  // Handle game link
+  const handleGameLink = useCallback((game: GameEntity) => {
+    if (game.kind === GameEngine.RM2K3E) {
+      return `/game/${game.id}`
+    } else if (game.kind === GameEngine.MINETEST) {
+      return `/minetest-game/${game.id}`
+    } else {
+      return `/game/${game.id}`
+    }
+  }, [])
+
+  // Handle kind
+  const handleKind = useCallback((game: GameEntity) => {
+    const kind = kinds.find((kind) => kind.value === game.kind)
+    return kind?.label || 'Unknown'
+  }, [])
+
   return (
     <div className={styles.dashboard_columns}>
       <div className={styles.left_col}>
         <div className={styles.game_list}>
           {items.map((item) => (
             <div className={styles.game_row} key={item.id}>
-              <Link href={`/game/${item.id}`}>
+              <Link href={handleGameLink(item)}>
                 <a className={styles.cover_link}>
                   <Image
                     width={105}
@@ -102,7 +122,7 @@ const HasGameProject: FC<HasGameProjectProps> = ({
               </Link>
               <div className={styles.game_details}>
                 <div dir="auto" className={styles.game_title}>
-                  <Link href={`/game/${item.id}`}>
+                  <Link href={handleGameLink(item)}>
                     <a className={styles.game_link}>{item.title}</a>
                   </Link>
                 </div>
@@ -115,13 +135,22 @@ const HasGameProject: FC<HasGameProjectProps> = ({
                       Delete
                     </DeleteGame>
                   </Stack>
-                  <div className={styles.publish_status}>
-                    <span className={`${styles.tag_bubble} ${styles.green}`}>
-                      <Link href={`/game/${item.id}`}>
-                        <a>Published</a>
-                      </Link>
-                    </span>
-                  </div>
+                  <Stack direction="row" spacing={1}>
+                    <div className={styles.publish_status}>
+                      <span className={`${styles.tag_bubble} ${styles.grey}`}>
+                        <Link href={handleGameLink(item)}>
+                          <a>{handleKind(item)}</a>
+                        </Link>
+                      </span>
+                    </div>
+                    <div className={styles.publish_status}>
+                      <span className={`${styles.tag_bubble} ${styles.green}`}>
+                        <Link href={handleGameLink(item)}>
+                          <a>Published</a>
+                        </Link>
+                      </span>
+                    </div>
+                  </Stack>
                 </div>
               </div>
             </div>

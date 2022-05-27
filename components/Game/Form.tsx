@@ -315,7 +315,7 @@ const GameForm: FC<GameFormProps> = ({
           subtitle: trim(game.subtitle),
           gameName: trim(game.gameName).replaceAll(' ', '_'),
           classification: ProjectClassification.GAMES,
-          kind: GameEngine.RM2K3E,
+          kind: game.kind,
           releaseStatus: ReleaseStatus.RELEASED,
           screenshots: allImages.screenshots,
           cover: allImages.cover,
@@ -383,6 +383,7 @@ const GameForm: FC<GameFormProps> = ({
           subtitle: trim(game.subtitle),
           // The only game name is not allowed to be modified
           // gameName: trim(game.gameName).replaceAll(' ', '_'),
+          kind: game.kind,
           screenshots: allImages.screenshots,
           cover: allImages.cover,
           tags: game.tags,

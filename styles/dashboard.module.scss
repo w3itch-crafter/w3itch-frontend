@@ -192,16 +192,18 @@
     color: #858585;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 0 10px;
     height: 33px;
     a {
       color: #606060;
     }
     .publish_status {
-      margin-left: auto;
-      margin-right: 0;
-      min-width: 90px;
+      // margin-left: auto;
+      // margin-right: 0;
+      // min-width: 90px;
       & > * {
+        padding: 0 10px;
         width: 100%;
         text-align: center;
         box-sizing: border-box;
@@ -226,6 +228,9 @@
     }
     &.green {
       background: #90ce59;
+    }
+    &.grey {
+      background: rgba(0, 0, 0, 0.38);
     }
   }
 }
