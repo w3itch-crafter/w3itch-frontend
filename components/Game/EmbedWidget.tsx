@@ -3,20 +3,15 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import { gameProjectPlayer } from 'api'
-import BigNumber from 'bignumber.js'
-import { AuthenticationContext } from 'context'
 import { utils } from 'ethers'
-import { getAddress } from 'ethers/lib/utils'
-import { useBuyNow } from 'hooks/useBuyNow'
 import { useFullscreenCustomization } from 'hooks/useFullscreenCustomization'
+import { useHoldUnlock } from 'hooks/useHoldUnlock'
 import { isEmpty } from 'lodash'
-import { useSnackbar } from 'notistack'
-import { FC, useCallback, useContext, useEffect } from 'react'
+import { FC, useCallback } from 'react'
 import { useRef, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'
-import { PaymentMode } from 'types/enum'
 import { balanceDecimal } from 'utils'
 
 const Wrapper = styled.div<{ cover: string }>`
@@ -40,81 +35,25 @@ interface Props {
 }
 
 const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
-  const { buyNow } = useBuyNow()
   const ref = useRef(null)
-  const {
-    state: { user },
-  } = useContext(AuthenticationContext)
-  const { enqueueSnackbar } = useSnackbar()
   const { iosFullscreen, isFullscreen, handleFullscreen } =
     useFullscreenCustomization({
       ref,
       keyboardLock: ['Escape'],
     })
+  const { holdUnlock, handleUnlock } = useHoldUnlock({
+    game: gameProject,
+    token: pricesToken,
+  })
 
   const [runGameFlag, setRunGameFlag] = useState<boolean>(false)
 
-  // hold unlock
-  // false can play
-  // true can't play
-  const [holdUnlock, setHoldUnlock] = useState<boolean>(true)
-
   // handle play
   const handlePlay = useCallback(() => {
-    if (gameProject.paymentMode === PaymentMode.PAID) {
-      if (holdUnlock && pricesToken) {
-        if (user) {
-          buyNow({
-            chainId: pricesToken.chainId,
-            inputCurrency: '',
-            outputCurrency: getAddress(pricesToken.address),
-          })
-        } else {
-          enqueueSnackbar('please sign in!', {
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'center',
-            },
-            variant: 'info',
-          })
-        }
-      } else {
-        setRunGameFlag(true)
-      }
-    } else {
+    handleUnlock(() => {
       setRunGameFlag(true)
-    }
-  }, [gameProject, buyNow, holdUnlock, pricesToken, user, enqueueSnackbar])
-
-  // @TODO Use more to keep unlocked then extract to public files
-  // process hold unlock
-  const processHoldUnlock = useCallback(() => {
-    if (gameProject.paymentMode === PaymentMode.PAID) {
-      if (!pricesToken || isEmpty(pricesToken)) {
-        return
-      }
-
-      // Publisher works do not need to hold unlock
-      if (gameProject.username === user?.username) {
-        setHoldUnlock(false)
-        return
-      }
-
-      const isUnlock = new BigNumber(
-        utils.formatUnits(pricesToken.balanceOf, pricesToken.decimals)
-      ).gte(utils.formatUnits(pricesToken.amount, pricesToken.decimals))
-
-      if (isUnlock) {
-        setHoldUnlock(false)
-      }
-    } else {
-      setHoldUnlock(false)
-    }
-  }, [gameProject, pricesToken, user])
-
-  useEffect(() => {
-    processHoldUnlock()
-  }, [processHoldUnlock])
+    })
+  }, [handleUnlock])
 
   return (
     <div
