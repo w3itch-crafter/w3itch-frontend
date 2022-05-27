@@ -21,7 +21,7 @@ export function useFullscreenCustomization({
   keyboardLock,
 }: UseFullscreenCustomization) {
   // Adapt to IOS
-  // Need customization css fixed support
+  // Need customization css fixed + PWA manifest support
   const [iosFullscreen, setIosFullscreen] = useState<boolean>(false)
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(
     ref,
