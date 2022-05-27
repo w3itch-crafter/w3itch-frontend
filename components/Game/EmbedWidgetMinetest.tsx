@@ -2,13 +2,13 @@ import styled from '@emotion/styled'
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
-import { useFullscreen } from 'ahooks'
 import { gamePlayerMinetest } from 'api'
 import BigNumber from 'bignumber.js'
 import { AuthenticationContext } from 'context'
 import { utils } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
 import { useBuyNow } from 'hooks/useBuyNow'
+import { useFullscreenCustomization } from 'hooks/useFullscreenCustomization'
 import { isEmpty } from 'lodash'
 import { useSnackbar } from 'notistack'
 import { FC, useCallback, useContext, useEffect } from 'react'
@@ -47,44 +47,19 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   } = useContext(AuthenticationContext)
   const { enqueueSnackbar } = useSnackbar()
 
-  // Adapt to IOS
-  const [gameFullscreen, setGameFullscreen] = useState<boolean>(false)
+  const { iosFullscreen, isFullscreen, handleFullscreen } =
+    useFullscreenCustomization({
+      ref,
+      keyboardLock: ['Escape'],
+    })
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [runGameFlag, setRunGameFlag] = useState<boolean>(false)
-  const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(
-    ref,
-    {
-      onExit: () => {
-        // console.log('exit')
-        if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
-          navigator.keyboard.unlock()
-        }
-        setGameFullscreen(false)
-      },
-    }
-  )
 
   // hold unlock
   // false can play
   // true can't play
   const [holdUnlock, setHoldUnlock] = useState<boolean>(true)
-
-  // handle Fullscreen
-  const handleFullscreen = useCallback(() => {
-    // https://developer.mozilla.org/en-US/docs/Web/API/Lock
-    if (isFullscreen) {
-      exitFullscreen()
-      if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
-        navigator.keyboard.unlock()
-      }
-    } else {
-      if ('keyboard' in navigator && 'lock' in navigator.keyboard) {
-        navigator.keyboard.lock(['Escape'])
-      }
-      enterFullscreen()
-    }
-    setGameFullscreen(!gameFullscreen)
-  }, [enterFullscreen, exitFullscreen, isFullscreen, gameFullscreen])
 
   // handle play
   const handlePlay = useCallback(() => {
@@ -166,7 +141,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
         {runGameFlag ? (
           <div
             className={`${styles.iframe_wrapper}${
-              gameFullscreen ? ' ' + styles.open : ''
+              iosFullscreen ? ' ' + styles.open : ''
             }`}
             ref={ref}
           >
@@ -178,7 +153,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
               id="game_drop"
             ></iframe>
             <div className={styles.full_close} onClick={handleFullscreen}>
-              {isFullscreen || gameFullscreen ? (
+              {isFullscreen || iosFullscreen ? (
                 <FullscreenExitIcon></FullscreenExitIcon>
               ) : (
                 <FullscreenIcon></FullscreenIcon>
