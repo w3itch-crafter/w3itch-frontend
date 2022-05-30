@@ -2,12 +2,12 @@ import styled from '@emotion/styled'
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
-import { gamePlayerMinetest } from 'api'
+import { gamePlayerMinetest, minetestGamePortByGameName } from 'api'
 import { utils } from 'ethers'
 import { useFullscreenCustomization } from 'hooks/useFullscreenCustomization'
 import { useHoldUnlock } from 'hooks/useHoldUnlock'
 import { isEmpty } from 'lodash'
-import { FC, useCallback } from 'react'
+import { FC, useCallback, useEffect } from 'react'
 import { useRef, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
@@ -36,6 +36,7 @@ interface Props {
 
 const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   const ref = useRef(null)
+  const [minetestPort, setMinetestPort] = useState<number>(0)
 
   const { iosFullscreen, isFullscreen, handleFullscreen } =
     useFullscreenCustomization({
@@ -56,14 +57,29 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
     handleUnlock(() => {
       // @TODO Cross-domain embedding policy, temporarily use open window
       openWindow({
-        url: gamePlayerMinetest({ username: 'Bob2' }),
+        url: gamePlayerMinetest({ username: 'Bob2', port: minetestPort }),
         title: gameProject.gameName,
         w: 840,
         h: 460,
       })
       // setRunGameFlag(true)
     })
-  }, [gameProject, handleUnlock])
+  }, [gameProject, handleUnlock, minetestPort])
+
+  const handleMinetestPort = useCallback(async () => {
+    try {
+      const result = await minetestGamePortByGameName(gameProject.gameName)
+      if (result.status === 200) {
+        setMinetestPort(result.data.port)
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }, [gameProject])
+
+  useEffect(() => {
+    handleMinetestPort()
+  }, [handleMinetestPort])
 
   return (
     <div
@@ -81,7 +97,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
             <iframe
               style={{ width: '100%', height: '100%' }}
               frameBorder="0"
-              src={gamePlayerMinetest({ username: 'Bob2' })}
+              src={gamePlayerMinetest({ username: 'Bob2', port: minetestPort })}
               scrolling="no"
               id="game_drop"
             ></iframe>
