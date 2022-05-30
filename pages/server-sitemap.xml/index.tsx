@@ -1,44 +1,13 @@
 // pages/server-sitemap-index.xml/index.tsx
-import { getGames } from 'api'
 import { GetServerSideProps } from 'next'
 import { getServerSideSitemap, ISitemapField } from 'next-sitemap'
-import { GameEntity } from 'types'
-import { urlGame, userHostUrl } from 'utils'
-
-type FetchGamesParams = {
-  limit: number
-  page: number
-}
+import { fetchAllGames, urlGame, userHostUrl } from 'utils'
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   let sitemapFields: ISitemapField[] = []
 
-  const list: GameEntity[] = []
-  const page = 1
-  const limit = 100 // api limit max is 100
-
-  // fetch games
-  const fetchGames = async ({ limit, page }: FetchGamesParams) => {
-    const gamesResult = await getGames({
-      limit: limit,
-      page: page,
-    })
-    // console.log('gamesResult: ', gamesResult.data.length, limit, page)
-
-    if (gamesResult.data.length > 0) {
-      list.push(...gamesResult.data)
-
-      if (page < gamesResult.meta.totalPages) {
-        await fetchGames({ limit, page: page + 1 })
-      }
-    }
-  }
-
   try {
-    await fetchGames({
-      limit,
-      page,
-    })
+    const list = await fetchAllGames()
 
     const gameAndUsernameUrls: string[] = []
     const locales =
