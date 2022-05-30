@@ -1,29 +1,35 @@
 // pages/server-sitemap-index.xml/index.tsx
-import { getGames } from 'api'
 import { GetServerSideProps } from 'next'
 import { getServerSideSitemap, ISitemapField } from 'next-sitemap'
-import { GameEntity } from 'types'
-import { userHostUrl } from 'utils'
+import { fetchAllGames, urlGame, userHostUrl } from 'utils'
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  // Method to get URL from /api * 1000
   let sitemapFields: ISitemapField[] = []
 
   try {
-    const gamesResult = await getGames({
-      limit: 1000,
-      page: 1,
+    const list = await fetchAllGames()
+
+    const gameAndUsernameUrls: string[] = []
+    const locales =
+      ctx?.locales?.filter((locale) => locale !== ctx?.defaultLocale) || []
+
+    list.forEach((game) => {
+      gameAndUsernameUrls.push(
+        `${process.env.NEXT_PUBLIC_URL + urlGame(game.id, game.kind)}`
+      )
+      gameAndUsernameUrls.push(userHostUrl(game?.username.toLowerCase()))
+
+      // i18n route
+      locales.forEach((locale) => {
+        gameAndUsernameUrls.push(
+          `${process.env.NEXT_PUBLIC_URL}/${
+            locale + urlGame(game.id, game.kind)
+          }`
+        )
+      })
     })
 
-    // @TODO Need to support internationalized routing
-    // game id, username urls
-    const gameAndUsernameUrls = gamesResult.data.map((game: GameEntity) => [
-      `${process.env.NEXT_PUBLIC_URL}/game/${game.id}`,
-      userHostUrl(game?.username.toLowerCase()),
-    ])
-
-    // merged
-    sitemapFields = [...new Set(gameAndUsernameUrls.flat())].map((i) => ({
+    sitemapFields = [...new Set(gameAndUsernameUrls)].map((i) => ({
       loc: i,
       lastmod: new Date().toISOString(),
       changefreq: 'daily',

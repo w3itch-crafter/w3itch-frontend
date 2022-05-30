@@ -1,12 +1,6 @@
-import { getGames } from 'api'
 import { algoliaIndex } from 'constants/index'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { GameEntity } from 'types'
-
-type FetchGamesParams = {
-  limit: number
-  page: number
-}
+import { fetchAllGames } from 'utils'
 
 const index = algoliaIndex()
 
@@ -19,32 +13,8 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
     })
   }
 
-  const list: GameEntity[] = []
-  const page = 1
-  const limit = 100 // api limit max is 100
-
-  // fetch games
-  const fetchGames = async ({ limit, page }: FetchGamesParams) => {
-    const gamesResult = await getGames({
-      limit: limit,
-      page: page,
-    })
-    // console.log('gamesResult: ', gamesResult.data.length, limit, page)
-
-    if (gamesResult.data.length > 0) {
-      list.push(...gamesResult.data)
-
-      if (page < gamesResult.meta.totalPages) {
-        await fetchGames({ limit, page: page + 1 })
-      }
-    }
-  }
-
   try {
-    await fetchGames({
-      limit,
-      page,
-    })
+    const list = await fetchAllGames()
 
     const listData = list.map((game) => ({
       objectID: game.id,

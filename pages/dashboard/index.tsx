@@ -21,7 +21,7 @@ import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/dashboard.module.scss'
 import useSWR from 'swr'
 import { GameEntity, PaginationMeta } from 'types'
-import { GameEngine } from 'types/enum'
+import { urlGame } from 'utils'
 
 interface HasGameProjectProps {
   items: GameEntity[]
@@ -85,18 +85,6 @@ const HasGameProject: FC<HasGameProjectProps> = ({
     [enqueueSnackbar, router]
   )
 
-  // @TODO Be a public method
-  // Handle game link
-  const handleGameLink = useCallback((game: GameEntity) => {
-    if (game.kind === GameEngine.RM2K3E) {
-      return `/game/${game.id}`
-    } else if (game.kind === GameEngine.MINETEST) {
-      return `/minetest-game/${game.id}`
-    } else {
-      return `/game/${game.id}`
-    }
-  }, [])
-
   // Handle kind
   const handleKind = useCallback((game: GameEntity) => {
     const kind = kinds.find((kind) => kind.value === game.kind)
@@ -109,7 +97,7 @@ const HasGameProject: FC<HasGameProjectProps> = ({
         <div className={styles.game_list}>
           {items.map((item) => (
             <div className={styles.game_row} key={item.id}>
-              <Link href={handleGameLink(item)}>
+              <Link href={urlGame(item.id, item.kind)}>
                 <a className={styles.cover_link}>
                   <Image
                     width={105}
@@ -122,7 +110,7 @@ const HasGameProject: FC<HasGameProjectProps> = ({
               </Link>
               <div className={styles.game_details}>
                 <div dir="auto" className={styles.game_title}>
-                  <Link href={handleGameLink(item)}>
+                  <Link href={urlGame(item.id, item.kind)}>
                     <a className={styles.game_link}>{item.title}</a>
                   </Link>
                 </div>
@@ -138,14 +126,14 @@ const HasGameProject: FC<HasGameProjectProps> = ({
                   <Stack direction="row" spacing={1}>
                     <div className={styles.publish_status}>
                       <span className={`${styles.tag_bubble} ${styles.grey}`}>
-                        <Link href={handleGameLink(item)}>
+                        <Link href={urlGame(item.id, item.kind)}>
                           <a>{handleKind(item)}</a>
                         </Link>
                       </span>
                     </div>
                     <div className={styles.publish_status}>
                       <span className={`${styles.tag_bubble} ${styles.green}`}>
-                        <Link href={handleGameLink(item)}>
+                        <Link href={urlGame(item.id, item.kind)}>
                           <a>Published</a>
                         </Link>
                       </span>

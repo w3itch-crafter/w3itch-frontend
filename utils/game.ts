@@ -1,5 +1,12 @@
+import { getGames } from 'api'
 import { fromUrl, parseDomain } from 'parse-domain'
 import { toUnicode } from 'punycode'
+import { GameEntity } from 'types'
+
+type FetchGamesParams = {
+  limit: number
+  page: number
+}
 
 /**
  * calc rating
@@ -68,4 +75,42 @@ export const openWindow = ({
     title,
     `width=${w / systemZoom},height=${h / systemZoom},top=${top},left=${left}`
   )
+}
+
+/**
+ * fetch all games
+ * @returns
+ */
+export const fetchAllGames = async (): Promise<GameEntity[]> => {
+  const list: GameEntity[] = []
+  const page = 1
+  const limit = 100 // api limit max is 100
+
+  // fetch games
+  const fetchGames = async ({ limit, page }: FetchGamesParams) => {
+    const gamesResult = await getGames({
+      limit: limit,
+      page: page,
+    })
+    // console.log('gamesResult: ', gamesResult.data.length, limit, page)
+
+    if (gamesResult.data.length > 0) {
+      list.push(...gamesResult.data)
+
+      if (page < gamesResult.meta.totalPages) {
+        await fetchGames({ limit, page: page + 1 })
+      }
+    }
+  }
+
+  try {
+    await fetchGames({
+      limit,
+      page,
+    })
+  } catch (e) {
+    console.error(e)
+  }
+
+  return list
 }

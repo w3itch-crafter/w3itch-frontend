@@ -25,7 +25,13 @@ const limit = 100 // api limit max is 100
 
 // fetch games
 const fetchGames = async ({ limit, page }) => {
-  const gamesUrl = `${process.env.NEXT_PUBLIC_API_URL}/game-projects?limit=${limit}&page=${page}`
+  const query = new URLSearchParams()
+  query.set('limit', limit)
+  query.set('page', page)
+
+  const gamesUrl = `${
+    process.env.NEXT_PUBLIC_API_URL
+  }/game-projects?${query.toString()}`
   const gamesResult = await axios.get(gamesUrl)
   // console.log('gamesResult: ', gamesResult.data.data.length, limit, page)
 
