@@ -5,25 +5,58 @@ import { getServerSideSitemap, ISitemapField } from 'next-sitemap'
 import { GameEntity } from 'types'
 import { userHostUrl } from 'utils'
 
+type FetchGamesParams = {
+  limit: number
+  page: number
+}
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  // Method to get URL from /api * 1000
   let sitemapFields: ISitemapField[] = []
 
-  try {
+  const list: GameEntity[] = []
+  const page = 1
+  const limit = 100 // api limit max is 100
+
+  // fetch games
+  const fetchGames = async ({ limit, page }: FetchGamesParams) => {
     const gamesResult = await getGames({
-      limit: 1000,
-      page: 1,
+      limit: limit,
+      page: page,
+    })
+    // console.log('gamesResult: ', gamesResult.data.length, limit, page)
+
+    if (gamesResult.data.length > 0) {
+      list.push(...gamesResult.data)
+
+      if (page < gamesResult.meta.totalPages) {
+        await fetchGames({ limit, page: page + 1 })
+      }
+    }
+  }
+
+  try {
+    await fetchGames({
+      limit,
+      page,
     })
 
-    // @TODO Need to support internationalized routing
-    // game id, username urls
-    const gameAndUsernameUrls = gamesResult.data.map((game: GameEntity) => [
-      `${process.env.NEXT_PUBLIC_URL}/game/${game.id}`,
-      userHostUrl(game?.username.toLowerCase()),
-    ])
+    const gameAndUsernameUrls: string[] = []
+    const locales =
+      ctx?.locales?.filter((locale) => locale !== ctx?.defaultLocale) || []
 
-    // merged
-    sitemapFields = [...new Set(gameAndUsernameUrls.flat())].map((i) => ({
+    list.forEach((game) => {
+      gameAndUsernameUrls.push(`${process.env.NEXT_PUBLIC_URL}/game/${game.id}`)
+      gameAndUsernameUrls.push(userHostUrl(game?.username.toLowerCase()))
+
+      // i18n route
+      locales.forEach((locale) => {
+        gameAndUsernameUrls.push(
+          `${process.env.NEXT_PUBLIC_URL}/${locale}/game/${game.id}`
+        )
+      })
+    })
+
+    sitemapFields = [...new Set(gameAndUsernameUrls)].map((i) => ({
       loc: i,
       lastmod: new Date().toISOString(),
       changefreq: 'daily',
