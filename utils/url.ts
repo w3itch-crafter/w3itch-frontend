@@ -1,4 +1,5 @@
 import assert from 'assert'
+import { GameEngine } from 'types/enum'
 
 export function buildQuerySting(
   key: string,
@@ -55,4 +56,19 @@ export const urlGoogleSearch = (query: string): string => {
   )
 
   return `https://google.com/search?q=${searchContent}`
+}
+
+/**
+ * game url
+ * @param gameId
+ * @param kind
+ * @returns
+ */
+export const urlGame = (gameId: string | number, kind: GameEngine) => {
+  const list = {
+    [GameEngine.RM2K3E]: `/game/${gameId}`,
+    [GameEngine.MINETEST]: `/minetest-game/${gameId}`,
+  }
+
+  return list[kind] || `/game/${gameId}`
 }

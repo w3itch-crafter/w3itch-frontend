@@ -3,7 +3,7 @@ import { getGames } from 'api'
 import { GetServerSideProps } from 'next'
 import { getServerSideSitemap, ISitemapField } from 'next-sitemap'
 import { GameEntity } from 'types'
-import { userHostUrl } from 'utils'
+import { urlGame, userHostUrl } from 'utils'
 
 type FetchGamesParams = {
   limit: number
@@ -45,13 +45,17 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       ctx?.locales?.filter((locale) => locale !== ctx?.defaultLocale) || []
 
     list.forEach((game) => {
-      gameAndUsernameUrls.push(`${process.env.NEXT_PUBLIC_URL}/game/${game.id}`)
+      gameAndUsernameUrls.push(
+        `${process.env.NEXT_PUBLIC_URL + urlGame(game.id, game.kind)}`
+      )
       gameAndUsernameUrls.push(userHostUrl(game?.username.toLowerCase()))
 
       // i18n route
       locales.forEach((locale) => {
         gameAndUsernameUrls.push(
-          `${process.env.NEXT_PUBLIC_URL}/${locale}/game/${game.id}`
+          `${process.env.NEXT_PUBLIC_URL}/${
+            locale + urlGame(game.id, game.kind)
+          }`
         )
       })
     })

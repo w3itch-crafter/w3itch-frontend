@@ -29,8 +29,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { NextSeo } from 'next-seo'
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { GameEntity, GameInfo, PaginationMeta, TagOption } from 'types'
-import { GameEngine } from 'types/enum'
-import { buildQuerySting, findTags, isEmptyObj } from 'utils'
+import { buildQuerySting, findTags, isEmptyObj, urlGame } from 'utils'
 
 declare interface GamesProps {
   tags: TagOption[]
@@ -401,12 +400,7 @@ export const getServerSideProps: GetServerSideProps<GamesProps> = async (
   const { data, meta } = await getGames({ ...query, limit: 20, order: 'DESC' })
   const games: GameInfo[] = data.map((g) => ({
     ...g,
-    link:
-      g.kind === GameEngine.RM2K3E
-        ? `/game/${g.id}`
-        : g.kind === GameEngine.MINETEST
-        ? `/minetest-game/${g.id}`
-        : `/game/${g.id}`,
+    link: urlGame(g.id, g.kind),
   }))
   return {
     props: {

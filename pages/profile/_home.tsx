@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { GameEntity, GameInfo, UserEntity } from 'types'
-import { GameEngine } from 'types/enum'
+import { urlGame } from 'utils'
 
 declare interface ProfileHomeProps {
   wildcard: string | null
@@ -67,12 +67,7 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
     const gamesData: GameEntity[] = res?.data || []
     const games: GameInfo[] = gamesData.map((g) => ({
       ...g,
-      link:
-        g.kind === GameEngine.RM2K3E
-          ? `/game/${g.id}`
-          : g.kind === GameEngine.MINETEST
-          ? `/minetest-game/${g.id}`
-          : `/game/${g.id}`,
+      link: urlGame(g.id, g.kind),
     }))
     setGames(games)
   }, [wildcard])
