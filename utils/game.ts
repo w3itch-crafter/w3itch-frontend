@@ -84,7 +84,7 @@ export const openWindow = ({
 export const fetchAllGames = async (): Promise<GameEntity[]> => {
   const list: GameEntity[] = []
   const page = 1
-  const limit = 40 // api limit max is 100
+  const limit = 100 // api limit max is 100
 
   // fetch games
   const fetchGames = async ({ limit, page }: FetchGamesParams) => {
