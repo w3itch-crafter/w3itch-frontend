@@ -4,6 +4,16 @@ import { Api } from 'types/Api'
 
 import backend from './backend'
 
+type GameProjectPlayer = {
+  gameName: string
+  kind: string
+}
+
+type GamePlayerMinetest = {
+  username: string
+  port: number
+}
+
 export async function getGames(
   params: Api.GameProjectsParams
 ): Promise<Pagination<GameEntity>> {
@@ -74,28 +84,27 @@ export const minetestGamePortByGameName = async (
  * @param param
  * @returns
  */
-export const gameProjectPlayer = ({
-  gameName,
-  kind,
-}: {
-  gameName: string
-  kind: string
-}) =>
-  `${process.env.NEXT_PUBLIC_API_URL}/player?game=${gameName}&engine=${kind}`
+export const gameProjectPlayer = ({ gameName, kind }: GameProjectPlayer) => {
+  const query = new URLSearchParams()
+  query.set('game', gameName)
+  query.set('engine', kind)
+
+  return `${process.env.NEXT_PUBLIC_API_URL}/player?${query.toString()}`
+}
 
 /**
  * game player minetest
  * @param param0
  * @returns
  */
-export const gamePlayerMinetest = ({
-  username,
-  port,
-}: {
-  username: string
-  port: number
-}) =>
-  `https://backend-api.testenv.w3itch.io/minetest/?address=api.w3itch.io&name=${username}&port=${port}`
+export const gamePlayerMinetest = ({ username, port }: GamePlayerMinetest) => {
+  const query = new URLSearchParams()
+  query.set('address', process.env.NEXT_PUBLIC_ADDRESS_MINETEST_URL as string)
+  query.set('name', username)
+  query.set('port', String(port))
+
+  return `${process.env.NEXT_PUBLIC_API_URL}/minetest/?${query.toString()}`
+}
 
 /**
  * game download url
