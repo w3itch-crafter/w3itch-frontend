@@ -1,5 +1,6 @@
 import assert from 'assert'
-import { GameEngine } from 'types/enum'
+
+import { GameEngine } from '../types/enum'
 
 export function buildQuerySting(
   key: string,
