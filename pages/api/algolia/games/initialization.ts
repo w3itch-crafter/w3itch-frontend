@@ -19,6 +19,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
     })
   }
 
+  // @TODO Extract becomes public method
   const list: GameEntity[] = []
   const page = 1
   const limit = 100 // api limit max is 100
