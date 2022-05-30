@@ -262,11 +262,11 @@ const Jams: NextPage = () => {
               label="Age"
               onChange={(x) => setDuration(x.target.value as number)}
             >
-              <MenuItem value={3}>Less Then 3 days</MenuItem>
-              <MenuItem value={7}>Less Then 7 days</MenuItem>
-              <MenuItem value={15}>Less Then 15 days</MenuItem>
+              <MenuItem value={3}>Less than 3 days</MenuItem>
+              <MenuItem value={7}>Less than 7 days</MenuItem>
+              <MenuItem value={15}>Less than 15 days</MenuItem>
               <MenuItem value={Number.MAX_SAFE_INTEGER}>
-                Greater Then 15 days
+                Greater than 15 days
               </MenuItem>
             </Select>
           </FormControl>
