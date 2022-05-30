@@ -59,6 +59,17 @@ export const gameProjectByID = async (
 }
 
 /**
+ * minetest game get port by game name
+ * @param gameWorldName
+ * @returns
+ */
+export const minetestGamePortByGameName = async (
+  gameWorldName: string
+): Promise<AxiosResponse<Api.MinetestGamePortByGameNameResponse>> => {
+  return await backend.get(`/minetest-games/runnings/${gameWorldName}`)
+}
+
+/**
  * game project player
  * @param param
  * @returns
@@ -77,8 +88,14 @@ export const gameProjectPlayer = ({
  * @param param0
  * @returns
  */
-export const gamePlayerMinetest = ({ username }: { username: string }) =>
-  `https://backend-api.testenv.w3itch.io/minetest/?address=api.w3itch.io&name=${username}`
+export const gamePlayerMinetest = ({
+  username,
+  port,
+}: {
+  username: string
+  port: number
+}) =>
+  `https://backend-api.testenv.w3itch.io/minetest/?address=api.w3itch.io&name=${username}&port=${port}`
 
 /**
  * game download url

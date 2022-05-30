@@ -101,4 +101,9 @@ declare namespace Api {
     username?: string
     isExists?: boolean
   }
+
+  type MinetestGamePortByGameNameResponse = {
+    gameWorldName: string
+    port: number
+  }
 }
