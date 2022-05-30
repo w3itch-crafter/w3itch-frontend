@@ -9,7 +9,6 @@ import {
   Select,
 } from '@mui/material'
 import * as date from 'date-fns'
-import { concat, initial } from 'lodash'
 import { NextPage } from 'next'
 import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -36,27 +35,26 @@ function useHackathons() {
         const upcoming = dom.querySelectorAll(
           '.hackathon-list.upcoming .card-body'
         )
-        const hackathons: (Event | null)[] = concat(
-          Array.from(current),
-          Array.from(upcoming)
-        ).map((x: Element) => {
-          const times = x.querySelectorAll(':scope .title-and-dates time')
-          const titleAndDate = x.querySelector(':scope .title-and-dates h4 a')
-          const title = titleAndDate?.textContent?.trim()
-          const href = (titleAndDate as HTMLLinkElement)?.href?.trim()
-          if (times.length !== 2 || !title || !href) {
-            return null
-          }
-          const start = (times[0] as HTMLTimeElement).dateTime
-          const end = (times[1] as HTMLTimeElement).dateTime
-          const link = 'https://gitcoin.co' + new URL(href).pathname
-          return {
-            title,
-            link,
-            start: new Date(start),
-            end: new Date(end),
-          }
-        })
+        const hackathons: (Event | null)[] = Array.from(current)
+          .concat(Array.from(upcoming))
+          .map((x: Element) => {
+            const times = x.querySelectorAll(':scope .title-and-dates time')
+            const titleAndDate = x.querySelector(':scope .title-and-dates h4 a')
+            const title = titleAndDate?.textContent?.trim()
+            const href = (titleAndDate as HTMLLinkElement)?.href?.trim()
+            if (times.length !== 2 || !title || !href) {
+              return null
+            }
+            const start = (times[0] as HTMLTimeElement).dateTime
+            const end = (times[1] as HTMLTimeElement).dateTime
+            const link = 'https://gitcoin.co' + new URL(href).pathname
+            return {
+              title,
+              link,
+              start: new Date(start),
+              end: new Date(end),
+            }
+          })
         return hackathons.filter((x) => x !== null) as Event[]
       })
   const { data, error } = useSWR('gitcoin.co/hackathons', hackathonsFetcher)
@@ -87,6 +85,7 @@ const Jams: NextPage = () => {
     cursor: move;
     min-height: 960px;
     border-bottom: 1px solid #dadada;
+    border-right: 1px solid #dadada;
   `
   const CalendarRows = styled.div`
     position: absolute;
@@ -142,7 +141,7 @@ const Jams: NextPage = () => {
 
   const MonthMarkers = styled.div`
     position: relative;
-    height: 20px;
+    height: 40px;
     z-index: 3;
   `
   const MonthMarker = styled.div`
@@ -157,6 +156,10 @@ const Jams: NextPage = () => {
     background: #f4f4f4;
     font-weight: 900;
     font-size: 14px;
+
+    &:last-child {
+      border-right: 1px solid #dadada;
+    }
   `
 
   const StickyLabel = styled.span`
@@ -188,7 +191,7 @@ const Jams: NextPage = () => {
   const [duration, setDuration] = useState(Number.MAX_SAFE_INTEGER)
   const filteredData = useMemo(() => {
     return data?.filter(
-      (x) => date.differenceInHours(x.end, x.start) < duration
+      (x) => date.differenceInCalendarDays(x.end, x.start) < duration
     )
   }, [data, duration])
   const { interval, days, mouths, hours } = useMemo(() => {
@@ -201,11 +204,11 @@ const Jams: NextPage = () => {
           }
         : {
             start: now,
-            end: date.addDays(now, 12),
+            end: date.addMonths(now, 1),
           }
     return {
       interval,
-      days: initial(date.eachDayOfInterval(interval)),
+      days: date.eachDayOfInterval(interval).slice(0, -1),
       mouths: date.eachMonthOfInterval(interval),
       hours: date.differenceInHours(now, date.startOfDay(interval.start)),
     }
