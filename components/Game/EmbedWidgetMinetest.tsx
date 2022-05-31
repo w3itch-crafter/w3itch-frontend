@@ -40,7 +40,9 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   const {
     state: { user },
   } = useContext(AuthenticationContext)
-  const [minetestPort, setMinetestPort] = useState<number>(0)
+  const [minetestPort, setMinetestPort] = useState<number>(
+    Number(process.env.NEXT_PUBLIC_MINETEST_PORT)
+  )
 
   const { iosFullscreen, isFullscreen, handleFullscreen } =
     useFullscreenCustomization({
@@ -77,7 +79,9 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
     try {
       const result = await minetestGamePortByGameName(gameProject.gameName)
       if (result.status === 200) {
-        setMinetestPort(result.data.port || 0)
+        setMinetestPort(
+          result.data.port || Number(process.env.NEXT_PUBLIC_MINETEST_PORT)
+        )
       }
     } catch (e) {
       console.error(e)
