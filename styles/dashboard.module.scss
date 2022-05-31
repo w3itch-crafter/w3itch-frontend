@@ -13,7 +13,7 @@
       padding-bottom: 0;
     }
     a {
-      color: var(--itchio_link_color, #da2c49);
+      color: var(--itchio_link_color);
       display: flex;
       align-items: center;
     }
@@ -23,14 +23,14 @@
     h3 {
       font-weight: normal;
       font-size: 22px;
-      color: #606060;
+      color: var(--w3itch_dashboard_gameList_links_link_color);
       margin-top: 0;
     }
     .sub_links {
       margin-top: 15px;
       font-size: 14px;
       a {
-        color: #858585;
+        color: var(--w3itch_dashboard_gameList_links_color);
       }
     }
   }
@@ -43,20 +43,20 @@
 
 .stat_header_widget {
   border-bottom: 1px solid;
-  border-color: #dadada;
+  border-color: var(--w3itch_dashboard_header_border_color);
   min-height: 80px;
   position: relative;
   display: flex;
   align-items: center;
   gap: 20px;
-  padding: 0 var(--w3itch-gutter_width, 40px);
+  padding: 0 var(--w3itch-gutter_width);
   .text_container {
     flex: 1;
     min-width: 0;
     h2 {
       margin: 0;
       font-weight: 900;
-      color: #434343;
+      color: var(--w3itch_page_widget_color);
       font-size: 20px;
     }
   }
@@ -86,9 +86,9 @@
 }
 
 .header_nav {
-  background-color: #f4f4f4;
+  background-color: var(--w3itch_header_nav_bg_color);
   border-bottom: 1px solid;
-  border-color: #dadada;
+  border-color: var(--w3itch_header_nav_border_color);
   padding: 0 40px;
   position: relative;
   z-index: 98;
@@ -100,7 +100,7 @@
   }
   .nav_btn {
     cursor: pointer;
-    color: #606060;
+    color: var(--w3itch_header_nav_btn_color);
     margin-right: 20px;
     display: flex;
     align-items: center;
@@ -109,7 +109,7 @@
     &.active {
       cursor: default;
       font-weight: 900;
-      color: #222;
+      color: var(--w3itch_header_nav_btn_active_color);
       position: relative;
       box-shadow: inset 0 -4px 0 #ff2449;
       box-shadow: inset 0 -4px 0 var(--itchio_button_color, #ff2449);
@@ -138,7 +138,7 @@
     align-items: center;
     color: #858585;
     a {
-      color: var(--itchio_link_color, #da2c49);
+      color: var(--itchio_link_color);
     }
   }
 }
@@ -148,7 +148,7 @@
     margin-bottom: 10px;
     padding: 1px;
     border: 1px solid;
-    border-color: #dadada;
+    border-color: var(--w3itch_dashboard_header_border_color);
     display: flex;
     border-radius: 2px;
   }
@@ -158,8 +158,8 @@
     width: 105px;
     text-decoration: none;
     border-right: 1px solid;
-    border-color: white;
-    background-color: #f4f4f4;
+    border-color: var(--w3itch_main_inner_column_bg_color);
+    background-color: var(--w3itch_header_nav_bg_color);
     box-shadow: inset -1px 0 0 rgb(0 0 0 / 10%);
   }
   .game_details {
@@ -178,7 +178,7 @@
     position: relative;
     .game_link {
       display: block;
-      color: #434343;
+      color: var(--w3itch_dashboard_gameList_title_color);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -188,15 +188,15 @@
     }
   }
   .game_links {
-    background-color: #f4f4f4;
-    color: #858585;
+    background-color: var(--w3itch_dashboard_gameList_links_bg_color);
+    color: var(--w3itch_dashboard_gameList_links_color);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 10px;
     height: 33px;
     a {
-      color: #606060;
+      color: var(--w3itch_dashboard_gameList_links_link_color);
     }
     .publish_status {
       // margin-left: auto;
