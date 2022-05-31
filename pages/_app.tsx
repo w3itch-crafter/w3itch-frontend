@@ -1,6 +1,11 @@
+import '../styles/theme.css'
 import '../styles/globals.css'
 
-import CssBaseline from '@material-ui/core/CssBaseline'
+import CssBaseline from '@mui/material/CssBaseline'
+import {
+  createTheme,
+  ThemeProvider as ThemeProviderMUI,
+} from '@mui/material/styles'
 import { Layout } from 'components/layout'
 import { AuthenticationProvider } from 'components/pages'
 import { WalletSupportedChainIds } from 'constants/index'
@@ -14,9 +19,11 @@ import {
   LogoJsonLd,
   SiteLinksSearchBoxJsonLd,
 } from 'next-seo'
+import { ThemeProvider as ThemeProviderNext } from 'next-themes'
+import { useTheme } from 'next-themes'
 import { event, GoogleAnalytics, usePagesViews } from 'nextjs-google-analytics'
 import { SnackbarProvider } from 'notistack'
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
 import { NextPageWithLayout } from 'types'
 import { UseWalletProvider } from 'use-wallet'
@@ -34,6 +41,30 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
 
+enum ThemeMode {
+  Light = 'light',
+  Dark = 'dark',
+  System = 'system',
+}
+const lightTheme = createTheme({
+  palette: {
+    mode: 'light',
+  },
+})
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+})
+
+function getActiveTheme(themeMode: ThemeMode) {
+  return themeMode === ThemeMode.Light
+    ? lightTheme
+    : themeMode === ThemeMode.Dark
+    ? darkTheme
+    : lightTheme
+}
+
 // Google Analytics
 export function reportWebVitals({
   id,
@@ -47,6 +78,28 @@ export function reportWebVitals({
     label: id, // id unique to current page load
     nonInteraction: true, // avoids affecting bounce rate.
   })
+}
+
+function ProviderTheme({ children }: { children: React.ReactNode }) {
+  const { resolvedTheme } = useTheme()
+  const [activeTheme, setActiveTheme] = useState(
+    getActiveTheme(ThemeMode.Light)
+  )
+
+  useEffect(() => {
+    setActiveTheme(getActiveTheme(resolvedTheme as ThemeMode))
+  }, [resolvedTheme])
+
+  return (
+    <>
+      <ThemeProviderMUI theme={activeTheme}>
+        <SnackbarProvider maxSnack={3} autoHideDuration={5000}>
+          <CssBaseline enableColorScheme />
+          {children}
+        </SnackbarProvider>
+      </ThemeProviderMUI>
+    </>
+  )
 }
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
@@ -66,68 +119,70 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         }}
       >
         <AuthenticationProvider>
-          <SnackbarProvider maxSnack={3} autoHideDuration={5000}>
-            <Fragment>
-              <CssBaseline />
-              <Head>
-                {/* Tip: Put the viewport head meta tag into _app.js rather than in _document.js if you need it. */}
-                <meta
-                  name="viewport"
-                  content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
-                />
-                <meta
-                  httpEquiv="Content-Type"
-                  content="text/html; charset=utf-8"
-                />
-              </Head>
-              <DefaultSeo {...SEO} />
-              <GoogleAnalytics />
-              <LogoJsonLd
-                logo={seoLogo}
-                url={process.env.NEXT_PUBLIC_URL as string}
+          <Fragment>
+            <Head>
+              {/* Tip: Put the viewport head meta tag into _app.js rather than in _document.js if you need it. */}
+              <meta
+                name="viewport"
+                content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
               />
-              <SiteLinksSearchBoxJsonLd
-                url={process.env.NEXT_PUBLIC_URL as string}
-                potentialActions={[
-                  {
-                    target: `${process.env.NEXT_PUBLIC_URL}/search?q`,
-                    queryInput: 'search_term_string',
-                  },
-                  {
-                    target: `android-app://com.example/https/${urlHostnameParse(
-                      process.env.NEXT_PUBLIC_URL as string
-                    )}/search/?q`,
-                    queryInput: 'search_term_string',
-                  },
-                ]}
+              <meta
+                httpEquiv="Content-Type"
+                content="text/html; charset=utf-8"
               />
-              <BreadcrumbJsonLd
-                itemListElements={[
-                  {
-                    position: 1,
-                    name: 'Games',
-                    item: `${process.env.NEXT_PUBLIC_URL}/games`,
-                  },
-                  {
-                    position: 2,
-                    name: 'Comment Policy',
-                    item: `${process.env.NEXT_PUBLIC_URL}/comment-policy`,
-                  },
-                  {
-                    position: 3,
-                    name: 'Login',
-                    item: `${process.env.NEXT_PUBLIC_URL}/login`,
-                  },
-                  {
-                    position: 4,
-                    name: 'Dashboard',
-                    item: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
-                  },
-                ]}
-              />
-              {getLayout(<Component {...pageProps} />)}
-            </Fragment>
-          </SnackbarProvider>
+            </Head>
+            <DefaultSeo {...SEO} />
+            <GoogleAnalytics />
+            <LogoJsonLd
+              logo={seoLogo}
+              url={process.env.NEXT_PUBLIC_URL as string}
+            />
+            <SiteLinksSearchBoxJsonLd
+              url={process.env.NEXT_PUBLIC_URL as string}
+              potentialActions={[
+                {
+                  target: `${process.env.NEXT_PUBLIC_URL}/search?q`,
+                  queryInput: 'search_term_string',
+                },
+                {
+                  target: `android-app://com.example/https/${urlHostnameParse(
+                    process.env.NEXT_PUBLIC_URL as string
+                  )}/search/?q`,
+                  queryInput: 'search_term_string',
+                },
+              ]}
+            />
+            <BreadcrumbJsonLd
+              itemListElements={[
+                {
+                  position: 1,
+                  name: 'Games',
+                  item: `${process.env.NEXT_PUBLIC_URL}/games`,
+                },
+                {
+                  position: 2,
+                  name: 'Comment Policy',
+                  item: `${process.env.NEXT_PUBLIC_URL}/comment-policy`,
+                },
+                {
+                  position: 3,
+                  name: 'Login',
+                  item: `${process.env.NEXT_PUBLIC_URL}/login`,
+                },
+                {
+                  position: 4,
+                  name: 'Dashboard',
+                  item: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
+                },
+              ]}
+            />
+            <ThemeProviderNext>
+              <ProviderTheme>
+                <CssBaseline enableColorScheme />
+                {getLayout(<Component {...pageProps} />)}
+              </ProviderTheme>
+            </ThemeProviderNext>
+          </Fragment>
         </AuthenticationProvider>
       </UseWalletProvider>
     </Provider>

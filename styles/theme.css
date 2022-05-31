@@ -1,0 +1,25 @@
+:root {
+  --w3itch_white_back: #fff
+  --w3itch_bg_color: var(--w3itch_white_back);
+
+  --w3itch_header_color: #222;
+  --w3itch_page_widget_color: #434343;
+  --w3itch_browse_header_game_count_color: #858585;
+
+  /* single */
+  --w3itch-gutter_width: 40px;
+}
+
+[data-theme='dark'] {
+  --w3itch_white_back: #111
+  --w3itch_bg_color: var(--w3itch_white_back);
+
+  --w3itch_header_color: #ddd;
+  --w3itch_page_widget_color: #bcbcbc;
+  --w3itch_browse_header_game_count_color: #7a7a7a;
+}
+
+body {
+  --itchio_bg_color: var(--w3itch_white_back);
+  --itchio_warning_bg: #fffdbd;
+}

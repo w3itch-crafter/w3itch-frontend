@@ -15,7 +15,7 @@ export function StatHeader({ children, title }: StatHeaderProps) {
     display: flex;
     align-items: center;
     gap: 20px;
-    padding: 0 var(--itchio-gutter_width, 40px);
+    padding: 0 var(--w3itch-gutter_width, 40px);
   `
   const TextContainer = styled.div`
     display: flex;

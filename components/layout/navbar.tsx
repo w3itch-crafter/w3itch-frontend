@@ -16,6 +16,51 @@ import { hasAlgoliaConfig } from 'utils'
 import NavBarDrawer from './navBarDrawer'
 import { UserPanel } from './userPanel'
 
+const Flex1 = styled.div`
+  flex: 1;
+`
+
+const HeaderWidget = styled.nav`
+  height: 50px;
+  position: relative;
+`
+const PrimaryHeader = styled.div`
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  background-color: var(--w3itch_bg_color);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+  padding: 0 20px;
+  color: var(--w3itch_header_color);
+  height: 50px;
+  position: relative;
+  z-index: 100;
+`
+const HeaderTitle = styled.h1`
+  margin: 0;
+`
+const HeaderLogo = styled.a`
+  // background-image: url(images/logo-black-new.svg);
+  background-size: auto 100%;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  display: block;
+  width: 117px;
+  height: 30px;
+  margin: 0;
+  text-decoration: none;
+  color: inherit;
+`
+const HeaderButtons = styled(Box)`
+  margin-left: 10px;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+`
+
 export function Navbar() {
   const { t } = useTranslation()
   const navLinks: NavLinks = [
@@ -24,50 +69,7 @@ export function Navbar() {
     { href: `/dashboard`, name: t('Dashboard') },
     { href: `https://discord.gg/UaHazgHc8q`, name: t('Community') },
   ]
-  const Flex1 = styled.div`
-    flex: 1;
-  `
-  const HeaderWidget = styled.nav`
-    height: 50px;
-    position: relative;
-  `
-  const PrimaryHeader = styled.div`
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    // background-color: var(--itchio_ui_bg, #40434E);
-    background-color: white;
-    box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
-    padding: 0 20px;
-    color: #222;
-    height: 50px;
-    position: relative;
-    z-index: 100;
-  `
-  const HeaderTitle = styled.h1`
-    margin: 0;
-  `
-  const HeaderLogo = styled.a`
-    // background-image: url(images/logo-black-new.svg);
-    background-size: auto 100%;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    display: block;
-    width: 117px;
-    height: 30px;
-    margin: 0;
-    text-decoration: none;
-    color: inherit;
-  `
-  const HeaderButtons = styled(Box)`
-    margin-left: 10px;
-    height: 100%;
-    overflow: hidden;
-    display: flex;
-    flex-wrap: wrap;
-  `
+
   const router = useRouter()
   const { locale, defaultLocale } = router
   const isHref = (href: string) => router.route === href

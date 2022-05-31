@@ -93,7 +93,7 @@ export function SortOptionItem({ name, value }: SortOptionItemProps) {
     display: block;
     padding-bottom: 10px;
     text-decoration: none;
-    color: #434343;
+    color: var(--w3itch_page_widget_color);
     font-weight: bold;
     position: relative;
     &.active {

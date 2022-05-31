@@ -28,7 +28,7 @@ const Login: NextPage = () => {
     margin: 0 auto;
   `
   const Padded = styled.div`
-    padding: 30px var(--itchio-gutter_width, 40px);
+    padding: 30px var(--w3itch-gutter_width, 40px);
   `
   const Buttons = styled.div`
     display: flex;

@@ -1,7 +1,7 @@
 .tabbed_header_widget {
   .header_breadcrumbs {
     background-color: #f4f4f4;
-    padding: 10px var(--itchio-gutter_width, 40px);
+    padding: 10px var(--w3itch-gutter_width, 40px);
     font-size: 16px;
     color: #858585;
     border-bottom: 1px solid;
@@ -24,7 +24,7 @@
   -webkit-align-items: center;
   align-items: center;
   gap: 20px;
-  padding: 0 var(--itchio-gutter_width, 40px);
+  padding: 0 var(--w3itch-gutter_width, 40px);
   h2 {
     margin: 0;
     font-weight: 900;
@@ -131,7 +131,7 @@
 
 .page_widget {
   .padded {
-    padding: 30px var(--itchio-gutter_width, 40px);
+    padding: 30px var(--w3itch-gutter_width, 40px);
   }
   h2 {
     margin-bottom: 20px;
