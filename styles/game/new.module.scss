@@ -1,14 +1,14 @@
 .tabbed_header_widget {
   .header_breadcrumbs {
-    background-color: #f4f4f4;
-    padding: 10px var(--w3itch-gutter_width, 40px);
+    background-color: var(--w3itch_header_nav_bg_color);
+    padding: 10px var(--w3itch-gutter_width);
     font-size: 16px;
-    color: #858585;
+    color: var(--w3itch_browse_header_game_count_color);
     border-bottom: 1px solid;
-    border-color: #dadada;
+    border-color: var(--w3itch_dashboard_header_border_color);
     border-radius: 3px 3px 0 0;
     .trail {
-      color: #606060;
+      color: var(--w3itch_header_nav_btn_color);
       font-weight: bold;
       text-decoration: none;
     }
@@ -17,7 +17,7 @@
 
 .stat_header_widget {
   border-bottom: 1px solid;
-  border-color: #dadada;
+  border-color: var(--w3itch_dashboard_header_border_color);
   min-height: 80px;
   position: relative;
   display: flex;
@@ -28,7 +28,7 @@
   h2 {
     margin: 0;
     font-weight: 900;
-    color: #434343;
+    color: var(--w3itch_dashboard_gameList_title_color);
     font-size: 20px;
   }
 }
@@ -72,13 +72,13 @@
     }
   }
   p.sub {
-    color: #606060;
+    color: var(--w3itch_dashboard_gameList_links_link_color);
     margin: 5px 0;
     font-weight: normal;
   }
   .hint {
     font-style: italic;
-    color: #606060;
+    color: var(--w3itch_dashboard_gameList_links_link_color);
     margin-top: 15px;
     &:before {
       content: attr(data-label);
@@ -177,7 +177,7 @@
     font-size: 14px;
   }
   .label {
-    color: #434343;
+    color: var(--w3itch_dashboard_gameList_title_color);
     font-weight: bold;
   }
   .radio_label {
@@ -185,19 +185,19 @@
   }
   .radio_sub {
     font-weight: normal;
-    color: #606060;
+    color: var(--w3itch_dashboard_gameList_links_link_color);
     font-size: 14px;
   }
   .tags_sub {
     font-weight: normal;
-    color: #606060;
+    color: var(--w3itch_dashboard_gameList_links_link_color);
     font-size: 14px;
     a {
-      color: #434343;
+      color: var(--w3itch_dashboard_gameList_title_color);
     }
   }
   .tags_description_sub {
-    color: #606060;
+    color: var(--w3itch_dashboard_gameList_links_link_color);
     margin: 5px 0;
     font-weight: normal;
     font-size: 14px;

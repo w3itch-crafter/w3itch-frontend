@@ -2,10 +2,7 @@ import '../styles/theme.css'
 import '../styles/globals.css'
 
 import CssBaseline from '@mui/material/CssBaseline'
-import {
-  createTheme,
-  ThemeProvider as ThemeProviderMUI,
-} from '@mui/material/styles'
+import { ThemeProvider as ThemeProviderMUI } from '@mui/material/styles'
 import { Layout } from 'components/layout'
 import { AuthenticationProvider } from 'components/pages'
 import { WalletSupportedChainIds } from 'constants/index'
@@ -26,8 +23,10 @@ import { SnackbarProvider } from 'notistack'
 import { Fragment, useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
 import { NextPageWithLayout } from 'types'
+import { ThemeMode } from 'types/enum'
 import { UseWalletProvider } from 'use-wallet'
 import { getRpcUrl, urlHostnameParse } from 'utils'
+import { getActiveTheme } from 'utils/theme'
 
 import SEO, { seoLogo } from '../next-seo.config'
 import store from '../store/store'
@@ -39,30 +38,6 @@ export const WalletSupportedRpcUrls = WalletSupportedChainIds.map(
 // import your default seo configuration
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
-}
-
-enum ThemeMode {
-  Light = 'light',
-  Dark = 'dark',
-  System = 'system',
-}
-const lightTheme = createTheme({
-  palette: {
-    mode: 'light',
-  },
-})
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
-})
-
-function getActiveTheme(themeMode: ThemeMode) {
-  return themeMode === ThemeMode.Light
-    ? lightTheme
-    : themeMode === ThemeMode.Dark
-    ? darkTheme
-    : lightTheme
 }
 
 // Google Analytics

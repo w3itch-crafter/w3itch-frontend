@@ -86,3 +86,9 @@ export enum EditorMode {
   CREATE = 'CREATE',
   EDIT = 'EDIT',
 }
+
+export enum ThemeMode {
+  Light = 'light',
+  Dark = 'dark',
+  System = 'system',
+}
