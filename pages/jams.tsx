@@ -9,61 +9,20 @@ import {
   Select,
 } from '@mui/material'
 import * as date from 'date-fns'
+// @ts-ignore
+import * as ICAL from 'ical.js'
 import { NextPage } from 'next'
 import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React, { useMemo, useState } from 'react'
-import useSWR from 'swr'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+
+import backend from '../api/backend'
 
 type Event = {
   title: string
   start: Date
   end: Date
   link: string
-}
-
-function useHackathons() {
-  const hackathonsFetcher = (url: string): Promise<Event[]> =>
-    fetch('https://nocors-anywhere.herokuapp.com/' + url)
-      .then((x) => x.text())
-      .then((text) => {
-        const parser = new DOMParser()
-        const dom = parser.parseFromString(text, 'text/html')
-        const current = dom.querySelectorAll(
-          '.hackathon-list.current .card-body'
-        )
-        const upcoming = dom.querySelectorAll(
-          '.hackathon-list.upcoming .card-body'
-        )
-        const hackathons: (Event | null)[] = Array.from(current)
-          .concat(Array.from(upcoming))
-          .map((x: Element) => {
-            const times = x.querySelectorAll(':scope .title-and-dates time')
-            const titleAndDate = x.querySelector(':scope .title-and-dates h4 a')
-            const title = titleAndDate?.textContent?.trim()
-            const href = (titleAndDate as HTMLLinkElement)?.href?.trim()
-            if (times.length !== 2 || !title || !href) {
-              return null
-            }
-            const start = (times[0] as HTMLTimeElement).dateTime
-            const end = (times[1] as HTMLTimeElement).dateTime
-            const link = 'https://gitcoin.co' + new URL(href).pathname
-            return {
-              title,
-              link,
-              start: new Date(start),
-              end: new Date(end),
-            }
-          })
-        return hackathons.filter((x) => x !== null) as Event[]
-      })
-  const { data, error } = useSWR('gitcoin.co/hackathons', hackathonsFetcher)
-
-  return {
-    data: data,
-    isLoading: !error && !data,
-    isError: error,
-  }
 }
 
 const Jams: NextPage = () => {
@@ -187,11 +146,35 @@ const Jams: NextPage = () => {
     left: 0;
   `
 
-  const { data, isLoading } = useHackathons()
+  const fetchData = useCallback(async () => {
+    const xs = await backend.get('/calendar/cal.ics').then((x) => {
+      const comp = ICAL.Component.fromString(x.data)
+      const vevents = comp.getAllSubcomponents('vevent')
+      return vevents.map((v: ICAL.Component) => {
+        const ev = new ICAL.Event(v)
+        return {
+          title: ev.summary,
+          start: ev.startDate.toJSDate(),
+          end: ev.endDate.toJSDate(),
+          link: v.getFirstPropertyValue('x-link') ?? '',
+        }
+      })
+    })
+    setData(xs)
+  }, [])
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  const [data, setData] = useState<Event[] | null>(null)
   const [duration, setDuration] = useState(Number.MAX_SAFE_INTEGER)
   const filteredData = useMemo(() => {
+    const now = new Date()
     return data?.filter(
-      (x) => date.differenceInCalendarDays(x.end, x.start) < duration
+      (x) =>
+        date.isAfter(x.end, now) &&
+        date.differenceInCalendarDays(x.end, x.start) < duration
     )
   }, [data, duration])
   const { interval, days, mouths, hours } = useMemo(() => {
@@ -224,7 +207,7 @@ const Jams: NextPage = () => {
           minHeight: 960,
         }}
       >
-        {isLoading ? <CircularProgress /> : <div>Error</div>}
+        <CircularProgress />
       </Box>
     )
 
@@ -279,7 +262,7 @@ const Jams: NextPage = () => {
                   x.start,
                   interval.start
                 )
-                const k = date.differenceInCalendarDays(x.end, x.start)
+                const k = date.differenceInHours(x.end, x.start)
 
                 // magic color
                 const s = x.start.getSeconds()
@@ -292,7 +275,7 @@ const Jams: NextPage = () => {
                   <CalendarRow
                     style={{
                       left: lx * 120,
-                      width: k * 120,
+                      width: k * 5,
                       backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
                     }}
                     key={`event-${x.title}`}
