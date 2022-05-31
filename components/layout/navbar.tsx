@@ -114,6 +114,11 @@ export function Navbar() {
         <Stack direction="row" spacing={1}>
           {hasAlgoliaConfig ? <Search /> : <SearchGoogle />}
           <SwitchLanguage />
+          <div>
+            <IconButton onClick={() => dispatch(toggle())}>
+              {darkMode ? <DarkModeIcon /> : <LightModeIcon />}
+            </IconButton>
+          </div>
           <UserPanel />
         </Stack>
 
@@ -132,11 +137,6 @@ export function Navbar() {
           setNavLinksDrawer={setNavLinksDrawer}
           navLinks={navLinks}
         />
-        <div>
-          <IconButton onClick={() => dispatch(toggle())}>
-            {darkMode ? <DarkModeIcon /> : <LightModeIcon />}
-          </IconButton>
-        </div>
       </PrimaryHeader>
     </HeaderWidget>
   )
