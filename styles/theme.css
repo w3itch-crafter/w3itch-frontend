@@ -25,6 +25,10 @@
   /* game form */
   --w3itch_gameForm_breadcrumbs_bg_color: #f4f4f4;
 
+  /* user settings */
+  --w3itch_user_settings_tabHeader_color: #767676;
+  --w3itch_user_settings_tabHeader_border_color: #e4e4e4;
+
   /* single */
   --w3itch-gutter_width: 40px;
 
@@ -55,8 +59,12 @@
   --w3itch_dashboard_gameList_links_color: #7a7a7a;
   --w3itch_dashboard_gameList_links_link_color: #9f9f9f;
 
-    /* game form */
-    --w3itch_gameForm_breadcrumbs_bg_color: #1b1b1b;
+  /* game form */
+  --w3itch_gameForm_breadcrumbs_bg_color: #1b1b1b;
+
+  /* user settings */
+  --w3itch_user_settings_tabHeader_color: #898989;
+  --w3itch_user_settings_tabHeader_border_color: #1b1b1b;
 }
 
 body {

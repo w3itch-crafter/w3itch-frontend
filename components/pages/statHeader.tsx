@@ -9,7 +9,7 @@ export declare interface StatHeaderProps {
 export function StatHeader({ children, title }: StatHeaderProps) {
   const Container = styled.div`
     border-bottom: 1px solid;
-    border-color: #dadada;
+    border-color: var(--w3itch_header_nav_border_color);
     min-height: 80px;
     position: relative;
     display: flex;
@@ -26,7 +26,7 @@ export function StatHeader({ children, title }: StatHeaderProps) {
   const Text = styled.h2`
     font-size: 20px;
     font-weight: 900;
-    color: #434343;
+    color: var(--w3itch_dashboard_gameList_title_color);
     margin: 0;
   `
   const StatsContainer = styled.div`

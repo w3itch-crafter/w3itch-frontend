@@ -25,20 +25,20 @@ export default function Layout({ children }: LayoutProps) {
     width: 180px;
     box-sizing: border-box;
     text-align: right;
-    border-right: 1px solid #dadada;
+    border-right: 1px solid var(--w3itch_header_nav_border_color);
   `
   const TabHeader = styled.div`
     user-select: none;
     font-size: 12px;
     font-weight: bold;
-    color: #767676;
+    color: var(--w3itch_user_settings_tabHeader_color);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 8px 10px 8px 0;
-    border-bottom: 1px solid #e4e4e4;
-    border-top: 1px solid #e4e4e4;
+    border-bottom: 1px solid var(--w3itch_user_settings_tabHeader_border_color);
+    border-top: 1px solid var(--w3itch_user_settings_tabHeader_border_color);
     margin-bottom: 5px;
-    background-color: #f4f4f4;
+    background-color: var(--w3itch_gameForm_breadcrumbs_bg_color);
     margin-top: 20px;
     &:first-of-type {
       border-top: 0;
@@ -53,7 +53,7 @@ export default function Layout({ children }: LayoutProps) {
       margin: 0 0 20px 0;
       font-size: 20px;
       font-weight: 900;
-      color: #434343;
+      color: var(--w3itch_dashboard_gameList_title_color);
     }
   `
 
@@ -119,14 +119,14 @@ function TabButton({ href, children }: TabButtonProps) {
     border: 0;
     border-top: 1px solid;
     border-bottom: 1px solid;
-    border-color: white;
+    border-color: var(--w3itch_main_inner_column_bg_color);
     text-decoration: none;
     background-color: transparent;
-    color: #606060;
+    color: var(--w3itch_header_nav_btn_color);
     cursor: pointer;
     &.selected {
       position: relative;
-      color: #222;
+      color: var(--w3itch_header_nav_btn_active_color);
       font-weight: bold;
       background: rgba(64, 67, 78, 0.1);
       text-decoration: none;
