@@ -9,7 +9,6 @@ import {
   Select,
 } from '@mui/material'
 import * as date from 'date-fns'
-// @ts-ignore
 import * as ICAL from 'ical.js'
 import { NextPage } from 'next'
 import Link from 'next/link'
