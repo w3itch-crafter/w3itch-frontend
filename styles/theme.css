@@ -1,8 +1,26 @@
+/* --itchio_bg_color: #eeeeee;
+--itchio_bg2_color: rgba(255, 255, 255, 1);
+--itchio_bg2_sub: #e5e5e5;
+--itchio_text_color: #222222;
+--itchio_link_color: #fa5c5c;
+--itchio_border_color: #d8d8d8;
+--itchio_button_color: #fa5c5c;
+--itchio_button_fg_color: #ffffff;
+--itchio_button_shadow_color: #e54747; */
+
 :root {
-  --w3itch_body_bg_color: #F4F4F4;
+  /* commoon */
+  --itchio_link_color: #fa5c5c;
+  --itchio_button_color: #fa5c5c;
+  --itchio_button_fg_color: #ffffff;
+  --itchio_button_shadow_color: #e54747;
+
+  --w3itch_primary: #ff2449;
+
+  --w3itch_body_bg_color: #f4f4f4;
   --w3itch_body_color: #222;
 
-  --w3itch_white_back: #fff
+  --w3itch_white_back: #fff;
   --w3itch_bg_color: var(--w3itch_white_back);
 
   --w3itch_header_color: #222;
@@ -10,7 +28,7 @@
   --w3itch_browse_header_game_count_color: #858585;
   --w3itch_main_inner_column_border_color: #d0d0d0;
   --w3itch_main_inner_column_bg_color: #fff;
-  --w3itch_header_nav_bg_color: #F4F4F4;
+  --w3itch_header_nav_bg_color: #f4f4f4;
   --w3itch_header_nav_border_color: #dadada;
   --w3itch_header_nav_btn_color: #606060;
   --w3itch_header_nav_btn_active_color: #222;
@@ -18,7 +36,7 @@
   /* dashboard */
   --w3itch_dashboard_header_border_color: #dadada;
   --w3itch_dashboard_gameList_title_color: #434343;
-  --w3itch_dashboard_gameList_links_bg_color: #F4F4F4;
+  --w3itch_dashboard_gameList_links_bg_color: #f4f4f4;
   --w3itch_dashboard_gameList_links_color: #858585;
   --w3itch_dashboard_gameList_links_link_color: #606060;
 
@@ -29,6 +47,9 @@
   --w3itch_user_settings_tabHeader_color: #767676;
   --w3itch_user_settings_tabHeader_border_color: #e4e4e4;
 
+  /* game detail */
+  --w3itch_game_info_bg_color: rgba(229, 229, 229, 1);
+
   /* single */
   --w3itch-gutter_width: 40px;
 
@@ -37,6 +58,8 @@
 }
 
 [data-theme='dark'] {
+  --w3itch_primary: #ff2449;
+
   --w3itch_body_bg_color: #1b1b1b;
   --w3itch_body_color: #ddd;
 
@@ -46,14 +69,14 @@
   --w3itch_header_color: #ddd;
   --w3itch_page_widget_color: #bcbcbc;
   --w3itch_browse_header_game_count_color: #7a7a7a;
-  --w3itch_main_inner_column_border_color: rgba(255,255,255,0.1);
+  --w3itch_main_inner_column_border_color: rgba(255, 255, 255, 0.1);
   --w3itch_main_inner_column_bg_color: #111;
   --w3itch_header_nav_bg_color: #1b1b1b;
-  --w3itch_header_nav_border_color: rgba(255,255,255,0.1);
+  --w3itch_header_nav_border_color: rgba(255, 255, 255, 0.1);
   --w3itch_header_nav_btn_color: #9f9f9f;
   --w3itch_header_nav_btn_active_color: #ddd;
 
-  --w3itch_dashboard_header_border_color: rgba(255,255,255,0.1);
+  --w3itch_dashboard_header_border_color: rgba(255, 255, 255, 0.1);
   --w3itch_dashboard_gameList_title_color: #bcbcbc;
   --w3itch_dashboard_gameList_links_bg_color: #1b1b1b;
   --w3itch_dashboard_gameList_links_color: #7a7a7a;
@@ -65,6 +88,9 @@
   /* user settings */
   --w3itch_user_settings_tabHeader_color: #898989;
   --w3itch_user_settings_tabHeader_border_color: #1b1b1b;
+
+  /* game detail */
+  --w3itch_game_info_bg_color: rgba(240, 18, 60, 0);
 }
 
 body {

@@ -17,7 +17,7 @@ import { fileUrl } from 'utils'
 
 const WrapperDrap = styled.section`
   border: 1px dashed;
-  border-color: #cdcdcd;
+  border-color: var(--w3itch_main_inner_column_border_color);
   width: 315px;
   height: 250px;
   position: relative;

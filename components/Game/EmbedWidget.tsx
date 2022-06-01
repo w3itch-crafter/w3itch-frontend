@@ -17,7 +17,7 @@ import { balanceDecimal } from 'utils'
 const Wrapper = styled.div<{ cover: string }>`
   max-width: 640px;
   height: 480px;
-  background: #e5e5e5;
+  background: var(--w3itch_game_info_bg_color);
   margin: 0 auto;
   position: relative;
   background-position: 50% 50%;

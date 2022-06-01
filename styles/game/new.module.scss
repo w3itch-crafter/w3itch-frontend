@@ -45,7 +45,7 @@
     }
     a {
       margin-left: 10px;
-      color: var(--itchio_link_color, #da2c49);
+      color: var(--itchio_link_color);
     }
     .input_row {
       margin-bottom: 25px;
@@ -131,7 +131,7 @@
 
 .page_widget {
   .padded {
-    padding: 30px var(--w3itch-gutter_width, 40px);
+    padding: 30px var(--w3itch-gutter_width);
   }
   h2 {
     margin-bottom: 20px;

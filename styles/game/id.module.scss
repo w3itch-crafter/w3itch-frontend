@@ -1,24 +1,10 @@
 .wrapper {
-  --itchio_font_family: Lato;
-  --itchio_bg_color: #eeeeee;
-  --itchio_bg2_color: rgba(255, 255, 255, 1);
-  --itchio_bg2_sub: #e5e5e5;
-  --itchio_text_color: #222222;
-  --itchio_link_color: #fa5c5c;
-  --itchio_border_color: #d8d8d8;
-  --itchio_button_color: #fa5c5c;
-  --itchio_button_fg_color: #ffffff;
-  --itchio_button_shadow_color: #e54747;
 }
 
 .inner_column {
-  // width: 960px;
-  // margin: 0 auto;
   position: relative;
   padding-bottom: 40px;
   overflow: hidden;
-  // color: #222222;
-  // font-family: Lato, Lato, LatoExtended, sans-serif;
   background: var(--w3itch_main_inner_column_bg_color);
   &.size_large {
     font-size: 16px;
@@ -70,14 +56,14 @@
 }
 
 .info_panel_wrapper {
-  background: rgba(229, 229, 229, 1);
+  background: var(--w3itch_game_info_bg_color);
   padding: 10px;
   .time {
     display: flex;
     align-items: center;
   }
   a {
-    color: #fa5c5c;
+    color: var(--w3itch_primary);
   }
   td:first-child {
     font-weight: bold;
@@ -148,7 +134,7 @@
   .full_close {
     width: 32px;
     height: 32px;
-    background-color: #fff;
+    background-color: var(--w3itch_main_inner_column_bg_color);
     border-radius: 3px 0 0 3px;
     display: flex;
     align-items: center;
@@ -162,7 +148,7 @@
     width: 32px;
     height: 32px;
     border-radius: 3px 0 0 3px;
-    background-color: #fff;
+    background-color: var(--w3itch_main_inner_column_bg_color);
     display: flex;
     align-items: center;
     justify-content: center;
