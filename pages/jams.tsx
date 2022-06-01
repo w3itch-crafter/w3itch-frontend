@@ -47,7 +47,7 @@ const Jams: NextPage = () => {
   const CalendarScrolling = styled.div`
     position: relative;
     cursor: move;
-    min-height: 960px;
+    //min-height: 960px;
     border-bottom: 1px solid #dadada;
     border-right: 1px solid #dadada;
   `
@@ -211,13 +211,12 @@ const Jams: NextPage = () => {
       filteredData && filteredData.length > 0
         ? {
             start: date.min(filteredData.map((x) => x.start)),
-            end: date.max(filteredData.map((x) => x.end)),
+            end: date.addDays(date.max(filteredData.map((x) => x.end)), 1),
           }
         : {
             start: now,
             end: date.addMonths(now, 1),
           }
-    console.log(filteredData ?? [])
     return {
       interval,
       days: date.eachDayOfInterval(interval).slice(0, -1),
@@ -284,9 +283,14 @@ const Jams: NextPage = () => {
           </FormControl>
         </Filter>
         <CalendarWidget>
-          <CalendarScrolling style={{ width: days.length * 120 }}>
+          <CalendarScrolling
+            style={{
+              width: days.length * 120,
+              height: 81 + 30 + (filteredData?.length ?? 0) * (30 + 3) + 12,
+            }}
+          >
             <CalendarRows>
-              {filteredData?.map((x, i) => {
+              {filteredData?.map((x, index) => {
                 const lx = date.differenceInCalendarDays(
                   x.start,
                   interval.start
@@ -309,7 +313,7 @@ const Jams: NextPage = () => {
                       width,
                       backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
                     }}
-                    key={`event-${x.uid ?? i}`}
+                    key={`event-${x.uid ?? index}`}
                   >
                     <HtmlTooltip
                       title={
