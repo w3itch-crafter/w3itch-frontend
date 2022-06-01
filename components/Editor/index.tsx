@@ -11,6 +11,7 @@ import {
   useEffect,
   useRef,
 } from 'react'
+import { ThemeMode } from 'types/enum'
 import { getEditorTheme } from 'utils'
 
 export type EditorType = 'markdown' | 'wysiwyg'
@@ -41,7 +42,7 @@ const Editor: FC<Props> = ({ setRef, height = '400px', onChange }) => {
       ref={editorRef}
       autofocus={false}
       onChange={onChange}
-      theme={getEditorTheme(resolvedTheme)}
+      theme={getEditorTheme(resolvedTheme as ThemeMode)}
     />
   )
 }
