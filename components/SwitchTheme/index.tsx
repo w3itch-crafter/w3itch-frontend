@@ -3,7 +3,7 @@ import LightModeIcon from '@mui/icons-material/LightMode'
 import IconButton from '@mui/material/IconButton'
 import { useTheme } from 'next-themes'
 import { useMemo } from 'react'
-import { ThemeList, ThemeMode } from 'types/enum'
+import { ThemeMode } from 'types/enum'
 import { toggleTheme } from 'utils'
 
 const SwitchTheme = () => {
@@ -11,11 +11,11 @@ const SwitchTheme = () => {
 
   const themeIcon = useMemo(() => {
     const list = {
-      [ThemeList.Light]: <LightModeIcon />,
-      [ThemeList.Dark]: <DarkModeIcon />,
+      [ThemeMode.Light]: <LightModeIcon />,
+      [ThemeMode.Dark]: <DarkModeIcon />,
     }
 
-    return list[resolvedTheme as ThemeList]
+    return list[resolvedTheme as ThemeMode]
   }, [resolvedTheme])
 
   return (

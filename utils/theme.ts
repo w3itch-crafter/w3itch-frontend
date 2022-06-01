@@ -1,13 +1,13 @@
 import { Theme } from '@mui/material'
 import { darkTheme, lightTheme } from 'theme'
-import { ThemeList, ThemeMode } from 'types/enum'
+import { ThemeMode } from 'types/enum'
 
 /**
  * get active theme MUI
  * @param themeMode
  * @returns
  */
-export function getActiveThemeMUI(themeMode: ThemeList): Theme {
+export function getActiveThemeMUI(themeMode: ThemeMode): Theme {
   const list = {
     [ThemeMode.Light]: lightTheme,
     [ThemeMode.Dark]: darkTheme,
@@ -21,8 +21,8 @@ export function getActiveThemeMUI(themeMode: ThemeList): Theme {
  * @param theme
  * @returns
  */
-export function getEditorTheme(theme: ThemeList): string {
-  return theme === ThemeList.Dark ? ThemeList.Dark : ''
+export function getEditorTheme(theme: ThemeMode): string {
+  return theme === ThemeMode.Dark ? ThemeMode.Dark : ''
 }
 
 /**
@@ -34,7 +34,7 @@ export const toggleTheme = (themeMode: ThemeMode) => {
   const list = {
     [ThemeMode.Light]: ThemeMode.Dark,
     [ThemeMode.Dark]: ThemeMode.Light,
-    [ThemeMode.System]: ThemeMode.System,
+    // [ThemeMode.System]: ThemeMode.System,
   }
 
   return list[themeMode] || ThemeMode.Light

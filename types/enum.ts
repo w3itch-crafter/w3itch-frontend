@@ -90,10 +90,5 @@ export enum EditorMode {
 export enum ThemeMode {
   Light = 'light',
   Dark = 'dark',
-  System = 'system',
-}
-
-export enum ThemeList {
-  Light = 'light',
-  Dark = 'dark',
+  // System = 'system',
 }

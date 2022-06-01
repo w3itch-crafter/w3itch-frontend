@@ -23,7 +23,7 @@ import { SnackbarProvider } from 'notistack'
 import { Fragment, useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
 import { NextPageWithLayout } from 'types'
-import { ThemeList } from 'types/enum'
+import { ThemeMode } from 'types/enum'
 import { UseWalletProvider } from 'use-wallet'
 import { getRpcUrl, urlHostnameParse } from 'utils'
 import { getActiveThemeMUI } from 'utils'
@@ -58,11 +58,11 @@ export function reportWebVitals({
 function ProviderTheme({ children }: { children: React.ReactNode }) {
   const { resolvedTheme } = useTheme()
   const [activeTheme, setActiveTheme] = useState(
-    getActiveThemeMUI(ThemeList.Light)
+    getActiveThemeMUI(ThemeMode.Light)
   )
 
   useEffect(() => {
-    setActiveTheme(getActiveThemeMUI(resolvedTheme as ThemeList))
+    setActiveTheme(getActiveThemeMUI(resolvedTheme as ThemeMode))
   }, [resolvedTheme])
 
   return (
