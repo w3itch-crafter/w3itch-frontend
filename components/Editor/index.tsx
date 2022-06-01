@@ -11,7 +11,7 @@ import {
   useEffect,
   useRef,
 } from 'react'
-import { getEditorTheme } from 'utils/theme'
+import { getEditorTheme } from 'utils'
 
 export type EditorType = 'markdown' | 'wysiwyg'
 

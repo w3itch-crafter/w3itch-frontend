@@ -206,14 +206,8 @@ const Dashboard: NextPage = () => {
       </Head>
       <div className={stylesCommon.main}>
         <div className={stylesCommon.inner_column}>
-          <div
-            id="dashboard_page_79202"
-            className={`${styles.dashboard_page} ${styles.page_widget}`}
-          >
-            <div
-              id="user_header_widget_27838"
-              className="user_header_widget tabbed_header_widget"
-            >
+          <div className={`${styles.dashboard_page} ${styles.page_widget}`}>
+            <div className="user_header_widget tabbed_header_widget">
               <div className={styles.stat_header_widget}>
                 <div className={styles.text_container}>
                   <h2>Creator Dashboard</h2>

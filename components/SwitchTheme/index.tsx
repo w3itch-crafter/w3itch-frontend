@@ -2,25 +2,30 @@ import DarkModeIcon from '@mui/icons-material/DarkMode'
 import LightModeIcon from '@mui/icons-material/LightMode'
 import IconButton from '@mui/material/IconButton'
 import { useTheme } from 'next-themes'
-import { useDispatch, useSelector } from 'react-redux'
-import { toggle } from 'store/darkmode'
-import { RootState } from 'store/store'
+import { useMemo } from 'react'
+import { ThemeList, ThemeMode } from 'types/enum'
+import { toggleTheme } from 'utils'
 
 const SwitchTheme = () => {
-  const { darkMode } = useSelector((state: RootState) => state.darkMode)
-  const dispatch = useDispatch()
-  const { theme, setTheme } = useTheme()
-  console.log('theme', theme)
+  const { resolvedTheme, setTheme } = useTheme()
+
+  const themeIcon = useMemo(() => {
+    const list = {
+      [ThemeList.Light]: <LightModeIcon />,
+      [ThemeList.Dark]: <DarkModeIcon />,
+    }
+
+    return list[resolvedTheme as ThemeList]
+  }, [resolvedTheme])
 
   return (
     <div>
       <IconButton
         onClick={() => {
-          dispatch(toggle())
-          setTheme(darkMode ? 'light' : 'dark')
+          setTheme(toggleTheme(resolvedTheme as ThemeMode))
         }}
       >
-        {darkMode ? <DarkModeIcon /> : <LightModeIcon />}
+        {themeIcon}
       </IconButton>
     </div>
   )
