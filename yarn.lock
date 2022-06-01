@@ -3183,7 +3183,6 @@ __metadata:
   linkType: hard
 
 "@material-ui/core@npm:^4.12.4":
-  version: 4.12.4
   resolution: "@material-ui/core@npm:4.12.4"
   dependencies:
     "@babel/runtime": ^7.4.4
