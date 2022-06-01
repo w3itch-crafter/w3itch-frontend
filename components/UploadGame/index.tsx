@@ -11,10 +11,10 @@ const WrapperDrap = styled.section`
   padding: 20px;
   border-width: 2px;
   border-radius: 2px;
-  border-color: #eeeeee;
+  border-color: var(--w3itch-border1);
   border-style: dashed;
-  background-color: #fafafa;
-  color: #bdbdbd;
+  background-color: var(--w3itch-bg2);
+  color: var(--w3itch-text4);
   outline: none;
   transition: border 0.24s ease-in-out;
 `

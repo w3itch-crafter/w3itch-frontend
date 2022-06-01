@@ -1,0 +1,55 @@
+:root {
+  /* primary colors */
+  --w3itch-primary1: #ff2449;
+
+  /* backgrounds */
+  --w3itch-bg1: #f4f4f4;
+  --w3itch-bg2: #fff;
+  --w3itch-bg3: #fff0f0;
+  --w3itch-bg4: #e5e5e5;
+  --w3itch-bg5: #666;
+
+  /* border */
+  --w3itch-border1: #dadada;
+  --w3itch-border2: #e4e4e4;
+
+  /* text */
+  --w3itch-text1: #222;
+  --w3itch-text2: #434343;
+  --w3itch-text3: #858585;
+  --w3itch-text4: #606060;
+  --w3itch-text5: #767676;
+
+  /* commoon */
+  --w3itch-btn-color: #ffffff;
+  --w3itch-gutter_width: 40px;
+}
+
+[data-theme='dark'] {
+  /* primary colors */
+  --w3itch-primary1: #ff0707;
+
+  /* backgrounds */
+  --w3itch-bg1: #1b1b1b;
+  --w3itch-bg2: #111;
+  --w3itch-bg3: rgba(255, 240, 240, 0);
+  --w3itch-bg4: rgba(240, 18, 60, 0);
+  --w3itch-bg5: rgba(255, 255, 255, 0.1);
+
+  /* border */
+  --w3itch-border1: rgba(255, 255, 255, 0.1);
+  --w3itch-border2: #1b1b1b;
+
+  /* text */
+  --w3itch-text1: #ddd;
+  --w3itch-text2: #bcbcbc;
+  --w3itch-text3: #7a7a7a;
+  --w3itch-text4: #9f9f9f;
+  --w3itch-text5: #898989;
+}
+
+body {
+  /* Override CssBaseline  */
+  background-color: var(--w3itch-bg1) !important;
+  color: var(--w3itch-text1) !important;
+}

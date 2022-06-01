@@ -43,78 +43,79 @@ const sortValueDefault = (value: string) => {
 }
 const SortKey = 'sortBy'
 
-const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
-  const Container = styled.div`
-    margin: 0 auto;
-    width: 100%;
-    max-width: 1920px;
-    display: flex;
-  `
-  const FilterColumn = styled.section`
-    box-sizing: border-box;
-    width: 260px;
-    flex-shrink: 0;
-  `
-  const GridColumn = styled.div`
-    margin: 0;
-    background-color: white;
-    flex: 1;
-    padding-bottom: 40px;
-  `
-  const BrowseHeader = styled.div`
-    position: relative;
+const Container = styled.div`
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1920px;
+  display: flex;
+`
+const FilterColumn = styled.section`
+  box-sizing: border-box;
+  width: 260px;
+  flex-shrink: 0;
+`
+const GridColumn = styled.div`
+  margin: 0;
+  background-color: var(--w3itch-bg2);
+  flex: 1;
+  padding-bottom: 40px;
+`
+const BrowseHeader = styled.div`
+  position: relative;
 
-    & > h2 {
-      font-size: 24px;
-      margin: 0 20px 20px 20px;
-      padding-top: 16px;
-      line-height: 1.8;
-      font-weight: 900;
-      color: #434343;
-    }
-  `
-  const BrowseHeaderTitle = styled.h2`
+  & > h2 {
     font-size: 24px;
+    margin: 0 20px 20px 20px;
+    padding-top: 16px;
     line-height: 1.8;
     font-weight: 900;
+    color: var(--w3itch-text2);
+  }
+`
+const BrowseHeaderTitle = styled.h2`
+  font-size: 24px;
+  line-height: 1.8;
+  font-weight: 900;
+  margin: 0;
+  padding: 0;
+  color: var(--w3itch-text2); ;
+`
+const GameCount = styled.span`
+  font-weight: normal;
+  color: var(--w3itch-text3);
+`
+const StyledSortOptions = styled(SortOptions)`
+  margin-bottom: 10px;
+`
+const GameGrid = styled.div`
+  padding: 20px 20px 40px 20px;
+  font-size: 16px;
+  width: 100%;
+  display: grid;
+  gap: 20px 10px;
+  grid-template-columns: repeat(4, 1fr);
+  @media screen and (max-width: 1536px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media screen and (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  & .game-cell {
     margin: 0;
-    padding: 0;
-    color: #434343;
-  `
-  const GameCount = styled.span`
-    font-weight: normal;
-    color: #858585;
-  `
-  const StyledSortOptions = styled(SortOptions)`
-    margin-bottom: 10px;
-  `
-  const GameGrid = styled.div`
-    padding: 20px 20px 40px 20px;
-    font-size: 16px;
-    width: 100%;
-    display: grid;
-    gap: 20px 10px;
-    grid-template-columns: repeat(4, 1fr);
-    @media screen and (max-width: 1536px) {
-      grid-template-columns: repeat(3, 1fr);
-    }
-    @media screen and (max-width: 1200px) {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  }
+`
+const StyledPagination = styled(Pagination)`
+  display: flex;
+  justify-content: center;
 
-    & .game-cell {
-      margin: 0;
-    }
-  `
-  const StyledPagination = styled(Pagination)`
-    display: flex;
-    justify-content: center;
+  & .Mui-selected,
+  & .Mui-selected:hover {
+    background-color: #da2c49 !important;
+  }
+`
 
-    & .Mui-selected,
-    & .Mui-selected:hover {
-      background-color: #da2c49 !important;
-    }
-  `
+const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   const router = useRouter()
   const href = useCallback(
     (value: string) => {
@@ -307,7 +308,7 @@ function GameFilter() {
       text-transform: uppercase;
       margin: 0;
       font-weight: 900;
-      color: #434343;
+      color: var(--w3itch-text2);
     }
   `
   const FilterPickers = styled.div`

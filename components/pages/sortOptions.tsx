@@ -22,7 +22,7 @@ export function SortOptions({
     padding-left: 20px;
     font-size: 16px;
     border-bottom: 2px solid;
-    border-color: #f4f4f4;
+    border-color: var(--w3itch-border2);
     display: flex;
     align-items: center;
     margin-bottom: 20px;
@@ -30,7 +30,7 @@ export function SortOptions({
   const Label = styled.div`
     margin-right: 15px;
     font-size: 14px;
-    color: #858585;
+    color: var(--w3itch-text3);
     padding-bottom: 7px;
     white-space: nowrap;
     display: flex;
@@ -40,7 +40,7 @@ export function SortOptions({
       display: inline-block;
       vertical-align: middle;
       margin-right: 10px;
-      color: #606060;
+      color: var(--w3itch-text3);
     }
   `
   const Sorts = styled.ul`
@@ -93,17 +93,17 @@ export function SortOptionItem({ name, value }: SortOptionItemProps) {
     display: block;
     padding-bottom: 10px;
     text-decoration: none;
-    color: #434343;
+    color: var(--w3itch-text2);
     font-weight: bold;
     position: relative;
     &.active {
-      color: var(--itchio_link_color, #da2c49);
+      color: var(--w3itch-primary1);
     }
     &.active::after {
       content: '';
       position: absolute;
       height: 2px;
-      background: #ff2449;
+      background: var(--w3itch-primary1);
       bottom: -2px;
       left: 0;
       right: 0;

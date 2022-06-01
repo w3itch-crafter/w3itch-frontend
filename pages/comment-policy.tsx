@@ -58,6 +58,7 @@ Originally adapted from the [Discourse privacy policy](https://github.com/discou
 w3itch
 `
 
+// @TODO theme
 const CommentPolicy: NextPage = () => (
   <>
     <Head>

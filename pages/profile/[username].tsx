@@ -19,12 +19,12 @@ const UserProfile: NextPage<UserProfileProps> = ({ user, games }) => {
     margin: 0 auto;
   `
   const Padded = styled.div`
-    padding: 30px var(--itchio-gutter_width, 40px);
+    padding: 30px var(--w3itch-gutter_width, 40px);
     & h3 {
       margin-top: 0;
       font-size: 16px;
       font-weight: 900;
-      color: #434343;
+      color: var(--w3itch-text2);
     }
   `
   const HeaderAvatar = styled.div<{ src: string }>`
@@ -42,7 +42,7 @@ const UserProfile: NextPage<UserProfileProps> = ({ user, games }) => {
   const HeaderText = styled.h2`
     font-size: 20px;
     font-weight: 900;
-    color: #434343;
+    color: var(--w3itch-text2);
     margin: 0;
   `
   const StyledGameCarousel = styled(GameCarousel)`

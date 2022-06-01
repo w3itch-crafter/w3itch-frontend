@@ -16,11 +16,11 @@ const OAuth: NextPage<OAuthProps> = ({ success, code }: OAuthProps) => {
     margin: 0 auto;
   `
   const Padded = styled.div`
-    padding: 20px var(--itchio-gutter_width, 40px);
+    padding: 20px var(--w3itch-gutter_width, 40px);
   `
   const CardFooter = styled.div`
     border-top: 1px solid #dadada;
-    padding: 10px var(--itchio-gutter_width, 40px);
+    padding: 10px var(--w3itch-gutter_width, 40px);
     color: #606060;
     a {
       color: inherit;

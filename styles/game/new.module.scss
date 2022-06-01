@@ -1,14 +1,14 @@
 .tabbed_header_widget {
   .header_breadcrumbs {
-    background-color: #f4f4f4;
-    padding: 10px var(--itchio-gutter_width, 40px);
+    background-color: var(--w3itch-bg1);
+    padding: 10px var(--w3itch-gutter_width);
     font-size: 16px;
-    color: #858585;
+    color: var(--w3itch-text3);
     border-bottom: 1px solid;
-    border-color: #dadada;
+    border-color: var(--w3itch-border1);
     border-radius: 3px 3px 0 0;
     .trail {
-      color: #606060;
+      color: var(--w3itch-text4);
       font-weight: bold;
       text-decoration: none;
     }
@@ -17,18 +17,18 @@
 
 .stat_header_widget {
   border-bottom: 1px solid;
-  border-color: #dadada;
+  border-color: var(--w3itch-border1);
   min-height: 80px;
   position: relative;
   display: flex;
   -webkit-align-items: center;
   align-items: center;
   gap: 20px;
-  padding: 0 var(--itchio-gutter_width, 40px);
+  padding: 0 var(--w3itch-gutter_width, 40px);
   h2 {
     margin: 0;
     font-weight: 900;
-    color: #434343;
+    color: var(--w3itch-text2);
     font-size: 20px;
   }
 }
@@ -45,7 +45,7 @@
     }
     a {
       margin-left: 10px;
-      color: var(--itchio_link_color, #da2c49);
+      color: var(--w3itch-primary1);
     }
     .input_row {
       margin-bottom: 25px;
@@ -68,17 +68,17 @@
       color: #222;
     }
     a {
-      color: var(--itchio_link_color, #da2c49);
+      color: var(--w3itch-primary1);
     }
   }
   p.sub {
-    color: #606060;
+    color: var(--w3itch-text4);
     margin: 5px 0;
     font-weight: normal;
   }
   .hint {
     font-style: italic;
-    color: #606060;
+    color: var(--w3itch-text4);
     margin-top: 15px;
     &:before {
       content: attr(data-label);
@@ -105,7 +105,7 @@
       line-height: 1.5;
     }
     a {
-      color: var(--itchio_link_color, #da2c49);
+      color: var(--w3itch-primary1);
     }
   }
 
@@ -131,7 +131,7 @@
 
 .page_widget {
   .padded {
-    padding: 30px var(--itchio-gutter_width, 40px);
+    padding: 30px var(--w3itch-gutter_width);
   }
   h2 {
     margin-bottom: 20px;
@@ -177,7 +177,7 @@
     font-size: 14px;
   }
   .label {
-    color: #434343;
+    color: var(--w3itch-text2);
     font-weight: bold;
   }
   .radio_label {
@@ -185,19 +185,19 @@
   }
   .radio_sub {
     font-weight: normal;
-    color: #606060;
+    color: var(--w3itch-text4);
     font-size: 14px;
   }
   .tags_sub {
     font-weight: normal;
-    color: #606060;
+    color: var(--w3itch-text4);
     font-size: 14px;
     a {
-      color: #434343;
+      color: var(--w3itch-text2);
     }
   }
   .tags_description_sub {
-    color: #606060;
+    color: var(--w3itch-text4);
     margin: 5px 0;
     font-weight: normal;
     font-size: 14px;

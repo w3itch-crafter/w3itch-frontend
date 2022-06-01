@@ -1,24 +1,65 @@
 import styled from '@emotion/styled'
-import DarkModeIcon from '@mui/icons-material/DarkMode'
-import LightModeIcon from '@mui/icons-material/LightMode'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Box, Stack } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import Search from 'components/Search'
 import SearchGoogle from 'components/SearchGoogle'
 import SwitchLanguage from 'components/SwitchLanguage'
+import SwitchTheme from 'components/SwitchTheme'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { NavLinks } from 'types'
 import { hasAlgoliaConfig } from 'utils'
 
-import { toggle } from '../../store/darkmode'
-import { RootState } from '../../store/store'
 import NavBarDrawer from './navBarDrawer'
 import { UserPanel } from './userPanel'
+
+const Flex1 = styled.div`
+  flex: 1;
+`
+
+const HeaderWidget = styled.nav`
+  height: 50px;
+  position: relative;
+`
+const PrimaryHeader = styled.div`
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  background-color: var(--w3itch-bg2);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+  padding: 0 20px;
+  color: var(--w3itch-text1);
+  height: 50px;
+  position: relative;
+  z-index: 100;
+`
+const HeaderTitle = styled.h1`
+  margin: 0;
+`
+const HeaderLogo = styled.a`
+  // background-image: url(images/logo-black-new.svg);
+  background-size: auto 100%;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  display: block;
+  width: 117px;
+  height: 30px;
+  margin: 0;
+  text-decoration: none;
+  color: inherit;
+`
+const HeaderButtons = styled(Box)`
+  margin-left: 10px;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+`
 
 export function Navbar() {
   const { t } = useTranslation()
@@ -28,52 +69,7 @@ export function Navbar() {
     { href: `/dashboard`, name: t('Dashboard') },
     { href: `https://discord.gg/UaHazgHc8q`, name: t('Community') },
   ]
-  const { darkMode } = useSelector((state: RootState) => state.darkMode)
-  const dispatch = useDispatch()
-  const Flex1 = styled.div`
-    flex: 1;
-  `
-  const HeaderWidget = styled.nav`
-    height: 50px;
-    position: relative;
-  `
-  const PrimaryHeader = styled.div`
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    // background-color: var(--itchio_ui_bg, #40434E);
-    background-color: white;
-    box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
-    padding: 0 20px;
-    color: #222;
-    height: 50px;
-    position: relative;
-    z-index: 100;
-  `
-  const HeaderTitle = styled.h1`
-    margin: 0;
-  `
-  const HeaderLogo = styled.a`
-    // background-image: url(images/logo-black-new.svg);
-    background-size: auto 100%;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    display: block;
-    width: 117px;
-    height: 30px;
-    margin: 0;
-    text-decoration: none;
-    color: inherit;
-  `
-  const HeaderButtons = styled(Box)`
-    margin-left: 10px;
-    height: 100%;
-    overflow: hidden;
-    display: flex;
-    flex-wrap: wrap;
-  `
+
   const router = useRouter()
   const { locale, defaultLocale } = router
   const isHref = (href: string) => router.route === href
@@ -114,11 +110,7 @@ export function Navbar() {
         <Stack direction="row" spacing={1}>
           {hasAlgoliaConfig ? <Search /> : <SearchGoogle />}
           <SwitchLanguage />
-          <div>
-            <IconButton onClick={() => dispatch(toggle())}>
-              {darkMode ? <DarkModeIcon /> : <LightModeIcon />}
-            </IconButton>
-          </div>
+          <SwitchTheme />
           <UserPanel />
         </Stack>
 
