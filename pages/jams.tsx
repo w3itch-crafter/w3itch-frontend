@@ -26,7 +26,7 @@ type Event = {
   description: string
   start: Date
   end: Date
-  link: string
+  link: string | null
   uid: string
 }
 
@@ -183,7 +183,7 @@ const Jams: NextPage = () => {
           description: ev.description,
           start: ev.startDate.toJSDate(),
           end: ev.endDate.toJSDate(),
-          link: v.getFirstPropertyValue('x-link') ?? '',
+          link: v.getFirstPropertyValue('x-link'),
           uid: ev.uid,
         }
       })
@@ -325,11 +325,15 @@ const Jams: NextPage = () => {
                       arrow
                     >
                       <StickyLabel>
-                        <Link href={x.link}>
-                          <a target="_blank" rel="noopener noreferrer">
-                            {x.summary}
-                          </a>
-                        </Link>
+                        {x.link ? (
+                          <Link href={x.link}>
+                            <a target="_blank" rel="noopener noreferrer">
+                              {x.summary}
+                            </a>
+                          </Link>
+                        ) : (
+                          x.summary
+                        )}
                       </StickyLabel>
                     </HtmlTooltip>
                   </CalendarRow>
