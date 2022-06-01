@@ -73,7 +73,6 @@ const Settings: NextPageWithLayout = () => {
     const name = target.name
     setUser((u) => ({ ...u, [name]: value }))
     setUpdateUser((u) => ({ ...u, [name]: value }))
-    console.log(target, name, value)
   }
   const handleChangeAvatar = async (
     event: React.ChangeEvent<HTMLInputElement>
