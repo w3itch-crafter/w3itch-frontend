@@ -7,6 +7,10 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Tooltip,
+  tooltipClasses,
+  TooltipProps,
+  Typography,
 } from '@mui/material'
 import * as date from 'date-fns'
 import * as ICAL from 'ical.js'
@@ -18,10 +22,12 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import backend from '../api/backend'
 
 type Event = {
-  title: string
+  summary: string
+  description: string
   start: Date
   end: Date
   link: string
+  uid: string
 }
 
 const Jams: NextPage = () => {
@@ -122,6 +128,11 @@ const Jams: NextPage = () => {
 
   const StickyLabel = styled.span`
     position: sticky;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
     left: 0;
     padding: 0 20px;
     font-weight: 600;
@@ -145,6 +156,22 @@ const Jams: NextPage = () => {
     left: 0;
   `
 
+  const HtmlTooltip = styled(
+    ({ className, children, ...props }: TooltipProps) => (
+      <Tooltip {...props} classes={{ popper: className }}>
+        {children}
+      </Tooltip>
+    )
+  )(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: '#f4f4f4',
+      color: 'rgba(0, 0, 0, 0.87)',
+      maxWidth: 300,
+      fontSize: 12,
+      border: '1px solid #dadada',
+    },
+  }))
+
   const fetchData = useCallback(async () => {
     const xs = await backend.get('/calendar/cal.ics').then((x) => {
       const comp = ICAL.Component.fromString(x.data)
@@ -152,10 +179,12 @@ const Jams: NextPage = () => {
       return vevents.map((v: ICAL.Component) => {
         const ev = new ICAL.Event(v)
         return {
-          title: ev.summary,
+          summary: ev.summary,
+          description: ev.description,
           start: ev.startDate.toJSDate(),
           end: ev.endDate.toJSDate(),
           link: v.getFirstPropertyValue('x-link') ?? '',
+          uid: ev.uid,
         }
       })
     })
@@ -188,6 +217,7 @@ const Jams: NextPage = () => {
             start: now,
             end: date.addMonths(now, 1),
           }
+    console.log(filteredData ?? [])
     return {
       interval,
       days: date.eachDayOfInterval(interval).slice(0, -1),
@@ -256,7 +286,7 @@ const Jams: NextPage = () => {
         <CalendarWidget>
           <CalendarScrolling style={{ width: days.length * 120 }}>
             <CalendarRows>
-              {filteredData?.map((x) => {
+              {filteredData?.map((x, i) => {
                 const lx = date.differenceInCalendarDays(
                   x.start,
                   interval.start
@@ -270,22 +300,34 @@ const Jams: NextPage = () => {
                 color[(s + 1) % 3] = (s % 114) + 90
                 color[(s + 2) % 3] = (s % 13) * 6 + 90
 
+                const width = Math.max(k * 5, 120)
+
                 return (
                   <CalendarRow
                     style={{
                       left: lx * 120,
-                      width: k * 5,
+                      width,
                       backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
                     }}
-                    key={`event-${x.title}`}
+                    key={`event-${x.uid ?? i}`}
                   >
-                    <StickyLabel>
-                      <Link href={x.link}>
-                        <a target="_blank" rel="noopener noreferrer">
-                          {x.title}
-                        </a>
-                      </Link>
-                    </StickyLabel>
+                    <HtmlTooltip
+                      title={
+                        <React.Fragment>
+                          <Typography color="inherit">{x.summary}</Typography>
+                          {x.description}
+                        </React.Fragment>
+                      }
+                      arrow
+                    >
+                      <StickyLabel>
+                        <Link href={x.link}>
+                          <a target="_blank" rel="noopener noreferrer">
+                            {x.summary}
+                          </a>
+                        </Link>
+                      </StickyLabel>
+                    </HtmlTooltip>
                   </CalendarRow>
                 )
               })}
