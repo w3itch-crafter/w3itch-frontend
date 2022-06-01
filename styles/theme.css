@@ -47,6 +47,10 @@
   --w3itch_user_settings_tabHeader_color: #767676;
   --w3itch_user_settings_tabHeader_border_color: #e4e4e4;
 
+  /* user panel */
+  --w3itch_panel_menu_color: #333;
+  --w3itch_panel_item_bg_hover_color: #fff0f0;
+
   /* game detail */
   --w3itch_game_info_bg_color: rgba(229, 229, 229, 1);
 
@@ -91,6 +95,10 @@
   /* user settings */
   --w3itch_user_settings_tabHeader_color: #898989;
   --w3itch_user_settings_tabHeader_border_color: #1b1b1b;
+
+  /* user panel */
+  --w3itch_panel_menu_color: #ddd;
+  --w3itch_panel_item_bg_hover_color: rgba(255, 240, 240, 0);
 
   /* game detail */
   --w3itch_game_info_bg_color: rgba(240, 18, 60, 0);
