@@ -8883,13 +8883,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"csstype@npm:^2.5.2":
-  version: 2.6.20
-  resolution: "csstype@npm:2.6.20"
-  checksum: cb5d5ded49c3390909e93b20b285d4a63d0ba5b10294bdfbc4cf911f80e91d6cf367ea671f99f09570762535c14ea7074a2c7fa73f02008203f01328dea8968b
-  languageName: node
-  linkType: hard
-
 "csstype@npm:^3.0.2":
   version: 3.0.11
   resolution: "csstype@npm:3.0.11"
@@ -21373,7 +21366,6 @@ __metadata:
     "@emotion/react": ^11.9.0
     "@emotion/styled": ^11.8.1
     "@hookform/resolvers": ^2.8.10
-    "@material-ui/core": ^4.12.4
     "@mui/icons-material": ^5.8.2
     "@mui/lab": ^5.0.0-alpha.84
     "@mui/material": ^5.8.2
@@ -21431,6 +21423,7 @@ __metadata:
     next-pwa: ^5.5.2
     next-seo: ^5.4.0
     next-sitemap: ^2.5.28
+    next-themes: ^0.2.0
     nextjs-google-analytics: ^1.2.0
     notistack: ^2.0.5
     npm-run-all: ^4.1.5
