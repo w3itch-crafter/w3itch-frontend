@@ -27,22 +27,23 @@ declare type PopoverState = {
   message: string
 }
 
+const UsernameRow = styled.div`
+  font-size: 16px;
+  padding: 8px 0;
+`
+const Checkbox = styled(InputCheckbox)`
+  margin: 8px 10px;
+  & input[type='checkbox'] {
+    vertical-align: middle;
+    margin: 0 5px 0 0;
+  }
+`
+const Buttons = styled.div`
+  margin-top: 20px;
+  color: #858585;
+`
+
 const Settings: NextPageWithLayout = () => {
-  const UsernameRow = styled.div`
-    font-size: 16px;
-    padding: 8px 0;
-  `
-  const Checkbox = styled(InputCheckbox)`
-    margin: 8px 10px;
-    & input[type='checkbox'] {
-      vertical-align: middle;
-      margin: 0 5px 0 0;
-    }
-  `
-  const Buttons = styled.div`
-    margin-top: 20px;
-    color: #858585;
-  `
   const router = useRouter()
   const { user: userData, account } = useAuthentication()
   const { dispatch } = useContext(AuthenticationContext)
@@ -62,6 +63,7 @@ const Settings: NextPageWithLayout = () => {
     const name = target.name
     setUser((u) => ({ ...u, [name]: value }))
     setUpdateUser((u) => ({ ...u, [name]: value }))
+    console.log(target, name, value)
   }
   const handleChangeAvatar = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -88,7 +90,6 @@ const Settings: NextPageWithLayout = () => {
     setUploading(false)
   }
   const handleSubmitProfile = async () => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const state = await updateMe(updateUser)
     if (isBackendError(state)) {
       return checkError(state)
@@ -187,38 +188,38 @@ declare interface AvatarUploaderProps {
   uploading?: boolean
   onChangeFile: React.ChangeEventHandler<HTMLInputElement>
 }
+const Container = styled.div`
+  display: flex;
+  margin-top: 10px;
+`
+const PreviewAvatar = styled.div`
+  position: relative;
+  background-color: #f4f4f4;
+  margin-right: 10px;
+  width: 100px;
+  height: 100px;
+  & img {
+    display: block;
+    width: 100px;
+    height: 100px;
+  }
+`
+const Uploading = styled.div`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+`
 function AvatarUploader({
   avatar,
   uploading,
   onChangeFile,
 }: AvatarUploaderProps) {
-  const Container = styled.div`
-    display: flex;
-    margin-top: 10px;
-  `
-  const PreviewAvatar = styled.div`
-    position: relative;
-    background-color: #f4f4f4;
-    margin-right: 10px;
-    width: 100px;
-    height: 100px;
-    & img {
-      display: block;
-      width: 100px;
-      height: 100px;
-    }
-  `
-  const Uploading = styled.div`
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: rgba(255, 255, 255, 0.8);
-    background-color: rgba(0, 0, 0, 0.1);
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-  `
   const buttonText = avatar ? 'Replace image' : 'Upload image'
   const inputFile = useRef<HTMLInputElement>(null)
   const handleButtonClick = () => {
