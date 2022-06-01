@@ -119,11 +119,10 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   const router = useRouter()
   const href = useCallback(
     (value: string) => {
-      return `${router.route}${buildQuerySting(
-        SortKey,
-        value,
-        router.query as Record<string, string>
-      )}`
+      return `${router.route}${buildQuerySting(SortKey, value, {
+        ...router.query,
+        page: '1',
+      } as Record<string, string>)}`
     },
     [router]
   )
@@ -327,7 +326,7 @@ function GameFilter() {
   const router = useRouter()
 
   const buildHref = (key: string, value?: string): string => {
-    const query = router.query as Record<string, string>
+    const query = { ...router.query, page: '1' } as Record<string, string>
     const queryString = buildQuerySting(key, value, query)
     return `${router.route}${queryString}`
   }

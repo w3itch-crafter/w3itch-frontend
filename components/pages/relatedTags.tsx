@@ -93,7 +93,7 @@ export function RelatedTags({ tags, placeholder }: RelatedTagsProps) {
   if (typeof queryTags === 'string') selectedTags.add(queryTags)
   if (Array.isArray(queryTags)) queryTags.forEach((t) => selectedTags.add(t))
   const pushNewRoute = () => {
-    const query = { ...router.query, tags: [...selectedTags] }
+    const query = { ...router.query, page: '1', tags: [...selectedTags] }
     router.push({ pathname, query })
   }
   const handleSelectChange = (

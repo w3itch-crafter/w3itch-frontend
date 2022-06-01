@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { RedButton } from 'components/buttons'
-import { InputCheckbox, InputRow } from 'components/forms'
+import { InputRow } from 'components/forms'
 import {
   BackToSelect,
   ConnectWallet,
@@ -83,24 +83,24 @@ const Register: NextPage = () => {
     color: #d14343;
     margin-left: auto;
   `
-  const UserConfigurator = styled.div`
-    border: 1px solid;
-    border-color: #dadada;
-    padding: 10px;
-    border-radius: 2px;
-    margin-bottom: 20px;
+  // const UserConfigurator = styled.div`
+  //   border: 1px solid;
+  //   border-color: #dadada;
+  //   padding: 10px;
+  //   border-radius: 2px;
+  //   margin-bottom: 20px;
 
-    & > strong {
-      display: block;
-      margin-bottom: 10px;
-    }
+  //   & > strong {
+  //     display: block;
+  //     margin-bottom: 10px;
+  //   }
 
-    & > p {
-      margin: 0;
-      color: #606060;
-      line-height: 1.5;
-    }
-  `
+  //   & > p {
+  //     margin: 0;
+  //     color: #606060;
+  //     line-height: 1.5;
+  //   }
+  // `
   const Buttons = styled.div`
     display: flex;
     align-items: center;
@@ -271,7 +271,7 @@ const Register: NextPage = () => {
                     placeholder={t('https://username.w3itch.io/')}
                     value={profileUrl}
                   />
-                  <UserConfigurator>
+                  {/* <UserConfigurator>
                     <strong>About you</strong>
                     <InputCheckbox
                       label={t(
@@ -294,7 +294,7 @@ const Register: NextPage = () => {
                       they are used to hint w3itch.io in how it should present
                       itself to you.
                     </p>
-                  </UserConfigurator>
+                  </UserConfigurator> */}
                 </Fragment>
               )}
               <Buttons>
