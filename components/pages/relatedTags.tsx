@@ -43,7 +43,7 @@ export function RelatedTags({ tags, placeholder }: RelatedTagsProps) {
   `
   const BrowseTopTags = styled.span``
   const AllTags = styled.a`
-    color: #767676;
+    color: var(--w3itch_user_settings_tabHeader_color);
   `
   const selectStyle: StylesConfig<TagOption, false, GroupBase<TagOption>> = {
     control: () => ({
@@ -138,14 +138,14 @@ declare interface TagSegmentedProps {
 }
 function TagSegmented({ tag }: TagSegmentedProps) {
   const Container = styled.div`
-    color: #606060;
+    color: var(--w3itch_header_nav_btn_color);
     font-size: 14px;
     display: flex;
     height: 30px;
     box-sizing: border-box;
     & a {
       border: 1px solid;
-      border-color: #dadada;
+      border-color: var(--w3itch_header_nav_border_color);
       text-decoration: none;
       font-weight: bold;
       color: inherit;

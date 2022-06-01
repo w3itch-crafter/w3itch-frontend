@@ -50,6 +50,9 @@
   /* game detail */
   --w3itch_game_info_bg_color: rgba(229, 229, 229, 1);
 
+  /* games */
+  --w3itch_games_item_hover_bg_color: #666;
+
   /* single */
   --w3itch-gutter_width: 40px;
 
@@ -91,6 +94,9 @@
 
   /* game detail */
   --w3itch_game_info_bg_color: rgba(240, 18, 60, 0);
+
+  /* games */
+  --w3itch_games_item_hover_bg_color: rgba(255, 255, 255, 0.1);
 }
 
 body {

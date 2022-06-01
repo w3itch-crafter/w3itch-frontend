@@ -136,7 +136,7 @@ export function GameCell({
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: #606060;
+    color: var(--w3itch_header_nav_btn_color);
     font-size: 14px;
     display: ${(p) => (p.small ? 'none' : 'block')};
   `
@@ -144,7 +144,7 @@ export function GameCell({
     display: flex;
     align-items: center;
     font-size: 14px;
-    color: #606060;
+    color: var(--w3itch_header_nav_btn_color);
     display: ${(p) => (p.small ? 'none' : 'block')};
   `
   const GameSubmitterLink = styled.a`
@@ -160,12 +160,12 @@ export function GameCell({
   `
   const GameGenre = styled.div<Pick<Required<GameCellProps>, 'small'>>`
     font-size: 14px;
-    color: #858585;
+    color: var(--w3itch_dashboard_gameList_links_color);
     display: ${(p) => (p.small ? 'none' : 'block')};
   `
   const GamePlatform = styled.div<Pick<Required<GameCellProps>, 'small'>>`
     font-size: 14px;
-    color: #858585;
+    color: var(--w3itch_dashboard_gameList_links_color);
     display: ${(p) => (p.small ? 'none' : 'block')};
   `
   const { title, subtitle, cover, link, genre, platform, user, prices } = game
