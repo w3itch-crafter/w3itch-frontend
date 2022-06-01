@@ -164,11 +164,11 @@ const Jams: NextPage = () => {
     )
   )(({ theme }) => ({
     [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: '#f4f4f4',
-      color: 'rgba(0, 0, 0, 0.87)',
+      backgroundColor: 'var(--w3itch-bg2)',
+      color: 'var(--w3itch-text4)',
       maxWidth: 300,
       fontSize: 12,
-      border: '1px solid #dadada',
+      border: '1px solid var(--w3itch-border1)',
     },
   }))
 
