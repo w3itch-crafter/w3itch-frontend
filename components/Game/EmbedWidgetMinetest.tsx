@@ -17,7 +17,7 @@ import { balanceDecimal, openWindow } from 'utils'
 const Wrapper = styled.div<{ cover: string }>`
   max-width: 640px;
   height: 480px;
-  background: var(--w3itch_game_info_bg_color);
+  background: var(--w3itch-bg4);
   margin: 0 auto;
   position: relative;
   background-position: 50% 50%;

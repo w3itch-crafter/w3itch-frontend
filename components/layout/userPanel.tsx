@@ -23,7 +23,7 @@ export function UserPanel() {
     color: inherit;
     padding: 0 15px;
     border: 2px solid;
-    border-color: var(--w3itch_header_nav_border_color);
+    border-color: var(--w3itch-border1);
     text-decoration: none;
     font-size: 14px;
     font-weight: bold;
@@ -31,7 +31,7 @@ export function UserPanel() {
     margin-left: 10px;
 
     &:hover {
-      background-color: var(--w3itch_panel_item_bg_hover_color);
+      background-color: var(--w3itch-bg3);
       color: #ff2449;
     }
   `
@@ -72,7 +72,7 @@ export function UserPanel() {
     font-size: 15px;
 
     &:hover {
-      background-color: var(--w3itch_panel_item_bg_hover_color);
+      background-color: var(--w3itch-bg3);
       color: #da2c49;
     }
   `
@@ -164,14 +164,13 @@ function DropMenu({ open = false, children }: DropMenuProps) {
     display: ${(p) => (p.open ? 'block' : 'none')};
     line-height: normal;
     border-radius: 3px;
-    box-shadow: 0 0 0 1px var(--w3itch_main_inner_column_border_color),
-      0 2px 4px rgb(0 0 0 / 20%);
+    box-shadow: 0 0 0 1px var(--w3itch-border1), 0 2px 4px rgb(0 0 0 / 20%);
     position: absolute;
     top: 100%;
     right: -8px;
     margin-top: 5px;
-    background: var(--w3itch_main_inner_column_bg_color);
-    color: var(--w3itch_panel_menu_color);
+    background: var(--w3itch-bg2);
+    color: var(--w3itch-text1);
     min-width: 200px;
     white-space: nowrap;
     z-index: 250;
@@ -226,13 +225,13 @@ function DropMenuGroup({ header, children }: DropMenuGroupProps) {
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    color: var(--w3itch_header_nav_btn_color);
+    color: var(--w3itch-text4);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 1px solid var(--w3itch_user_settings_tabHeader_border_color);
-    border-top: 1px solid var(--w3itch_user_settings_tabHeader_border_color);
+    border-bottom: 1px solid var(--w3itch-border2);
+    border-top: 1px solid var(--w3itch-border2);
     margin-bottom: 5px;
-    background: var(--w3itch_header_nav_bg_color);
+    background: var(--w3itch-bg1);
     user-select: none;
     padding-left: 14px;
   `

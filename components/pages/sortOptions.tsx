@@ -93,17 +93,17 @@ export function SortOptionItem({ name, value }: SortOptionItemProps) {
     display: block;
     padding-bottom: 10px;
     text-decoration: none;
-    color: var(--w3itch_page_widget_color);
+    color: var(--w3itch-text2);
     font-weight: bold;
     position: relative;
     &.active {
-      color: var(--itchio_link_color, #da2c49);
+      color: var(--w3itch-primary1);
     }
     &.active::after {
       content: '';
       position: absolute;
       height: 2px;
-      background: #ff2449;
+      background: var(--w3itch-primary1);
       bottom: -2px;
       left: 0;
       right: 0;

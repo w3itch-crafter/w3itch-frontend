@@ -24,7 +24,7 @@ const UserProfile: NextPage<UserProfileProps> = ({ user, games }) => {
       margin-top: 0;
       font-size: 16px;
       font-weight: 900;
-      color: var(--w3itch_dashboard_gameList_title_color);
+      color: var(--w3itch-text2);
     }
   `
   const HeaderAvatar = styled.div<{ src: string }>`
@@ -42,7 +42,7 @@ const UserProfile: NextPage<UserProfileProps> = ({ user, games }) => {
   const HeaderText = styled.h2`
     font-size: 20px;
     font-weight: 900;
-    color: var(--w3itch_dashboard_gameList_title_color);
+    color: var(--w3itch-text2);
     margin: 0;
   `
   const StyledGameCarousel = styled(GameCarousel)`

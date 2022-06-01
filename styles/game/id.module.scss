@@ -5,7 +5,7 @@
   position: relative;
   padding-bottom: 40px;
   overflow: hidden;
-  background: var(--w3itch_main_inner_column_bg_color);
+  background: var(--w3itch-bg2);
   &.size_large {
     font-size: 16px;
   }
@@ -56,14 +56,14 @@
 }
 
 .info_panel_wrapper {
-  background: var(--w3itch_game_info_bg_color);
+  background: var(--w3itch-bg4);
   padding: 10px;
   .time {
     display: flex;
     align-items: center;
   }
   a {
-    color: var(--w3itch_primary);
+    color: var(--w3itch-primary1);
   }
   td:first-child {
     font-weight: bold;
@@ -134,7 +134,7 @@
   .full_close {
     width: 32px;
     height: 32px;
-    background-color: var(--w3itch_main_inner_column_bg_color);
+    background-color: var(--w3itch-bg2);
     border-radius: 3px 0 0 3px;
     display: flex;
     align-items: center;
@@ -148,7 +148,7 @@
     width: 32px;
     height: 32px;
     border-radius: 3px 0 0 3px;
-    background-color: var(--w3itch_main_inner_column_bg_color);
+    background-color: var(--w3itch-bg2);
     display: flex;
     align-items: center;
     justify-content: center;

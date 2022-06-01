@@ -57,7 +57,7 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   `
   const GridColumn = styled.div`
     margin: 0;
-    background-color: var(--w3itch_bg_color);
+    background-color: var(--w3itch-bg2);
     flex: 1;
     padding-bottom: 40px;
   `
@@ -70,7 +70,7 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
       padding-top: 16px;
       line-height: 1.8;
       font-weight: 900;
-      color: var(--w3itch_page_widget_color);
+      color: var(--w3itch-text2);
     }
   `
   const BrowseHeaderTitle = styled.h2`
@@ -79,11 +79,11 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
     font-weight: 900;
     margin: 0;
     padding: 0;
-    color: var(--w3itch_page_widget_color); ;
+    color: var(--w3itch-text2); ;
   `
   const GameCount = styled.span`
     font-weight: normal;
-    color: var(--w3itch_browse_header_game_count_color);
+    color: var(--w3itch-text3);
   `
   const StyledSortOptions = styled(SortOptions)`
     margin-bottom: 10px;
@@ -308,7 +308,7 @@ function GameFilter() {
       text-transform: uppercase;
       margin: 0;
       font-weight: 900;
-      color: var(--w3itch_page_widget_color);
+      color: var(--w3itch-text2);
     }
   `
   const FilterPickers = styled.div`

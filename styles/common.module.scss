@@ -1,8 +1,8 @@
 .main {
   .inner_column {
     *zoom: 1;
-    background: var(--w3itch_main_inner_column_bg_color);
-    border: 1px solid var(--w3itch_main_inner_column_border_color);
+    background: var(--w3itch-bg2);
+    border: 1px solid var(--w3itch-border1);
     box-shadow: 0 2px 4px rgb(0 0 0 / 5%);
     border-radius: 3px;
     margin: 20px auto 20px auto;
@@ -18,15 +18,12 @@
   user-select: none;
   box-sizing: border-box;
   display: inline-block;
-  background: #ff2449;
-  color: white;
   text-decoration: none;
   padding: 0 10px;
   font-size: 14px;
-  text-shadow: 0 1px 0 #c3223e;
-  background: var(--itchio_button_color, #ff2449);
-  color: var(--itchio_button_fg_color, white);
-  text-shadow: 0 1px 0 var(--itchio_button_shadow_color, #c3223e);
+  background: var(--w3itch-primary1);
+  color: var(--w3itch-btn-color);
+  text-shadow: 0 1px 0 var(--w3itch-primary1);
   cursor: pointer;
   border-radius: 3px;
   border: none;

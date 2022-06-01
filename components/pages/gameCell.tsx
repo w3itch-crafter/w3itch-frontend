@@ -42,7 +42,7 @@ export function GameCell({
     background-image: ${(p) => `url(${p.cover})`};
     background-position: 50% 50%;
     background-size: cover;
-    background-color: #dedede;
+    background-color: var(--w3itch-bg1);
     display: block;
     position: relative;
     width: 100%;
@@ -136,7 +136,7 @@ export function GameCell({
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: var(--w3itch_header_nav_btn_color);
+    color: var(--w3itch-text4);
     font-size: 14px;
     display: ${(p) => (p.small ? 'none' : 'block')};
   `
@@ -144,7 +144,7 @@ export function GameCell({
     display: flex;
     align-items: center;
     font-size: 14px;
-    color: var(--w3itch_header_nav_btn_color);
+    color: var(--w3itch-text4);
     display: ${(p) => (p.small ? 'none' : 'block')};
   `
   const GameSubmitterLink = styled.a`
@@ -160,12 +160,12 @@ export function GameCell({
   `
   const GameGenre = styled.div<Pick<Required<GameCellProps>, 'small'>>`
     font-size: 14px;
-    color: var(--w3itch_dashboard_gameList_links_color);
+    color: var(--w3itch-text3);
     display: ${(p) => (p.small ? 'none' : 'block')};
   `
   const GamePlatform = styled.div<Pick<Required<GameCellProps>, 'small'>>`
     font-size: 14px;
-    color: var(--w3itch_dashboard_gameList_links_color);
+    color: var(--w3itch-text3);
     display: ${(p) => (p.small ? 'none' : 'block')};
   `
   const { title, subtitle, cover, link, genre, platform, user, prices } = game

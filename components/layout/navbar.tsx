@@ -30,10 +30,10 @@ const PrimaryHeader = styled.div`
   align-items: center;
   justify-content: center;
   font-size: 16px;
-  background-color: var(--w3itch_main_inner_column_bg_color);
+  background-color: var(--w3itch-bg2);
   box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
   padding: 0 20px;
-  color: var(--w3itch_header_color);
+  color: var(--w3itch-text1);
   height: 50px;
   position: relative;
   z-index: 100;

@@ -20,7 +20,7 @@ export function FilterGroup({
     border: 1px solid transparent;
   `
   const Label = styled.div`
-    color: var(--w3itch_dashboard_gameList_links_color);
+    color: var(--w3itch-text3);
     font-size: 14px;
     display: flex;
     align-items: center;
@@ -36,7 +36,7 @@ export function FilterGroup({
     text-align: left;
     padding: 10px 0 10px 8px;
     &:hover {
-      color: var(--w3itch_header_nav_btn_active_color);
+      color: var(--w3itch-text1);
     }
     &:focus {
       outline-color: #361275;
@@ -116,7 +116,7 @@ export function FilterGroupItem({ icon, name, href }: FilterGroupItemProps) {
     cursor: pointer;
     &:hover {
       color: white;
-      background-color: var(--w3itch_games_item_hover_bg_color);
+      background-color: var(--w3itch-bg5);
     }
     & > .icon {
       flex-shrink: 0;

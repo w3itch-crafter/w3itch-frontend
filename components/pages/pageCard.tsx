@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 
 const Container = styled.div`
-  background: var(--w3itch_main_inner_column_bg_color);
-  border: 1px solid var(--w3itch_main_inner_column_border_color);
+  background: var(--w3itch-bg2);
+  border: 1px solid var(--w3itch-border1);
   box-shadow: 0 2px 4px rgb(0 0 0 / 5%);
   border-radius: 3px;
   width: auto;
