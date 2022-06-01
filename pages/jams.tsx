@@ -162,7 +162,7 @@ const Jams: NextPage = () => {
         {children}
       </Tooltip>
     )
-  )(({ theme }) => ({
+  )(() => ({
     [`& .${tooltipClasses.tooltip}`]: {
       backgroundColor: 'var(--w3itch-bg2)',
       color: 'var(--w3itch-text4)',
@@ -193,7 +193,7 @@ const Jams: NextPage = () => {
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [fetchData])
 
   const [data, setData] = useState<Event[] | null>(null)
   const [duration, setDuration] = useState(Number.MAX_SAFE_INTEGER)
