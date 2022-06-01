@@ -3,7 +3,7 @@ import { Alert, AlertColor, CircularProgress, Snackbar } from '@mui/material'
 import { storagesUploadToAWS } from 'api'
 import { updateMe } from 'api/users'
 import { RedButton } from 'components/buttons'
-import { InputCheckbox, InputRow } from 'components/forms'
+import { InputRow } from 'components/forms'
 import { AuthenticationContext } from 'context'
 import { useAuthentication } from 'hooks'
 import Image from 'next/image'
@@ -31,23 +31,33 @@ const UsernameRow = styled.div`
   font-size: 16px;
   padding: 8px 0;
 `
-const Checkbox = styled(InputCheckbox)`
-  margin: 8px 10px;
-  & input[type='checkbox'] {
-    vertical-align: middle;
-    margin: 0 5px 0 0;
-  }
-`
+// const Checkbox = styled(InputCheckbox)`
+//   margin: 8px 10px;
+//   & input[type='checkbox'] {
+//     vertical-align: middle;
+//     margin: 0 5px 0 0;
+//   }
+// `
 const Buttons = styled.div`
   margin-top: 20px;
   color: #858585;
 `
 
+const defaultUser: UserEntity = {
+  id: 0,
+  username: '',
+  nickname: '',
+  bio: '',
+  avatar: '',
+  createdAt: '',
+  updatedAt: '',
+}
+
 const Settings: NextPageWithLayout = () => {
   const router = useRouter()
   const { user: userData, account } = useAuthentication()
   const { dispatch } = useContext(AuthenticationContext)
-  const [user, setUser] = useState<Partial<UserEntity> | null>(userData)
+  const [user, setUser] = useState<Partial<UserEntity> | null>(defaultUser)
   const [updateUser, setUpdateUser] = useState<Partial<UserEntity>>({})
   const [uploading, setUploading] = useState<boolean>(false)
   const submitButton = useRef<HTMLButtonElement>(null)
@@ -110,7 +120,8 @@ const Settings: NextPageWithLayout = () => {
   }
 
   useEffect(() => {
-    setUser(userData)
+    // fix input 'A component is changing an uncontrolled input to be controlled' warn
+    setUser((s) => ({ ...s, ...userData }))
   }, [userData])
 
   return (
@@ -148,7 +159,7 @@ const Settings: NextPageWithLayout = () => {
         value={user?.nickname}
         onChange={handleChangeUserData}
       />
-      <InputRow
+      {/* <InputRow
         label="Account type"
         subLabel=" — How will you use your account"
       >
@@ -162,7 +173,7 @@ const Settings: NextPageWithLayout = () => {
           name="developer"
           onChange={handleChangeUserData}
         />
-      </InputRow>
+      </InputRow> */}
       <Buttons>
         <RedButton ref={submitButton} onClick={handleSubmitProfile}>
           Save
