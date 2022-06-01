@@ -20,7 +20,7 @@ export function FilterGroup({
     border: 1px solid transparent;
   `
   const Label = styled.div`
-    color: #606060;
+    color: var(--w3itch-text3);
     font-size: 14px;
     display: flex;
     align-items: center;
@@ -36,7 +36,7 @@ export function FilterGroup({
     text-align: left;
     padding: 10px 0 10px 8px;
     &:hover {
-      color: #222;
+      color: var(--w3itch-text1);
     }
     &:focus {
       outline-color: #361275;
@@ -116,7 +116,7 @@ export function FilterGroupItem({ icon, name, href }: FilterGroupItemProps) {
     cursor: pointer;
     &:hover {
       color: white;
-      background-color: #666;
+      background-color: var(--w3itch-bg5);
     }
     & > .icon {
       flex-shrink: 0;

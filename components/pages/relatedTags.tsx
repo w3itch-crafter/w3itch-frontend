@@ -14,54 +14,76 @@ export declare interface RelatedTagsProps {
   placeholder?: string
 }
 
+const Container = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px 10px;
+  margin: 10px 20px;
+`
+const Icon = styled.span`
+  font-size: 14px;
+  color: #858585;
+  white-space: nowrap;
+  & > svg {
+    display: inline-block;
+    vertical-align: middle;
+    color: #606060;
+  }
+`
+const TagSelector = styled.div`
+  min-width: 200px;
+  max-width: 200px;
+`
+const TagsLabel = styled.div`
+  font-size: 14px;
+  color: var(--w3itch-text3);
+  white-space: nowrap;
+`
+const BrowseTopTags = styled.span``
+const AllTags = styled.a`
+  color: var(--w3itch-text5);
+`
+
 export function RelatedTags({ tags, placeholder }: RelatedTagsProps) {
-  const Container = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 7px 10px;
-    margin: 10px 20px;
-  `
-  const Icon = styled.span`
-    font-size: 14px;
-    color: #858585;
-    white-space: nowrap;
-    & > svg {
-      display: inline-block;
-      vertical-align: middle;
-      color: #606060;
-    }
-  `
-  const TagSelector = styled.div`
-    min-width: 200px;
-    max-width: 200px;
-  `
-  const TagsLabel = styled.div`
-    font-size: 14px;
-    color: #858585;
-    white-space: nowrap;
-  `
-  const BrowseTopTags = styled.span``
-  const AllTags = styled.a`
-    color: #767676;
-  `
   const selectStyle: StylesConfig<TagOption, false, GroupBase<TagOption>> = {
     control: () => ({
       display: 'flex',
       lineHeight: '16px',
       padding: '6px 8px',
       fontSize: '14px',
-      backgroundColor: 'white',
+      backgroundColor: 'var(--w3itch-bg2)',
       boxShadow: 'none',
-      color: '#222',
-      borderColor: '#cdcdcd',
+      color: 'var(--w3itch-text1)',
       width: '100%',
-      border: '1px solid #d0d0d0',
+      border: '1px solid var(--w3itch-border1)',
       borderRadius: '3px',
     }),
     input: (prev) => ({ ...prev, padding: '0', margin: '0 1px' }),
-    indicatorSeparator: (prev) => ({ ...prev, margin: '0 4px 0 0' }),
-    dropdownIndicator: (prev) => ({ ...prev, padding: '0' }),
+    indicatorSeparator: (prev) => ({
+      ...prev,
+      margin: '0 4px 0 0',
+    }),
+    dropdownIndicator: (prev) => ({
+      ...prev,
+      padding: '0',
+    }),
+    menuList: (prev) => ({
+      ...prev,
+      backgroundColor: 'var(--w3itch-bg2)',
+    }),
+    option: (styles) => ({
+      ...styles,
+      backgroundColor: 'var(--w3itch-bg2)',
+      ':active': {
+        ...styles[':active'],
+        backgroundColor: 'var(--w3itch-bg5)',
+      },
+      ':hover': {
+        ...styles[':hover'],
+        backgroundColor: 'var(--w3itch-bg5)',
+      },
+    }),
   }
   const router = useRouter()
   const { pathname } = router
@@ -71,7 +93,7 @@ export function RelatedTags({ tags, placeholder }: RelatedTagsProps) {
   if (typeof queryTags === 'string') selectedTags.add(queryTags)
   if (Array.isArray(queryTags)) queryTags.forEach((t) => selectedTags.add(t))
   const pushNewRoute = () => {
-    const query = { ...router.query, tags: [...selectedTags] }
+    const query = { ...router.query, page: '1', tags: [...selectedTags] }
     router.push({ pathname, query })
   }
   const handleSelectChange = (
@@ -138,14 +160,14 @@ declare interface TagSegmentedProps {
 }
 function TagSegmented({ tag }: TagSegmentedProps) {
   const Container = styled.div`
-    color: #606060;
+    color: var(--w3itch-text4);
     font-size: 14px;
     display: flex;
     height: 30px;
     box-sizing: border-box;
     & a {
       border: 1px solid;
-      border-color: #dadada;
+      border-color: var(--w3itch-border1);
       text-decoration: none;
       font-weight: bold;
       color: inherit;

@@ -30,7 +30,7 @@ export class Game {
   @Length(1, 50)
   @IsString()
   // doesn't allow starts or ends with _ or -
-  @Matches(/^[^-_].*[^-_]$/)
+  @Matches(/(^[^-_].*[^-_]$)|(^[^-_]$)/)
   gameName: string
 
   // @IsEnum(ProjectClassification)

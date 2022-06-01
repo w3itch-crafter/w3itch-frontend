@@ -8,6 +8,7 @@ export * from './game'
 export * from './seo'
 export * from './string'
 export * from './tags'
+export * from './theme'
 export * from './url'
 
 export function isEmptyObj(obj: Record<string, unknown>): boolean {

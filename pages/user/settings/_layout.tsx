@@ -11,52 +11,92 @@ export declare interface LayoutProps {
   children: React.ReactNode
 }
 
-export default function Layout({ children }: LayoutProps) {
-  const Container = styled.div`
-    max-width: 960px;
-    margin: 0 auto;
-  `
-  const TabColumns = styled.div`
-    display: flex;
-  `
-  const TabColumn = styled.div`
-    padding-bottom: 40px;
-    padding-top: 0;
-    width: 180px;
-    box-sizing: border-box;
-    text-align: right;
-    border-right: 1px solid #dadada;
-  `
-  const TabHeader = styled.div`
-    user-select: none;
-    font-size: 12px;
-    font-weight: bold;
-    color: #767676;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 8px 10px 8px 0;
-    border-bottom: 1px solid #e4e4e4;
-    border-top: 1px solid #e4e4e4;
-    margin-bottom: 5px;
-    background-color: #f4f4f4;
-    margin-top: 20px;
-    &:first-of-type {
-      border-top: 0;
-      margin-top: 0;
-    }
-  `
-  const ContentColumn = styled.div`
-    min-height: 300px;
-    flex: 1;
-    padding: 30px 40px 40px 40px;
-    & > h2 {
-      margin: 0 0 20px 0;
-      font-size: 20px;
-      font-weight: 900;
-      color: #434343;
-    }
-  `
+declare interface TabButtonProps {
+  href: string
+  children: React.ReactChild
+}
 
+const Container = styled.div`
+  max-width: 960px;
+  margin: 0 auto;
+`
+const TabColumns = styled.div`
+  display: flex;
+`
+const TabColumn = styled.div`
+  padding-bottom: 40px;
+  padding-top: 0;
+  width: 180px;
+  box-sizing: border-box;
+  text-align: right;
+  border-right: 1px solid var(--w3itch-border1);
+`
+const TabHeader = styled.div`
+  user-select: none;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--w3itch-text5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 10px 8px 0;
+  border-bottom: 1px solid var(--w3itch-border2);
+  border-top: 1px solid var(--w3itch-border2);
+  margin-bottom: 5px;
+  background-color: var(--w3itch-bg1);
+  margin-top: 20px;
+  &:first-of-type {
+    border-top: 0;
+    margin-top: 0;
+  }
+`
+const ContentColumn = styled.div`
+  min-height: 300px;
+  flex: 1;
+  padding: 30px 40px 40px 40px;
+  & > h2 {
+    margin: 0 0 20px 0;
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--w3itch-text2);
+  }
+`
+
+const TabBtn = styled.a`
+  margin: 0;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 16px;
+  padding: 7px 12px;
+  text-align: right;
+  line-height: 1.2;
+  border: 0;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  border-color: var(--w3itch-bg2);
+  text-decoration: none;
+  background-color: transparent;
+  color: var(--w3itch-text4);
+  cursor: pointer;
+  &.selected {
+    position: relative;
+    color: var(--w3itch-text1);
+    font-weight: bold;
+    background: rgba(64, 67, 78, 0.1);
+    text-decoration: none;
+    &::before {
+      content: ' ';
+      position: absolute;
+      top: 0;
+      right: -1px;
+      bottom: 0;
+      width: 2px;
+      background: #ff2449;
+    }
+  }
+`
+
+export default function Layout({ children }: LayoutProps) {
   return (
     <Fragment>
       <Head>
@@ -102,45 +142,7 @@ export default function Layout({ children }: LayoutProps) {
   )
 }
 
-declare interface TabButtonProps {
-  href: string
-  children: React.ReactChild
-}
 function TabButton({ href, children }: TabButtonProps) {
-  const TabBtn = styled.a`
-    margin: 0;
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    font-size: 16px;
-    padding: 7px 12px;
-    text-align: right;
-    line-height: 1.2;
-    border: 0;
-    border-top: 1px solid;
-    border-bottom: 1px solid;
-    border-color: white;
-    text-decoration: none;
-    background-color: transparent;
-    color: #606060;
-    cursor: pointer;
-    &.selected {
-      position: relative;
-      color: #222;
-      font-weight: bold;
-      background: rgba(64, 67, 78, 0.1);
-      text-decoration: none;
-      &::before {
-        content: ' ';
-        position: absolute;
-        top: 0;
-        right: -1px;
-        bottom: 0;
-        width: 2px;
-        background: #ff2449;
-      }
-    }
-  `
   const router = useRouter()
   const isHref = router.pathname === href
 

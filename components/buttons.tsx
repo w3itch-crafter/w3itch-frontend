@@ -7,9 +7,9 @@ export const RedButton = styled.button`
   text-decoration: none;
   padding: 0 10px;
   font-size: 14px;
-  background-color: var(--itchio_button_color, #ff2449);
-  color: var(--itchio_button_fg_color, white);
-  text-shadow: 0 1px 0 var(--itchio_button_shadow_color, #c3223e);
+  background-color: var(--w3itch-primary1);
+  color: var(--w3itch-btn-color);
+  text-shadow: 0 1px 0 var(--w3itch-primary1);
   cursor: pointer;
   border-radius: 3px;
   border: 1px solid rgba(0, 0, 0, 0.1);

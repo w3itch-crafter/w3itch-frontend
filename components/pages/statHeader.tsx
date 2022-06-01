@@ -9,13 +9,13 @@ export declare interface StatHeaderProps {
 export function StatHeader({ children, title }: StatHeaderProps) {
   const Container = styled.div`
     border-bottom: 1px solid;
-    border-color: #dadada;
+    border-color: var(--w3itch-border1);
     min-height: 80px;
     position: relative;
     display: flex;
     align-items: center;
     gap: 20px;
-    padding: 0 var(--itchio-gutter_width, 40px);
+    padding: 0 var(--w3itch-gutter_width, 40px);
   `
   const TextContainer = styled.div`
     display: flex;
@@ -26,7 +26,7 @@ export function StatHeader({ children, title }: StatHeaderProps) {
   const Text = styled.h2`
     font-size: 20px;
     font-weight: 900;
-    color: #434343;
+    color: var(--w3itch-text2);
     margin: 0;
   `
   const StatsContainer = styled.div`

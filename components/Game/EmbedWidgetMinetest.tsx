@@ -18,7 +18,7 @@ import { balanceDecimal, getMinetestUsername, openWindow } from 'utils'
 const Wrapper = styled.div<{ cover: string }>`
   max-width: 640px;
   height: 480px;
-  background: #e5e5e5;
+  background: var(--w3itch-bg4);
   margin: 0 auto;
   position: relative;
   background-position: 50% 50%;
