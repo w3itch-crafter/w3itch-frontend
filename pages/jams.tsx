@@ -84,8 +84,8 @@ const Jams: NextPage = () => {
     position: relative;
     cursor: move;
     min-height: 960px;
-    border-bottom: 1px solid #dadada;
-    border-right: 1px solid #dadada;
+    border-bottom: 1px solid var(--w3itch_dashboard_header_border_color);
+    border-right: 1px solid var(--w3itch_dashboard_header_border_color);
   `
   const CalendarRows = styled.div`
     position: absolute;
@@ -108,7 +108,7 @@ const Jams: NextPage = () => {
   `
   const DayMarker = styled.div`
     position: absolute;
-    border-left: 1px solid #dadada;
+    border-left: 1px solid var(--w3itch_dashboard_header_border_color);
     width: 120px;
     top: 40px;
     bottom: 0;
@@ -122,8 +122,8 @@ const Jams: NextPage = () => {
     line-height: 40px;
     padding-left: 20px;
     top: 0;
-    border-bottom: 1px solid #dadada;
-    color: #606060;
+    border-bottom: 1px solid var(--w3itch_dashboard_header_border_color);
+    color: var(--w3itch_dashboard_gameList_links_link_color);
     font-weight: bold;
   `
   const DayName = styled.div`
@@ -134,8 +134,8 @@ const Jams: NextPage = () => {
     line-height: 40px;
     padding-left: 20px;
     bottom: 0;
-    border-top: 1px solid #dadada;
-    color: #606060;
+    border-top: 1px solid var(--w3itch_dashboard_header_border_color);
+    color: var(--w3itch_dashboard_gameList_links_link_color);
     text-transform: uppercase;
   `
 
@@ -150,15 +150,15 @@ const Jams: NextPage = () => {
     bottom: 0;
     height: 40px;
     line-height: 40px;
-    border-top: 1px solid #dadada;
-    border-bottom: 1px solid #dadada;
-    border-left: 1px solid #dadada;
-    background: #f4f4f4;
+    border-top: 1px solid var(--w3itch_dashboard_header_border_color);
+    border-bottom: 1px solid var(--w3itch_dashboard_header_border_color);
+    border-left: 1px solid var(--w3itch_dashboard_header_border_color);
+    background: var(--w3itch_dashboard_gameList_links_bg_color);
     font-weight: 900;
     font-size: 14px;
 
     &:last-child {
-      border-right: 1px solid #dadada;
+      border-right: 1px solid var(--w3itch_dashboard_header_border_color);
     }
   `
 
@@ -180,8 +180,8 @@ const Jams: NextPage = () => {
 
   const ElapsedTime = styled.div`
     position: absolute;
-    background: #f4f4f4;
-    border-right: 6px solid #dadada;
+    background: var(--w3itch_dashboard_gameList_links_bg_color);
+    border-right: 6px solid var(--w3itch_dashboard_header_border_color);
     top: 0;
     bottom: 0;
     left: 0;
