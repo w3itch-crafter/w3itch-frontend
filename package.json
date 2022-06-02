@@ -1,6 +1,6 @@
 {
   "name": "w3itch-frontend",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "scripts": {
     "dev": "npm-run-all check-env dev:next",
