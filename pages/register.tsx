@@ -56,7 +56,7 @@ const Register: NextPage = () => {
     h5 {
       margin-top: 0;
       font-weight: 900;
-      color: #434343;
+      color: var(--w3itch-text2);
     }
 
     p {
@@ -75,7 +75,7 @@ const Register: NextPage = () => {
     margin-bottom: 20px;
   `
   const ConnectLabel = styled.div`
-    color: #434343;
+    color: var(--w3itch-text2);
     font-weight: bold;
   `
   const ConnectMessage = styled.div`
@@ -97,7 +97,7 @@ const Register: NextPage = () => {
 
   //   & > p {
   //     margin: 0;
-  //     color: #606060;
+  //     color: var(--w3itch-text2);
   //     line-height: 1.5;
   //   }
   // `
@@ -105,13 +105,13 @@ const Register: NextPage = () => {
     display: flex;
     align-items: center;
     margin-top: 20px;
-    color: #858585;
+    color: var(--w3itch-text3);
   `
   const LoginMessage = styled.span`
     margin-left: 10px;
   `
   const Login = styled.a`
-    color: #434343;
+    color: var(--w3itch-text2);
   `
   const StyledBackToSelect = styled(BackToSelect)`
     margin-bottom: 20px;

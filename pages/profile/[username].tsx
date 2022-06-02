@@ -32,7 +32,7 @@ const UserProfile: NextPage<UserProfileProps> = ({ user, games }) => {
     height: 50px;
     display: inline-block;
     vertical-align: top;
-    background-color: #f4f4f4;
+    background-color: var(--w3itch-bg1);
     background-size: cover;
     box-shadow: inset 0 0 0 1px rgb(0 0 0 / 10%);
     border-radius: 2px;
@@ -106,7 +106,7 @@ export const getServerSideProps: GetServerSideProps<UserProfileProps> = async (
   const gamesData: GameEntity[] = res?.data || []
   const games: GameInfo[] = gamesData.map((g) => ({
     ...g,
-    link: urlGame(g.id, g.kind),
+    link: urlGame(g.id),
   }))
   return {
     props: {

@@ -23,12 +23,12 @@ const Container = styled.div`
 `
 const Icon = styled.span`
   font-size: 14px;
-  color: #858585;
+  color: var(--w3itch-text3);
   white-space: nowrap;
   & > svg {
     display: inline-block;
     vertical-align: middle;
-    color: #606060;
+    color: var(--w3itch-text4);
   }
 `
 const TagSelector = styled.div`

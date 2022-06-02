@@ -97,7 +97,7 @@ const HasGameProject: FC<HasGameProjectProps> = ({
         <div className={styles.game_list}>
           {items.map((item) => (
             <div className={styles.game_row} key={item.id}>
-              <Link href={urlGame(item.id, item.kind)}>
+              <Link href={urlGame(item.id)}>
                 <a className={styles.cover_link}>
                   <Image
                     width={105}
@@ -110,7 +110,7 @@ const HasGameProject: FC<HasGameProjectProps> = ({
               </Link>
               <div className={styles.game_details}>
                 <div dir="auto" className={styles.game_title}>
-                  <Link href={urlGame(item.id, item.kind)}>
+                  <Link href={urlGame(item.id)}>
                     <a className={styles.game_link}>{item.title}</a>
                   </Link>
                 </div>
@@ -126,14 +126,14 @@ const HasGameProject: FC<HasGameProjectProps> = ({
                   <Stack direction="row" spacing={1}>
                     <div className={styles.publish_status}>
                       <span className={`${styles.tag_bubble} ${styles.grey}`}>
-                        <Link href={urlGame(item.id, item.kind)}>
+                        <Link href={urlGame(item.id)}>
                           <a>{handleKind(item)}</a>
                         </Link>
                       </span>
                     </div>
                     <div className={styles.publish_status}>
                       <span className={`${styles.tag_bubble} ${styles.green}`}>
-                        <Link href={urlGame(item.id, item.kind)}>
+                        <Link href={urlGame(item.id)}>
                           <a>Published</a>
                         </Link>
                       </span>

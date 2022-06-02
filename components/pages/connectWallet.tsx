@@ -62,7 +62,7 @@ function ConnectButton({ icon, name, desc, onClick }: ConnectButtonProps) {
     display: flex;
     flex-direction: column;
     border: none;
-    background-color: #f4f4f4;
+    background-color: var(--w3itch-bg1);
     align-items: center;
     width: 100%;
     transition: all 0.1s ease;
@@ -72,7 +72,7 @@ function ConnectButton({ icon, name, desc, onClick }: ConnectButtonProps) {
       margin-bottom: 0;
     }
     &:hover {
-      background-color: #f0f0f0;
+      background-color: var(--w3itch-bg3);
     }
   `
   const WalletInfo = styled.div`
@@ -83,13 +83,13 @@ function ConnectButton({ icon, name, desc, onClick }: ConnectButtonProps) {
   const WalletName = styled.div`
     font-size: 20px;
     font-weight: 900;
-    color: #434343;
+    color: var(--w3itch-text2);
     margin: 0;
     margin-left: 20px;
   `
   const WalletDesc = styled.div`
     font-size: 16px;
-    color: #858585;
+    color: var(--w3itch-text3);
   `
 
   return (

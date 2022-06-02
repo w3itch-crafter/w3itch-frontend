@@ -36,7 +36,7 @@ const Login: NextPage = () => {
     gap: 8px;
     margin-top: 20px;
     & a {
-      color: #606060;
+      color: var(--w3itch-text4);
     }
   `
   const StyledBackToSelect = styled(BackToSelect)`

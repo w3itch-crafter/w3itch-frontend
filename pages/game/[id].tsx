@@ -1,10 +1,12 @@
 import { fetchGameRatingsCount, gameProjectByID } from 'api'
 import EmbedWidget from 'components/Game/EmbedWidget'
+import EmbedWidgetMinetest from 'components/Game/EmbedWidgetMinetest'
 import GameLayout from 'components/Game/GameLayout'
 import { GetServerSideProps, NextPage } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useState } from 'react'
 import { GameEntity, TokenDetail } from 'types'
+import { GameEngine } from 'types/enum'
 import { BackendError } from 'utils'
 
 declare interface GameProps {
@@ -31,11 +33,21 @@ const GameID: NextPage<GameProps> = ({
       setGameProject={setGameProject}
     >
       {gameProject && (
-        <EmbedWidget
-          gameProject={gameProject}
-          // @TODO Temporarily support the first Token
-          pricesToken={pricesTokens[0]}
-        />
+        <>
+          {gameProject.kind === GameEngine.RM2K3E ? (
+            <EmbedWidget
+              gameProject={gameProject}
+              // @TODO Temporarily support the first Token
+              pricesToken={pricesTokens[0]}
+            />
+          ) : gameProject.kind === GameEngine.MINETEST ? (
+            <EmbedWidgetMinetest
+              gameProject={gameProject}
+              // @TODO Temporarily support the first Token
+              pricesToken={pricesTokens[0]}
+            />
+          ) : null}
+        </>
       )}
     </GameLayout>
   )

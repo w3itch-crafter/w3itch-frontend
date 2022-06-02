@@ -9,7 +9,7 @@ export function Footer() {
     padding: 0 20px;
     font-size: 14px;
     text-align: center;
-    color: #858585;
+    color: var(--w3itch-text3);
 
     ${(p) =>
       p.gameDetail &&

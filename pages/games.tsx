@@ -318,7 +318,7 @@ function GameFilter() {
   `
   const ClearFilters = styled.span`
     margin-left: 8px;
-    color: #606060;
+    color: var(--w3itch-text4);
   `
   const ClearLink = styled.a`
     color: inherit;
@@ -400,7 +400,7 @@ export const getServerSideProps: GetServerSideProps<GamesProps> = async (
   const { data, meta } = await getGames({ ...query, limit: 20, order: 'DESC' })
   const games: GameInfo[] = data.map((g) => ({
     ...g,
-    link: urlGame(g.id, g.kind),
+    link: urlGame(g.id),
   }))
   return {
     props: {

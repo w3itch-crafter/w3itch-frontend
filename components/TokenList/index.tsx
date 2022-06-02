@@ -21,7 +21,7 @@ const NoItem = styled.div`
   text-align: center;
   margin: 20px 0;
   font-size: 14px;
-  color: #686868;
+  color: var(--w3itch-text4);
 `
 
 export interface GameRatingProps {

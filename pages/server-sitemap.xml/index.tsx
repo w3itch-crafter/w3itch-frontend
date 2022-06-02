@@ -15,16 +15,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     list.forEach((game) => {
       gameAndUsernameUrls.push(
-        `${process.env.NEXT_PUBLIC_URL + urlGame(game.id, game.kind)}`
+        `${process.env.NEXT_PUBLIC_URL + urlGame(game.id)}`
       )
       gameAndUsernameUrls.push(userHostUrl(game?.username.toLowerCase()))
 
       // i18n route
       locales.forEach((locale) => {
         gameAndUsernameUrls.push(
-          `${process.env.NEXT_PUBLIC_URL}/${
-            locale + urlGame(game.id, game.kind)
-          }`
+          `${process.env.NEXT_PUBLIC_URL}/${locale + urlGame(game.id)}`
         )
       })
     })

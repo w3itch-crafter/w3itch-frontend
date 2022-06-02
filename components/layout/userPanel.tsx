@@ -32,7 +32,7 @@ export function UserPanel() {
 
     &:hover {
       background-color: var(--w3itch-bg3);
-      color: #ff2449;
+      color: var(--w3itch-primary2);
     }
   `
   const MyProfile = styled.a`
@@ -73,7 +73,7 @@ export function UserPanel() {
 
     &:hover {
       background-color: var(--w3itch-bg3);
-      color: #da2c49;
+      color: var(--w3itch-primary2);
     }
   `
 

@@ -91,7 +91,7 @@ const TabBtn = styled.a`
       right: -1px;
       bottom: 0;
       width: 2px;
-      background: #ff2449;
+      background: var(--w3itch-primary1);
     }
   }
 `

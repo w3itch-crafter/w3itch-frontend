@@ -170,7 +170,7 @@ const Purchase: FC<PurchaseProps> = ({ pricesTokens, refresh }) => {
                   onClick={refresh}
                   sx={{
                     marginLeft: 1,
-                    color: '#989898',
+                    color: 'var(--w3itch-text3)',
                     textDecoration: 'underline',
                     cursor: 'pointer',
                   }}
@@ -181,7 +181,7 @@ const Purchase: FC<PurchaseProps> = ({ pricesTokens, refresh }) => {
               <Typography
                 variant="body2"
                 sx={{
-                  color: '#6a6a6a',
+                  color: 'var(--w3itch-text4)',
                 }}
               >
                 To play this game, you must hold at least{' '}

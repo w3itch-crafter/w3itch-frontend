@@ -1,6 +1,7 @@
 :root {
   /* primary colors */
   --w3itch-primary1: #ff2449;
+  --w3itch-primary2: #da2c49;
 
   /* backgrounds */
   --w3itch-bg1: #f4f4f4;
@@ -27,7 +28,8 @@
 
 [data-theme='dark'] {
   /* primary colors */
-  --w3itch-primary1: #ff0707;
+  --w3itch-primary1: #ff2449;
+  --w3itch-primary2: #da2c49;
 
   /* backgrounds */
   --w3itch-bg1: #1b1b1b;
