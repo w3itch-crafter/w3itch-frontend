@@ -51,6 +51,7 @@ const defaultUser: UserEntity = {
   avatar: '',
   createdAt: '',
   updatedAt: '',
+  accounts: [],
 }
 
 const Settings: NextPageWithLayout = () => {
