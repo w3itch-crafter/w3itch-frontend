@@ -20,6 +20,7 @@ const UserProfile: NextPage<UserProfileProps> = ({ user, games }) => {
   `
   const Padded = styled.div`
     padding: 30px var(--w3itch-gutter_width, 40px);
+
     & h3 {
       margin-top: 0;
       font-size: 16px;
@@ -97,6 +98,7 @@ export const getServerSideProps: GetServerSideProps<UserProfileProps> = async (
     nickname: '',
     bio: '',
     avatar: 'https://i.loli.net/2021/05/13/CiEFPgWJzuk5prZ.png',
+    accounts: [],
   }
   const res = await getGamesMine({
     username: username as string,

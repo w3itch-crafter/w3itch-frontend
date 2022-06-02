@@ -166,6 +166,7 @@ export declare type UserEntity = BaseEntity & {
   nickname: string
   bio: string
   avatar: string
+  accounts: AccountEntity[]
 }
 
 export declare type GameInfo = GameEntity & {
