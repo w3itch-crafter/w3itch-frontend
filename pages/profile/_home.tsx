@@ -123,7 +123,7 @@ function LinkGroup({ name, icon, href }: LinkGroupProps) {
     }
   `
   const StyledLink = styled.a`
-    color: #dd4a4a;
+    color: var(--w3itch-primary2);
   `
 
   return (
@@ -141,7 +141,7 @@ declare interface LayoutProps extends ProfileHomeProps {
 }
 function Layout({ children, wildcard }: LayoutProps) {
   const Footer = styled.footer`
-    border-top: 1px solid #dadada;
+    border-top: 1px solid var(--w3itch-border1);
     font-size: 12px;
   `
   const FooterInner = styled.div`
@@ -150,7 +150,7 @@ function Layout({ children, wildcard }: LayoutProps) {
     margin: 0 auto;
   `
   const FooterNav = styled.a`
-    color: #dd4a4a;
+    color: var(--w3itch-primary2);
     &:after {
       content: '·';
       display: inline-block;

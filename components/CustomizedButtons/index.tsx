@@ -4,11 +4,11 @@ import { styled } from '@mui/material/styles'
 
 export const PrimaryButton = styled(Button)<ButtonProps>(() => ({
   color: '#fff',
-  backgroundColor: '#ff0707',
-  textShadow: '0 1px 0 #ff0707',
+  backgroundColor: 'var(--w3itch-primary1)',
+  textShadow: '0 1px 0 var(--w3itch-primary1)',
   boxShadow: 'none',
   '&:hover': {
-    backgroundColor: '#ff0707',
+    backgroundColor: 'var(--w3itch-primary1)',
     boxShadow: 'none',
   },
 }))
@@ -16,11 +16,11 @@ export const PrimaryButton = styled(Button)<ButtonProps>(() => ({
 export const PrimaryLoadingButton = styled(LoadingButton)<LoadingButtonProps>(
   () => ({
     color: '#fff',
-    backgroundColor: '#ff0707',
-    textShadow: '0 1px 0 #ff0707',
+    backgroundColor: 'var(--w3itch-primary1)',
+    textShadow: '0 1px 0 var(--w3itch-primary1)',
     boxShadow: 'none',
     '&:hover': {
-      backgroundColor: '#ff0707',
+      backgroundColor: 'var(--w3itch-primary1)',
       boxShadow: 'none',
     },
   })
