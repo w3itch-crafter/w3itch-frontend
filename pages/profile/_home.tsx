@@ -67,7 +67,7 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
     const gamesData: GameEntity[] = res?.data || []
     const games: GameInfo[] = gamesData.map((g) => ({
       ...g,
-      link: urlGame(g.id, g.kind),
+      link: urlGame(g.id),
     }))
     setGames(games)
   }, [wildcard])

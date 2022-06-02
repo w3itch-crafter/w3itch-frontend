@@ -400,7 +400,7 @@ export const getServerSideProps: GetServerSideProps<GamesProps> = async (
   const { data, meta } = await getGames({ ...query, limit: 20, order: 'DESC' })
   const games: GameInfo[] = data.map((g) => ({
     ...g,
-    link: urlGame(g.id, g.kind),
+    link: urlGame(g.id),
   }))
   return {
     props: {
