@@ -3,7 +3,7 @@
     padding: 15px 40px;
     font-size: 16px;
     background: #fff0f0;
-    color: #da2c49;
+    color: var(----w3itch-primary2);
     &.itchio_tip {
       display: flex;
       align-items: center;
@@ -69,7 +69,7 @@
     .stat_value {
       font-weight: bold;
       font-size: 22px;
-      color: #434343;
+      color: var(--w3itch-text2);
     }
     .stat_label {
       color: #606060;

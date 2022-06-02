@@ -59,7 +59,7 @@ const ButtonRemoveImage = styled.button`
   font-family: inherit;
   margin-bottom: 0;
   margin-top: 5px;
-  color: #434343;
+  color: var(--w3itch-text2);
   font-size: 14px;
 `
 

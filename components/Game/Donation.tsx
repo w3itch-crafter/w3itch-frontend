@@ -17,7 +17,7 @@ interface PurchaseProps {
 
 const ExplorerLink = styled.a`
   font-size: 14px;
-  color: #7e7e7e;
+  color: var(--w3itch-text3);
 `
 
 const Donation: FC<PurchaseProps> = ({ donationAddress }) => {

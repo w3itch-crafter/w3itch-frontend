@@ -43,7 +43,7 @@ export function FilterGroup({
     }
   `
   const Arrow = styled.span`
-    color: #606060;
+    color: var(--w3itch-text4);
     width: 15px;
     text-align: center;
     margin-right: 10px;

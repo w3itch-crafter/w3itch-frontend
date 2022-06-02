@@ -19,11 +19,11 @@ const GameInfo = styled.span`
   font-size: 16px;
   storage {
     font-weight: 700;
-    color: #333;
+    color: var(--w3itch-text1);
   }
   span {
     margin-left: 10px;
-    color: #838383;
+    color: var(--w3itch-text3);
   }
 `
 

@@ -21,7 +21,7 @@ const OAuth: NextPage<OAuthProps> = ({ success, code }: OAuthProps) => {
   const CardFooter = styled.div`
     border-top: 1px solid #dadada;
     padding: 10px var(--w3itch-gutter_width, 40px);
-    color: #606060;
+    color: var(--w3itch-text4);
     a {
       color: inherit;
     }

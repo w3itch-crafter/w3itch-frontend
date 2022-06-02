@@ -318,7 +318,7 @@ function GameFilter() {
   `
   const ClearFilters = styled.span`
     margin-left: 8px;
-    color: #606060;
+    color: var(--w3itch-text4);
   `
   const ClearLink = styled.a`
     color: inherit;

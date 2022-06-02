@@ -40,7 +40,7 @@ const UsernameRow = styled.div`
 // `
 const Buttons = styled.div`
   margin-top: 20px;
-  color: #858585;
+  color: var(--w3itch-text3);
 `
 
 const defaultUser: UserEntity = {

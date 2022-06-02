@@ -154,7 +154,7 @@ const GameRating: FC<GameRatingProps> = ({
               variant="text"
               onClick={handleDeleteRating}
               sx={{
-                color: '#434343',
+                color: 'var(--w3itch-text2)',
                 fontSize: '14px',
                 textDecoration: 'underline',
                 textTransform: 'capitalize',

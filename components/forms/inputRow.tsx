@@ -22,12 +22,12 @@ const Container = styled.div<Pick<InputRowProps, 'center'>>`
   ${(p) => p.center && `text-align: center`};
 `
 const Label = styled.div`
-  color: #434343;
+  color: var(--w3itch-text2);
   font-weight: bold;
 `
 const Sub = styled.span`
   font-weight: normal;
-  color: #606060;
+  color: var(--w3itch-text4);
 `
 const Validated = styled.div`
   position: relative;
@@ -35,7 +35,7 @@ const Validated = styled.div`
 const ErrorMessage = styled.span<Pick<InputRowProps, 'invalid' | 'disabled'>>`
   transition: all 0.2s ease;
   opacity: ${(p) => (p.invalid && !p.disabled ? 1 : 0)};
-  color: #d14343;
+  color: var(--w3itch-primary1);
 `
 const Input = styled.input<
   Pick<InputRowProps, 'invalid' | 'center' | 'disabled' | 'preview'>
@@ -47,17 +47,20 @@ const Input = styled.input<
   position: relative;
   padding: 8px;
   border: 2px solid;
-  border-color: #cdcdcd;
-  color: #222;
-  background-color: white;
+  border-color: var(--w3itch-border1);
+  color: var(--w3itch-text1);
+  background-color: var(--w3itch-bg2);
   border-radius: 2px;
   font-family: inherit;
   margin: 6px 0;
   &:disabled {
-    background-color: #f4f4f4;
+    background-color: var(--w3itch-bg1);
     opacity: 0.5;
   }
-  ${(p) => p.invalid && !p.disabled && `border-color: #D14343; color: #D14343;`}
+  ${(p) =>
+    p.invalid &&
+    !p.disabled &&
+    `border-color: var(--w3itch-primary1); color: var(--w3itch-primary1);`}
   ${(p) => p.center && `text-align: center;`}
     ${(p) => p.preview && `border: none; font-size: 14px;`}
 `

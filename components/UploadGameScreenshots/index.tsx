@@ -19,7 +19,7 @@ const WrapperItem = styled.section`
   height: auto;
   border: 1px solid;
   border-color: #dadada;
-  background-color: #f4f4f4;
+  background-color: var(--w3itch-bg1);
   margin: 10px 0;
   overflow: hidden;
   display: grid;
