@@ -26,14 +26,18 @@ type Event = {
   description: string
   start: Date
   end: Date
-  link: string | null
+  link: string
   uid: string
 }
 
 const Jams: NextPage = () => {
+  const CalendarWrapper = styled.section`
+    background-color: var(--w3itch-bg2);
+  `
   const CalendarHeader = styled.h3`
     display: flex;
-    margin: 20px 40px;
+    padding-top: 20px;
+    margin: 0 40px 20px;
   `
   const Filter = styled.div`
     margin: 0 40px 20px;
@@ -240,7 +244,7 @@ const Jams: NextPage = () => {
     )
 
   return (
-    <section>
+    <CalendarWrapper>
       <CalendarHeader>
         <CalendarMonth style={{ marginRight: 10 }} />
         Calendar
@@ -379,7 +383,7 @@ const Jams: NextPage = () => {
           </CalendarScrolling>
         </CalendarWidget>
       </FilteredCalendar>
-    </section>
+    </CalendarWrapper>
   )
 }
 

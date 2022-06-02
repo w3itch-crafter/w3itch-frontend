@@ -35,6 +35,9 @@ class Request {
     error: AxiosError<BackendErrorResponse>
   ): Promise<AxiosResponse> {
     const { response } = error
+    if (!response) {
+      throw error
+    }
     if (response?.status === 401 && !this.isRetryRequest) {
       this.isRetryRequest = true
       return this.refreshToken().then(() => {
