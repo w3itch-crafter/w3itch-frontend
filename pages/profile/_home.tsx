@@ -15,12 +15,34 @@ declare interface ProfileHomeProps {
   wildcard: string | null
 }
 
+const getProfileURL = (platform: string, username: string) => {
+  let x
+  switch (platform) {
+    case 'twitter':
+      x = `https://twitter.com/${username}`
+      break
+    case 'discord':
+      x = `https://discord.com/users/@${username}`
+      break
+    case 'github':
+      x = `https://github.com/${username}`
+      break
+    case 'metamask':
+      x = `https://etherscan.io/address/${username}`
+      break
+    default:
+      throw new Error(`Unknown platform: ${platform}`)
+  }
+  return x
+}
+
 const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
   const Container = styled.div`
     max-width: 1000px;
     margin: 0 auto;
     margin-bottom: 40px;
     padding: 0 20px;
+
     & h1 {
       font-size: 48px;
       margin: 40px 0 5px 0;
@@ -89,6 +111,17 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
           <h1>{userInfoHeader}</h1>
           <ProfileColumn>
             <LinkGroup href={profileUrl} name={userInfoHeader} icon="globe" />
+            {user?.accounts && user?.accounts.length > 0 && (
+              <ul>
+                {user.accounts?.map((x) => (
+                  <li key={x.id}>
+                    <a rel="me" href={getProfileURL(x.platform, x.accountId)}>
+                      {x.platform}: @{x.accountId}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </ProfileColumn>
           <GameColumn>
             {games.map((game, index) => (
@@ -112,10 +145,12 @@ declare interface LinkGroupProps {
   icon: string
   href: string
 }
+
 function LinkGroup({ name, icon, href }: LinkGroupProps) {
   const Container = styled.div`
     display: inline-block;
     margin-right: 12px;
+
     & .icon {
       vertical-align: -2px;
       margin-right: 5px;
@@ -139,6 +174,7 @@ function LinkGroup({ name, icon, href }: LinkGroupProps) {
 declare interface LayoutProps extends ProfileHomeProps {
   children: React.ReactNode
 }
+
 function Layout({ children, wildcard }: LayoutProps) {
   const Footer = styled.footer`
     border-top: 1px solid var(--w3itch-border1);
@@ -151,11 +187,13 @@ function Layout({ children, wildcard }: LayoutProps) {
   `
   const FooterNav = styled.a`
     color: var(--w3itch-primary2);
+
     &:after {
       content: '·';
       display: inline-block;
       margin: 0 8px;
     }
+
     &:last-of-type::after {
       content: '';
     }
