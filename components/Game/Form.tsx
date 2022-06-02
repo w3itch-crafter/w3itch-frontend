@@ -71,6 +71,7 @@ import {
   parseFilename,
   parseUrl,
   processMessage,
+  urlGame,
 } from 'utils'
 import { Game } from 'utils/validator'
 
@@ -440,7 +441,7 @@ const GameForm: FC<GameFormProps> = ({
             },
             variant: 'success',
           })
-          router.push(`/game/${id}`)
+          router.push(urlGame(id as string))
         } else {
           console.error('updateGame', updateGameResult)
           throw new Error('updateGame error')

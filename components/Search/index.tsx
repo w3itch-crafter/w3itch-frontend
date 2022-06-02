@@ -4,6 +4,7 @@ import { autocomplete } from '@algolia/autocomplete-js'
 import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions'
 import { searchClient } from 'constants/index'
 import { useEffect, useRef } from 'react'
+import { urlGame } from 'utils'
 
 const querySuggestionsPlugin = createQuerySuggestionsPlugin({
   searchClient,
@@ -18,7 +19,7 @@ const querySuggestionsPlugin = createQuerySuggestionsPlugin({
     return {
       ...source,
       getItemUrl({ item }) {
-        return `/game/${item.id}`
+        return urlGame(item.id as unknown as string)
       },
       templates: {
         ...source.templates,
@@ -26,7 +27,7 @@ const querySuggestionsPlugin = createQuerySuggestionsPlugin({
           const { item, html, components } = params
           return html`<a
             class="custom-aa-ItemLink"
-            href="/game/${item.id}"
+            href="${urlGame(item.id as unknown as string)}"
             target="_blank"
           >
             <div class="InterfaceDemoHit aa-ItemWrapper">
