@@ -8,11 +8,10 @@ export enum ProjectClassification {
 }
 
 export enum GameEngine {
-  RM2K3E = 'rm2k3e',
-  default = 'default',
-  // @TODO This field is not currently supported in the background
+  default = 'auto',  
+  RM2K3E = 'rm2k3e',  
   MINETEST = 'mt',
-  Autodetection = 'autodetection',
+  DOWNLOADABLE = 'downloadable',
 }
 
 export enum PaymentMode {
