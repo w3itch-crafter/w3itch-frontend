@@ -29,7 +29,7 @@ const GameCreate: NextPage = () => {
     paymentMode: PaymentMode.DISABLE_PAYMENTS,
     community: Community.DISABLED,
     genre: Genre.ROLE_PLAYING,
-    kind: GameEngine.Autodetection,
+    kind: GameEngine.auto,
     charset: GameFileCharset.UTF8,
     tags: [],
     appStoreLinks: [],
