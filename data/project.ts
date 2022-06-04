@@ -512,6 +512,11 @@ export const classifications = [
 
 const kindOfProjects = [
   {
+    value: 'autodetection',
+    label: 'Default',
+    description: 'Autodetection',
+  },
+  {
     value: 'default',
     label: 'Downloadable',
     description: 'You only have files to be downloaded',
