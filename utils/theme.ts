@@ -7,7 +7,7 @@ import { ThemeMode } from 'types/enum'
  * @param themeMode
  * @returns
  */
-export function getActiveThemeMUI(themeMode: ThemeMode): Theme {
+export function getMuiTheme(themeMode: ThemeMode): Theme {
   const list = {
     [ThemeMode.Light]: lightTheme,
     [ThemeMode.Dark]: darkTheme,
