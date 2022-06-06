@@ -4448,6 +4448,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/adm-zip@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@types/adm-zip@npm:0.5.0"
+  dependencies:
+    "@types/node": "*"
+  checksum: 11dd013584e47d431bdf7c115b73cd3162c1a1eca0fbb911f691c9734e904cfe4a01ac1d2d3cbf76d0a952e01fcce8a01fd6fb1c150675a29d740a7fb15325b2
+  languageName: node
+  linkType: hard
+
 "@types/aria-query@npm:^4.2.0":
   version: 4.2.2
   resolution: "@types/aria-query@npm:4.2.2"
@@ -5767,6 +5776,13 @@ __metadata:
   version: 2.0.6
   resolution: "add@npm:2.0.6"
   checksum: e2d23d40494565dfed4acd65e478570c444db5ac6c053551ed429c39ea0f2c99d83df63e7befec936df601827d2254d06a2fb6f7dcfd2022e810b25eab818b8c
+  languageName: node
+  linkType: hard
+
+"adm-zip@npm:^0.5.9":
+  version: 0.5.9
+  resolution: "adm-zip@npm:0.5.9"
+  checksum: 4909bc04119fdd5e8f8ba43826e50623e5c427cf0a939c809d4f9456a6a03c6aa0544e82088739de9ba16b7649f71b99ccbbddc7b2c38bd6143f9c4726cc7ed9
   languageName: node
   linkType: hard
 
@@ -21380,6 +21396,7 @@ __metadata:
     "@testing-library/jest-dom": ^5.16.4
     "@testing-library/react": ^12.1.5
     "@toast-ui/react-editor": ^3.1.7
+    "@types/adm-zip": ^0.5.0
     "@types/crypto-js": ^4.1.1
     "@types/enzyme": ^3.10.12
     "@types/jest": ^27.5.1
@@ -21395,6 +21412,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.27.0
     "@wojtekmaj/enzyme-adapter-react-17": ^0.6.7
     add: ^2.0.6
+    adm-zip: ^0.5.9
     ahooks: ^3.4.0
     algoliasearch: ^4.13.1
     axios: ^0.26.1
