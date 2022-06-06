@@ -8,8 +8,8 @@ import { event } from 'nextjs-google-analytics'
 import { Fragment } from 'react'
 import { NextPageWithLayout } from 'types'
 
-import { Heads } from './_head'
-import { Providers } from './_provider'
+import { Heads } from '../components/head'
+import { Providers } from '../components/provider'
 
 // Google Analytics
 export function reportWebVitals({
@@ -35,12 +35,10 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>) // Do not change this line
 
   return (
-    <Providers>
-      <Fragment>
-        <Heads />
-        {getLayout(<Component {...pageProps} />)}
-      </Fragment>
-    </Providers>
+    <Fragment>
+      <Heads />
+      <Providers>{getLayout(<Component {...pageProps} />)}</Providers>
+    </Fragment>
   )
 }
 
