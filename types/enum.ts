@@ -8,8 +8,8 @@ export enum ProjectClassification {
 }
 
 export enum GameEngine {
-  default = 'auto',  
-  RM2K3E = 'rm2k3e',  
+  default = 'auto',
+  RM2K3E = 'rm2k3e',
   MINETEST = 'mt',
   DOWNLOADABLE = 'downloadable',
 }
