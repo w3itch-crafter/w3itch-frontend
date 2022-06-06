@@ -73,6 +73,7 @@ import {
   processMessage,
   urlGame,
 } from 'utils'
+import { inferProjectType } from 'utils/inferProjectType'
 import { Game } from 'utils/validator'
 
 import FormCommunity from './FormCommunity'
@@ -310,13 +311,16 @@ const GameForm: FC<GameFormProps> = ({
         })
 
         const allImages = await handleAllImages()
-
+        const kind =
+          game.kind === GameEngine.DEFAULT && uploadGameFile
+            ? await inferProjectType(uploadGameFile)
+            : game.kind
         const gameData: Api.GameProjectDto = {
           title: trim(game.title),
           subtitle: trim(game.subtitle),
           gameName: trim(game.gameName).replaceAll(' ', '_'),
           classification: ProjectClassification.GAMES,
-          kind: game.kind,
+          kind,
           releaseStatus: ReleaseStatus.RELEASED,
           screenshots: allImages.screenshots,
           cover: allImages.cover,
@@ -378,13 +382,16 @@ const GameForm: FC<GameFormProps> = ({
         })
 
         const allImages = await handleAllImages()
-
+        const kind =
+          game.kind === GameEngine.DEFAULT && uploadGameFile
+            ? await inferProjectType(uploadGameFile)
+            : game.kind
         const gameData: Partial<Api.GameProjectDto> = {
           title: trim(game.title),
           subtitle: trim(game.subtitle),
           // The only game name is not allowed to be modified
           // gameName: trim(game.gameName).replaceAll(' ', '_'),
-          kind: game.kind,
+          kind,
           screenshots: allImages.screenshots,
           cover: allImages.cover,
           tags: game.tags,
