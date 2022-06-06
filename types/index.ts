@@ -199,6 +199,12 @@ declare global {
     readonly keyboard: Keyboard
     readonly standalone: unknown
   }
+
+  interface Window {
+    MINETEST_METAMASK: {
+      sendTransaction: (username: string, amount: string) => void
+    }
+  }
 }
 
 export type Token = {

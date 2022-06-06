@@ -7,13 +7,14 @@ import { AuthenticationContext } from 'context'
 import { utils } from 'ethers'
 import { useFullscreenCustomization } from 'hooks/useFullscreenCustomization'
 import { useHoldUnlock } from 'hooks/useHoldUnlock'
+import useMetamask from 'hooks/useMetamask'
 import { isEmpty } from 'lodash'
 import { FC, useCallback, useEffect } from 'react'
 import { useContext, useRef, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'
-import { balanceDecimal, getMinetestUsername, openWindow } from 'utils'
+import { balanceDecimal, getMinetestUsername } from 'utils'
 
 const Wrapper = styled.div<{ cover: string }>`
   max-width: 640px;
@@ -36,6 +37,7 @@ interface Props {
 }
 
 const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
+  useMetamask()
   const ref = useRef(null)
   const {
     state: { user },
@@ -61,19 +63,9 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   // handle play
   const handlePlay = useCallback(() => {
     handleUnlock(() => {
-      // @TODO Cross-domain embedding policy, temporarily use open window
-      openWindow({
-        url: gamePlayerMinetest({
-          username: getMinetestUsername(user?.username),
-          port: minetestPort,
-        }),
-        title: gameProject.gameName,
-        w: 840,
-        h: 460,
-      })
-      // setRunGameFlag(true)
+      setRunGameFlag(true)
     })
-  }, [gameProject, handleUnlock, minetestPort, user])
+  }, [setRunGameFlag, handleUnlock])
 
   const handleMinetestPort = useCallback(async () => {
     try {

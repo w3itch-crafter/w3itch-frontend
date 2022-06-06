@@ -1,3 +1,4 @@
+import styled from '@emotion/styled'
 import { Language } from '@mui/icons-material'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
@@ -10,6 +11,13 @@ import { setCookie } from 'utils'
 
 const COOKIE_NEXT_LOCALE = 'NEXT_LOCALE'
 const COOKIE_NEXT_LOCALE_EXPIRES = 365
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`
 
 const SwitchLanguage = () => {
   const router = useRouter()
@@ -53,11 +61,10 @@ const SwitchLanguage = () => {
   }, [locales])
 
   return (
-    <>
+    <Wrapper>
       <IconButton
         id="basic-button"
         onClick={handleClick}
-        size="small"
         aria-controls={open ? 'lang-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
@@ -96,7 +103,7 @@ const SwitchLanguage = () => {
           </MenuItem>
         ))}
       </Menu>
-    </>
+    </Wrapper>
   )
 }
 

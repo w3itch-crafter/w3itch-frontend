@@ -3,6 +3,17 @@
 const withPWA = require('next-pwa')
 const { i18n } = require('./next-i18next.config')
 
+const COEPHeaders = [
+  {
+    key: 'Cross-Origin-Embedder-Policy',
+    value: 'require-corp',
+  },
+  {
+    key: 'Cross-Origin-Opener-Policy',
+    value: 'same-origin',
+  },
+]
+
 const nextConfig = {
   reactStrictMode: true,
   i18n,
@@ -21,7 +32,23 @@ const nextConfig = {
   pwa: {
     dest: 'public',
     disable: process.env.NODE_ENV === 'development',
-  }
+  },
+  async headers() {
+    return [
+      {
+        source: '/game/:path*',
+        headers: COEPHeaders,
+      },
+      {
+        source: '/zh-CN/game/:path*',
+        headers: COEPHeaders,
+      },
+      {
+        source: '/minetest/:path*',
+        headers: COEPHeaders,
+      },
+    ]
+  },
 }
 
 module.exports = withPWA(nextConfig)
