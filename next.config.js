@@ -40,6 +40,10 @@ const nextConfig = {
         headers: COEPHeaders,
       },
       {
+        source: '/zh-CN/game/:path*',
+        headers: COEPHeaders,
+      },
+      {
         source: '/minetest/:path*',
         headers: COEPHeaders,
       },
