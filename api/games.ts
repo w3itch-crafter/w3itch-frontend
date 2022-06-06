@@ -103,7 +103,7 @@ export const gamePlayerMinetest = ({ username, port }: GamePlayerMinetest) => {
   query.set('name', username)
   query.set('port', String(port))
 
-  return `${process.env.NEXT_PUBLIC_API_URL}/minetest/?${query.toString()}`
+  return `${window.location.origin}/minetest/index.html/?${query.toString()}`
 }
 
 /**
