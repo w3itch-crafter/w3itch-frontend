@@ -10,19 +10,23 @@ import {
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { PrimaryButton } from 'components/CustomizedButtons'
-import { GameFormContext } from 'context/gameFormContext'
-import { FC, useContext } from 'react'
-import { Controller, FieldError, useFieldArray } from 'react-hook-form'
+import { FC } from 'react'
+import {
+  Controller,
+  FieldError,
+  useFieldArray,
+  useFormContext,
+} from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
+import { Game } from 'utils'
 
 const MAX_LINKS = 5
 
 const FormAppStoreLinks: FC = () => {
-  const contextGame = useContext(GameFormContext)
   const {
     control,
     formState: { errors },
-  } = contextGame
+  } = useFormContext<Game>()
 
   const { fields, append, remove } = useFieldArray({
     control,

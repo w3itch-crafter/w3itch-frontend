@@ -7,14 +7,14 @@ import {
   TextField,
 } from '@mui/material'
 import { getTags } from 'api'
-import { GameFormContext } from 'context/gameFormContext'
 import { trim } from 'lodash'
 import { isEmpty } from 'lodash'
-import { FC, useCallback, useContext, useEffect, useState } from 'react'
-import { Controller, FieldError } from 'react-hook-form'
+import { FC, useCallback, useEffect, useState } from 'react'
+import { Controller, FieldError, useFormContext } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
 import { Api } from 'types/Api'
 import { EditorMode } from 'types/enum'
+import { Game } from 'utils'
 
 interface Props {
   readonly editorMode: EditorMode
@@ -31,7 +31,7 @@ const FormTags: FC<Props> = ({ editorMode, changeTags }) => {
     formState: { errors },
     watch,
     getValues,
-  } = useContext(GameFormContext)
+  } = useFormContext<Game>()
 
   const watchTags = watch('tags')
 

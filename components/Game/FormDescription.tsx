@@ -6,12 +6,12 @@ import {
 } from '@mui/material'
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { EditorType } from 'components/Editor/index'
-import { GameFormContext } from 'context'
 import dynamic from 'next/dynamic'
 import React from 'react'
-import { Controller } from 'react-hook-form'
+import { Controller, useFormContext } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
 const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
+import { Game } from 'utils'
 
 interface Props {
   setRef: React.Dispatch<
@@ -25,7 +25,7 @@ const FormDescription: React.FC<Props> = (props) => {
   const {
     control,
     formState: { errors },
-  } = React.useContext(GameFormContext)
+  } = useFormContext<Game>()
 
   return (
     <Controller

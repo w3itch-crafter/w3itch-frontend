@@ -1,19 +1,18 @@
 import styled from '@emotion/styled'
 import { RedButton } from 'components/buttons'
-import { GameFormContext } from 'context/gameFormContext'
 import Image from 'next/image'
 import {
   Dispatch,
   FC,
   SetStateAction,
   useCallback,
-  useContext,
   useEffect,
   useState,
 } from 'react'
 import { FileWithPath, useDropzone } from 'react-dropzone'
+import { useFormContext } from 'react-hook-form'
 import { EditorMode } from 'types/enum'
-import { fileUrl } from 'utils'
+import { fileUrl, Game } from 'utils'
 
 const WrapperDrap = styled.section`
   border: 1px dashed;
@@ -72,7 +71,7 @@ export const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
   const [coverFile, setCoverFile] = useState<FileWithPath>()
   const [coverUrl, setCoverUrl] = useState<string>('')
 
-  const { getValues, watch } = useContext(GameFormContext)
+  const { getValues, watch } = useFormContext<Game>()
   const watchCover = watch('cover')
 
   useEffect(() => {
