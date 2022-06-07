@@ -9,7 +9,7 @@ import BigNumber from 'bignumber.js'
 import { UploadGame, UploadGameCover, UploadGameScreenshots } from 'components'
 import { PrimaryLoadingButton, TokenList } from 'components'
 import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
-import { AuthenticationContext, GameFormContext } from 'context'
+import { AuthenticationContext } from 'context'
 import { utils } from 'ethers'
 import { useAccountInfo, useTitle, useTopCenterSnackbar } from 'hooks'
 import useTokens from 'hooks/useTokens'
@@ -18,7 +18,8 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import React, { Fragment, useEffect, useState } from 'react'
-import { FieldError, SubmitHandler, useWatch } from 'react-hook-form'
+import { FieldError, SubmitHandler } from 'react-hook-form'
+import { useFormContext, useWatch } from 'react-hook-form'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
 import { GameEntity, Token } from 'types'
@@ -76,7 +77,7 @@ const GameForm: React.FC<GameFormProps> = ({
     formState: { errors },
     getValues,
     trigger,
-  } = React.useContext(GameFormContext)
+  } = useFormContext<Game>()
 
   const account = useAccountInfo('metamask')
   const showSnackbar = useTopCenterSnackbar()

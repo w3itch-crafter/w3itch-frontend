@@ -1,14 +1,14 @@
 import { FormControl, FormLabel, TextField } from '@mui/material'
-import { GameFormContext } from 'context'
 import React from 'react'
-import { Controller } from 'react-hook-form'
+import { Controller, useFormContext } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
+import { Game } from 'utils'
 
 const FormSubtitle: React.FC = () => {
   const {
     control,
     formState: { errors },
-  } = React.useContext(GameFormContext)
+  } = useFormContext<Game>()
 
   return (
     <Controller

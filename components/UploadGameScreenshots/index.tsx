@@ -1,19 +1,18 @@
 import styled from '@emotion/styled'
 import { PrimaryButton } from 'components/CustomizedButtons'
-import { GameFormContext } from 'context/gameFormContext'
 import { isEmpty } from 'lodash'
 import {
   Dispatch,
   FC,
   SetStateAction,
   useCallback,
-  useContext,
   useEffect,
   useState,
 } from 'react'
 import { FileWithPath, useDropzone } from 'react-dropzone'
+import { useFormContext } from 'react-hook-form'
 import { EditorMode } from 'types/enum'
-import { fileUrl } from 'utils'
+import { fileUrl, Game } from 'utils'
 
 const WrapperItem = styled.section`
   height: auto;
@@ -37,7 +36,7 @@ interface Props {
 export const UploadGameScreenshots: FC<Props> = ({ editorMode, setFiles }) => {
   const [screenshotsFiles, setScreenshotsFiles] = useState<FileWithPath[]>()
   const [screenshotsUrl, setScreenshotsUrl] = useState<string[]>([])
-  const { getValues, watch } = useContext(GameFormContext)
+  const { getValues, watch } = useFormContext<Game>()
 
   const watchScreenshots = watch('screenshots')
 
