@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import { Box } from '@mui/material'
+import Button from '@mui/material/Button'
 import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack'
 import { deleteGameProject, getGamesMine } from 'api'
@@ -35,7 +36,14 @@ const EmptyGameProject = () => {
     <div className={styles.blank_content}>
       <h3>Are you a developer? Upload your first game</h3>
       <Link href="/game/new">
-        <a className={stylesCommon.button}>Create new project</a>
+        <Button
+          sx={{
+            textTransform: 'none',
+          }}
+          variant="contained"
+        >
+          Create new project
+        </Button>
       </Link>
       <div className={styles.sub_links}>
         <Link href="/">
@@ -155,7 +163,14 @@ const HasGameProject: FC<HasGameProjectProps> = ({
         </div>
         <div className="buttons" style={{ marginTop: 10 }}>
           <Link href="/game/new">
-            <a className={stylesCommon.button}>Create new project</a>
+            <Button
+              sx={{
+                textTransform: 'none',
+              }}
+              variant="contained"
+            >
+              Create new project
+            </Button>
           </Link>
         </div>
         <p className={styles.social_nag}>

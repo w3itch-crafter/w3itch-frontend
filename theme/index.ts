@@ -1,7 +1,15 @@
-import { createTheme } from '@mui/material/styles'
+import { createTheme, ThemeOptions } from '@mui/material/styles'
 
 // https://mui.com/material-ui/customization/default-theme/
 // https://material.io/resources/color
+
+const defaultTheme: ThemeOptions = {
+  typography: {
+    button: {
+      textTransform: 'none',
+    },
+  },
+}
 
 export const lightTheme = createTheme({
   palette: {
@@ -12,6 +20,7 @@ export const lightTheme = createTheme({
       dark: '#c40022',
     },
   },
+  ...defaultTheme,
 })
 export const darkTheme = createTheme({
   palette: {
@@ -22,4 +31,5 @@ export const darkTheme = createTheme({
       dark: '#bf0032',
     },
   },
+  ...defaultTheme,
 })

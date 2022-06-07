@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
+import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { gameDownloadUrl } from 'api'
-import { PrimaryButton } from 'components/CustomizedButtons'
 import { useHoldUnlock } from 'hooks/useHoldUnlock'
 import { FC, useCallback } from 'react'
 import styles from 'styles/game/id.module.scss'
@@ -53,14 +53,15 @@ const Download: FC<DownloadProps> = ({ gameProject, pricesToken }) => {
     <Stack spacing={1}>
       <h2 className={styles.row_title}>Download</h2>
       <Stack direction="row" spacing={2}>
-        <PrimaryButton
+        <Button
           sx={{
             textTransform: 'capitalize',
           }}
+          variant="contained"
           onClick={handleDownload}
         >
           Download
-        </PrimaryButton>
+        </Button>
         <GameInfo>
           <strong>{gameProject.file}</strong>
           {/* <span>148 MB</span> */}

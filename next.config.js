@@ -14,6 +14,13 @@ const COEPHeaders = [
   },
 ]
 
+const CacheControlNoStoreHeaders = [
+  {
+    key: 'Cache-Control',
+    value: 'no-store',
+  },
+]
+
 const nextConfig = {
   reactStrictMode: true,
   i18n,
@@ -45,7 +52,7 @@ const nextConfig = {
       },
       {
         source: '/minetest/:path*',
-        headers: COEPHeaders,
+        headers: [...COEPHeaders, ...CacheControlNoStoreHeaders],
       },
     ]
   },

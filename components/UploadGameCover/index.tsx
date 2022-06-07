@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { RedButton } from 'components/buttons'
+import Button from '@mui/material/Button'
 import Image from 'next/image'
 import {
   Dispatch,
@@ -119,7 +119,9 @@ export const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
             </WrapperDrapContainer>
             <WrapperDrapContainer>
               <WrapperDrapContainerBackdrop>
-                <RedButton type="button">Replace Cover Image</RedButton>
+                <Button variant="contained" type="button">
+                  Replace Cover Image
+                </Button>
                 <ButtonRemoveImage
                   type="button"
                   onClick={(e) => {
@@ -138,7 +140,9 @@ export const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
             {isDragActive ? (
               <p>Drop the files here ...</p>
             ) : (
-              <RedButton type="button">Upload Cover Image</RedButton>
+              <Button variant="contained" type="button">
+                Upload Cover Image
+              </Button>
             )}
           </WrapperDrapContainer>
         )}

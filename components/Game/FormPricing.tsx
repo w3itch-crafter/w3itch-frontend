@@ -11,8 +11,8 @@ import {
   Stack,
   TextField,
 } from '@mui/material'
+import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
-import { PrimaryButton } from 'components/CustomizedButtons'
 import TokenItem from 'components/TokenList/TokenItem'
 import type { SupportedChainId } from 'constants/chains'
 import {
@@ -129,13 +129,13 @@ const FormPricing: FC<FormPricingProps> = ({
               </Select>
             )}
 
-            <PrimaryButton
+            <Button
               size="small"
               onClick={() => setTtokenListDialogOpen(true)}
               variant="contained"
             >
               Select
-            </PrimaryButton>
+            </Button>
             {!isEmpty(currentSelectToken) && (
               <TokenItem
                 token={currentSelectToken}
