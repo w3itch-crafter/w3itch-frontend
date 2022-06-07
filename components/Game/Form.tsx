@@ -48,7 +48,7 @@ import { GameFormContext } from 'context/gameFormContext'
 import { classifications, releaseStatus } from 'data'
 import { utils } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
-import { useAccountInfo, useTitle } from 'hooks'
+import { useAccountInfo, useTitle, useTopCenterSnackbar } from 'hooks'
 import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
@@ -117,7 +117,8 @@ const GameForm: FC<GameFormProps> = ({
   } = useContext(GameFormContext)
 
   const account = useAccountInfo('metamask')
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+  const showSnackbar = useTopCenterSnackbar()
+  const { closeSnackbar } = useSnackbar()
 
   const [uploadGameFile, setUploadGameFile] = useState<File>()
   const [coverFileFile, setCoverFileFile] = useState<File>()
@@ -195,85 +196,33 @@ const GameForm: FC<GameFormProps> = ({
   const handleGame = async (game: Game) => {
     // 先支持 编辑
     if (editorMode === EditorMode.CREATE && !uploadGameFile) {
-      enqueueSnackbar('Please upload game files', {
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'center',
-        },
-        variant: 'warning',
-      })
-      return
+      return showSnackbar('Please upload game files', 'warning')
     }
 
     let description = ''
     if (editorRef) {
       description = editorRef.current?.getInstance().getMarkdown()
     }
-
     if (!description) {
-      enqueueSnackbar('description cannot be empty', {
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'center',
-        },
-        variant: 'warning',
-      })
-      return
+      return showSnackbar('Description cannot be empty', 'warning')
     }
 
     let prices: Api.GameProjectPricesDto[] = []
     if (game.paymentMode === PaymentMode.PAID) {
       if (!currentSelectTokenChainId) {
-        enqueueSnackbar('Please select chainId', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
+        return showSnackbar('Please select chainId', 'warning')
       }
-
       if (isEmpty(currentSelectToken)) {
-        enqueueSnackbar('Please select Token', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
+        return showSnackbar('Please select Token', 'warning')
       }
-
       if (!currentSelectTokenAmount || currentSelectTokenAmount === '0') {
-        enqueueSnackbar('Please enter amount', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
+        return showSnackbar('Please enter amount', 'warning')
       }
       if (!isStringNumber(currentSelectTokenAmount)) {
-        enqueueSnackbar('Please enter the correct amount', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
+        return showSnackbar('Please enter the correct amount', 'warning')
       }
       if (new BigNumber(currentSelectTokenAmount).lte('0')) {
-        enqueueSnackbar('Amount needs to be greater than zero', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
+        return showSnackbar('Amount needs to be greater than zero', 'warning')
       }
 
       prices = [
@@ -287,26 +236,14 @@ const GameForm: FC<GameFormProps> = ({
       ]
     } else if (game.paymentMode === PaymentMode.FREE) {
       if (!currentDonationAddress || !utils.isAddress(currentDonationAddress)) {
-        enqueueSnackbar('Please set a donation address', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
+        return showSnackbar('Please set a donation address', 'warning')
       }
     }
 
     setSubmitLoading(true)
     try {
       if (editorMode === EditorMode.CREATE) {
-        MESSAGE_SUBMIT_KEY = enqueueSnackbar('uploading game...', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'info',
+        MESSAGE_SUBMIT_KEY = showSnackbar('Uploading game...', 'info', {
           persist: true,
         })
 
@@ -357,13 +294,7 @@ const GameForm: FC<GameFormProps> = ({
         if (createGameResult.status === 201) {
           saveAlgoliaGame(Number(createGameResult.data.id))
 
-          enqueueSnackbar('Uploaded successfully', {
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'center',
-            },
-            variant: 'success',
-          })
+          showSnackbar('Uploaded successfully', 'success')
           router.push('/dashboard')
         } else {
           console.error('createGame', createGameResult)
@@ -372,12 +303,7 @@ const GameForm: FC<GameFormProps> = ({
       } else if (editorMode === EditorMode.EDIT) {
         if (!id) return
 
-        MESSAGE_SUBMIT_KEY = enqueueSnackbar('updating game...', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'info',
+        MESSAGE_SUBMIT_KEY = showSnackbar('Updating game...', 'info', {
           persist: true,
         })
 
@@ -441,13 +367,7 @@ const GameForm: FC<GameFormProps> = ({
         if (updateGameResult.status === 200) {
           saveAlgoliaGame(Number(updateGameResult.data.id))
 
-          enqueueSnackbar('Update completed', {
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'center',
-            },
-            variant: 'success',
-          })
+          showSnackbar('Update completed', 'success')
           router.push(urlGame(id as string))
         } else {
           console.error('updateGame', updateGameResult)
@@ -475,13 +395,7 @@ const GameForm: FC<GameFormProps> = ({
         messageContent = (error as Error).message
       }
 
-      enqueueSnackbar(messageContent, {
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'center',
-        },
-        variant: 'error',
-      })
+      showSnackbar(messageContent, 'error')
     } finally {
       closeSnackbar(MESSAGE_SUBMIT_KEY)
       setSubmitLoading(false)
