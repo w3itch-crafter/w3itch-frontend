@@ -38,9 +38,9 @@ interface Props {
 const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   useMetamask()
   const ref = useRef(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
   const [minetestPort, setMinetestPort] = useState<number>()
   const [minetestUsername, setMinetestUsername] = useState<string>()
-  const iframeRef = useRef<HTMLIFrameElement>(null)
 
   const { iosFullscreen, isFullscreen, handleFullscreen } =
     useFullscreenCustomization({
