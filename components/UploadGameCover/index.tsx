@@ -68,7 +68,7 @@ interface Props {
   setFile: Dispatch<SetStateAction<File | undefined>>
 }
 
-const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
+export const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
   const [coverFile, setCoverFile] = useState<FileWithPath>()
   const [coverUrl, setCoverUrl] = useState<string>('')
 
