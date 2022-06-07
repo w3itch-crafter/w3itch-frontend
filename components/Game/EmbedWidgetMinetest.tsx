@@ -2,16 +2,15 @@ import styled from '@emotion/styled'
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
-import { gamePlayerMinetest, minetestGamePortByGameName } from 'api'
-import { AuthenticationContext } from 'context'
+import LoadingButton from '@mui/lab/LoadingButton'
+import { gamePlayerMinetest, getMe, minetestGamePortByGameName } from 'api'
 import { utils } from 'ethers'
 import { useFullscreenCustomization } from 'hooks/useFullscreenCustomization'
 import { useHoldUnlock } from 'hooks/useHoldUnlock'
 import useMetamask from 'hooks/useMetamask'
 import { isEmpty } from 'lodash'
 import { FC, useCallback, useEffect } from 'react'
-import { useContext, useRef, useState } from 'react'
-import stylesCommon from 'styles/common.module.scss'
+import { useRef, useState } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'
 import { balanceDecimal, getMinetestUsername } from 'utils'
@@ -40,12 +39,8 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   useMetamask()
   const ref = useRef(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
-  const {
-    state: { user },
-  } = useContext(AuthenticationContext)
-  const [minetestPort, setMinetestPort] = useState<number>(
-    Number(process.env.NEXT_PUBLIC_MINETEST_PORT)
-  )
+  const [minetestPort, setMinetestPort] = useState<number>()
+  const [minetestUsername, setMinetestUsername] = useState<string>()
 
   const { iosFullscreen, isFullscreen, handleFullscreen } =
     useFullscreenCustomization({
@@ -58,32 +53,46 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
     token: pricesToken,
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [runGameFlag, setRunGameFlag] = useState<boolean>(false)
 
-  // handle play
-  const handlePlay = useCallback(() => {
+  // Handle play
+  const handlePlay = useCallback(async () => {
     handleUnlock(() => {
       setRunGameFlag(true)
     })
   }, [setRunGameFlag, handleUnlock])
 
-  const handleMinetestPort = useCallback(async () => {
+  // Handle minetest port and username
+  const handleMinetestInfo = useCallback(async () => {
     try {
       const result = await minetestGamePortByGameName(gameProject.gameName)
       if (result.status === 200) {
         setMinetestPort(
           result.data.port || Number(process.env.NEXT_PUBLIC_MINETEST_PORT)
         )
+      } else {
+        throw new Error('No port found')
       }
     } catch (e) {
+      setMinetestPort(Number(process.env.NEXT_PUBLIC_MINETEST_PORT))
+      console.error(e)
+    }
+    try {
+      const result = await getMe()
+      if (result) {
+        setMinetestUsername(result.username)
+      } else {
+        throw new Error('No user found')
+      }
+    } catch (e) {
+      setMinetestUsername(getMinetestUsername(undefined))
       console.error(e)
     }
   }, [gameProject])
 
   useEffect(() => {
-    handleMinetestPort()
-  }, [handleMinetestPort])
+    handleMinetestInfo()
+  }, [handleMinetestInfo])
 
   return (
     <div
@@ -98,17 +107,18 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
             }`}
             ref={ref}
           >
-            <iframe
-              style={{ width: '100%', height: '100%' }}
-              frameBorder="0"
-              src={gamePlayerMinetest({
-                username: getMinetestUsername(user?.username),
-                port: minetestPort,
-              })}
-              scrolling="no"
-              id="game_drop"
-              ref={iframeRef}
-            ></iframe>
+            {minetestUsername && minetestPort && (
+              <iframe
+                style={{ width: '100%', height: '100%' }}
+                frameBorder="0"
+                src={gamePlayerMinetest({
+                  username: minetestUsername,
+                  port: minetestPort,
+                })}
+                scrolling="no"
+                id="game_drop"
+              ></iframe>
+            )}
             <div
               className={styles.full_close}
               onClick={() => {
@@ -125,30 +135,24 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
           </div>
         ) : (
           <div className={styles.iframe_placeholder}>
-            <button
+            <LoadingButton
+              loading={false}
               onClick={() => handlePlay()}
-              className={`${stylesCommon.button} ${styles.button} ${styles.load_iframe_btn}`}
+              variant="contained"
+              size="large"
+              startIcon={!holdUnlock && <PlayCircleOutlineIcon />}
             >
-              {holdUnlock ? (
-                isEmpty(pricesToken) || !pricesToken ? (
-                  `Need to hold Token`
-                ) : (
-                  `Need to hold ${balanceDecimal(
-                    utils.formatUnits(pricesToken.amount, pricesToken.decimals)
-                  )} ${pricesToken.symbol}`
-                )
-              ) : (
-                <>
-                  <PlayCircleOutlineIcon
-                    sx={{
-                      mr: 1,
-                      fontSize: '26px',
-                    }}
-                  />
-                  Play
-                </>
-              )}
-            </button>
+              {holdUnlock
+                ? isEmpty(pricesToken) || !pricesToken
+                  ? `Need to hold Token`
+                  : `Need to hold ${balanceDecimal(
+                      utils.formatUnits(
+                        pricesToken.amount,
+                        pricesToken.decimals
+                      )
+                    )} ${pricesToken.symbol}`
+                : 'Play'}
+            </LoadingButton>
           </div>
         )}
       </Wrapper>

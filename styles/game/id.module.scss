@@ -12,17 +12,6 @@
 }
 
 .html_embed_widget {
-  .button.load_iframe_btn,
-  .button.restore_btn {
-    height: auto;
-    padding: 0.4em 0.8em;
-    font-size: 120%;
-    display: flex;
-    align-items: center;
-    .svgicon {
-      margin-right: 5px;
-    }
-  }
   .iframe_placeholder,
   .restore_wrapper {
     width: 100%;
