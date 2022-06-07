@@ -1,3 +1,4 @@
+import LoadingButton from '@mui/lab/LoadingButton'
 import { FormControl, FormHelperText, FormLabel } from '@mui/material'
 import { TextField } from '@mui/material'
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
@@ -7,7 +8,7 @@ import { storagesUploadToAWS, updateGame } from 'api/index'
 import { AxiosError } from 'axios'
 import BigNumber from 'bignumber.js'
 import { UploadGame, UploadGameCover, UploadGameScreenshots } from 'components'
-import { PrimaryLoadingButton, TokenList } from 'components'
+import { TokenList } from 'components'
 import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
 import { AuthenticationContext, GameFormContext } from 'context'
 import { utils } from 'ethers'
@@ -698,7 +699,7 @@ const GameForm: React.FC<GameFormProps> = ({
                   </div>
                 </div>
                 <div className={styles.buttons}>
-                  <PrimaryLoadingButton
+                  <LoadingButton
                     variant="contained"
                     type="submit"
                     loading={submitLoading}
@@ -714,7 +715,7 @@ const GameForm: React.FC<GameFormProps> = ({
                       : editorMode === EditorMode.EDIT
                       ? 'Update'
                       : 'Save'}
-                  </PrimaryLoadingButton>
+                  </LoadingButton>
                   <div
                     className={`${styles.loader} ${styles.form_loader}`}
                   ></div>
