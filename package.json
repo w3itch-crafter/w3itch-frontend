@@ -122,6 +122,6 @@
   },
   "packageManager": "yarn@3.2.0",
   "browser": {
-    "fs" : false
+    "fs": false
   }
 }

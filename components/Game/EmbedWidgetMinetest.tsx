@@ -39,6 +39,7 @@ interface Props {
 const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   useMetamask()
   const ref = useRef(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
   const {
     state: { user },
   } = useContext(AuthenticationContext)
@@ -106,8 +107,15 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
               })}
               scrolling="no"
               id="game_drop"
+              ref={iframeRef}
             ></iframe>
-            <div className={styles.full_close} onClick={handleFullscreen}>
+            <div
+              className={styles.full_close}
+              onClick={() => {
+                handleFullscreen()
+                iframeRef.current?.focus()
+              }}
+            >
               {isFullscreen || iosFullscreen ? (
                 <FullscreenExitIcon></FullscreenExitIcon>
               ) : (
