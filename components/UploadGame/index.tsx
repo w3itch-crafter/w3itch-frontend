@@ -23,7 +23,7 @@ interface Props {
   setFile: Dispatch<SetStateAction<File | undefined>>
 }
 
-const UploadGame: FC<Props> = ({ setFile }) => {
+export const UploadGame: FC<Props> = ({ setFile }) => {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       // Do something with the files

@@ -5772,13 +5772,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"add@npm:^2.0.6":
-  version: 2.0.6
-  resolution: "add@npm:2.0.6"
-  checksum: e2d23d40494565dfed4acd65e478570c444db5ac6c053551ed429c39ea0f2c99d83df63e7befec936df601827d2254d06a2fb6f7dcfd2022e810b25eab818b8c
-  languageName: node
-  linkType: hard
-
 "adm-zip@npm:^0.5.9":
   version: 0.5.9
   resolution: "adm-zip@npm:0.5.9"
@@ -8369,14 +8362,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color-name@npm:^1.0.0":
-  version: 1.1.4
-  resolution: "color-name@npm:1.1.4::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fcolor-name%2F-%2Fcolor-name-1.1.4.tgz"
-  checksum: b0445859521eb4021cd0fb0cc1a75cecf67fceecae89b63f62b201cca8d345baf8b952c966862a9d9a2632987d4f6581f0ec8d957dfacece86f0a7919316f610
-  languageName: node
-  linkType: hard
-
-"color-name@npm:~1.1.4":
+"color-name@npm:^1.0.0, color-name@npm:~1.1.4":
   version: 1.1.4
   resolution: "color-name@npm:1.1.4"
   checksum: b0445859521eb4021cd0fb0cc1a75cecf67fceecae89b63f62b201cca8d345baf8b952c966862a9d9a2632987d4f6581f0ec8d957dfacece86f0a7919316f610
@@ -8384,12 +8370,12 @@ __metadata:
   linkType: hard
 
 "color-string@npm:^1.9.0":
-  version: 1.9.0
-  resolution: "color-string@npm:1.9.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fcolor-string%2F-%2Fcolor-string-1.9.0.tgz"
+  version: 1.9.1
+  resolution: "color-string@npm:1.9.1"
   dependencies:
     color-name: ^1.0.0
     simple-swizzle: ^0.2.2
-  checksum: 93c6678b847f8cfa47d19677fd19e1d4b19d7a33f100644400357c298266080b5bca64e5f874fa8ac8cc0aa0606ad44f7a838b4e6fd05e6affea190a68555bb4
+  checksum: c13fe7cff7885f603f49105827d621ce87f4571d78ba28ef4a3f1a104304748f620615e6bf065ecd2145d0d9dad83a3553f52bb25ede7239d18e9f81622f1cc5
   languageName: node
   linkType: hard
 
@@ -8404,7 +8390,7 @@ __metadata:
 
 "color@npm:^4.2.3":
   version: 4.2.3
-  resolution: "color@npm:4.2.3::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fcolor%2F-%2Fcolor-4.2.3.tgz"
+  resolution: "color@npm:4.2.3"
   dependencies:
     color-convert: ^2.0.1
     color-string: ^1.9.0
@@ -9068,7 +9054,7 @@ __metadata:
 
 "decompress-response@npm:^6.0.0":
   version: 6.0.0
-  resolution: "decompress-response@npm:6.0.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fdecompress-response%2F-%2Fdecompress-response-6.0.0.tgz"
+  resolution: "decompress-response@npm:6.0.0"
   dependencies:
     mimic-response: ^3.1.0
   checksum: d377cf47e02d805e283866c3f50d3d21578b779731e8c5072d6ce8c13cc31493db1c2f6784da9d1d5250822120cefa44f1deab112d5981015f2e17444b763812
@@ -9298,7 +9284,7 @@ __metadata:
 
 "detect-libc@npm:^2.0.0, detect-libc@npm:^2.0.1":
   version: 2.0.1
-  resolution: "detect-libc@npm:2.0.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fdetect-libc%2F-%2Fdetect-libc-2.0.1.tgz"
+  resolution: "detect-libc@npm:2.0.1"
   checksum: ccb05fcabbb555beb544d48080179c18523a343face9ee4e1a86605a8715b4169f94d663c21a03c310ac824592f2ba9a5270218819bb411ad7be578a527593d7
   languageName: node
   linkType: hard
@@ -12743,7 +12729,7 @@ __metadata:
 
 "is-arrayish@npm:^0.3.1":
   version: 0.3.2
-  resolution: "is-arrayish@npm:0.3.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fis-arrayish%2F-%2Fis-arrayish-0.3.2.tgz"
+  resolution: "is-arrayish@npm:0.3.2"
   checksum: 977e64f54d91c8f169b59afcd80ff19227e9f5c791fa28fa2e5bce355cbaf6c2c356711b734656e80c9dd4a854dd7efcf7894402f1031dfc5de5d620775b4d5f
   languageName: node
   linkType: hard
@@ -15473,7 +15459,7 @@ __metadata:
 
 "mimic-response@npm:^3.1.0":
   version: 3.1.0
-  resolution: "mimic-response@npm:3.1.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fmimic-response%2F-%2Fmimic-response-3.1.0.tgz"
+  resolution: "mimic-response@npm:3.1.0"
   checksum: 25739fee32c17f433626bf19f016df9036b75b3d84a3046c7d156e72ec963dd29d7fc8a302f55a3d6c5a4ff24259676b15d915aad6480815a969ff2ec0836867
   languageName: node
   linkType: hard
@@ -16044,11 +16030,11 @@ __metadata:
   linkType: hard
 
 "node-abi@npm:^3.3.0":
-  version: 3.15.0
-  resolution: "node-abi@npm:3.15.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fnode-abi%2F-%2Fnode-abi-3.15.0.tgz"
+  version: 3.22.0
+  resolution: "node-abi@npm:3.22.0"
   dependencies:
     semver: ^7.3.5
-  checksum: 8fb0374d11f4d02beaacfedf5e536006f0c5f4c479cd2ff6cfda39b0a8f1f9230dbac865f80e98f030dae5ae8e197806b8683547dad1b79af16246e32a441e24
+  checksum: ad76823920780de39b9712b10c8e5ee424d573b74720b9eeef9ce6523d587f114787aefeabbd34d7a861f9cfab9ac131e1a149243470bb79d6eb5d414a3fa58e
   languageName: node
   linkType: hard
 
@@ -19261,7 +19247,7 @@ __metadata:
 
 "simple-get@npm:^4.0.0, simple-get@npm:^4.0.1":
   version: 4.0.1
-  resolution: "simple-get@npm:4.0.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fsimple-get%2F-%2Fsimple-get-4.0.1.tgz"
+  resolution: "simple-get@npm:4.0.1"
   dependencies:
     decompress-response: ^6.0.0
     once: ^1.3.1
@@ -19272,7 +19258,7 @@ __metadata:
 
 "simple-swizzle@npm:^0.2.2":
   version: 0.2.2
-  resolution: "simple-swizzle@npm:0.2.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fsimple-swizzle%2F-%2Fsimple-swizzle-0.2.2.tgz"
+  resolution: "simple-swizzle@npm:0.2.2"
   dependencies:
     is-arrayish: ^0.3.1
   checksum: a7f3f2ab5c76c4472d5c578df892e857323e452d9f392e1b5cf74b74db66e6294a1e1b8b390b519fa1b96b5b613f2a37db6cffef52c3f1f8f3c5ea64eb2d54c0
@@ -20137,21 +20123,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar-fs@npm:^2.0.0":
+"tar-fs@npm:^2.0.0, tar-fs@npm:^2.1.1":
   version: 2.1.1
   resolution: "tar-fs@npm:2.1.1"
-  dependencies:
-    chownr: ^1.1.1
-    mkdirp-classic: ^0.5.2
-    pump: ^3.0.0
-    tar-stream: ^2.1.4
-  checksum: f5b9a70059f5b2969e65f037b4e4da2daf0fa762d3d232ffd96e819e3f94665dbbbe62f76f084f1acb4dbdcce16c6e4dac08d12ffc6d24b8d76720f4d9cf032d
-  languageName: node
-  linkType: hard
-
-"tar-fs@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "tar-fs@npm:2.1.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Ftar-fs%2F-%2Ftar-fs-2.1.1.tgz"
   dependencies:
     chownr: ^1.1.1
     mkdirp-classic: ^0.5.2
@@ -21411,7 +21385,6 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.27.0
     "@typescript-eslint/parser": ^5.27.0
     "@wojtekmaj/enzyme-adapter-react-17": ^0.6.7
-    add: ^2.0.6
     adm-zip: ^0.5.9
     ahooks: ^3.4.0
     algoliasearch: ^4.13.1

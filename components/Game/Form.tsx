@@ -1,98 +1,61 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  MenuItem,
-  TextField,
-} from '@mui/material'
-import Select from '@mui/material/Select'
-import { AxiosError } from 'axios'
-import dynamic from 'next/dynamic'
-import Link from 'next/link'
-import {
-  Dispatch,
-  FC,
-  Fragment,
-  MutableRefObject,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
-import stylesCommon from 'styles/common.module.scss'
-import styles from 'styles/game/new.module.scss'
-const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
+import { FormControl, FormHelperText, FormLabel } from '@mui/material'
+import { TextField } from '@mui/material'
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { useDebounceFn } from 'ahooks'
-import {
-  createGame,
-  gameValidate,
-  storagesUploadToAWS,
-  updateGame,
-} from 'api/index'
-import { saveAlgoliaGame } from 'api/server'
+import { createGame, gameValidate, saveAlgoliaGame } from 'api/index'
+import { storagesUploadToAWS, updateGame } from 'api/index'
+import { AxiosError } from 'axios'
 import BigNumber from 'bignumber.js'
-import { PrimaryLoadingButton } from 'components/CustomizedButtons'
-import FormCharset from 'components/Game/FormCharset'
-import FormPricing from 'components/Game/FormPricing'
-import FormTags from 'components/Game/FormTags'
-import TokenList from 'components/TokenList'
-import UploadGame from 'components/UploadGame/index'
-import UploadGameCover from 'components/UploadGameCover/index'
-import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
-import type { SupportedChainId } from 'constants/chains'
-import { WalletSupportedChainIds } from 'constants/chains'
-import { AuthenticationContext } from 'context'
-import { GameFormContext } from 'context/gameFormContext'
-import { classifications, releaseStatus } from 'data'
+import { UploadGame, UploadGameCover, UploadGameScreenshots } from 'components'
+import { PrimaryLoadingButton, TokenList } from 'components'
+import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
+import { AuthenticationContext, GameFormContext } from 'context'
 import { utils } from 'ethers'
-import { getAddress } from 'ethers/lib/utils'
-import { useAccountInfo, useTitle } from 'hooks'
+import { useAccountInfo, useTitle, useTopCenterSnackbar } from 'hooks'
 import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
+import React, { Fragment, useEffect, useState } from 'react'
 import { FieldError, SubmitHandler, useWatch } from 'react-hook-form'
+import stylesCommon from 'styles/common.module.scss'
+import styles from 'styles/game/new.module.scss'
 import { GameEntity, Token } from 'types'
 import { Api } from 'types/Api'
-import {
-  EditorMode,
-  GameEngine,
-  PaymentMode,
-  ProjectClassification,
-  ReleaseStatus,
-} from 'types/enum'
-import {
-  filenameHandle,
-  fileUrl,
-  isStringNumber,
-  parseFilename,
-  parseUrl,
-  processMessage,
-  urlGame,
-} from 'utils'
-import { inferProjectType } from 'utils/inferProjectType'
-import { Game } from 'utils/validator'
+import { EditorMode, GameEngine, PaymentMode } from 'types/enum'
+import { ProjectClassification, ReleaseStatus } from 'types/enum'
+import { filenameHandle, fileUrl } from 'utils'
+import { Game, inferProjectType, isStringNumber, urlGame } from 'utils'
+import { parseFilename, parseUrl, processMessage } from 'utils'
 
+import FormCharset from './FormCharset'
+import FormClassification from './FormClassification'
 import FormCommunity from './FormCommunity'
+import FormDescription from './FormDescription'
+import FormGameName from './FormGameName'
 import FormGenre from './FormGenre'
+import FormHeader from './FormHeader'
 import FormKind from './FormKind'
+import FormPricing from './FormPricing'
+import FormReleaseStatus from './FormReleaseStatus'
+import FormSubtitle from './FormSubtitle'
+import FormTags from './FormTags'
+import FormTitle from './FormTitle'
 
 interface GameFormProps {
   readonly gameProject: GameEntity
   readonly editorMode: EditorMode
-  readonly editorRef: MutableRefObject<ToastUiEditor> | undefined
-  setEditorRef: Dispatch<
-    SetStateAction<MutableRefObject<ToastUiEditor> | undefined>
+  readonly editorRef: React.MutableRefObject<ToastUiEditor> | undefined
+  setEditorRef: React.Dispatch<
+    React.SetStateAction<React.MutableRefObject<ToastUiEditor> | undefined>
   >
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let MESSAGE_SUBMIT_KEY: any
 
-const GameForm: FC<GameFormProps> = ({
+const GameForm: React.FC<GameFormProps> = ({
   gameProject,
   editorMode,
   editorRef,
@@ -101,9 +64,8 @@ const GameForm: FC<GameFormProps> = ({
   const router = useRouter()
   const id = router.query.id
 
-  const {
-    state: { isAuthenticated },
-  } = useContext(AuthenticationContext)
+  const { state } = React.useContext(AuthenticationContext)
+  const { isAuthenticated } = state
 
   const {
     register,
@@ -114,10 +76,11 @@ const GameForm: FC<GameFormProps> = ({
     formState: { errors },
     getValues,
     trigger,
-  } = useContext(GameFormContext)
+  } = React.useContext(GameFormContext)
 
   const account = useAccountInfo('metamask')
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+  const showSnackbar = useTopCenterSnackbar()
+  const { closeSnackbar } = useSnackbar()
 
   const [uploadGameFile, setUploadGameFile] = useState<File>()
   const [coverFileFile, setCoverFileFile] = useState<File>()
@@ -195,85 +158,33 @@ const GameForm: FC<GameFormProps> = ({
   const handleGame = async (game: Game) => {
     // 先支持 编辑
     if (editorMode === EditorMode.CREATE && !uploadGameFile) {
-      enqueueSnackbar('Please upload game files', {
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'center',
-        },
-        variant: 'warning',
-      })
-      return
+      return showSnackbar('Please upload game files', 'warning')
     }
 
     let description = ''
     if (editorRef) {
       description = editorRef.current?.getInstance().getMarkdown()
     }
-
     if (!description) {
-      enqueueSnackbar('description cannot be empty', {
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'center',
-        },
-        variant: 'warning',
-      })
-      return
+      return showSnackbar('Description cannot be empty', 'warning')
     }
 
     let prices: Api.GameProjectPricesDto[] = []
     if (game.paymentMode === PaymentMode.PAID) {
       if (!currentSelectTokenChainId) {
-        enqueueSnackbar('Please select chainId', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
+        return showSnackbar('Please select chainId', 'warning')
       }
-
       if (isEmpty(currentSelectToken)) {
-        enqueueSnackbar('Please select Token', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
+        return showSnackbar('Please select Token', 'warning')
       }
-
       if (!currentSelectTokenAmount || currentSelectTokenAmount === '0') {
-        enqueueSnackbar('Please enter amount', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
+        return showSnackbar('Please enter amount', 'warning')
       }
       if (!isStringNumber(currentSelectTokenAmount)) {
-        enqueueSnackbar('Please enter the correct amount', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
+        return showSnackbar('Please enter the correct amount', 'warning')
       }
       if (new BigNumber(currentSelectTokenAmount).lte('0')) {
-        enqueueSnackbar('Amount needs to be greater than zero', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
+        return showSnackbar('Amount needs to be greater than zero', 'warning')
       }
 
       prices = [
@@ -287,26 +198,14 @@ const GameForm: FC<GameFormProps> = ({
       ]
     } else if (game.paymentMode === PaymentMode.FREE) {
       if (!currentDonationAddress || !utils.isAddress(currentDonationAddress)) {
-        enqueueSnackbar('Please set a donation address', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
+        return showSnackbar('Please set a donation address', 'warning')
       }
     }
 
     setSubmitLoading(true)
     try {
       if (editorMode === EditorMode.CREATE) {
-        MESSAGE_SUBMIT_KEY = enqueueSnackbar('uploading game...', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'info',
+        MESSAGE_SUBMIT_KEY = showSnackbar('Uploading game...', 'info', {
           persist: true,
         })
 
@@ -357,13 +256,7 @@ const GameForm: FC<GameFormProps> = ({
         if (createGameResult.status === 201) {
           saveAlgoliaGame(Number(createGameResult.data.id))
 
-          enqueueSnackbar('Uploaded successfully', {
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'center',
-            },
-            variant: 'success',
-          })
+          showSnackbar('Uploaded successfully', 'success')
           router.push('/dashboard')
         } else {
           console.error('createGame', createGameResult)
@@ -372,12 +265,7 @@ const GameForm: FC<GameFormProps> = ({
       } else if (editorMode === EditorMode.EDIT) {
         if (!id) return
 
-        MESSAGE_SUBMIT_KEY = enqueueSnackbar('updating game...', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'info',
+        MESSAGE_SUBMIT_KEY = showSnackbar('Updating game...', 'info', {
           persist: true,
         })
 
@@ -441,13 +329,7 @@ const GameForm: FC<GameFormProps> = ({
         if (updateGameResult.status === 200) {
           saveAlgoliaGame(Number(updateGameResult.data.id))
 
-          enqueueSnackbar('Update completed', {
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'center',
-            },
-            variant: 'success',
-          })
+          showSnackbar('Update completed', 'success')
           router.push(urlGame(id as string))
         } else {
           console.error('updateGame', updateGameResult)
@@ -475,13 +357,7 @@ const GameForm: FC<GameFormProps> = ({
         messageContent = (error as Error).message
       }
 
-      enqueueSnackbar(messageContent, {
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'center',
-        },
-        variant: 'error',
-      })
+      showSnackbar(messageContent, 'error')
     } finally {
       closeSnackbar(MESSAGE_SUBMIT_KEY)
       setSubmitLoading(false)
@@ -503,7 +379,7 @@ const GameForm: FC<GameFormProps> = ({
   }
 
   // handle screenshots
-  const handleScreenshots = useCallback(
+  const handleScreenshots = React.useCallback(
     (files: File[] | undefined) => {
       setScreenshotsFiles(files)
 
@@ -517,7 +393,7 @@ const GameForm: FC<GameFormProps> = ({
   )
 
   // handle gameFile
-  const handleGameFile = useCallback(
+  const handleGameFile = React.useCallback(
     (file: File | undefined) => {
       setUploadGameFile(file)
 
@@ -540,7 +416,7 @@ const GameForm: FC<GameFormProps> = ({
   )
 
   // Handle description change
-  const handleDescription = useCallback(async () => {
+  const handleDescription = React.useCallback(async () => {
     if (editorRef) {
       const description = editorRef.current?.getInstance().getMarkdown()
       setValue('description', trim(description))
@@ -582,7 +458,7 @@ const GameForm: FC<GameFormProps> = ({
           logoURI:
             tokens.find(
               (token) =>
-                getAddress(token.address) === getAddress(address) &&
+                utils.getAddress(token.address) === utils.getAddress(address) &&
                 token.chainId === chainId
             )?.logoURI || '',
         })
@@ -651,25 +527,8 @@ const GameForm: FC<GameFormProps> = ({
             id="edit_game_page_43096"
             className={`${styles.edit_game_page} dashboard_game_edit_base_page ${styles.page_widget} ${styles.form} is_game`}
           >
-            <div className={styles.tabbed_header_widget}>
-              <div className={styles.header_breadcrumbs}>
-                <Link href="/dashboard">
-                  <a className={styles.trail}>Dashboard</a>
-                </Link>
-              </div>
-              <div className={styles.stat_header_widget}>
-                <div className="text_content">
-                  <h2>{pageTitle}</h2>
-                </div>
-              </div>
-            </div>
-            {/* <div className={styles.payment_warning}>
-                    <strong>{"You don't have payment configured"}</strong> If you set a
-                    minimum price above 0 no one will be able to download your project.{' '}
-                    <a target="_blank" href="/user/settings/seller">
-                      Edit account
-                    </a>
-                  </div> */}
+            <FormHeader title={pageTitle} />
+            {/* <FormPaymentWarn /> */}
 
             <div className={styles.padded}>
               <form
@@ -679,109 +538,21 @@ const GameForm: FC<GameFormProps> = ({
               >
                 <div className={styles.columns}>
                   <div className={`main ${styles.left_col} first`}>
-                    {/*
-                    <p className={styles.content_guidelines}>
-                      <strong>Make sure everyone can find your page</strong>
-                      <br />
-                      Review our{' '}
-                      <a rel="noopener noreferrer" href="#" target="_blank">
-                        quality guidelines
-                      </a>{' '}
-                      before posting your project
-                    </p>
-                */}
+                    {/* <FormContentGuidelines /> */}
                     <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-title">Title</FormLabel>
-                        <TextField
-                          id="form-title"
-                          variant="outlined"
-                          aria-describedby="form-title-error-text"
-                          error={!!errors.title}
-                          helperText={errors.title ? errors.title.message : ''}
-                          {...register('title')}
-                        />
-                      </FormControl>
-                    </div>
-
-                    <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-shortDescriptionOrTagline">
-                          Short description or tagline
-                        </FormLabel>
-                        <p className={styles.sub}>
-                          {
-                            "Shown when we link to your project. Avoid duplicating your project's title"
-                          }
-                        </p>
-                        <TextField
-                          id="form-shortDescriptionOrTagline"
-                          error={!!errors.subtitle}
-                          helperText={
-                            errors.subtitle ? errors.subtitle.message : ''
-                          }
-                          {...register('subtitle')}
-                        />
-                      </FormControl>
+                      <FormTitle />
                     </div>
                     <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-classification">
-                          Classification
-                        </FormLabel>
-                        <p className={styles.sub}>
-                          {'What are you uploading?'}
-                        </p>
-                        <Select
-                          id="form-classification"
-                          disabled
-                          defaultValue={classifications[0].value}
-                        >
-                          {classifications.map((classification) => (
-                            <MenuItem
-                              value={classification.value}
-                              key={classification.value}
-                            >
-                              {classification.label}
-                              {classification.description && (
-                                <span className="sub">
-                                  {' — '}
-                                  {classification.description}
-                                </span>
-                              )}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                      <FormSubtitle />
                     </div>
-
+                    <div className={styles.input_row}>
+                      <FormClassification />
+                    </div>
                     <div className={styles.input_row}>
                       <FormKind />
                     </div>
-
                     <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-releaseStatus">
-                          Release status
-                        </FormLabel>
-                        <Select
-                          id="form-releaseStatus"
-                          value={releaseStatus[0].value}
-                          disabled
-                        >
-                          {releaseStatus.map((i) => (
-                            <MenuItem value={i.value} key={i.value}>
-                              {i.label}
-                              {i.description && (
-                                <span className="sub">
-                                  {' — '}
-                                  {i.description}
-                                </span>
-                              )}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                      <FormReleaseStatus />
                     </div>
 
                     <div className={styles.input_row}>
@@ -812,9 +583,8 @@ const GameForm: FC<GameFormProps> = ({
                           data-label="Tip"
                           className={`${styles.hint} ${styles.butler_tip}`}
                         >
-                          {
-                            "File size limit: 1 GB. Game name doesn't allow starts or ends with _ or -."
-                          }
+                          File size limit: 1 GB. Game name doesn&apos;t allow
+                          starts or ends with _ or -.
                         </section>
                         <UploadGame
                           setFile={async (file) => {
@@ -831,21 +601,8 @@ const GameForm: FC<GameFormProps> = ({
                           {...register('gameName')}
                         />
                         {editorMode === EditorMode.EDIT && (
-                          <>
-                            <div>
-                              Currently in update mode, please re-upload if you
-                              need to update the game.
-                            </div>
-                            <div>(Game name will not change)</div>
-                            <div>
-                              Game name:
-                              <span style={{ fontWeight: 'bold' }}>
-                                {getValues('gameName')}
-                              </span>
-                            </div>
-                          </>
+                          <FormGameName>{getValues('gameName')}</FormGameName>
                         )}
-
                         <FormHelperText>
                           {errors?.gameName?.message}
                         </FormHelperText>
@@ -858,37 +615,14 @@ const GameForm: FC<GameFormProps> = ({
                         <FormCharset />
                       </div>
                     )}
-
                     <div
                       className={`${styles.input_row} ${styles.simulation_input}`}
                     >
-                      <FormControl
-                        fullWidth
-                        error={Boolean(errors.description)}
-                      >
-                        <FormLabel id="form-genre">Details</FormLabel>
-                        <p className={styles.sub}>
-                          Description — This will make up the content of your
-                          game page.
-                        </p>
-                        <Editor
-                          setRef={setEditorRef}
-                          onChange={handleDescription}
-                        />
-                        <TextField
-                          style={{
-                            opacity: '0',
-                            position: 'absolute',
-                            zIndex: -99,
-                          }}
-                          {...register('description')}
-                        />
-                        <FormHelperText>
-                          {errors?.description?.message}
-                        </FormHelperText>
-                      </FormControl>
+                      <FormDescription
+                        setRef={setEditorRef}
+                        onChange={handleDescription}
+                      />
                     </div>
-
                     <div className={`${styles.input_row}`}>
                       <FormGenre />
                     </div>
@@ -901,102 +635,12 @@ const GameForm: FC<GameFormProps> = ({
                       />
                     </div>
 
-                    {/* <div className={styles.input_row}>
-                      <FormAppStoreLinks />
-                    </div> */}
-
-                    {/* <div className={styles.input_row}>
-                            <FormControl fullWidth>
-                              <FormLabel id="form-customNoun">Custom noun</FormLabel>
-                              <p className={styles.sub}>
-                                {
-                                  'You can change how itch.io refers to your project by providing a custom noun.'
-                                }
-                              </p>
-                              <p className={styles.sub}>
-                                {" Leave blank to default to: '"}
-                                <span className="user_classification_noun">mod</span>
-                                {"'"}.
-                              </p>
-                              <TextField
-                                id="form-customNoun"
-                                placeholder="Optional"
-                                disabled
-                              />
-                            </FormControl>
-                          </div> */}
-
+                    {/* <div className={styles.input_row}><FormAppStoreLinks /></div> */}
+                    {/* <div className={styles.input_row}><FormCustomNoun /></div> */}
                     <div className={styles.input_row}>
                       <FormCommunity />
                     </div>
-                    {/* <div className={styles.input_row}>
-                            <FormControl>
-                              <FormLabel id="demo-radio-buttons-group-label">
-                                Visibility & access
-                              </FormLabel>
-                              <p className={styles.sub}>
-                                Use Draft to review your page before making it public.{' '}
-                                <a href="/docs/creators/access-control" target="blank">
-                                  Learn more about access modes
-                                </a>
-                              </p>
-                              <RadioGroup
-                                aria-labelledby="demo-radio-buttons-group-label"
-                                defaultValue="female"
-                                name="radio-buttons-group"
-                              >
-                                <FormControlLabel
-                                  value="disabled"
-                                  control={<Radio />}
-                                  label={
-                                    <span>
-                                      Draft
-                                      <span className="sub">
-                                        Only those who can edit the project can view the
-                                        page
-                                      </span>
-                                    </span>
-                                  }
-                                />
-                                <FormControlLabel
-                                  value="restricted"
-                                  control={<Radio />}
-                                  label={
-                                    <span>
-                                      Restricted
-                                      <span className="sub">
-                                        {' '}
-                                        — Only owners &amp; authorized people can view
-                                        the page
-                                      </span>
-                                    </span>
-                                  }
-                                />
-                                <FormControlLabel
-                                  value="public"
-                                  control={<Radio />}
-                                  label={
-                                    <span>
-                                      Public
-                                      <span className={styles.sub}>
-                                        {' '}
-                                        —{' '}
-                                        <span>
-                                          Anyone can view the page
-                                          <span>
-                                            ,{' '}
-                                            <strong>
-                                              {"you can enable this after you've saved"}
-                                            </strong>
-                                          </span>
-                                        </span>
-                                      </span>
-                                    </span>
-                                  }
-                                ></FormControlLabel>
-                              </RadioGroup>
-                            </FormControl>
-                          </div> */}
+                    {/* <div className={styles.input_row}><FormAccess /></div> */}
                   </div>
                   <div className={`misc ${styles.right_col}`}>
                     <div className={styles.simulation_input}>

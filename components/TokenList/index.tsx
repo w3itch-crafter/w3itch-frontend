@@ -61,7 +61,7 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
   )
 }
 
-const TokenList: FC<GameRatingProps> = ({
+export const TokenList: FC<GameRatingProps> = ({
   setOpen,
   open,
   chainId,
