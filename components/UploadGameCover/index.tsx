@@ -1,19 +1,18 @@
 import styled from '@emotion/styled'
-import Button from '@mui/material/Button'
-import { GameFormContext } from 'context/gameFormContext'
+import { RedButton } from 'components/buttons'
 import Image from 'next/image'
 import {
   Dispatch,
   FC,
   SetStateAction,
   useCallback,
-  useContext,
   useEffect,
   useState,
 } from 'react'
 import { FileWithPath, useDropzone } from 'react-dropzone'
+import { useFormContext } from 'react-hook-form'
 import { EditorMode } from 'types/enum'
-import { fileUrl } from 'utils'
+import { fileUrl, Game } from 'utils'
 
 const WrapperDrap = styled.section`
   border: 1px dashed;
@@ -72,7 +71,7 @@ export const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
   const [coverFile, setCoverFile] = useState<FileWithPath>()
   const [coverUrl, setCoverUrl] = useState<string>('')
 
-  const { getValues, watch } = useContext(GameFormContext)
+  const { getValues, watch } = useFormContext<Game>()
   const watchCover = watch('cover')
 
   useEffect(() => {
@@ -120,9 +119,7 @@ export const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
             </WrapperDrapContainer>
             <WrapperDrapContainer>
               <WrapperDrapContainerBackdrop>
-                <Button variant="contained" type="button">
-                  Replace Cover Image
-                </Button>
+                <RedButton type="button">Replace Cover Image</RedButton>
                 <ButtonRemoveImage
                   type="button"
                   onClick={(e) => {
@@ -141,9 +138,7 @@ export const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
             {isDragActive ? (
               <p>Drop the files here ...</p>
             ) : (
-              <Button variant="contained" type="button">
-                Upload Cover Image
-              </Button>
+              <RedButton type="button">Upload Cover Image</RedButton>
             )}
           </WrapperDrapContainer>
         )}

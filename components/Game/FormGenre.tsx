@@ -5,17 +5,17 @@ import {
   MenuItem,
   Select,
 } from '@mui/material'
-import { GameFormContext } from 'context/gameFormContext'
 import { genres } from 'data'
-import { FC, useContext } from 'react'
-import { Controller } from 'react-hook-form'
+import { FC } from 'react'
+import { Controller, useFormContext } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
+import { Game } from 'utils'
 
 const FormGenre: FC = () => {
   const {
     control,
     formState: { errors },
-  } = useContext(GameFormContext)
+  } = useFormContext<Game>()
 
   return (
     <Controller

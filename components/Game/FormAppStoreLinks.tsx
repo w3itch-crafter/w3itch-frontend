@@ -7,22 +7,26 @@ import {
   FormLabel,
   TextField,
 } from '@mui/material'
-import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
-import { GameFormContext } from 'context/gameFormContext'
-import { FC, useContext } from 'react'
-import { Controller, FieldError, useFieldArray } from 'react-hook-form'
+import { PrimaryButton } from 'components/CustomizedButtons'
+import { FC } from 'react'
+import {
+  Controller,
+  FieldError,
+  useFieldArray,
+  useFormContext,
+} from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
+import { Game } from 'utils'
 
 const MAX_LINKS = 5
 
 const FormAppStoreLinks: FC = () => {
-  const contextGame = useContext(GameFormContext)
   const {
     control,
     formState: { errors },
-  } = contextGame
+  } = useFormContext<Game>()
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -73,9 +77,8 @@ const FormAppStoreLinks: FC = () => {
           ))}
         </Stack>
         {fields.length < MAX_LINKS && (
-          <Button
+          <PrimaryButton
             size="small"
-            variant="contained"
             sx={{
               mt: 2,
             }}
@@ -83,14 +86,14 @@ const FormAppStoreLinks: FC = () => {
             onClick={() => append('')}
           >
             Add
-          </Button>
+          </PrimaryButton>
         )}
 
         <FormHelperText>
           {(errors?.appStoreLinks as unknown as FieldError)?.message}
         </FormHelperText>
       </FormControl>
-      <Button
+      <PrimaryButton
         type="button"
         variant="contained"
         startIcon={<AddIcon />}
@@ -101,7 +104,7 @@ const FormAppStoreLinks: FC = () => {
         }}
       >
         Add
-      </Button>
+      </PrimaryButton>
     </>
   )
 }

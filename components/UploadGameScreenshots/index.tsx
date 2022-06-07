@@ -1,19 +1,18 @@
 import styled from '@emotion/styled'
-import Button from '@mui/material/Button'
-import { GameFormContext } from 'context/gameFormContext'
+import { PrimaryButton } from 'components/CustomizedButtons'
 import { isEmpty } from 'lodash'
 import {
   Dispatch,
   FC,
   SetStateAction,
   useCallback,
-  useContext,
   useEffect,
   useState,
 } from 'react'
 import { FileWithPath, useDropzone } from 'react-dropzone'
+import { useFormContext } from 'react-hook-form'
 import { EditorMode } from 'types/enum'
-import { fileUrl } from 'utils'
+import { fileUrl, Game } from 'utils'
 
 const WrapperItem = styled.section`
   height: auto;
@@ -37,7 +36,7 @@ interface Props {
 export const UploadGameScreenshots: FC<Props> = ({ editorMode, setFiles }) => {
   const [screenshotsFiles, setScreenshotsFiles] = useState<FileWithPath[]>()
   const [screenshotsUrl, setScreenshotsUrl] = useState<string[]>([])
-  const { getValues, watch } = useContext(GameFormContext)
+  const { getValues, watch } = useFormContext<Game>()
 
   const watchScreenshots = watch('screenshots')
 
@@ -104,29 +103,27 @@ export const UploadGameScreenshots: FC<Props> = ({ editorMode, setFiles }) => {
       ) : null}
       <section {...getRootProps()}>
         <input {...getInputProps()} />
-        <Button
+        <PrimaryButton
           size={'small'}
           sx={{
             textTransform: 'capitalize',
           }}
           type="button"
-          variant="contained"
         >
           {isEmpty(screenshotsUrl) ? 'Add Screenshots' : 'Change Screenshots'}
-        </Button>
+        </PrimaryButton>
       </section>
-      <Button
+      <PrimaryButton
         size={'small'}
         sx={{
           marginTop: 1,
           textTransform: 'capitalize',
         }}
-        variant="contained"
         onClick={handleDeleteAllScreenshots}
         type="button"
       >
         Delete screenshots
-      </Button>
+      </PrimaryButton>
     </section>
   )
 }
