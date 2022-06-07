@@ -23,6 +23,7 @@ import {
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
 const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
+import LoadingButton from '@mui/lab/LoadingButton'
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { useDebounceFn } from 'ahooks'
 import {
@@ -33,7 +34,6 @@ import {
 } from 'api/index'
 import { saveAlgoliaGame } from 'api/server'
 import BigNumber from 'bignumber.js'
-import { PrimaryLoadingButton } from 'components/CustomizedButtons'
 import FormCharset from 'components/Game/FormCharset'
 import FormPricing from 'components/Game/FormPricing'
 import FormTags from 'components/Game/FormTags'
@@ -1054,7 +1054,7 @@ const GameForm: FC<GameFormProps> = ({
                   </div>
                 </div>
                 <div className={styles.buttons}>
-                  <PrimaryLoadingButton
+                  <LoadingButton
                     variant="contained"
                     type="submit"
                     loading={submitLoading}
@@ -1070,7 +1070,7 @@ const GameForm: FC<GameFormProps> = ({
                       : editorMode === EditorMode.EDIT
                       ? 'Update'
                       : 'Save'}
-                  </PrimaryLoadingButton>
+                  </LoadingButton>
                   <div
                     className={`${styles.loader} ${styles.form_loader}`}
                   ></div>

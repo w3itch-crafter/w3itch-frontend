@@ -1,10 +1,10 @@
+import LoadingButton from '@mui/lab/LoadingButton'
 import { Box, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import Rating from '@mui/material/Rating'
 import { DeleteGameRatingsMine, UpdateGameRatingsMine } from 'api'
-import { PrimaryLoadingButton } from 'components/CustomizedButtons'
 import { useSnackbar } from 'notistack'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { Api } from 'types/Api'
@@ -140,21 +140,21 @@ const GameRating: FC<GameRatingProps> = ({
           </Box>
         </Box>
         <Box display="flex" justifyContent="space-between">
-          <PrimaryLoadingButton
+          <LoadingButton
             onClick={handleRatingChange}
             loading={ratingLoading}
+            variant="contained"
             sx={{
               textTransform: 'capitalize',
             }}
           >
             Submit
-          </PrimaryLoadingButton>
+          </LoadingButton>
           {gameRatingMine && (
             <Button
               variant="text"
               onClick={handleDeleteRating}
               sx={{
-                color: 'var(--w3itch-text2)',
                 fontSize: '14px',
                 textDecoration: 'underline',
                 textTransform: 'capitalize',

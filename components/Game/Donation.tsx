@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { Box } from '@mui/material'
+import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import { PrimaryButton } from 'components/CustomizedButtons'
 import { CurrentChainId } from 'constants/chains'
 import { getAddress } from 'ethers/lib/utils'
 import Link from 'next/link'
@@ -11,6 +11,7 @@ import { FC, useCallback } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import styles from 'styles/game/id.module.scss'
 import { ExplorerDataType, getExplorerLink } from 'utils'
+
 interface PurchaseProps {
   readonly donationAddress: string
 }
@@ -58,17 +59,22 @@ const Donation: FC<PurchaseProps> = ({ donationAddress }) => {
               text={getAddress(donationAddress)}
               onCopy={handleCopy}
             >
-              <PrimaryButton size="small" startIcon={<ContentCopyIcon />}>
+              <Button
+                size="small"
+                variant="contained"
+                startIcon={<ContentCopyIcon />}
+              >
                 Copy
-              </PrimaryButton>
+              </Button>
             </CopyToClipboard>
-            {/* <PrimaryButton
+            {/* <Button
           size="small"
+          variant="contained"
           startIcon={<SendIcon />}
           onClick={() => handleTransfer()}
         >
           Transfer
-        </PrimaryButton> */}
+        </Button> */}
           </Stack>
         </>
       )}

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { PrimaryButton } from 'components/CustomizedButtons'
+import Button from '@mui/material/Button'
 import { GameFormContext } from 'context/gameFormContext'
 import { isEmpty } from 'lodash'
 import {
@@ -104,27 +104,29 @@ const UploadGameScreenshots: FC<Props> = ({ editorMode, setFiles }) => {
       ) : null}
       <section {...getRootProps()}>
         <input {...getInputProps()} />
-        <PrimaryButton
+        <Button
           size={'small'}
           sx={{
             textTransform: 'capitalize',
           }}
           type="button"
+          variant="contained"
         >
           {isEmpty(screenshotsUrl) ? 'Add Screenshots' : 'Change Screenshots'}
-        </PrimaryButton>
+        </Button>
       </section>
-      <PrimaryButton
+      <Button
         size={'small'}
         sx={{
           marginTop: 1,
           textTransform: 'capitalize',
         }}
+        variant="contained"
         onClick={handleDeleteAllScreenshots}
         type="button"
       >
         Delete screenshots
-      </PrimaryButton>
+      </Button>
     </section>
   )
 }

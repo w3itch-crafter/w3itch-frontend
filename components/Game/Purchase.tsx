@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { Box } from '@mui/material'
+import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import { PrimaryButton } from 'components/CustomizedButtons'
 import { AuthenticationContext } from 'context'
 import { utils } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
@@ -78,7 +78,7 @@ const Purchase: FC<PurchaseProps> = ({ pricesTokens, refresh }) => {
                 alignItems: 'center',
               }}
             >
-              <PrimaryButton
+              <Button
                 onClick={() =>
                   handleBuyNow({
                     chainId: pricesToken.chainId,
@@ -89,9 +89,10 @@ const Purchase: FC<PurchaseProps> = ({ pricesTokens, refresh }) => {
                 sx={{
                   textTransform: 'capitalize',
                 }}
+                variant="contained"
               >
                 Buy Now
-              </PrimaryButton>
+              </Button>
               <Typography
                 sx={{
                   display: 'inline-flex',
