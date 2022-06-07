@@ -5,11 +5,13 @@ export * from './error'
 export * from './explorer'
 export * from './file'
 export * from './game'
+export * from './inferProjectType'
 export * from './seo'
 export * from './string'
 export * from './tags'
 export * from './theme'
 export * from './url'
+export * from './validator'
 
 export function isEmptyObj(obj: Record<string, unknown>): boolean {
   return obj && Object.keys(obj).length === 0 && obj.constructor === Object

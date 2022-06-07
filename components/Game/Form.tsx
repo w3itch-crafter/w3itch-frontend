@@ -1,53 +1,23 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  MenuItem,
-  TextField,
-} from '@mui/material'
-import Select from '@mui/material/Select'
+import { FormControl, FormHelperText, FormLabel } from '@mui/material'
+import { MenuItem, Select, TextField } from '@mui/material'
 import { AxiosError } from 'axios'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import {
-  Dispatch,
-  FC,
-  Fragment,
-  MutableRefObject,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
 const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { useDebounceFn } from 'ahooks'
-import {
-  createGame,
-  gameValidate,
-  storagesUploadToAWS,
-  updateGame,
-} from 'api/index'
-import { saveAlgoliaGame } from 'api/server'
+import { createGame, gameValidate, saveAlgoliaGame } from 'api/index'
+import { storagesUploadToAWS, updateGame } from 'api/index'
 import BigNumber from 'bignumber.js'
-import { PrimaryLoadingButton } from 'components/CustomizedButtons'
-import FormCharset from 'components/Game/FormCharset'
-import FormPricing from 'components/Game/FormPricing'
-import FormTags from 'components/Game/FormTags'
-import TokenList from 'components/TokenList'
-import UploadGame from 'components/UploadGame/index'
-import UploadGameCover from 'components/UploadGameCover/index'
-import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
-import type { SupportedChainId } from 'constants/chains'
-import { WalletSupportedChainIds } from 'constants/chains'
-import { AuthenticationContext } from 'context'
-import { GameFormContext } from 'context/gameFormContext'
+import { UploadGame, UploadGameCover, UploadGameScreenshots } from 'components'
+import { PrimaryLoadingButton, TokenList } from 'components'
+import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
+import { AuthenticationContext, GameFormContext } from 'context'
 import { classifications, releaseStatus } from 'data'
 import { utils } from 'ethers'
-import { getAddress } from 'ethers/lib/utils'
 import { useAccountInfo, useTitle, useTopCenterSnackbar } from 'hooks'
 import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
@@ -57,42 +27,32 @@ import { useSnackbar } from 'notistack'
 import { FieldError, SubmitHandler, useWatch } from 'react-hook-form'
 import { GameEntity, Token } from 'types'
 import { Api } from 'types/Api'
-import {
-  EditorMode,
-  GameEngine,
-  PaymentMode,
-  ProjectClassification,
-  ReleaseStatus,
-} from 'types/enum'
-import {
-  filenameHandle,
-  fileUrl,
-  isStringNumber,
-  parseFilename,
-  parseUrl,
-  processMessage,
-  urlGame,
-} from 'utils'
-import { inferProjectType } from 'utils/inferProjectType'
-import { Game } from 'utils/validator'
+import { EditorMode, GameEngine, PaymentMode } from 'types/enum'
+import { ProjectClassification, ReleaseStatus } from 'types/enum'
+import { filenameHandle, fileUrl } from 'utils'
+import { Game, inferProjectType, isStringNumber, urlGame } from 'utils'
+import { parseFilename, parseUrl, processMessage } from 'utils'
 
+import FormCharset from './FormCharset'
 import FormCommunity from './FormCommunity'
 import FormGenre from './FormGenre'
 import FormKind from './FormKind'
+import FormPricing from './FormPricing'
+import FormTags from './FormTags'
 
 interface GameFormProps {
   readonly gameProject: GameEntity
   readonly editorMode: EditorMode
-  readonly editorRef: MutableRefObject<ToastUiEditor> | undefined
-  setEditorRef: Dispatch<
-    SetStateAction<MutableRefObject<ToastUiEditor> | undefined>
+  readonly editorRef: React.MutableRefObject<ToastUiEditor> | undefined
+  setEditorRef: React.Dispatch<
+    React.SetStateAction<React.MutableRefObject<ToastUiEditor> | undefined>
   >
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let MESSAGE_SUBMIT_KEY: any
 
-const GameForm: FC<GameFormProps> = ({
+const GameForm: React.FC<GameFormProps> = ({
   gameProject,
   editorMode,
   editorRef,
@@ -101,9 +61,8 @@ const GameForm: FC<GameFormProps> = ({
   const router = useRouter()
   const id = router.query.id
 
-  const {
-    state: { isAuthenticated },
-  } = useContext(AuthenticationContext)
+  const { state } = React.useContext(AuthenticationContext)
+  const { isAuthenticated } = state
 
   const {
     register,
@@ -114,7 +73,7 @@ const GameForm: FC<GameFormProps> = ({
     formState: { errors },
     getValues,
     trigger,
-  } = useContext(GameFormContext)
+  } = React.useContext(GameFormContext)
 
   const account = useAccountInfo('metamask')
   const showSnackbar = useTopCenterSnackbar()
@@ -417,7 +376,7 @@ const GameForm: FC<GameFormProps> = ({
   }
 
   // handle screenshots
-  const handleScreenshots = useCallback(
+  const handleScreenshots = React.useCallback(
     (files: File[] | undefined) => {
       setScreenshotsFiles(files)
 
@@ -431,7 +390,7 @@ const GameForm: FC<GameFormProps> = ({
   )
 
   // handle gameFile
-  const handleGameFile = useCallback(
+  const handleGameFile = React.useCallback(
     (file: File | undefined) => {
       setUploadGameFile(file)
 
@@ -454,7 +413,7 @@ const GameForm: FC<GameFormProps> = ({
   )
 
   // Handle description change
-  const handleDescription = useCallback(async () => {
+  const handleDescription = React.useCallback(async () => {
     if (editorRef) {
       const description = editorRef.current?.getInstance().getMarkdown()
       setValue('description', trim(description))
@@ -496,7 +455,7 @@ const GameForm: FC<GameFormProps> = ({
           logoURI:
             tokens.find(
               (token) =>
-                getAddress(token.address) === getAddress(address) &&
+                utils.getAddress(token.address) === utils.getAddress(address) &&
                 token.chainId === chainId
             )?.logoURI || '',
         })

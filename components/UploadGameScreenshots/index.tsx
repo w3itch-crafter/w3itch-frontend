@@ -34,7 +34,7 @@ interface Props {
   setFiles: Dispatch<SetStateAction<File[] | undefined>>
 }
 
-const UploadGameScreenshots: FC<Props> = ({ editorMode, setFiles }) => {
+export const UploadGameScreenshots: FC<Props> = ({ editorMode, setFiles }) => {
   const [screenshotsFiles, setScreenshotsFiles] = useState<FileWithPath[]>()
   const [screenshotsUrl, setScreenshotsUrl] = useState<string[]>([])
   const { getValues, watch } = useContext(GameFormContext)
