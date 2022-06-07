@@ -40,6 +40,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   const ref = useRef(null)
   const [minetestPort, setMinetestPort] = useState<number>()
   const [minetestUsername, setMinetestUsername] = useState<string>()
+  const iframeRef = useRef<HTMLIFrameElement>(null)
 
   const { iosFullscreen, isFullscreen, handleFullscreen } =
     useFullscreenCustomization({
@@ -118,7 +119,13 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
                 id="game_drop"
               ></iframe>
             )}
-            <div className={styles.full_close} onClick={handleFullscreen}>
+            <div
+              className={styles.full_close}
+              onClick={() => {
+                handleFullscreen()
+                iframeRef.current?.focus()
+              }}
+            >
               {isFullscreen || iosFullscreen ? (
                 <FullscreenExitIcon></FullscreenExitIcon>
               ) : (
