@@ -1,22 +1,15 @@
 import { FormControl, FormHelperText, FormLabel } from '@mui/material'
-import { MenuItem, Select, TextField } from '@mui/material'
-import { AxiosError } from 'axios'
-import dynamic from 'next/dynamic'
-import Link from 'next/link'
-import React, { Fragment, useEffect, useState } from 'react'
-import stylesCommon from 'styles/common.module.scss'
-import styles from 'styles/game/new.module.scss'
-const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
+import { TextField } from '@mui/material'
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { useDebounceFn } from 'ahooks'
 import { createGame, gameValidate, saveAlgoliaGame } from 'api/index'
 import { storagesUploadToAWS, updateGame } from 'api/index'
+import { AxiosError } from 'axios'
 import BigNumber from 'bignumber.js'
 import { UploadGame, UploadGameCover, UploadGameScreenshots } from 'components'
 import { PrimaryLoadingButton, TokenList } from 'components'
 import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
 import { AuthenticationContext, GameFormContext } from 'context'
-import { classifications, releaseStatus } from 'data'
 import { utils } from 'ethers'
 import { useAccountInfo, useTitle, useTopCenterSnackbar } from 'hooks'
 import useTokens from 'hooks/useTokens'
@@ -24,7 +17,10 @@ import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
+import React, { Fragment, useEffect, useState } from 'react'
 import { FieldError, SubmitHandler, useWatch } from 'react-hook-form'
+import stylesCommon from 'styles/common.module.scss'
+import styles from 'styles/game/new.module.scss'
 import { GameEntity, Token } from 'types'
 import { Api } from 'types/Api'
 import { EditorMode, GameEngine, PaymentMode } from 'types/enum'
@@ -34,11 +30,18 @@ import { Game, inferProjectType, isStringNumber, urlGame } from 'utils'
 import { parseFilename, parseUrl, processMessage } from 'utils'
 
 import FormCharset from './FormCharset'
+import FormClassification from './FormClassification'
 import FormCommunity from './FormCommunity'
+import FormDescription from './FormDescription'
+import FormGameName from './FormGameName'
 import FormGenre from './FormGenre'
+import FormHeader from './FormHeader'
 import FormKind from './FormKind'
 import FormPricing from './FormPricing'
+import FormReleaseStatus from './FormReleaseStatus'
+import FormSubtitle from './FormSubtitle'
 import FormTags from './FormTags'
+import FormTitle from './FormTitle'
 
 interface GameFormProps {
   readonly gameProject: GameEntity
@@ -524,25 +527,8 @@ const GameForm: React.FC<GameFormProps> = ({
             id="edit_game_page_43096"
             className={`${styles.edit_game_page} dashboard_game_edit_base_page ${styles.page_widget} ${styles.form} is_game`}
           >
-            <div className={styles.tabbed_header_widget}>
-              <div className={styles.header_breadcrumbs}>
-                <Link href="/dashboard">
-                  <a className={styles.trail}>Dashboard</a>
-                </Link>
-              </div>
-              <div className={styles.stat_header_widget}>
-                <div className="text_content">
-                  <h2>{pageTitle}</h2>
-                </div>
-              </div>
-            </div>
-            {/* <div className={styles.payment_warning}>
-                    <strong>{"You don't have payment configured"}</strong> If you set a
-                    minimum price above 0 no one will be able to download your project.{' '}
-                    <a target="_blank" href="/user/settings/seller">
-                      Edit account
-                    </a>
-                  </div> */}
+            <FormHeader title={pageTitle} />
+            {/* <FormPaymentWarn /> */}
 
             <div className={styles.padded}>
               <form
@@ -552,109 +538,21 @@ const GameForm: React.FC<GameFormProps> = ({
               >
                 <div className={styles.columns}>
                   <div className={`main ${styles.left_col} first`}>
-                    {/*
-                    <p className={styles.content_guidelines}>
-                      <strong>Make sure everyone can find your page</strong>
-                      <br />
-                      Review our{' '}
-                      <a rel="noopener noreferrer" href="#" target="_blank">
-                        quality guidelines
-                      </a>{' '}
-                      before posting your project
-                    </p>
-                */}
+                    {/* <FormContentGuidelines /> */}
                     <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-title">Title</FormLabel>
-                        <TextField
-                          id="form-title"
-                          variant="outlined"
-                          aria-describedby="form-title-error-text"
-                          error={!!errors.title}
-                          helperText={errors.title ? errors.title.message : ''}
-                          {...register('title')}
-                        />
-                      </FormControl>
-                    </div>
-
-                    <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-shortDescriptionOrTagline">
-                          Short description or tagline
-                        </FormLabel>
-                        <p className={styles.sub}>
-                          {
-                            "Shown when we link to your project. Avoid duplicating your project's title"
-                          }
-                        </p>
-                        <TextField
-                          id="form-shortDescriptionOrTagline"
-                          error={!!errors.subtitle}
-                          helperText={
-                            errors.subtitle ? errors.subtitle.message : ''
-                          }
-                          {...register('subtitle')}
-                        />
-                      </FormControl>
+                      <FormTitle />
                     </div>
                     <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-classification">
-                          Classification
-                        </FormLabel>
-                        <p className={styles.sub}>
-                          {'What are you uploading?'}
-                        </p>
-                        <Select
-                          id="form-classification"
-                          disabled
-                          defaultValue={classifications[0].value}
-                        >
-                          {classifications.map((classification) => (
-                            <MenuItem
-                              value={classification.value}
-                              key={classification.value}
-                            >
-                              {classification.label}
-                              {classification.description && (
-                                <span className="sub">
-                                  {' — '}
-                                  {classification.description}
-                                </span>
-                              )}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                      <FormSubtitle />
                     </div>
-
+                    <div className={styles.input_row}>
+                      <FormClassification />
+                    </div>
                     <div className={styles.input_row}>
                       <FormKind />
                     </div>
-
                     <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-releaseStatus">
-                          Release status
-                        </FormLabel>
-                        <Select
-                          id="form-releaseStatus"
-                          value={releaseStatus[0].value}
-                          disabled
-                        >
-                          {releaseStatus.map((i) => (
-                            <MenuItem value={i.value} key={i.value}>
-                              {i.label}
-                              {i.description && (
-                                <span className="sub">
-                                  {' — '}
-                                  {i.description}
-                                </span>
-                              )}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                      <FormReleaseStatus />
                     </div>
 
                     <div className={styles.input_row}>
@@ -685,9 +583,8 @@ const GameForm: React.FC<GameFormProps> = ({
                           data-label="Tip"
                           className={`${styles.hint} ${styles.butler_tip}`}
                         >
-                          {
-                            "File size limit: 1 GB. Game name doesn't allow starts or ends with _ or -."
-                          }
+                          File size limit: 1 GB. Game name doesn&apos;t allow
+                          starts or ends with _ or -.
                         </section>
                         <UploadGame
                           setFile={async (file) => {
@@ -704,21 +601,8 @@ const GameForm: React.FC<GameFormProps> = ({
                           {...register('gameName')}
                         />
                         {editorMode === EditorMode.EDIT && (
-                          <>
-                            <div>
-                              Currently in update mode, please re-upload if you
-                              need to update the game.
-                            </div>
-                            <div>(Game name will not change)</div>
-                            <div>
-                              Game name:
-                              <span style={{ fontWeight: 'bold' }}>
-                                {getValues('gameName')}
-                              </span>
-                            </div>
-                          </>
+                          <FormGameName>{getValues('gameName')}</FormGameName>
                         )}
-
                         <FormHelperText>
                           {errors?.gameName?.message}
                         </FormHelperText>
@@ -731,37 +615,14 @@ const GameForm: React.FC<GameFormProps> = ({
                         <FormCharset />
                       </div>
                     )}
-
                     <div
                       className={`${styles.input_row} ${styles.simulation_input}`}
                     >
-                      <FormControl
-                        fullWidth
-                        error={Boolean(errors.description)}
-                      >
-                        <FormLabel id="form-genre">Details</FormLabel>
-                        <p className={styles.sub}>
-                          Description — This will make up the content of your
-                          game page.
-                        </p>
-                        <Editor
-                          setRef={setEditorRef}
-                          onChange={handleDescription}
-                        />
-                        <TextField
-                          style={{
-                            opacity: '0',
-                            position: 'absolute',
-                            zIndex: -99,
-                          }}
-                          {...register('description')}
-                        />
-                        <FormHelperText>
-                          {errors?.description?.message}
-                        </FormHelperText>
-                      </FormControl>
+                      <FormDescription
+                        setRef={setEditorRef}
+                        onChange={handleDescription}
+                      />
                     </div>
-
                     <div className={`${styles.input_row}`}>
                       <FormGenre />
                     </div>
@@ -774,102 +635,12 @@ const GameForm: React.FC<GameFormProps> = ({
                       />
                     </div>
 
-                    {/* <div className={styles.input_row}>
-                      <FormAppStoreLinks />
-                    </div> */}
-
-                    {/* <div className={styles.input_row}>
-                            <FormControl fullWidth>
-                              <FormLabel id="form-customNoun">Custom noun</FormLabel>
-                              <p className={styles.sub}>
-                                {
-                                  'You can change how itch.io refers to your project by providing a custom noun.'
-                                }
-                              </p>
-                              <p className={styles.sub}>
-                                {" Leave blank to default to: '"}
-                                <span className="user_classification_noun">mod</span>
-                                {"'"}.
-                              </p>
-                              <TextField
-                                id="form-customNoun"
-                                placeholder="Optional"
-                                disabled
-                              />
-                            </FormControl>
-                          </div> */}
-
+                    {/* <div className={styles.input_row}><FormAppStoreLinks /></div> */}
+                    {/* <div className={styles.input_row}><FormCustomNoun /></div> */}
                     <div className={styles.input_row}>
                       <FormCommunity />
                     </div>
-                    {/* <div className={styles.input_row}>
-                            <FormControl>
-                              <FormLabel id="demo-radio-buttons-group-label">
-                                Visibility & access
-                              </FormLabel>
-                              <p className={styles.sub}>
-                                Use Draft to review your page before making it public.{' '}
-                                <a href="/docs/creators/access-control" target="blank">
-                                  Learn more about access modes
-                                </a>
-                              </p>
-                              <RadioGroup
-                                aria-labelledby="demo-radio-buttons-group-label"
-                                defaultValue="female"
-                                name="radio-buttons-group"
-                              >
-                                <FormControlLabel
-                                  value="disabled"
-                                  control={<Radio />}
-                                  label={
-                                    <span>
-                                      Draft
-                                      <span className="sub">
-                                        Only those who can edit the project can view the
-                                        page
-                                      </span>
-                                    </span>
-                                  }
-                                />
-                                <FormControlLabel
-                                  value="restricted"
-                                  control={<Radio />}
-                                  label={
-                                    <span>
-                                      Restricted
-                                      <span className="sub">
-                                        {' '}
-                                        — Only owners &amp; authorized people can view
-                                        the page
-                                      </span>
-                                    </span>
-                                  }
-                                />
-                                <FormControlLabel
-                                  value="public"
-                                  control={<Radio />}
-                                  label={
-                                    <span>
-                                      Public
-                                      <span className={styles.sub}>
-                                        {' '}
-                                        —{' '}
-                                        <span>
-                                          Anyone can view the page
-                                          <span>
-                                            ,{' '}
-                                            <strong>
-                                              {"you can enable this after you've saved"}
-                                            </strong>
-                                          </span>
-                                        </span>
-                                      </span>
-                                    </span>
-                                  }
-                                ></FormControlLabel>
-                              </RadioGroup>
-                            </FormControl>
-                          </div> */}
+                    {/* <div className={styles.input_row}><FormAccess /></div> */}
                   </div>
                   <div className={`misc ${styles.right_col}`}>
                     <div className={styles.simulation_input}>
