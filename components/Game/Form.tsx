@@ -54,8 +54,7 @@ interface GameFormProps {
   >
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let MESSAGE_SUBMIT_KEY: any
+let MESSAGE_SUBMIT_KEY: string | number
 
 const GameForm: React.FC<GameFormProps> = ({
   gameProject,
@@ -123,6 +122,49 @@ const GameForm: React.FC<GameFormProps> = ({
     trigger('appStoreLinks')
   }, [watchAppStoreLinks, trigger])
 
+  const validateGameFile = () => {
+    // 先支持 编辑
+    if (editorMode === EditorMode.CREATE && !uploadGameFile) {
+      return showSnackbar('Please upload game files', 'warning')
+    }
+  }
+  const validateDescription = (description: string) => {
+    if (!description) {
+      return showSnackbar('Description cannot be empty', 'warning')
+    }
+  }
+  const validatePaymentMode = (game: Game) => {
+    if (game.paymentMode === PaymentMode.PAID) {
+      if (!currentSelectTokenChainId) {
+        return showSnackbar('Please select chainId', 'warning')
+      }
+      if (isEmpty(currentSelectToken)) {
+        return showSnackbar('Please select Token', 'warning')
+      }
+      if (!currentSelectTokenAmount || currentSelectTokenAmount === '0') {
+        return showSnackbar('Please enter amount', 'warning')
+      }
+      if (!isStringNumber(currentSelectTokenAmount)) {
+        return showSnackbar('Please enter the correct amount', 'warning')
+      }
+      if (new BigNumber(currentSelectTokenAmount).lte('0')) {
+        return showSnackbar('Amount needs to be greater than zero', 'warning')
+      }
+    }
+    if (game.paymentMode === PaymentMode.FREE) {
+      if (!currentDonationAddress || !utils.isAddress(currentDonationAddress)) {
+        return showSnackbar('Please set a donation address', 'warning')
+      }
+    }
+  }
+  const validateGamePayload = async (data: Partial<Api.GameProjectDto>) => {
+    const result = await gameValidate(data)
+    if (result.status !== 200) {
+      console.error('gameValidateResult', result)
+      throw new Error('Game validate error')
+    }
+  }
+
   const handleAllImages = async () => {
     const promiseArray = []
 
@@ -156,189 +198,130 @@ const GameForm: React.FC<GameFormProps> = ({
     }
   }
 
+  const handleCreateGame = async (gameData: Api.GameProjectDto) => {
+    MESSAGE_SUBMIT_KEY = showSnackbar('Uploading game...', 'info', {
+      persist: true,
+    })
+
+    // check field
+    await validateGamePayload(gameData)
+
+    const formData = new FormData()
+    formData.append('file', uploadGameFile as File)
+    formData.append('game', JSON.stringify(gameData))
+
+    const createGameResult = await createGame(formData)
+    // console.log('createGameResult', createGameResult)
+    if (createGameResult.status === 201) {
+      saveAlgoliaGame(Number(createGameResult.data.id))
+      showSnackbar('Uploaded successfully', 'success')
+      router.push('/dashboard')
+    } else {
+      console.error('createGame', createGameResult)
+      throw new Error('createGame error')
+    }
+  }
+
+  const handleUpdateGame = async (game: Api.GameProjectDto) => {
+    MESSAGE_SUBMIT_KEY = showSnackbar('Updating game...', 'info', {
+      persist: true,
+    })
+
+    const gameData: Partial<Api.GameProjectDto> = { ...game }
+    // Update game payload not allow gameName kind classification
+    delete gameData.gameName
+    delete gameData.kind
+    delete gameData.classification
+
+    // No re-upload cover removed gameName cover
+    if (!coverFileFile) {
+      delete gameData.cover
+    }
+    // No re-upload screenshots Deleted game screenshots
+    if (isEmpty(screenshotsFiles)) {
+      // delete all game screenshots
+      if (!isEmpty(game.screenshots)) {
+        delete gameData.screenshots
+      }
+    }
+
+    // check field
+    await validateGamePayload(gameData)
+
+    // 更新游戏文件
+    const formData = new FormData()
+    formData.append('file', uploadGameFile || '')
+    formData.append('game', JSON.stringify(gameData))
+
+    const updateGameResult = await updateGame(Number(id), formData)
+    if (updateGameResult.status === 200) {
+      saveAlgoliaGame(Number(updateGameResult.data.id))
+      showSnackbar('Update completed', 'success')
+      router.push(urlGame(id as string))
+    } else {
+      console.error('updateGame', updateGameResult)
+      throw new Error('Update game error')
+    }
+  }
+
   // handle create/edit game
   const handleGame = async (game: Game) => {
-    // 先支持 编辑
-    if (editorMode === EditorMode.CREATE && !uploadGameFile) {
-      return showSnackbar('Please upload game files', 'warning')
-    }
-
-    let description = ''
-    if (editorRef) {
-      description = editorRef.current?.getInstance().getMarkdown()
-    }
-    if (!description) {
-      return showSnackbar('Description cannot be empty', 'warning')
-    }
-
-    let prices: Api.GameProjectPricesDto[] = []
+    validateGameFile()
+    const description = editorRef?.current?.getInstance().getMarkdown() || ''
+    validateDescription(description)
+    const prices: Api.GameProjectPricesDto[] = []
+    validatePaymentMode(game)
     if (game.paymentMode === PaymentMode.PAID) {
-      if (!currentSelectTokenChainId) {
-        return showSnackbar('Please select chainId', 'warning')
-      }
-      if (isEmpty(currentSelectToken)) {
-        return showSnackbar('Please select Token', 'warning')
-      }
-      if (!currentSelectTokenAmount || currentSelectTokenAmount === '0') {
-        return showSnackbar('Please enter amount', 'warning')
-      }
-      if (!isStringNumber(currentSelectTokenAmount)) {
-        return showSnackbar('Please enter the correct amount', 'warning')
-      }
-      if (new BigNumber(currentSelectTokenAmount).lte('0')) {
-        return showSnackbar('Amount needs to be greater than zero', 'warning')
-      }
-
-      prices = [
-        {
-          chainId: currentSelectTokenChainId,
-          amount: utils
-            .parseUnits(currentSelectTokenAmount, currentSelectToken.decimals)
-            .toString(),
-          token: currentSelectToken.address,
-        },
-      ]
-    } else if (game.paymentMode === PaymentMode.FREE) {
-      if (!currentDonationAddress || !utils.isAddress(currentDonationAddress)) {
-        return showSnackbar('Please set a donation address', 'warning')
-      }
+      prices.push({
+        chainId: currentSelectTokenChainId,
+        amount: utils
+          .parseUnits(currentSelectTokenAmount, currentSelectToken.decimals)
+          .toString(),
+        token: currentSelectToken.address,
+      })
     }
+    let donationAddress = account?.accountId || ''
+    if (game.paymentMode === PaymentMode.FREE) {
+      donationAddress = utils.getAddress(currentDonationAddress)
+    }
+
+    // Parpare game data
+    const allImages = await handleAllImages()
+    const kind =
+      game.kind === GameEngine.DEFAULT && uploadGameFile
+        ? await inferProjectType(uploadGameFile)
+        : game.kind
+    const gameData: Api.GameProjectDto = {
+      title: trim(game.title),
+      subtitle: trim(game.subtitle),
+      gameName: trim(game.gameName).replaceAll(' ', '_'),
+      classification: ProjectClassification.GAMES,
+      kind,
+      releaseStatus: ReleaseStatus.RELEASED,
+      screenshots: allImages.screenshots,
+      cover: allImages.cover,
+      tags: game.tags,
+      appStoreLinks: game.appStoreLinks,
+      description: trim(description),
+      community: game.community,
+      genre: game.genre,
+      charset: game.charset,
+      paymentMode: game.paymentMode,
+      prices,
+      donationAddress,
+    }
+
+    console.log('file', uploadGameFile)
+    console.log('gameData', gameData)
 
     setSubmitLoading(true)
     try {
       if (editorMode === EditorMode.CREATE) {
-        MESSAGE_SUBMIT_KEY = showSnackbar('Uploading game...', 'info', {
-          persist: true,
-        })
-
-        const allImages = await handleAllImages()
-        const kind =
-          game.kind === GameEngine.DEFAULT && uploadGameFile
-            ? await inferProjectType(uploadGameFile)
-            : game.kind
-        const gameData: Api.GameProjectDto = {
-          title: trim(game.title),
-          subtitle: trim(game.subtitle),
-          gameName: trim(game.gameName).replaceAll(' ', '_'),
-          classification: ProjectClassification.GAMES,
-          kind,
-          releaseStatus: ReleaseStatus.RELEASED,
-          screenshots: allImages.screenshots,
-          cover: allImages.cover,
-          tags: game.tags,
-          appStoreLinks: game.appStoreLinks,
-          description: trim(description),
-          community: game.community,
-          genre: game.genre,
-          charset: game.charset,
-          paymentMode: game.paymentMode,
-          prices: prices,
-          donationAddress:
-            game.paymentMode === PaymentMode.FREE
-              ? utils.getAddress(currentDonationAddress)
-              : account?.accountId,
-        }
-        console.log('file', uploadGameFile)
-        console.log('gameData', gameData)
-
-        const formData = new FormData()
-        formData.append('file', uploadGameFile as File)
-        formData.append('game', JSON.stringify(gameData))
-
-        // check field
-        const gameValidateResult = await gameValidate(gameData)
-        if (gameValidateResult.status !== 200) {
-          console.error('gameValidateResult', gameValidateResult)
-          throw new Error('gameValidate error')
-        }
-
-        const createGameResult = await createGame(formData)
-        // console.log('createGameResult', createGameResult)
-
-        if (createGameResult.status === 201) {
-          saveAlgoliaGame(Number(createGameResult.data.id))
-
-          showSnackbar('Uploaded successfully', 'success')
-          router.push('/dashboard')
-        } else {
-          console.error('createGame', createGameResult)
-          throw new Error('createGame error')
-        }
-      } else if (editorMode === EditorMode.EDIT) {
+        await handleCreateGame(gameData)
+      }
+      if (editorMode === EditorMode.EDIT) {
         if (!id) return
-
-        MESSAGE_SUBMIT_KEY = showSnackbar('Updating game...', 'info', {
-          persist: true,
-        })
-
-        const allImages = await handleAllImages()
-        const kind =
-          game.kind === GameEngine.DEFAULT && uploadGameFile
-            ? await inferProjectType(uploadGameFile)
-            : game.kind
-        const gameData: Partial<Api.GameProjectDto> = {
-          title: trim(game.title),
-          subtitle: trim(game.subtitle),
-          // The only game name is not allowed to be modified
-          // gameName: trim(game.gameName).replaceAll(' ', '_'),
-          kind,
-          screenshots: allImages.screenshots,
-          cover: allImages.cover,
-          tags: game.tags,
-          appStoreLinks: game.appStoreLinks,
-          description: trim(description),
-          community: game.community,
-          genre: game.genre,
-          charset: game.charset,
-          paymentMode: game.paymentMode,
-          prices: prices,
-          donationAddress:
-            game.paymentMode === PaymentMode.FREE
-              ? utils.getAddress(currentDonationAddress)
-              : account?.accountId,
-        }
-
-        // Did not re-upload game files Remove gameName field
-        if (!uploadGameFile) {
-          delete gameData.gameName
-        }
-        // No re-upload cover removed gameName cover
-        if (!coverFileFile) {
-          delete gameData.cover
-        }
-        // No re-upload screenshots Deleted game screenshots
-        if (isEmpty(screenshotsFiles)) {
-          // delete all game screenshots
-          if (!isEmpty(game.screenshots)) {
-            delete gameData.screenshots
-          }
-        }
-
-        // 更新游戏文件
-        const formData = new FormData()
-        formData.append('file', uploadGameFile || '')
-        formData.append('game', JSON.stringify(gameData))
-
-        // check field
-        const gameValidateResult = await gameValidate(gameData)
-        if (gameValidateResult.status !== 200) {
-          console.error('gameValidateResult', gameValidateResult)
-          throw new Error('gameValidate error')
-        }
-
-        const updateGameResult = await updateGame(Number(id), formData)
-
-        if (updateGameResult.status === 200) {
-          saveAlgoliaGame(Number(updateGameResult.data.id))
-
-          showSnackbar('Update completed', 'success')
-          router.push(urlGame(id as string))
-        } else {
-          console.error('updateGame', updateGameResult)
-          throw new Error('updateGame error')
-        }
-      } else {
-        //
+        await handleUpdateGame(gameData)
       }
     } catch (error: unknown) {
       console.error('createGame/updateGame error: ', error)
