@@ -4,11 +4,16 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { initializationAlgoliaGame } from 'api/server'
 import useMetamask from 'hooks/useMetamask'
+import dynamic from 'next/dynamic'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { NextSeo } from 'next-seo'
 import { useSnackbar } from 'notistack'
 import { useCallback, useState } from 'react'
 import { useWallet } from 'use-wallet'
+
+const CommentsDisqus = dynamic(() => import('components/Game/CommentsDisqus'), {
+  ssr: false,
+})
 
 const Admin = () => {
   const { enqueueSnackbar } = useSnackbar()
@@ -69,6 +74,9 @@ const Admin = () => {
             MetaMask disconnect
           </Button>
         </Stack>
+        <div id="admin-disqus">
+          <CommentsDisqus title="commment" />
+        </div>
       </Box>
     </>
   )
