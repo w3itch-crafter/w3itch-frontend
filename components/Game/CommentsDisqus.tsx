@@ -14,7 +14,8 @@ const CommentsDisqus: FC<Props> = ({ title }) => {
   const [visible, setVisible] = useState(true)
   const { resolvedTheme } = useTheme()
   useEffect(() => {
-    if (resolvedTheme === 'dark') {
+    console.log(resolvedTheme)
+    if (resolvedTheme === 'light') {
       setVisible(false)
       sleep(100).then(() => {
         setVisible(true)
