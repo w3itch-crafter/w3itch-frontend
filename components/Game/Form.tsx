@@ -534,7 +534,7 @@ const GameForm: React.FC<GameFormProps> = ({
                       <FormClassification />
                     </div>
                     <div className={styles.input_row}>
-                      <FormKind />
+                      <FormKind {...{ editorMode }} />
                     </div>
                     <div className={styles.input_row}>
                       <FormReleaseStatus />
