@@ -73,13 +73,13 @@ export class Game {
   appStoreLinks: string[]
 
   // Use localhost url, do not use Url verification
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   cover: string
 
   // Use localhost url, do not use Url verification
-  @IsString({ each: true })
   @IsOptional()
+  @IsString({ each: true })
   screenshots: string[]
 
   @IsEnum(GameFileCharset)
