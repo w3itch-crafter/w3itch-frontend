@@ -10,7 +10,6 @@ import BigNumber from 'bignumber.js'
 import { UploadGame, UploadGameCover, UploadGameScreenshots } from 'components'
 import { TokenList } from 'components'
 import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
-import { AuthenticationContext } from 'context'
 import { utils } from 'ethers'
 import { useAccountInfo, useTitle, useTopCenterSnackbar } from 'hooks'
 import useTokens from 'hooks/useTokens'
@@ -64,9 +63,6 @@ const GameForm: React.FC<GameFormProps> = ({
 }) => {
   const router = useRouter()
   const id = router.query.id
-
-  const { state } = React.useContext(AuthenticationContext)
-  const { isAuthenticated } = state
 
   const {
     register,
@@ -359,11 +355,7 @@ const GameForm: React.FC<GameFormProps> = ({
   }
 
   const onSubmit: SubmitHandler<Game> = async (data) => {
-    console.log(data)
     handleGame(data)
-
-    // const result = await handleAllImages()
-    // console.log('result', result)
   }
 
   // handle cover
@@ -504,11 +496,6 @@ const GameForm: React.FC<GameFormProps> = ({
     currentSelectTokenAmountFlag,
     currentDonationAddressFlag,
   ])
-
-  useEffect(() => {
-    console.log('isAuthenticated', isAuthenticated)
-    // if (!isAuthenticated) router.replace('/login')
-  }, [isAuthenticated, router])
 
   return (
     <Fragment>
