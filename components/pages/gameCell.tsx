@@ -39,7 +39,7 @@ export function GameCell({
   const GameThumb = styled.div<
     Pick<GameCellProps, 'width' | 'height'> & { cover: string }
   >`
-    background-image: ${(p) => `url(${p.cover})`};
+    background-image: ${(p) => (p.cover ? `url(${p.cover})` : 'none')};
     background-position: 50% 50%;
     background-size: cover;
     background-color: var(--w3itch-bg1);

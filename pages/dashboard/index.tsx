@@ -6,12 +6,12 @@ import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack'
 import { deleteGameProject, getGamesMine } from 'api'
 import { deleteAlgoliaGame } from 'api/server'
+import Cover from 'components/Cover'
 import Navigation from 'components/Dashboard/Navigation'
 import { AuthenticationContext } from 'context'
 import { kinds } from 'data'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
 import Router, { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -107,13 +107,7 @@ const HasGameProject: FC<HasGameProjectProps> = ({
             <div className={styles.game_row} key={item.id}>
               <Link href={urlGame(item.id)}>
                 <a className={styles.cover_link}>
-                  <Image
-                    width={105}
-                    height={83}
-                    objectFit="cover"
-                    src={item.cover}
-                    alt="cover"
-                  />
+                  <Cover src={item.cover} />
                 </a>
               </Link>
               <div className={styles.game_details}>

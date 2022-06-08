@@ -147,7 +147,7 @@ const GameForm: React.FC<GameFormProps> = ({
     console.log('resultAllImages', resultAllImages)
 
     return {
-      cover: coverFileFile ? resultAllImages[0].data.publicUrl : '',
+      cover: coverFileFile ? resultAllImages[0].data.publicUrl : undefined,
       screenshots: screenshotsFiles?.length
         ? coverFileFile
           ? resultAllImages.slice(1).map((i) => i.data.publicUrl)
