@@ -9,9 +9,10 @@ import { kinds } from 'data'
 import { FC } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
+import { EditorMode } from 'types/enum'
 import { Game } from 'utils'
 
-const FormKind: FC = () => {
+const FormKind: FC<{ editorMode: EditorMode }> = ({ editorMode }) => {
   const {
     control,
     formState: { errors },
@@ -25,7 +26,11 @@ const FormKind: FC = () => {
         <>
           <FormControl fullWidth error={Boolean(errors.kind)}>
             <FormLabel id="form-kind">Kind of project</FormLabel>
-            <Select id="form-kind" {...field}>
+            <Select
+              id="form-kind"
+              {...field}
+              disabled={editorMode === EditorMode.EDIT}
+            >
               {kinds.map((kind) => (
                 <MenuItem value={kind.value} key={kind.value}>
                   {kind.label}
