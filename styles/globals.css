@@ -287,3 +287,15 @@
   --aa-search-input-height: 36px;
 }
 /* Algolia end */
+
+/* disqus */
+#admin-disqus {
+  max-width: 800px;
+  padding: 20px;
+  background: var(--w3itch-bg2);
+}
+
+#disqus_thread {
+  background: var(--w3itch-bg2);
+}
+/* disqus end */
