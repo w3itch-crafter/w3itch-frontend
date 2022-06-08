@@ -240,7 +240,7 @@ const GameForm: React.FC<GameFormProps> = ({
     // No re-upload screenshots Deleted game screenshots
     if (isEmpty(screenshotsFiles)) {
       // delete all game screenshots
-      if (!isEmpty(game.screenshots)) {
+      if (isEmpty(game.screenshots)) {
         delete gameData.screenshots
       }
     }
