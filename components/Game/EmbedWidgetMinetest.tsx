@@ -117,6 +117,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
                 })}
                 scrolling="no"
                 id="game_drop"
+                ref={iframeRef}
               ></iframe>
             )}
             <div
