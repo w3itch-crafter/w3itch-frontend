@@ -122,39 +122,42 @@ const GameForm: React.FC<GameFormProps> = ({
     trigger('appStoreLinks')
   }, [watchAppStoreLinks, trigger])
 
-  const validateGameFile = () => {
-    // 先支持 编辑
-    if (editorMode === EditorMode.CREATE && !uploadGameFile) {
-      return showSnackbar('Please upload game files', 'warning')
-    }
+  const validate = (cond: boolean, msg: string) => {
+    if (cond) throw new Error(msg)
   }
-  const validateDescription = (description: string) => {
-    if (!description) {
-      return showSnackbar('Description cannot be empty', 'warning')
-    }
-  }
+
+  // 先支持 编辑
+  const validateGameFile = () =>
+    validate(
+      editorMode === EditorMode.CREATE && !uploadGameFile,
+      'Please upload game files'
+    )
+
+  const validateDescription = (description: string) =>
+    validate(!description, 'Description cannot be empty')
+
   const validatePaymentMode = (game: Game) => {
     if (game.paymentMode === PaymentMode.PAID) {
-      if (!currentSelectTokenChainId) {
-        return showSnackbar('Please select chainId', 'warning')
-      }
-      if (isEmpty(currentSelectToken)) {
-        return showSnackbar('Please select Token', 'warning')
-      }
-      if (!currentSelectTokenAmount || currentSelectTokenAmount === '0') {
-        return showSnackbar('Please enter amount', 'warning')
-      }
-      if (!isStringNumber(currentSelectTokenAmount)) {
-        return showSnackbar('Please enter the correct amount', 'warning')
-      }
-      if (new BigNumber(currentSelectTokenAmount).lte('0')) {
-        return showSnackbar('Amount needs to be greater than zero', 'warning')
-      }
+      validate(!currentSelectTokenChainId, 'Please select chainId')
+      validate(isEmpty(currentSelectToken), 'Please select Token')
+      validate(
+        !currentSelectTokenAmount || currentSelectTokenAmount === '0',
+        'Please enter amount'
+      )
+      validate(
+        !isStringNumber(currentSelectTokenAmount),
+        'Please enter the correct amount'
+      )
+      validate(
+        new BigNumber(currentSelectTokenAmount).lte('0'),
+        'Amount needs to be greater than zero'
+      )
     }
     if (game.paymentMode === PaymentMode.FREE) {
-      if (!currentDonationAddress || !utils.isAddress(currentDonationAddress)) {
-        return showSnackbar('Please set a donation address', 'warning')
-      }
+      validate(
+        !currentDonationAddress || !utils.isAddress(currentDonationAddress),
+        'Please set a donation address'
+      )
     }
   }
   const validateGamePayload = async (data: Partial<Api.GameProjectDto>) => {
@@ -266,11 +269,17 @@ const GameForm: React.FC<GameFormProps> = ({
 
   // handle create/edit game
   const handleGame = async (game: Game) => {
-    validateGameFile()
     const description = editorRef?.current?.getInstance().getMarkdown() || ''
-    validateDescription(description)
     const prices: Api.GameProjectPricesDto[] = []
-    validatePaymentMode(game)
+
+    try {
+      validateGameFile()
+      validateDescription(description)
+      validatePaymentMode(game)
+    } catch (e: unknown) {
+      return showSnackbar((e as Error).message, 'warning')
+    }
+
     if (game.paymentMode === PaymentMode.PAID) {
       prices.push({
         chainId: currentSelectTokenChainId,
