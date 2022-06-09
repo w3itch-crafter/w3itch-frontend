@@ -1,6 +1,7 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { Editor } from '@toast-ui/react-editor'
 import GameForm from 'components/Game/Form'
+import { useGetFormCache } from 'hooks'
 import type { NextPage } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { MutableRefObject, useState } from 'react'
@@ -34,9 +35,11 @@ const GameCreate: NextPage = () => {
     cover: '',
   })
 
+  const cacheValue = useGetFormCache(EditorMode.CREATE)
+
   const methods = useForm<Game>({
     resolver: resolverGame,
-    defaultValues: defaultValue,
+    defaultValues: { ...defaultValue, ...cacheValue },
   })
 
   return (

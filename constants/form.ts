@@ -1,0 +1,1 @@
+export const FORM_CACHE_KEY = 'W3ITCH_FORM_CACHE'

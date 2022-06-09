@@ -8,7 +8,12 @@ import BigNumber from 'bignumber.js'
 import { TokenList } from 'components'
 import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
 import { utils } from 'ethers'
-import { useAccountInfo, useTitle, useTopCenterSnackbar } from 'hooks'
+import {
+  useAccountInfo,
+  useSetFormCache,
+  useTitle,
+  useTopCenterSnackbar,
+} from 'hooks'
 import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
@@ -103,6 +108,8 @@ const GameForm: React.FC<GameFormProps> = ({
     control,
     name: 'appStoreLinks',
   })
+
+  const { cleanFormCache } = useSetFormCache(editorMode)
 
   // Watch appStoreLinks change then trigger
   useEffect(() => {
@@ -347,6 +354,7 @@ const GameForm: React.FC<GameFormProps> = ({
 
   const onSubmit: SubmitHandler<Game> = async (data) => {
     handleGame(data)
+    cleanFormCache(editorMode)
   }
 
   // handle cover
