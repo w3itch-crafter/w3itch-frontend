@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
 import StarBorderIcon from '@mui/icons-material/StarBorder'
-import { getCalendar } from 'api'
 import JamCarousel from 'components/Jam/JamCarousel'
 import { useCallback, useEffect, useState } from 'react'
+import { getCalendar } from 'services'
 import {
   calendarFormatData,
   calendarNewJams,

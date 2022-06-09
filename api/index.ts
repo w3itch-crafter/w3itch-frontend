@@ -1,6 +1,5 @@
 export * from './account'
 export * from './blockchains'
-export * from './calendar'
 export * from './games'
 export * from './ratings'
 export * from './server'
