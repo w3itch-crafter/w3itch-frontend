@@ -13,7 +13,7 @@ import { Game } from 'utils'
 
 const emptyGame = new Game()
 
-type DefaultCache = Record<EditorMode, Game | null>
+type DefaultCache = Record<EditorMode, Game>
 const defaultCache: DefaultCache = {
   CREATE: { ...emptyGame },
   EDIT: { ...emptyGame },
@@ -57,7 +57,7 @@ export function useSetFormCache(mode: EditorMode) {
       screenshots,
       charset,
     }
-    defaultCache[mode] = Object.assign(defaultCache[mode], changedGame)
+    defaultCache[mode] = Object.assign(defaultCache[mode], changedGame) as Game
     const cacheJson = JSON.stringify(defaultCache)
     if (typeof window !== 'undefined') {
       window.sessionStorage.setItem(FORM_CACHE_KEY, cacheJson)
