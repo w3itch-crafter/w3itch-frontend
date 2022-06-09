@@ -1,14 +1,7 @@
 import styled from '@emotion/styled'
 import Button from '@mui/material/Button'
 import Image from 'next/image'
-import {
-  Dispatch,
-  FC,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { FileWithPath, useDropzone } from 'react-dropzone'
 import { useFormContext } from 'react-hook-form'
 import { EditorMode } from 'types/enum'
@@ -64,15 +57,30 @@ const ButtonRemoveImage = styled.button`
 
 interface Props {
   readonly editorMode: EditorMode
-  setFile: Dispatch<SetStateAction<File | undefined>>
+  onCoverFileSelect: (file?: File) => void
+  // setFile: Dispatch<SetStateAction<File | undefined>>
 }
 
-export const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
+export const UploadGameCover: FC<Props> = ({
+  onCoverFileSelect,
+  editorMode,
+}) => {
   const [coverFile, setCoverFile] = useState<FileWithPath>()
   const [coverUrl, setCoverUrl] = useState<string>('')
 
   const { getValues, watch } = useFormContext<Game>()
   const watchCover = watch('cover')
+
+  const handleRemoveCover = useCallback<
+    React.MouseEventHandler<HTMLButtonElement>
+  >(
+    (event) => {
+      event.stopPropagation()
+      setCoverFile(undefined)
+      onCoverFileSelect(undefined)
+    },
+    [onCoverFileSelect]
+  )
 
   useEffect(() => {
     if (editorMode === EditorMode.EDIT && !coverFile) {
@@ -90,10 +98,10 @@ export const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
 
       if (acceptedFiles.length) {
         setCoverFile(acceptedFiles[0])
-        setFile(acceptedFiles[0])
+        onCoverFileSelect(acceptedFiles[0])
       }
     },
-    [setCoverFile, setFile]
+    [setCoverFile, onCoverFileSelect]
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -122,14 +130,7 @@ export const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
                 <Button variant="contained" type="button">
                   Replace Cover Image
                 </Button>
-                <ButtonRemoveImage
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setCoverFile(undefined)
-                    setFile(undefined)
-                  }}
-                >
+                <ButtonRemoveImage type="button" onClick={handleRemoveCover}>
                   Remove Image
                 </ButtonRemoveImage>
               </WrapperDrapContainerBackdrop>

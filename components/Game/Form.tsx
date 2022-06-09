@@ -1,13 +1,10 @@
 import LoadingButton from '@mui/lab/LoadingButton'
-import { FormControl, FormHelperText, FormLabel } from '@mui/material'
-import { TextField } from '@mui/material'
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { useDebounceFn } from 'ahooks'
 import { createGame, gameValidate, saveAlgoliaGame } from 'api/index'
 import { storagesUploadToAWS, updateGame } from 'api/index'
 import { AxiosError } from 'axios'
 import BigNumber from 'bignumber.js'
-import { UploadGame, UploadGameCover, UploadGameScreenshots } from 'components'
 import { TokenList } from 'components'
 import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
 import { utils } from 'ethers'
@@ -18,7 +15,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import React, { Fragment, useEffect, useState } from 'react'
-import { FieldError, SubmitHandler } from 'react-hook-form'
+import { SubmitHandler } from 'react-hook-form'
 import { useFormContext, useWatch } from 'react-hook-form'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
@@ -34,7 +31,9 @@ import FormCharset from './FormCharset'
 import FormClassification from './FormClassification'
 import FormCommunity from './FormCommunity'
 import FormDescription from './FormDescription'
-import FormGameName from './FormGameName'
+import FormGameCover from './FormGameCover'
+import FormGameFile from './FormGameFile'
+import FormGameScreenshots from './FormGameScreenshots'
 import FormGenre from './FormGenre'
 import FormHeader from './FormHeader'
 import FormKind from './FormKind'
@@ -64,16 +63,8 @@ const GameForm: React.FC<GameFormProps> = ({
   const router = useRouter()
   const id = router.query.id
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    control,
-    watch,
-    formState: { errors },
-    getValues,
-    trigger,
-  } = useFormContext<Game>()
+  const { handleSubmit, setValue, control, watch, getValues, trigger } =
+    useFormContext<Game>()
 
   const account = useAccountInfo('metamask')
   const showSnackbar = useTopCenterSnackbar()
@@ -359,14 +350,18 @@ const GameForm: React.FC<GameFormProps> = ({
   }
 
   // handle cover
-  const handleCoverValue = (file: File) => {
-    setCoverFileFile(file)
-    setValue('cover', parseUrl(fileUrl(file)))
-  }
+  const handleCover = React.useCallback(
+    async (file?: File) => {
+      setCoverFileFile(file)
+      setValue('cover', parseUrl(fileUrl(file)))
+      await trigger('cover')
+    },
+    [setValue, trigger]
+  )
 
   // handle screenshots
   const handleScreenshots = React.useCallback(
-    (files: File[] | undefined) => {
+    async (files: File[] | undefined) => {
       setScreenshotsFiles(files)
 
       const screenshotsUrls = files
@@ -374,21 +369,23 @@ const GameForm: React.FC<GameFormProps> = ({
         : []
 
       setValue('screenshots', screenshotsUrls)
+      await trigger('screenshots')
     },
-    [setValue]
+    [setValue, trigger]
   )
 
   // handle gameFile
   const handleGameFile = React.useCallback(
-    (file: File | undefined) => {
+    async (file: File | undefined) => {
       setUploadGameFile(file)
 
       const name = parseFilename(file?.name || '')
       if (name) {
         setValue('gameName', name)
+        await trigger('gameName')
       }
     },
-    [setValue]
+    [setValue, trigger]
   )
 
   // Description change triggers validation
@@ -558,36 +555,10 @@ const GameForm: React.FC<GameFormProps> = ({
                     <div
                       className={`${styles.input_row} ${styles.simulation_input}`}
                     >
-                      <FormControl fullWidth error={Boolean(errors.gameName)}>
-                        <FormLabel id="form-genre">Uploads</FormLabel>
-                        <section
-                          data-label="Tip"
-                          className={`${styles.hint} ${styles.butler_tip}`}
-                        >
-                          File size limit: 1 GB. Game name doesn&apos;t allow
-                          starts or ends with _ or -.
-                        </section>
-                        <UploadGame
-                          setFile={async (file) => {
-                            handleGameFile(file as File | undefined)
-                            await trigger('gameName')
-                          }}
-                        />
-                        <TextField
-                          style={{
-                            opacity: '0',
-                            position: 'absolute',
-                            zIndex: -99,
-                          }}
-                          {...register('gameName')}
-                        />
-                        {editorMode === EditorMode.EDIT && (
-                          <FormGameName>{getValues('gameName')}</FormGameName>
-                        )}
-                        <FormHelperText>
-                          {errors?.gameName?.message}
-                        </FormHelperText>
-                      </FormControl>
+                      <FormGameFile
+                        editorMode={editorMode}
+                        onGameFileSelect={handleGameFile}
+                      />
                     </div>
 
                     {/* minetest doesn't need charset */}
@@ -625,55 +596,15 @@ const GameForm: React.FC<GameFormProps> = ({
                   </div>
                   <div className={`misc ${styles.right_col}`}>
                     <div className={styles.simulation_input}>
-                      <FormControl fullWidth error={Boolean(errors.cover)}>
-                        <div className={styles.game_edit_cover_uploader_widget}>
-                          <UploadGameCover
-                            editorMode={editorMode}
-                            setFile={async (file) => {
-                              handleCoverValue(file as File)
-                              await trigger('cover')
-                            }}
-                          />
-                          <p className={`${styles.sub} instructions`}>
-                            The cover image is used whenever w3itch.io wants to
-                            link to your project from another part of the site.
-                            Required (Minimum: 315x250, Recommended: 630x500)
-                          </p>
-                        </div>
-                        <TextField
-                          style={{
-                            opacity: '0',
-                            position: 'absolute',
-                            zIndex: -99,
-                          }}
-                          {...register('cover')}
-                        />
-                        <FormHelperText error={Boolean(errors.cover)}>
-                          {errors?.cover?.message}
-                        </FormHelperText>
-                      </FormControl>
+                      <FormGameCover
+                        editorMode={editorMode}
+                        onCoverFileSelect={handleCover}
+                      />
                     </div>
                     <section className={styles.screenshot_editor}>
-                      <div className={styles.label}>Screenshots</div>
-                      <p className={styles.sub}>
-                        <span className="when_default">
-                          {"Screenshots will appear on your game's page."}{' '}
-                        </span>
-                        Optional but highly recommended. Upload 3 to 5 for best
-                        results.
-                      </p>
-                      <FormHelperText error={Boolean(errors?.screenshots)}>
-                        {
-                          (errors?.screenshots as unknown as FieldError)
-                            ?.message
-                        }
-                      </FormHelperText>
-                      <UploadGameScreenshots
+                      <FormGameScreenshots
                         editorMode={editorMode}
-                        setFiles={async (files) => {
-                          handleScreenshots(files as File[] | undefined)
-                          await trigger('screenshots')
-                        }}
+                        onScreenshotFilesSelect={handleScreenshots}
                       />
                     </section>
                   </div>
@@ -683,22 +614,12 @@ const GameForm: React.FC<GameFormProps> = ({
                     variant="contained"
                     type="submit"
                     loading={submitLoading}
-                    sx={{
-                      width: {
-                        xs: '100%',
-                        sm: 'auto',
-                      },
-                    }}
+                    sx={{ width: { xs: '100%', sm: 'auto' } }}
                   >
-                    {editorMode === EditorMode.CREATE
-                      ? 'Save'
-                      : editorMode === EditorMode.EDIT
-                      ? 'Update'
-                      : 'Save'}
+                    {editorMode === EditorMode.CREATE && 'Save'}
+                    {editorMode === EditorMode.EDIT && 'Update'}
                   </LoadingButton>
-                  <div
-                    className={`${styles.loader} ${styles.form_loader}`}
-                  ></div>
+                  <div className={`${styles.loader} ${styles.form_loader}`} />
                 </div>
               </form>
             </div>
