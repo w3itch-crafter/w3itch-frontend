@@ -68,6 +68,9 @@ const JamInfoDescription = styled.p`
 const JamHosted = styled.div`
   margin: 8px 0;
   color: var(--w3itch-text2);
+  a {
+    color: var(--w3itch-text2);
+  }
 `
 
 const JamTime = styled.div`
