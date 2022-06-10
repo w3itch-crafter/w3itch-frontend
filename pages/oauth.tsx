@@ -174,6 +174,7 @@ export const getServerSideProps: GetServerSideProps<OAuthProps> = async (
   context
 ) => {
   const { success, code, method, service } = context.query as OAuthProps
+  const isOAuthSuccess = success === 'true' && code === '200'
 
   // redirect
   const redirectToGames = () => {
@@ -183,25 +184,15 @@ export const getServerSideProps: GetServerSideProps<OAuthProps> = async (
       context.res.writeHead(302, { Location: '/games' }).end()
     }
   }
+  if (isOAuthSuccess && !method) redirectToGames()
 
-  if (!success && !code) {
-    redirectToGames()
-  }
-  if (
-    success === 'true' &&
-    code === '200' &&
-    method !== 'authorize_callback_signup'
-  ) {
-    redirectToGames()
-  }
+  const pageProps: OAuthProps = { success, code, method, service }
 
   return {
     props: {
       ...(await serverSideTranslations(context.locale || 'en-US', ['common'])),
-      success,
-      code,
-      method,
-      service,
+      // fix Next.js error: "Reason: `undefined` cannot be serialized as JSON. Please use `null` or omit this value."
+      ...JSON.parse(JSON.stringify(pageProps)),
     },
   }
 }
