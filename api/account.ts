@@ -121,3 +121,7 @@ export async function getMine(): Promise<AccountEntity[] | null> {
     return null
   }
 }
+
+export async function authSignup(username: string): Promise<void> {
+  await backend.post('/accounts/authorize-callback-signup', { username })
+}
