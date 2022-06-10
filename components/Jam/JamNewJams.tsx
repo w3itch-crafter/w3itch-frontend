@@ -1,6 +1,11 @@
 import styled from '@emotion/styled'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import StarBorderIcon from '@mui/icons-material/StarBorder'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import JamCarousel from 'components/Jam/JamCarousel'
+import { isEmpty } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { getCalendar } from 'services'
 import {
@@ -33,19 +38,27 @@ const NewJamsWidget = styled.div`
 `
 
 const JamNewJams = () => {
-  const [newJams, setNewJams] = useState([])
+  const [newJams, setNewJams] = useState<Calendar.Jam[]>([])
+  const [newJamsError, setNewJamsError] = useState<boolean>(false)
 
   const fetchNewJams = useCallback(async () => {
-    const result = await getCalendar()
-    console.log('result', result)
-    const calendarData = compose(
-      calendarSortAsc,
-      calendarNewJams,
-      calendarFormatData
-    )(result?.data)
+    setNewJamsError(false)
 
-    // console.log('calendarData', calendarData)
-    setNewJams(calendarData)
+    try {
+      const result = await getCalendar()
+      // console.log('result', result)
+      const calendarData = compose(
+        calendarSortAsc,
+        calendarNewJams,
+        calendarFormatData
+      )(result?.data)
+
+      // console.log('calendarData', calendarData)
+      setNewJams(calendarData)
+    } catch (e) {
+      console.log(e)
+      setNewJamsError(true)
+    }
   }, [])
 
   useEffect(() => {
@@ -60,8 +73,26 @@ const JamNewJams = () => {
       </NewJamsTitle>
       <NewJamsWidget>
         {newJams.map((jam, i) => (
-          <JamCarousel key={i} jam={jam} />
+          <JamCarousel key={i + '-' + jam.summary} jam={jam} />
         ))}
+        {!newJamsError && isEmpty(newJams) && (
+          <Box sx={{ textAlign: 'center' }}>
+            <CircularProgress />
+          </Box>
+        )}
+        {newJamsError && (
+          <Box sx={{ textAlign: 'center' }}>
+            <Button
+              variant="outlined"
+              startIcon={<ErrorOutlineIcon />}
+              onClick={() => {
+                fetchNewJams()
+              }}
+            >
+              Refresh
+            </Button>
+          </Box>
+        )}
       </NewJamsWidget>
     </NewJams>
   )
