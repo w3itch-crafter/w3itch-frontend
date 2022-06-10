@@ -29,6 +29,12 @@ export declare type RegisterData = {
   developer: boolean
 }
 
+export declare type InvalidData = {
+  [key in keyof RegisterData]: {
+    message: string
+  }
+}
+
 type Join<K, P> = K extends string
   ? P extends string
     ? `${K}${'' extends P ? '' : '.'}${P}`
@@ -237,3 +243,5 @@ export type TokenDetail = Token & {
   readonly totalSupply: ethers.BigNumber
   readonly balanceOf: ethers.BigNumber
 }
+
+export declare type PageLocale = { locale: string }
