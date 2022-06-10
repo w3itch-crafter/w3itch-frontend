@@ -3,13 +3,15 @@ import { authSignup } from 'api'
 import { RedButton } from 'components/buttons'
 import { InputRow } from 'components/forms'
 import { PageCard, StatHeader } from 'components/pages'
+import { AuthenticationContext } from 'context'
 import { useTopRightSnackbar } from 'hooks'
 import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { Fragment, useState } from 'react'
+import { Fragment, useContext, useState } from 'react'
 import { InvalidData, RegisterData } from 'types'
 import { isEmptyObj, userHostUrl } from 'utils'
 
@@ -55,6 +57,7 @@ const defaultData: RegisterData = {
 
 const OAuth: NextPage<OAuthProps> = ({ success, code, method }: OAuthProps) => {
   const { t } = useTranslation()
+  const router = useRouter()
   const isOAuthSuccess = success === 'true' && code === '200'
   const isNeedSignup = isOAuthSuccess && method === 'authorize_callback_signup'
   const title = isOAuthSuccess ? t('OAuth Success') : t('OAuth Error')
@@ -82,6 +85,7 @@ const OAuth: NextPage<OAuthProps> = ({ success, code, method }: OAuthProps) => {
   const [invalidData, setInvalidData] = useState<Partial<InvalidData>>({})
   const [hasStarted, setHasStarted] = useState(false)
   const showSnackbar = useTopRightSnackbar()
+  const { dispatch } = useContext(AuthenticationContext)
   const handleRegisterData = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
@@ -104,7 +108,9 @@ const OAuth: NextPage<OAuthProps> = ({ success, code, method }: OAuthProps) => {
     if (!check) return
     setHasStarted(true)
     try {
-      await authSignup(registerData.username)
+      const { user, account } = await authSignup(registerData.username)
+      dispatch({ type: 'LOGIN', payload: { user, account: [account] } })
+      await router.replace('/games')
     } catch (error) {
       if (error instanceof Error) {
         return showSnackbar(error.message, 'error')
@@ -184,7 +190,9 @@ export const getServerSideProps: GetServerSideProps<OAuthProps> = async (
       context.res.writeHead(302, { Location: '/games' }).end()
     }
   }
-  if (isOAuthSuccess && !method) redirectToGames()
+  if (isOAuthSuccess && method !== 'authorize_callback_signup') {
+    redirectToGames()
+  }
 
   const pageProps: OAuthProps = { success, code, method, service }
 

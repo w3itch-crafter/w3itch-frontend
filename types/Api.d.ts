@@ -87,6 +87,11 @@ declare namespace Api {
     account: AccountEntity
   }
 
+  type AccountsAuthSignupResponse = {
+    user: UserEntity
+    account: AccountEntity
+  }
+
   type BlockchainsEvmTokensResponse = {
     id: number
     createdAt: Date
