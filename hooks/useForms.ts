@@ -10,6 +10,13 @@ import {
 } from 'types/enum'
 import { Game } from 'utils'
 
+function getCacheKey(mode: EditorMode, gameId?: string | number): string {
+  if (mode === EditorMode.EDIT && gameId) {
+    return `W3ITCH_FORM_CACHE_${gameId}`
+  }
+  return 'W3ITCH_FORM_CACHE_CREATE'
+}
+
 export function useSetFormCache(mode: EditorMode, gameId?: string | number) {
   // useWatch always return string | string[] type
   const title = useWatch<Game>({ name: 'title' }) as string
@@ -25,10 +32,7 @@ export function useSetFormCache(mode: EditorMode, gameId?: string | number) {
   const screenshots = useWatch<Game>({ name: 'screenshots' }) as string[]
   const charset = useWatch<Game>({ name: 'charset' }) as GameFileCharset
 
-  let cacheKey = 'W3ITCH_FORM_CACHE_CREATE'
-  if (mode === EditorMode.EDIT && gameId) {
-    cacheKey = `W3ITCH_FORM_CACHE_${gameId}`
-  }
+  const cacheKey = getCacheKey(mode, gameId)
 
   const cleanFormCache = useCallback(() => {
     if (typeof window !== 'undefined') {
@@ -80,15 +84,13 @@ export function useGetFormCache(
   mode: EditorMode,
   gameId?: string | number
 ): Game | null {
+  const cacheKey = getCacheKey(mode, gameId)
+
   return useCallback(() => {
     if (typeof window !== 'undefined') {
-      let cacheKey = 'W3ITCH_FORM_CACHE_CREATE'
-      if (mode === EditorMode.EDIT && gameId) {
-        cacheKey = `W3ITCH_FORM_CACHE_${gameId}`
-      }
       const cacheJson = window.sessionStorage?.getItem(cacheKey)
       if (cacheJson) return JSON.parse(cacheJson) as Game
     }
     return null
-  }, [gameId, mode])()
+  }, [cacheKey])()
 }
