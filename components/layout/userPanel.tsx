@@ -86,10 +86,7 @@ export function UserPanel() {
       {!user && (
         <Fragment>
           <Link href="/login" passHref>
-            <PanelButton>{t('login')}</PanelButton>
-          </Link>
-          <Link href="/register" passHref>
-            <PanelButton>{t('Register')}</PanelButton>
+            <PanelButton>{t('Login')}</PanelButton>
           </Link>
         </Fragment>
       )}

@@ -12,7 +12,6 @@ import { AuthenticationContext } from 'context'
 import { useTopRightSnackbar } from 'hooks'
 import { NextPage } from 'next'
 import Head from 'next/head'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Fragment, useCallback, useContext, useState } from 'react'
@@ -49,7 +48,7 @@ const Login: NextPage = () => {
   const [hasStarted, setHasStarted] = useState(false)
   const [loginMethod, setLoginMethod] = useState<LoginMethod | null>(null)
   const canMetaMaskLogin = loginMethod === 'metamask' && isConnected
-  const canGitHubLogin = loginMethod === 'github' // TODO: check if can logged in
+  const canGitHubLogin = loginMethod === 'github'
   const canDiscordLogin = loginMethod === 'discord'
   const canLogin = canMetaMaskLogin || canGitHubLogin || canDiscordLogin
   const { dispatch } = useContext(AuthenticationContext)
@@ -142,7 +141,6 @@ const Login: NextPage = () => {
                 {loginMethod === 'github' && 'Log in with GitHub'}
                 {loginMethod === 'discord' && 'Log in with Discord'}
               </RedButton>
-              or <Link href="/register">Create account</Link>
             </Buttons>
           </Padded>
         </PageCard>

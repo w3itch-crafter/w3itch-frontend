@@ -44,30 +44,6 @@ const ErrorList = styled.ul`
 const FormColumn = styled.div`
   width: 50%;
   box-sizing: border-box;
-  border-right: 1px solid;
-  border-color: #dadada;
-
-  &:last-child {
-    border-right: 0;
-  }
-
-  h2 {
-    margin: 0 0 20px 0;
-  }
-
-  h3,
-  h4,
-  h5 {
-    margin-top: 0;
-    font-weight: 900;
-    color: var(--w3itch-text2);
-  }
-
-  p {
-    font-size: 14px;
-    margin: 0 0 20px 0;
-    line-height: 1.5;
-  }
 `
 
 const defaultData: RegisterData = {
