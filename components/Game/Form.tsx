@@ -66,7 +66,7 @@ const GameForm: React.FC<GameFormProps> = ({
   setEditorRef,
 }) => {
   const router = useRouter()
-  const id = router.query.id
+  const id = router.query.id as string
 
   const { handleSubmit, setValue, control, watch, getValues, trigger } =
     useFormContext<Game>()
@@ -109,7 +109,7 @@ const GameForm: React.FC<GameFormProps> = ({
     name: 'appStoreLinks',
   })
 
-  const { cleanFormCache } = useSetFormCache(editorMode)
+  const { cleanFormCache } = useSetFormCache(editorMode, id)
 
   // Watch appStoreLinks change then trigger
   useEffect(() => {
@@ -354,7 +354,7 @@ const GameForm: React.FC<GameFormProps> = ({
 
   const onSubmit: SubmitHandler<Game> = async (data) => {
     handleGame(data)
-    cleanFormCache(editorMode)
+    cleanFormCache()
   }
 
   // handle cover

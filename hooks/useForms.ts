@@ -1,4 +1,3 @@
-import { FORM_CACHE_KEY } from 'constants/form'
 import { useCallback, useEffect } from 'react'
 import { useWatch } from 'react-hook-form'
 import {
@@ -11,15 +10,7 @@ import {
 } from 'types/enum'
 import { Game } from 'utils'
 
-const emptyGame = new Game()
-
-type DefaultCache = Record<EditorMode, Game>
-const defaultCache: DefaultCache = {
-  CREATE: { ...emptyGame },
-  EDIT: { ...emptyGame },
-}
-
-export function useSetFormCache(mode: EditorMode) {
+export function useSetFormCache(mode: EditorMode, gameId?: string | number) {
   // useWatch always return string | string[] type
   const title = useWatch<Game>({ name: 'title' }) as string
   const subtitle = useWatch<Game>({ name: 'subtitle' }) as string
@@ -34,13 +25,16 @@ export function useSetFormCache(mode: EditorMode) {
   const screenshots = useWatch<Game>({ name: 'screenshots' }) as string[]
   const charset = useWatch<Game>({ name: 'charset' }) as GameFileCharset
 
-  const cleanFormCache = useCallback((mode: EditorMode) => {
-    defaultCache[mode] = {} as Game
-    const cacheJson = JSON.stringify(defaultCache)
+  let cacheKey = 'W3ITCH_FORM_CACHE_CREATE'
+  if (mode === EditorMode.EDIT && gameId) {
+    cacheKey = `W3ITCH_FORM_CACHE_${gameId}`
+  }
+
+  const cleanFormCache = useCallback(() => {
     if (typeof window !== 'undefined') {
-      window.sessionStorage.setItem(FORM_CACHE_KEY, cacheJson)
+      window.sessionStorage.setItem(cacheKey, '{}')
     }
-  }, [])
+  }, [cacheKey])
 
   useEffect(() => {
     const changedGame: Partial<Game> = {
@@ -57,14 +51,14 @@ export function useSetFormCache(mode: EditorMode) {
       screenshots,
       charset,
     }
-    defaultCache[mode] = Object.assign(defaultCache[mode], changedGame) as Game
-    const cacheJson = JSON.stringify(defaultCache)
+    const cacheJson = JSON.stringify(changedGame)
     if (typeof window !== 'undefined') {
-      window.sessionStorage.setItem(FORM_CACHE_KEY, cacheJson)
+      window.sessionStorage.setItem(cacheKey, cacheJson)
     }
-    console.log('defaultCache', defaultCache)
+    console.log('gameCache', changedGame)
   }, [
     appStoreLinks,
+    cacheKey,
     charset,
     community,
     cover,
@@ -82,13 +76,19 @@ export function useSetFormCache(mode: EditorMode) {
   return { cleanFormCache }
 }
 
-export function useGetFormCache(mode: EditorMode): Game | null {
-  if (typeof window !== 'undefined') {
-    const cacheJson = window.sessionStorage?.getItem(FORM_CACHE_KEY)
-    if (cacheJson) {
-      const cacheData: DefaultCache = JSON.parse(cacheJson)
-      return cacheData[mode]
+export function useGetFormCache(
+  mode: EditorMode,
+  gameId?: string | number
+): Game | null {
+  return useCallback(() => {
+    if (typeof window !== 'undefined') {
+      let cacheKey = 'W3ITCH_FORM_CACHE_CREATE'
+      if (mode === EditorMode.EDIT && gameId) {
+        cacheKey = `W3ITCH_FORM_CACHE_${gameId}`
+      }
+      const cacheJson = window.sessionStorage?.getItem(cacheKey)
+      if (cacheJson) return JSON.parse(cacheJson) as Game
     }
-  }
-  return null
+    return null
+  }, [gameId, mode])()
 }
