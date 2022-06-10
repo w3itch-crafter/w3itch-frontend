@@ -10,7 +10,6 @@ const CoverWrapper = styled.div`
   height: 100%;
   color: var(--w3itch-text1);
   background-color: var(--w3itch-bg1);
-  box-shadow: inset -1px 0 0 rgb(0 0 0 / 10%);
 `
 const CoverImg = styled.img`
   width: 100%;
