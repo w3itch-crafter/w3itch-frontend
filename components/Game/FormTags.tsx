@@ -6,11 +6,11 @@ import {
   FormLabel,
   TextField,
 } from '@mui/material'
-import { getTags } from 'api'
 import { trim } from 'lodash'
 import { isEmpty } from 'lodash'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { Controller, FieldError, useFormContext } from 'react-hook-form'
+import { getTags } from 'services'
 import styles from 'styles/game/new.module.scss'
 import { Api } from 'types/Api'
 import { EditorMode } from 'types/enum'

@@ -8,7 +8,6 @@ import Pagination from '@mui/material/Pagination'
 import Select from '@mui/material/Select'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { getGames, getTags } from 'api'
 import { SortIcon } from 'components/icons'
 import {
   FilterGroup,
@@ -28,6 +27,7 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { NextSeo } from 'next-seo'
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
+import { getGames, getTags } from 'services'
 import { GameEntity, GameInfo, PaginationMeta, TagOption } from 'types'
 import { buildQuerySting, findTags, isEmptyObj, urlGame } from 'utils'
 
