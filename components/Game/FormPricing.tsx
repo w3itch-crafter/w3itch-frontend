@@ -76,7 +76,7 @@ const FormPricing: FC<FormPricingProps> = ({
               <FormControlLabel
                 value={PaymentMode.PAID}
                 control={<Radio />}
-                label="Paid"
+                label="Hodl"
               />
               <FormControlLabel
                 value={PaymentMode.DISABLE_PAYMENTS}
