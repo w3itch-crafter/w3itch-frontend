@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
+import LoadingButton from '@mui/lab/LoadingButton'
 import { gameProjectPlayer } from 'api'
 import { utils } from 'ethers'
 import { useFullscreenCustomization } from 'hooks/useFullscreenCustomization'
@@ -9,7 +10,6 @@ import { useHoldUnlock } from 'hooks/useHoldUnlock'
 import { isEmpty } from 'lodash'
 import { FC, useCallback } from 'react'
 import { useRef, useState } from 'react'
-import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'
 import { balanceDecimal } from 'utils'
@@ -88,30 +88,24 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
           </div>
         ) : (
           <div className={styles.iframe_placeholder}>
-            <button
+            <LoadingButton
+              loading={false}
               onClick={() => handlePlay()}
-              className={`${stylesCommon.button} ${styles.button} ${styles.load_iframe_btn}`}
+              variant="contained"
+              size="large"
+              startIcon={!holdUnlock && <PlayCircleOutlineIcon />}
             >
-              {holdUnlock ? (
-                isEmpty(pricesToken) || !pricesToken ? (
-                  `Need to hold Token`
-                ) : (
-                  `Need to hold ${balanceDecimal(
-                    utils.formatUnits(pricesToken.amount, pricesToken.decimals)
-                  )} ${pricesToken.symbol}`
-                )
-              ) : (
-                <>
-                  <PlayCircleOutlineIcon
-                    sx={{
-                      mr: 1,
-                      fontSize: '26px',
-                    }}
-                  />
-                  Play
-                </>
-              )}
-            </button>
+              {holdUnlock
+                ? isEmpty(pricesToken) || !pricesToken
+                  ? `Need to hold Token`
+                  : `Need to hold ${balanceDecimal(
+                      utils.formatUnits(
+                        pricesToken.amount,
+                        pricesToken.decimals
+                      )
+                    )} ${pricesToken.symbol}`
+                : 'Play'}
+            </LoadingButton>
           </div>
         )}
       </Wrapper>

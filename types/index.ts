@@ -2,6 +2,7 @@ import { SupportedChainId } from 'constants/index'
 import { ethers } from 'ethers'
 import { NextPage } from 'next'
 import React from 'react'
+import { Wallet } from 'use-wallet/dist/cjs/types'
 
 import {
   Community,
@@ -202,7 +203,8 @@ declare global {
 
   interface Window {
     MINETEST_METAMASK: {
-      sendTransaction: (username: string, amount: string) => void
+      wallet: Wallet
+      sendTransaction: (username: string, amount: string) => Promise<void>
     }
   }
 }

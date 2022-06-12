@@ -11,21 +11,21 @@ import {
   Stack,
   TextField,
 } from '@mui/material'
+import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
-import { PrimaryButton } from 'components/CustomizedButtons'
 import TokenItem from 'components/TokenList/TokenItem'
 import type { SupportedChainId } from 'constants/chains'
 import {
   WalletSupportedChainIds,
   WalletSupportedChainNames,
 } from 'constants/chains'
-import { GameFormContext } from 'context/gameFormContext'
 import { isEmpty } from 'lodash'
-import { Dispatch, FC, SetStateAction, useContext } from 'react'
-import { Controller } from 'react-hook-form'
+import { Dispatch, FC, SetStateAction } from 'react'
+import { Controller, useFormContext } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
 import { Token } from 'types'
 import { PaymentMode } from 'types/enum'
+import { Game } from 'utils'
 
 interface FormPricingProps {
   readonly currentSelectToken: Token
@@ -52,7 +52,7 @@ const FormPricing: FC<FormPricingProps> = ({
     control,
     formState: { errors },
     watch,
-  } = useContext(GameFormContext)
+  } = useFormContext<Game>()
 
   return (
     <div>
@@ -129,13 +129,13 @@ const FormPricing: FC<FormPricingProps> = ({
               </Select>
             )}
 
-            <PrimaryButton
+            <Button
               size="small"
               onClick={() => setTtokenListDialogOpen(true)}
               variant="contained"
             >
               Select
-            </PrimaryButton>
+            </Button>
             {!isEmpty(currentSelectToken) && (
               <TokenItem
                 token={currentSelectToken}

@@ -5,7 +5,7 @@ import { isEqual, uniqWith } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { Token, Tokens } from 'types'
 
-export default function useTokens() {
+export function useTokens() {
   const [tokens, setTokens] = useState<Token[]>([])
 
   const fetchTokens = useCallback(async () => {
@@ -38,3 +38,5 @@ export default function useTokens() {
 
   return { tokens }
 }
+
+export default useTokens

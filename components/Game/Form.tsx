@@ -1,123 +1,79 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  MenuItem,
-  TextField,
-} from '@mui/material'
-import Select from '@mui/material/Select'
-import { AxiosError } from 'axios'
-import dynamic from 'next/dynamic'
-import Link from 'next/link'
-import {
-  Dispatch,
-  FC,
-  Fragment,
-  MutableRefObject,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
-import stylesCommon from 'styles/common.module.scss'
-import styles from 'styles/game/new.module.scss'
-const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
+import LoadingButton from '@mui/lab/LoadingButton'
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { useDebounceFn } from 'ahooks'
-import {
-  createGame,
-  gameValidate,
-  storagesUploadToAWS,
-  updateGame,
-} from 'api/index'
-import { saveAlgoliaGame } from 'api/server'
+import { createGame, gameValidate, saveAlgoliaGame } from 'api/index'
+import { storagesUploadToAWS, updateGame } from 'api/index'
+import { AxiosError } from 'axios'
 import BigNumber from 'bignumber.js'
-import { PrimaryLoadingButton } from 'components/CustomizedButtons'
-import FormCharset from 'components/Game/FormCharset'
-import FormPricing from 'components/Game/FormPricing'
-import FormTags from 'components/Game/FormTags'
-import TokenList from 'components/TokenList'
-import UploadGame from 'components/UploadGame/index'
-import UploadGameCover from 'components/UploadGameCover/index'
-import UploadGameScreenshots from 'components/UploadGameScreenshots/index'
-import type { SupportedChainId } from 'constants/chains'
-import { WalletSupportedChainIds } from 'constants/chains'
-import { AuthenticationContext } from 'context'
-import { GameFormContext } from 'context/gameFormContext'
-import { classifications, releaseStatus } from 'data'
+import { TokenList } from 'components'
+import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
 import { utils } from 'ethers'
-import { getAddress } from 'ethers/lib/utils'
-import { useAccountInfo, useTitle } from 'hooks'
+import {
+  useAccountInfo,
+  useSetFormCache,
+  useTitle,
+  useTopCenterSnackbar,
+} from 'hooks'
 import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
-import { FieldError, SubmitHandler, useWatch } from 'react-hook-form'
+import React, { Fragment, useEffect, useState } from 'react'
+import { SubmitHandler } from 'react-hook-form'
+import { useFormContext, useWatch } from 'react-hook-form'
+import stylesCommon from 'styles/common.module.scss'
+import styles from 'styles/game/new.module.scss'
 import { GameEntity, Token } from 'types'
 import { Api } from 'types/Api'
-import {
-  EditorMode,
-  GameEngine,
-  PaymentMode,
-  ProjectClassification,
-  ReleaseStatus,
-} from 'types/enum'
-import {
-  filenameHandle,
-  fileUrl,
-  isStringNumber,
-  parseFilename,
-  parseUrl,
-  processMessage,
-  urlGame,
-} from 'utils'
-import { inferProjectType } from 'utils/inferProjectType'
-import { Game } from 'utils/validator'
+import { EditorMode, GameEngine, PaymentMode } from 'types/enum'
+import { ProjectClassification, ReleaseStatus } from 'types/enum'
+import { filenameHandle, fileUrl } from 'utils'
+import { Game, inferProjectType, isStringNumber, urlGame } from 'utils'
+import { parseFilename, parseUrl, processMessage } from 'utils'
 
+import FormCharset from './FormCharset'
+import FormClassification from './FormClassification'
 import FormCommunity from './FormCommunity'
+import FormDescription from './FormDescription'
+import FormGameCover from './FormGameCover'
+import FormGameFile from './FormGameFile'
+import FormGameScreenshots from './FormGameScreenshots'
 import FormGenre from './FormGenre'
+import FormHeader from './FormHeader'
 import FormKind from './FormKind'
+import FormPricing from './FormPricing'
+import FormReleaseStatus from './FormReleaseStatus'
+import FormSubtitle from './FormSubtitle'
+import FormTags from './FormTags'
+import FormTitle from './FormTitle'
 
 interface GameFormProps {
   readonly gameProject: GameEntity
   readonly editorMode: EditorMode
-  readonly editorRef: MutableRefObject<ToastUiEditor> | undefined
-  setEditorRef: Dispatch<
-    SetStateAction<MutableRefObject<ToastUiEditor> | undefined>
+  readonly editorRef: React.MutableRefObject<ToastUiEditor> | undefined
+  setEditorRef: React.Dispatch<
+    React.SetStateAction<React.MutableRefObject<ToastUiEditor> | undefined>
   >
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let MESSAGE_SUBMIT_KEY: any
+let MESSAGE_SUBMIT_KEY: string | number
 
-const GameForm: FC<GameFormProps> = ({
+const GameForm: React.FC<GameFormProps> = ({
   gameProject,
   editorMode,
   editorRef,
   setEditorRef,
 }) => {
   const router = useRouter()
-  const id = router.query.id
+  const id = router.query.id as string
 
-  const {
-    state: { isAuthenticated },
-  } = useContext(AuthenticationContext)
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    control,
-    watch,
-    formState: { errors },
-    getValues,
-    trigger,
-  } = useContext(GameFormContext)
+  const { handleSubmit, setValue, control, watch, getValues, trigger } =
+    useFormContext<Game>()
 
   const account = useAccountInfo('metamask')
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+  const showSnackbar = useTopCenterSnackbar()
+  const { closeSnackbar } = useSnackbar()
 
   const [uploadGameFile, setUploadGameFile] = useState<File>()
   const [coverFileFile, setCoverFileFile] = useState<File>()
@@ -153,10 +109,58 @@ const GameForm: FC<GameFormProps> = ({
     name: 'appStoreLinks',
   })
 
+  const { cleanFormCache } = useSetFormCache(editorMode, id)
+
   // Watch appStoreLinks change then trigger
   useEffect(() => {
     trigger('appStoreLinks')
   }, [watchAppStoreLinks, trigger])
+
+  const validate = (cond: boolean, msg: string) => {
+    if (cond) throw new Error(msg)
+  }
+
+  // 先支持 编辑
+  const validateGameFile = () =>
+    validate(
+      editorMode === EditorMode.CREATE && !uploadGameFile,
+      'Please upload game files'
+    )
+
+  const validateDescription = (description: string) =>
+    validate(!description, 'Description cannot be empty')
+
+  const validatePaymentMode = (game: Game) => {
+    if (game.paymentMode === PaymentMode.PAID) {
+      validate(!currentSelectTokenChainId, 'Please select chainId')
+      validate(isEmpty(currentSelectToken), 'Please select Token')
+      validate(
+        !currentSelectTokenAmount || currentSelectTokenAmount === '0',
+        'Please enter amount'
+      )
+      validate(
+        !isStringNumber(currentSelectTokenAmount),
+        'Please enter the correct amount'
+      )
+      validate(
+        new BigNumber(currentSelectTokenAmount).lte('0'),
+        'Amount needs to be greater than zero'
+      )
+    }
+    if (game.paymentMode === PaymentMode.FREE) {
+      validate(
+        !currentDonationAddress || !utils.isAddress(currentDonationAddress),
+        'Please set a donation address'
+      )
+    }
+  }
+  const validateGamePayload = async (data: Partial<Api.GameProjectDto>) => {
+    const result = await gameValidate(data)
+    if (result.status !== 200) {
+      console.error('gameValidateResult', result)
+      throw new Error('Game validate error')
+    }
+  }
 
   const handleAllImages = async () => {
     const promiseArray = []
@@ -182,7 +186,7 @@ const GameForm: FC<GameFormProps> = ({
     console.log('resultAllImages', resultAllImages)
 
     return {
-      cover: coverFileFile ? resultAllImages[0].data.publicUrl : '',
+      cover: coverFileFile ? resultAllImages[0].data.publicUrl : undefined,
       screenshots: screenshotsFiles?.length
         ? coverFileFile
           ? resultAllImages.slice(1).map((i) => i.data.publicUrl)
@@ -191,270 +195,136 @@ const GameForm: FC<GameFormProps> = ({
     }
   }
 
+  const handleCreateGame = async (gameData: Api.GameProjectDto) => {
+    MESSAGE_SUBMIT_KEY = showSnackbar('Uploading game...', 'info', {
+      persist: true,
+    })
+
+    // check field
+    await validateGamePayload(gameData)
+
+    const formData = new FormData()
+    formData.append('file', uploadGameFile as File)
+    formData.append('game', JSON.stringify(gameData))
+
+    const createGameResult = await createGame(formData)
+    // console.log('createGameResult', createGameResult)
+    if (createGameResult.status === 201) {
+      saveAlgoliaGame(Number(createGameResult.data.id))
+      showSnackbar('Uploaded successfully', 'success')
+      router.push('/dashboard')
+    } else {
+      console.error('createGame', createGameResult)
+      throw new Error('createGame error')
+    }
+  }
+
+  const handleUpdateGame = async (game: Api.GameProjectDto) => {
+    MESSAGE_SUBMIT_KEY = showSnackbar('Updating game...', 'info', {
+      persist: true,
+    })
+
+    const gameData: Partial<Api.GameProjectDto> = { ...game }
+    // Update game payload not allow gameName kind classification
+    delete gameData.gameName
+    delete gameData.kind
+    delete gameData.classification
+
+    // No re-upload cover removed gameName cover
+    if (!coverFileFile) {
+      delete gameData.cover
+    }
+    // No re-upload screenshots Deleted game screenshots
+    if (isEmpty(screenshotsFiles)) {
+      // delete all game screenshots
+      if (isEmpty(game.screenshots)) {
+        delete gameData.screenshots
+      }
+    }
+
+    // check field
+    await validateGamePayload(gameData)
+
+    // 更新游戏文件
+    const formData = new FormData()
+    formData.append('file', uploadGameFile || '')
+    formData.append('game', JSON.stringify(gameData))
+
+    const updateGameResult = await updateGame(Number(id), formData)
+    if (updateGameResult.status === 200) {
+      saveAlgoliaGame(Number(updateGameResult.data.id))
+      showSnackbar('Update completed', 'success')
+      router.push(urlGame(id as string))
+    } else {
+      console.error('updateGame', updateGameResult)
+      throw new Error('Update game error')
+    }
+  }
+
   // handle create/edit game
   const handleGame = async (game: Game) => {
-    // 先支持 编辑
-    if (editorMode === EditorMode.CREATE && !uploadGameFile) {
-      enqueueSnackbar('Please upload game files', {
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'center',
-        },
-        variant: 'warning',
-      })
-      return
+    const description = editorRef?.current?.getInstance().getMarkdown() || ''
+    const prices: Api.GameProjectPricesDto[] = []
+
+    try {
+      validateGameFile()
+      validateDescription(description)
+      validatePaymentMode(game)
+    } catch (e: unknown) {
+      return showSnackbar((e as Error).message, 'warning')
     }
 
-    let description = ''
-    if (editorRef) {
-      description = editorRef.current?.getInstance().getMarkdown()
-    }
-
-    if (!description) {
-      enqueueSnackbar('description cannot be empty', {
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'center',
-        },
-        variant: 'warning',
-      })
-      return
-    }
-
-    let prices: Api.GameProjectPricesDto[] = []
     if (game.paymentMode === PaymentMode.PAID) {
-      if (!currentSelectTokenChainId) {
-        enqueueSnackbar('Please select chainId', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
-      }
-
-      if (isEmpty(currentSelectToken)) {
-        enqueueSnackbar('Please select Token', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
-      }
-
-      if (!currentSelectTokenAmount || currentSelectTokenAmount === '0') {
-        enqueueSnackbar('Please enter amount', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
-      }
-      if (!isStringNumber(currentSelectTokenAmount)) {
-        enqueueSnackbar('Please enter the correct amount', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
-      }
-      if (new BigNumber(currentSelectTokenAmount).lte('0')) {
-        enqueueSnackbar('Amount needs to be greater than zero', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
-      }
-
-      prices = [
-        {
-          chainId: currentSelectTokenChainId,
-          amount: utils
-            .parseUnits(currentSelectTokenAmount, currentSelectToken.decimals)
-            .toString(),
-          token: currentSelectToken.address,
-        },
-      ]
-    } else if (game.paymentMode === PaymentMode.FREE) {
-      if (!currentDonationAddress || !utils.isAddress(currentDonationAddress)) {
-        enqueueSnackbar('Please set a donation address', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'warning',
-        })
-        return
-      }
+      prices.push({
+        chainId: currentSelectTokenChainId,
+        amount: utils
+          .parseUnits(currentSelectTokenAmount, currentSelectToken.decimals)
+          .toString(),
+        token: currentSelectToken.address,
+      })
     }
+    let donationAddress = account?.accountId || ''
+    if (game.paymentMode === PaymentMode.FREE) {
+      donationAddress = utils.getAddress(currentDonationAddress)
+    }
+
+    // Parpare game data
+    const allImages = await handleAllImages()
+    const kind =
+      game.kind === GameEngine.DEFAULT && uploadGameFile
+        ? await inferProjectType(uploadGameFile)
+        : game.kind
+    const gameData: Api.GameProjectDto = {
+      title: trim(game.title),
+      subtitle: trim(game.subtitle),
+      gameName: trim(game.gameName).replaceAll(' ', '_'),
+      classification: ProjectClassification.GAMES,
+      kind,
+      releaseStatus: ReleaseStatus.RELEASED,
+      screenshots: allImages.screenshots,
+      cover: allImages.cover,
+      tags: game.tags,
+      appStoreLinks: game.appStoreLinks,
+      description: trim(description),
+      community: game.community,
+      genre: game.genre,
+      charset: game.charset,
+      paymentMode: game.paymentMode,
+      prices,
+      donationAddress,
+    }
+
+    console.log('file', uploadGameFile)
+    console.log('gameData', gameData)
 
     setSubmitLoading(true)
     try {
       if (editorMode === EditorMode.CREATE) {
-        MESSAGE_SUBMIT_KEY = enqueueSnackbar('uploading game...', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'info',
-          persist: true,
-        })
-
-        const allImages = await handleAllImages()
-        const kind =
-          game.kind === GameEngine.DEFAULT && uploadGameFile
-            ? await inferProjectType(uploadGameFile)
-            : game.kind
-        const gameData: Api.GameProjectDto = {
-          title: trim(game.title),
-          subtitle: trim(game.subtitle),
-          gameName: trim(game.gameName).replaceAll(' ', '_'),
-          classification: ProjectClassification.GAMES,
-          kind,
-          releaseStatus: ReleaseStatus.RELEASED,
-          screenshots: allImages.screenshots,
-          cover: allImages.cover,
-          tags: game.tags,
-          appStoreLinks: game.appStoreLinks,
-          description: trim(description),
-          community: game.community,
-          genre: game.genre,
-          charset: game.charset,
-          paymentMode: game.paymentMode,
-          prices: prices,
-          donationAddress:
-            game.paymentMode === PaymentMode.FREE
-              ? utils.getAddress(currentDonationAddress)
-              : account?.accountId,
-        }
-        console.log('file', uploadGameFile)
-        console.log('gameData', gameData)
-
-        const formData = new FormData()
-        formData.append('file', uploadGameFile as File)
-        formData.append('game', JSON.stringify(gameData))
-
-        // check field
-        const gameValidateResult = await gameValidate(gameData)
-        if (gameValidateResult.status !== 200) {
-          console.error('gameValidateResult', gameValidateResult)
-          throw new Error('gameValidate error')
-        }
-
-        const createGameResult = await createGame(formData)
-        // console.log('createGameResult', createGameResult)
-
-        if (createGameResult.status === 201) {
-          saveAlgoliaGame(Number(createGameResult.data.id))
-
-          enqueueSnackbar('Uploaded successfully', {
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'center',
-            },
-            variant: 'success',
-          })
-          router.push('/dashboard')
-        } else {
-          console.error('createGame', createGameResult)
-          throw new Error('createGame error')
-        }
-      } else if (editorMode === EditorMode.EDIT) {
+        await handleCreateGame(gameData)
+      }
+      if (editorMode === EditorMode.EDIT) {
         if (!id) return
-
-        MESSAGE_SUBMIT_KEY = enqueueSnackbar('updating game...', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'info',
-          persist: true,
-        })
-
-        const allImages = await handleAllImages()
-        const kind =
-          game.kind === GameEngine.DEFAULT && uploadGameFile
-            ? await inferProjectType(uploadGameFile)
-            : game.kind
-        const gameData: Partial<Api.GameProjectDto> = {
-          title: trim(game.title),
-          subtitle: trim(game.subtitle),
-          // The only game name is not allowed to be modified
-          // gameName: trim(game.gameName).replaceAll(' ', '_'),
-          kind,
-          screenshots: allImages.screenshots,
-          cover: allImages.cover,
-          tags: game.tags,
-          appStoreLinks: game.appStoreLinks,
-          description: trim(description),
-          community: game.community,
-          genre: game.genre,
-          charset: game.charset,
-          paymentMode: game.paymentMode,
-          prices: prices,
-          donationAddress:
-            game.paymentMode === PaymentMode.FREE
-              ? utils.getAddress(currentDonationAddress)
-              : account?.accountId,
-        }
-
-        // Did not re-upload game files Remove gameName field
-        if (!uploadGameFile) {
-          delete gameData.gameName
-        }
-        // No re-upload cover removed gameName cover
-        if (!coverFileFile) {
-          delete gameData.cover
-        }
-        // No re-upload screenshots Deleted game screenshots
-        if (isEmpty(screenshotsFiles)) {
-          // delete all game screenshots
-          if (!isEmpty(game.screenshots)) {
-            delete gameData.screenshots
-          }
-        }
-
-        // 更新游戏文件
-        const formData = new FormData()
-        formData.append('file', uploadGameFile || '')
-        formData.append('game', JSON.stringify(gameData))
-
-        // check field
-        const gameValidateResult = await gameValidate(gameData)
-        if (gameValidateResult.status !== 200) {
-          console.error('gameValidateResult', gameValidateResult)
-          throw new Error('gameValidate error')
-        }
-
-        const updateGameResult = await updateGame(Number(id), formData)
-
-        if (updateGameResult.status === 200) {
-          saveAlgoliaGame(Number(updateGameResult.data.id))
-
-          enqueueSnackbar('Update completed', {
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'center',
-            },
-            variant: 'success',
-          })
-          router.push(urlGame(id as string))
-        } else {
-          console.error('updateGame', updateGameResult)
-          throw new Error('updateGame error')
-        }
-      } else {
-        //
+        await handleUpdateGame(gameData)
       }
     } catch (error: unknown) {
       console.error('createGame/updateGame error: ', error)
@@ -475,13 +345,7 @@ const GameForm: FC<GameFormProps> = ({
         messageContent = (error as Error).message
       }
 
-      enqueueSnackbar(messageContent, {
-        anchorOrigin: {
-          vertical: 'top',
-          horizontal: 'center',
-        },
-        variant: 'error',
-      })
+      showSnackbar(messageContent, 'error')
     } finally {
       closeSnackbar(MESSAGE_SUBMIT_KEY)
       setSubmitLoading(false)
@@ -489,22 +353,23 @@ const GameForm: FC<GameFormProps> = ({
   }
 
   const onSubmit: SubmitHandler<Game> = async (data) => {
-    console.log(data)
     handleGame(data)
-
-    // const result = await handleAllImages()
-    // console.log('result', result)
+    cleanFormCache()
   }
 
   // handle cover
-  const handleCoverValue = (file: File) => {
-    setCoverFileFile(file)
-    setValue('cover', parseUrl(fileUrl(file)))
-  }
+  const handleCover = React.useCallback(
+    async (file?: File) => {
+      setCoverFileFile(file)
+      setValue('cover', parseUrl(fileUrl(file)))
+      await trigger('cover')
+    },
+    [setValue, trigger]
+  )
 
   // handle screenshots
-  const handleScreenshots = useCallback(
-    (files: File[] | undefined) => {
+  const handleScreenshots = React.useCallback(
+    async (files: File[] | undefined) => {
       setScreenshotsFiles(files)
 
       const screenshotsUrls = files
@@ -512,21 +377,23 @@ const GameForm: FC<GameFormProps> = ({
         : []
 
       setValue('screenshots', screenshotsUrls)
+      await trigger('screenshots')
     },
-    [setValue]
+    [setValue, trigger]
   )
 
   // handle gameFile
-  const handleGameFile = useCallback(
-    (file: File | undefined) => {
+  const handleGameFile = React.useCallback(
+    async (file: File | undefined) => {
       setUploadGameFile(file)
 
       const name = parseFilename(file?.name || '')
       if (name) {
         setValue('gameName', name)
+        await trigger('gameName')
       }
     },
-    [setValue]
+    [setValue, trigger]
   )
 
   // Description change triggers validation
@@ -540,7 +407,7 @@ const GameForm: FC<GameFormProps> = ({
   )
 
   // Handle description change
-  const handleDescription = useCallback(async () => {
+  const handleDescription = React.useCallback(async () => {
     if (editorRef) {
       const description = editorRef.current?.getInstance().getMarkdown()
       setValue('description', trim(description))
@@ -582,7 +449,7 @@ const GameForm: FC<GameFormProps> = ({
           logoURI:
             tokens.find(
               (token) =>
-                getAddress(token.address) === getAddress(address) &&
+                utils.getAddress(token.address) === utils.getAddress(address) &&
                 token.chainId === chainId
             )?.logoURI || '',
         })
@@ -635,11 +502,6 @@ const GameForm: FC<GameFormProps> = ({
     currentDonationAddressFlag,
   ])
 
-  useEffect(() => {
-    console.log('isAuthenticated', isAuthenticated)
-    // if (!isAuthenticated) router.replace('/login')
-  }, [isAuthenticated, router])
-
   return (
     <Fragment>
       <Head>
@@ -651,25 +513,8 @@ const GameForm: FC<GameFormProps> = ({
             id="edit_game_page_43096"
             className={`${styles.edit_game_page} dashboard_game_edit_base_page ${styles.page_widget} ${styles.form} is_game`}
           >
-            <div className={styles.tabbed_header_widget}>
-              <div className={styles.header_breadcrumbs}>
-                <Link href="/dashboard">
-                  <a className={styles.trail}>Dashboard</a>
-                </Link>
-              </div>
-              <div className={styles.stat_header_widget}>
-                <div className="text_content">
-                  <h2>{pageTitle}</h2>
-                </div>
-              </div>
-            </div>
-            {/* <div className={styles.payment_warning}>
-                    <strong>{"You don't have payment configured"}</strong> If you set a
-                    minimum price above 0 no one will be able to download your project.{' '}
-                    <a target="_blank" href="/user/settings/seller">
-                      Edit account
-                    </a>
-                  </div> */}
+            <FormHeader title={pageTitle} />
+            {/* <FormPaymentWarn /> */}
 
             <div className={styles.padded}>
               <form
@@ -679,109 +524,21 @@ const GameForm: FC<GameFormProps> = ({
               >
                 <div className={styles.columns}>
                   <div className={`main ${styles.left_col} first`}>
-                    {/*
-                    <p className={styles.content_guidelines}>
-                      <strong>Make sure everyone can find your page</strong>
-                      <br />
-                      Review our{' '}
-                      <a rel="noopener noreferrer" href="#" target="_blank">
-                        quality guidelines
-                      </a>{' '}
-                      before posting your project
-                    </p>
-                */}
+                    {/* <FormContentGuidelines /> */}
                     <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-title">Title</FormLabel>
-                        <TextField
-                          id="form-title"
-                          variant="outlined"
-                          aria-describedby="form-title-error-text"
-                          error={!!errors.title}
-                          helperText={errors.title ? errors.title.message : ''}
-                          {...register('title')}
-                        />
-                      </FormControl>
-                    </div>
-
-                    <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-shortDescriptionOrTagline">
-                          Short description or tagline
-                        </FormLabel>
-                        <p className={styles.sub}>
-                          {
-                            "Shown when we link to your project. Avoid duplicating your project's title"
-                          }
-                        </p>
-                        <TextField
-                          id="form-shortDescriptionOrTagline"
-                          error={!!errors.subtitle}
-                          helperText={
-                            errors.subtitle ? errors.subtitle.message : ''
-                          }
-                          {...register('subtitle')}
-                        />
-                      </FormControl>
+                      <FormTitle />
                     </div>
                     <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-classification">
-                          Classification
-                        </FormLabel>
-                        <p className={styles.sub}>
-                          {'What are you uploading?'}
-                        </p>
-                        <Select
-                          id="form-classification"
-                          disabled
-                          defaultValue={classifications[0].value}
-                        >
-                          {classifications.map((classification) => (
-                            <MenuItem
-                              value={classification.value}
-                              key={classification.value}
-                            >
-                              {classification.label}
-                              {classification.description && (
-                                <span className="sub">
-                                  {' — '}
-                                  {classification.description}
-                                </span>
-                              )}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                      <FormSubtitle />
                     </div>
-
                     <div className={styles.input_row}>
-                      <FormKind />
+                      <FormClassification />
                     </div>
-
                     <div className={styles.input_row}>
-                      <FormControl fullWidth>
-                        <FormLabel id="form-releaseStatus">
-                          Release status
-                        </FormLabel>
-                        <Select
-                          id="form-releaseStatus"
-                          value={releaseStatus[0].value}
-                          disabled
-                        >
-                          {releaseStatus.map((i) => (
-                            <MenuItem value={i.value} key={i.value}>
-                              {i.label}
-                              {i.description && (
-                                <span className="sub">
-                                  {' — '}
-                                  {i.description}
-                                </span>
-                              )}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                      <FormKind {...{ editorMode }} />
+                    </div>
+                    <div className={styles.input_row}>
+                      <FormReleaseStatus />
                     </div>
 
                     <div className={styles.input_row}>
@@ -806,50 +563,10 @@ const GameForm: FC<GameFormProps> = ({
                     <div
                       className={`${styles.input_row} ${styles.simulation_input}`}
                     >
-                      <FormControl fullWidth error={Boolean(errors.gameName)}>
-                        <FormLabel id="form-genre">Uploads</FormLabel>
-                        <section
-                          data-label="Tip"
-                          className={`${styles.hint} ${styles.butler_tip}`}
-                        >
-                          {
-                            "File size limit: 1 GB. Game name doesn't allow starts or ends with _ or -."
-                          }
-                        </section>
-                        <UploadGame
-                          setFile={async (file) => {
-                            handleGameFile(file as File | undefined)
-                            await trigger('gameName')
-                          }}
-                        />
-                        <TextField
-                          style={{
-                            opacity: '0',
-                            position: 'absolute',
-                            zIndex: -99,
-                          }}
-                          {...register('gameName')}
-                        />
-                        {editorMode === EditorMode.EDIT && (
-                          <>
-                            <div>
-                              Currently in update mode, please re-upload if you
-                              need to update the game.
-                            </div>
-                            <div>(Game name will not change)</div>
-                            <div>
-                              Game name:
-                              <span style={{ fontWeight: 'bold' }}>
-                                {getValues('gameName')}
-                              </span>
-                            </div>
-                          </>
-                        )}
-
-                        <FormHelperText>
-                          {errors?.gameName?.message}
-                        </FormHelperText>
-                      </FormControl>
+                      <FormGameFile
+                        editorMode={editorMode}
+                        onGameFileSelect={handleGameFile}
+                      />
                     </div>
 
                     {/* minetest doesn't need charset */}
@@ -858,37 +575,14 @@ const GameForm: FC<GameFormProps> = ({
                         <FormCharset />
                       </div>
                     )}
-
                     <div
                       className={`${styles.input_row} ${styles.simulation_input}`}
                     >
-                      <FormControl
-                        fullWidth
-                        error={Boolean(errors.description)}
-                      >
-                        <FormLabel id="form-genre">Details</FormLabel>
-                        <p className={styles.sub}>
-                          Description — This will make up the content of your
-                          game page.
-                        </p>
-                        <Editor
-                          setRef={setEditorRef}
-                          onChange={handleDescription}
-                        />
-                        <TextField
-                          style={{
-                            opacity: '0',
-                            position: 'absolute',
-                            zIndex: -99,
-                          }}
-                          {...register('description')}
-                        />
-                        <FormHelperText>
-                          {errors?.description?.message}
-                        </FormHelperText>
-                      </FormControl>
+                      <FormDescription
+                        setRef={setEditorRef}
+                        onChange={handleDescription}
+                      />
                     </div>
-
                     <div className={`${styles.input_row}`}>
                       <FormGenre />
                     </div>
@@ -901,179 +595,39 @@ const GameForm: FC<GameFormProps> = ({
                       />
                     </div>
 
-                    {/* <div className={styles.input_row}>
-                      <FormAppStoreLinks />
-                    </div> */}
-
-                    {/* <div className={styles.input_row}>
-                            <FormControl fullWidth>
-                              <FormLabel id="form-customNoun">Custom noun</FormLabel>
-                              <p className={styles.sub}>
-                                {
-                                  'You can change how itch.io refers to your project by providing a custom noun.'
-                                }
-                              </p>
-                              <p className={styles.sub}>
-                                {" Leave blank to default to: '"}
-                                <span className="user_classification_noun">mod</span>
-                                {"'"}.
-                              </p>
-                              <TextField
-                                id="form-customNoun"
-                                placeholder="Optional"
-                                disabled
-                              />
-                            </FormControl>
-                          </div> */}
-
+                    {/* <div className={styles.input_row}><FormAppStoreLinks /></div> */}
+                    {/* <div className={styles.input_row}><FormCustomNoun /></div> */}
                     <div className={styles.input_row}>
                       <FormCommunity />
                     </div>
-                    {/* <div className={styles.input_row}>
-                            <FormControl>
-                              <FormLabel id="demo-radio-buttons-group-label">
-                                Visibility & access
-                              </FormLabel>
-                              <p className={styles.sub}>
-                                Use Draft to review your page before making it public.{' '}
-                                <a href="/docs/creators/access-control" target="blank">
-                                  Learn more about access modes
-                                </a>
-                              </p>
-                              <RadioGroup
-                                aria-labelledby="demo-radio-buttons-group-label"
-                                defaultValue="female"
-                                name="radio-buttons-group"
-                              >
-                                <FormControlLabel
-                                  value="disabled"
-                                  control={<Radio />}
-                                  label={
-                                    <span>
-                                      Draft
-                                      <span className="sub">
-                                        Only those who can edit the project can view the
-                                        page
-                                      </span>
-                                    </span>
-                                  }
-                                />
-                                <FormControlLabel
-                                  value="restricted"
-                                  control={<Radio />}
-                                  label={
-                                    <span>
-                                      Restricted
-                                      <span className="sub">
-                                        {' '}
-                                        — Only owners &amp; authorized people can view
-                                        the page
-                                      </span>
-                                    </span>
-                                  }
-                                />
-                                <FormControlLabel
-                                  value="public"
-                                  control={<Radio />}
-                                  label={
-                                    <span>
-                                      Public
-                                      <span className={styles.sub}>
-                                        {' '}
-                                        —{' '}
-                                        <span>
-                                          Anyone can view the page
-                                          <span>
-                                            ,{' '}
-                                            <strong>
-                                              {"you can enable this after you've saved"}
-                                            </strong>
-                                          </span>
-                                        </span>
-                                      </span>
-                                    </span>
-                                  }
-                                ></FormControlLabel>
-                              </RadioGroup>
-                            </FormControl>
-                          </div> */}
+                    {/* <div className={styles.input_row}><FormAccess /></div> */}
                   </div>
                   <div className={`misc ${styles.right_col}`}>
                     <div className={styles.simulation_input}>
-                      <FormControl fullWidth error={Boolean(errors.cover)}>
-                        <div className={styles.game_edit_cover_uploader_widget}>
-                          <UploadGameCover
-                            editorMode={editorMode}
-                            setFile={async (file) => {
-                              handleCoverValue(file as File)
-                              await trigger('cover')
-                            }}
-                          />
-                          <p className={`${styles.sub} instructions`}>
-                            The cover image is used whenever w3itch.io wants to
-                            link to your project from another part of the site.
-                            Required (Minimum: 315x250, Recommended: 630x500)
-                          </p>
-                        </div>
-                        <TextField
-                          style={{
-                            opacity: '0',
-                            position: 'absolute',
-                            zIndex: -99,
-                          }}
-                          {...register('cover')}
-                        />
-                        <FormHelperText error={Boolean(errors.cover)}>
-                          {errors?.cover?.message}
-                        </FormHelperText>
-                      </FormControl>
+                      <FormGameCover
+                        editorMode={editorMode}
+                        onCoverFileSelect={handleCover}
+                      />
                     </div>
                     <section className={styles.screenshot_editor}>
-                      <div className={styles.label}>Screenshots</div>
-                      <p className={styles.sub}>
-                        <span className="when_default">
-                          {"Screenshots will appear on your game's page."}{' '}
-                        </span>
-                        Optional but highly recommended. Upload 3 to 5 for best
-                        results.
-                      </p>
-                      <FormHelperText error={Boolean(errors?.screenshots)}>
-                        {
-                          (errors?.screenshots as unknown as FieldError)
-                            ?.message
-                        }
-                      </FormHelperText>
-                      <UploadGameScreenshots
+                      <FormGameScreenshots
                         editorMode={editorMode}
-                        setFiles={async (files) => {
-                          handleScreenshots(files as File[] | undefined)
-                          await trigger('screenshots')
-                        }}
+                        onScreenshotFilesSelect={handleScreenshots}
                       />
                     </section>
                   </div>
                 </div>
                 <div className={styles.buttons}>
-                  <PrimaryLoadingButton
+                  <LoadingButton
                     variant="contained"
                     type="submit"
                     loading={submitLoading}
-                    sx={{
-                      width: {
-                        xs: '100%',
-                        sm: 'auto',
-                      },
-                    }}
+                    sx={{ width: { xs: '100%', sm: 'auto' } }}
                   >
-                    {editorMode === EditorMode.CREATE
-                      ? 'Save'
-                      : editorMode === EditorMode.EDIT
-                      ? 'Update'
-                      : 'Save'}
-                  </PrimaryLoadingButton>
-                  <div
-                    className={`${styles.loader} ${styles.form_loader}`}
-                  ></div>
+                    {editorMode === EditorMode.CREATE && 'Save'}
+                    {editorMode === EditorMode.EDIT && 'Update'}
+                  </LoadingButton>
+                  <div className={`${styles.loader} ${styles.form_loader}`} />
                 </div>
               </form>
             </div>

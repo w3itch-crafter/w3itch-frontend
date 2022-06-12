@@ -48,7 +48,7 @@ declare namespace Api {
     kind: GameEngine
     releaseStatus: ReleaseStatus
     screenshots: string[]
-    cover: string
+    cover?: string
     tags: string[]
     appStoreLinks: string[]
     description: string

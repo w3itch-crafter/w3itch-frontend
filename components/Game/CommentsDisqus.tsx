@@ -1,6 +1,9 @@
 import { DiscussionEmbed } from 'disqus-react'
 import { useRouter } from 'next/router'
-import { FC } from 'react'
+import { useTheme } from 'next-themes'
+import { FC, useEffect, useState } from 'react'
+
+import { sleep } from '../../utils'
 
 interface Props {
   readonly title: string
@@ -8,17 +11,32 @@ interface Props {
 
 const CommentsDisqus: FC<Props> = ({ title }) => {
   const router = useRouter()
+  const [visible, setVisible] = useState(true)
+  const { resolvedTheme } = useTheme()
+  useEffect(() => {
+    console.log(resolvedTheme)
+    if (resolvedTheme === 'light') {
+      setVisible(false)
+      sleep(100).then(() => {
+        setVisible(true)
+      })
+    }
+  }, [resolvedTheme])
 
   return (
-    <DiscussionEmbed
-      shortname="w3itch"
-      config={{
-        url: `${process.env.NEXT_PUBLIC_URL}/${window.location.pathname}`,
-        identifier: String(router.query.id),
-        title: title,
-        language: 'en',
-      }}
-    />
+    <>
+      {visible && (
+        <DiscussionEmbed
+          shortname="w3itch"
+          config={{
+            url: `${process.env.NEXT_PUBLIC_URL}/${window.location.pathname}`,
+            identifier: String(router.query.id),
+            title: title,
+            language: 'en',
+          }}
+        />
+      )}
+    </>
   )
 }
 

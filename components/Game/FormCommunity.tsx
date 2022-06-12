@@ -6,17 +6,16 @@ import {
   Radio,
   RadioGroup,
 } from '@mui/material'
-import { GameFormContext } from 'context/gameFormContext'
-import { FC, useContext } from 'react'
-import { Controller } from 'react-hook-form'
+import { FC } from 'react'
+import { Controller, useFormContext } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
+import { Game } from 'utils'
 
 const FormCommunity: FC = () => {
-  const contextGame = useContext(GameFormContext)
   const {
     control,
     formState: { errors },
-  } = contextGame
+  } = useFormContext<Game>()
 
   return (
     <Controller

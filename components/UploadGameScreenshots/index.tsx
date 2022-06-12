@@ -1,19 +1,11 @@
 import styled from '@emotion/styled'
-import { PrimaryButton } from 'components/CustomizedButtons'
-import { GameFormContext } from 'context/gameFormContext'
+import Button from '@mui/material/Button'
 import { isEmpty } from 'lodash'
-import {
-  Dispatch,
-  FC,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { FileWithPath, useDropzone } from 'react-dropzone'
+import { useFormContext } from 'react-hook-form'
 import { EditorMode } from 'types/enum'
-import { fileUrl } from 'utils'
+import { fileUrl, Game } from 'utils'
 
 const WrapperItem = styled.section`
   height: auto;
@@ -31,13 +23,17 @@ const WrapperItem = styled.section`
 
 interface Props {
   readonly editorMode: EditorMode
-  setFiles: Dispatch<SetStateAction<File[] | undefined>>
+  onScreenshotFilesSelect: (files?: File[]) => void | Promise<void>
+  // setFiles: Dispatch<SetStateAction<File[] | undefined>>
 }
 
-const UploadGameScreenshots: FC<Props> = ({ editorMode, setFiles }) => {
+export const UploadGameScreenshots: FC<Props> = ({
+  editorMode,
+  onScreenshotFilesSelect,
+}) => {
   const [screenshotsFiles, setScreenshotsFiles] = useState<FileWithPath[]>()
   const [screenshotsUrl, setScreenshotsUrl] = useState<string[]>([])
-  const { getValues, watch } = useContext(GameFormContext)
+  const { getValues, watch } = useFormContext<Game>()
 
   const watchScreenshots = watch('screenshots')
 
@@ -48,10 +44,10 @@ const UploadGameScreenshots: FC<Props> = ({ editorMode, setFiles }) => {
 
       if (acceptedFiles.length) {
         setScreenshotsFiles(acceptedFiles)
-        setFiles(acceptedFiles)
+        onScreenshotFilesSelect(acceptedFiles)
       }
     },
-    [setScreenshotsFiles, setFiles]
+    [setScreenshotsFiles, onScreenshotFilesSelect]
   )
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -60,23 +56,10 @@ const UploadGameScreenshots: FC<Props> = ({ editorMode, setFiles }) => {
     accept: 'image/*',
   })
 
-  // const handleDeleteItems = useCallback(
-  //   (index: number) => {
-  //     const newFiles = cloneDeep(screenshotsFiles)
-  //     newFiles?.splice(index, 1)
-
-  //     // console.log('newFiles', newFiles)
-
-  //     setScreenshotsFiles(newFiles)
-  //     setFiles(newFiles as File[])
-  //   },
-  //   [setScreenshotsFiles, setFiles, screenshotsFiles]
-  // )
-
   const handleDeleteAllScreenshots = useCallback(() => {
     setScreenshotsFiles([])
-    setFiles([])
-  }, [setFiles, setScreenshotsFiles])
+    onScreenshotFilesSelect([])
+  }, [onScreenshotFilesSelect, setScreenshotsFiles])
 
   useEffect(() => {
     if (editorMode === EditorMode.EDIT && isEmpty(screenshotsFiles)) {
@@ -104,18 +87,20 @@ const UploadGameScreenshots: FC<Props> = ({ editorMode, setFiles }) => {
       ) : null}
       <section {...getRootProps()}>
         <input {...getInputProps()} />
-        <PrimaryButton
+        <Button
           size={'small'}
+          variant="contained"
           sx={{
             textTransform: 'capitalize',
           }}
           type="button"
         >
           {isEmpty(screenshotsUrl) ? 'Add Screenshots' : 'Change Screenshots'}
-        </PrimaryButton>
+        </Button>
       </section>
-      <PrimaryButton
+      <Button
         size={'small'}
+        variant="contained"
         sx={{
           marginTop: 1,
           textTransform: 'capitalize',
@@ -124,7 +109,7 @@ const UploadGameScreenshots: FC<Props> = ({ editorMode, setFiles }) => {
         type="button"
       >
         Delete screenshots
-      </PrimaryButton>
+      </Button>
     </section>
   )
 }

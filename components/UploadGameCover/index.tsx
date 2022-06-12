@@ -1,19 +1,11 @@
 import styled from '@emotion/styled'
-import { RedButton } from 'components/buttons'
-import { GameFormContext } from 'context/gameFormContext'
+import Button from '@mui/material/Button'
 import Image from 'next/image'
-import {
-  Dispatch,
-  FC,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { FileWithPath, useDropzone } from 'react-dropzone'
+import { useFormContext } from 'react-hook-form'
 import { EditorMode } from 'types/enum'
-import { fileUrl } from 'utils'
+import { fileUrl, Game } from 'utils'
 
 const WrapperDrap = styled.section`
   border: 1px dashed;
@@ -65,15 +57,30 @@ const ButtonRemoveImage = styled.button`
 
 interface Props {
   readonly editorMode: EditorMode
-  setFile: Dispatch<SetStateAction<File | undefined>>
+  onCoverFileSelect: (file?: File) => void
+  // setFile: Dispatch<SetStateAction<File | undefined>>
 }
 
-const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
+export const UploadGameCover: FC<Props> = ({
+  onCoverFileSelect,
+  editorMode,
+}) => {
   const [coverFile, setCoverFile] = useState<FileWithPath>()
   const [coverUrl, setCoverUrl] = useState<string>('')
 
-  const { getValues, watch } = useContext(GameFormContext)
+  const { getValues, watch } = useFormContext<Game>()
   const watchCover = watch('cover')
+
+  const handleRemoveCover = useCallback<
+    React.MouseEventHandler<HTMLButtonElement>
+  >(
+    (event) => {
+      event.stopPropagation()
+      setCoverFile(undefined)
+      onCoverFileSelect(undefined)
+    },
+    [onCoverFileSelect]
+  )
 
   useEffect(() => {
     if (editorMode === EditorMode.EDIT && !coverFile) {
@@ -91,10 +98,10 @@ const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
 
       if (acceptedFiles.length) {
         setCoverFile(acceptedFiles[0])
-        setFile(acceptedFiles[0])
+        onCoverFileSelect(acceptedFiles[0])
       }
     },
-    [setCoverFile, setFile]
+    [setCoverFile, onCoverFileSelect]
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -120,15 +127,10 @@ const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
             </WrapperDrapContainer>
             <WrapperDrapContainer>
               <WrapperDrapContainerBackdrop>
-                <RedButton type="button">Replace Cover Image</RedButton>
-                <ButtonRemoveImage
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setCoverFile(undefined)
-                    setFile(undefined)
-                  }}
-                >
+                <Button variant="contained" type="button">
+                  Replace Cover Image
+                </Button>
+                <ButtonRemoveImage type="button" onClick={handleRemoveCover}>
                   Remove Image
                 </ButtonRemoveImage>
               </WrapperDrapContainerBackdrop>
@@ -139,7 +141,9 @@ const UploadGameCover: FC<Props> = ({ setFile, editorMode }) => {
             {isDragActive ? (
               <p>Drop the files here ...</p>
             ) : (
-              <RedButton type="button">Upload Cover Image</RedButton>
+              <Button variant="contained" type="button">
+                Upload Cover Image
+              </Button>
             )}
           </WrapperDrapContainer>
         )}
