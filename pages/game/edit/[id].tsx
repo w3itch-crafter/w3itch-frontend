@@ -1,6 +1,6 @@
 import { gameProjectByID } from 'api'
 import GameForm from 'components/Game/Form'
-import { getFormDataCache, useSetFormCache } from 'hooks'
+import { useSetFormCache } from 'hooks'
 import { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import {
@@ -31,6 +31,7 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { Editor } from '@toast-ui/react-editor'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { GameEntity } from 'types'
+import { getFormDataCache } from 'utils'
 
 interface GameContentProps {
   children: React.ReactNode
@@ -45,14 +46,14 @@ const GameContent: FC<GameContentProps> = ({
 }) => {
   const router = useRouter()
   const id = router.query.id as string
-  const { setFlag } = useSetFormCache(EditorMode.EDIT, id)
+  const { setFlag } = useSetFormCache(id)
   const { setValue } = useFormContext<Game>()
 
   // Fetch game project
   const fetchGameProjectFn = useCallback(
     async (id: number) => {
       setFlag(false)
-      const cacheValue = getFormDataCache(EditorMode.EDIT, id)
+      const cacheValue = getFormDataCache(id)
 
       const gameProjectResult = await gameProjectByID(id)
       if (gameProjectResult.status === 200) {
