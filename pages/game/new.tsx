@@ -1,7 +1,7 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { Editor } from '@toast-ui/react-editor'
 import GameForm from 'components/Game/Form'
-import { getFormDataCache, useSetFormCache } from 'hooks'
+import { useSetFormCache } from 'hooks'
 import type { NextPage } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import {
@@ -24,6 +24,7 @@ import {
   Genre,
   PaymentMode,
 } from 'types/enum'
+import { getFormDataCache } from 'utils'
 import { Game } from 'utils/validator'
 
 const resolverGame = classValidatorResolver(Game)
@@ -34,13 +35,13 @@ interface GameContentProps {
 }
 
 const GameContent: FC<GameContentProps> = ({ children, setDescription }) => {
-  const { setFlag } = useSetFormCache(EditorMode.CREATE, undefined)
+  const { setFlag } = useSetFormCache()
   const { setValue } = useFormContext<Game>()
 
   // Fetch game data from cache
   const fetchGameProjectFn = useCallback(async () => {
     setFlag(false)
-    const cacheValue = getFormDataCache(EditorMode.CREATE)
+    const cacheValue = getFormDataCache()
     if (cacheValue) {
       setValue('title', cacheValue?.title)
       setValue('subtitle', cacheValue?.subtitle)
