@@ -60,7 +60,7 @@ const GameContent: FC<GameContentProps> = ({
         if (gameProjectResult.status === 200) {
           setGameProject(gameProjectResult.data)
 
-          // Set form values
+          // Set form edit values
           setFormEditValues({
             setValue: setValue,
             cacheValue,
