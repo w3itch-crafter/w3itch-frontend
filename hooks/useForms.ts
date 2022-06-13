@@ -1,6 +1,7 @@
 import { useThrottleFn } from 'ahooks'
 import { useCallback, useEffect, useState } from 'react'
-import { useWatch } from 'react-hook-form'
+import { UseFormSetValue, useWatch } from 'react-hook-form'
+import { GameEntity } from 'types'
 import {
   Community,
   GameEngine,
@@ -46,7 +47,7 @@ export function useSetFormCache(gameId?: string | number) {
     }
 
     setFormDataCache(changedGame, gameId)
-    console.log('gameCache', changedGame)
+    // console.log('gameCache', changedGame)
   }, [
     appStoreLinks,
     charset,
@@ -62,6 +63,78 @@ export function useSetFormCache(gameId?: string | number) {
     flag,
   ])
 
+  /**
+   * Set form edit values
+   * @param setValue
+   * @param cacheValue
+   * @param gameProject
+   */
+  const setFormEditValues = useCallback(
+    ({
+      setValue,
+      cacheValue,
+      gameProject,
+    }: {
+      setValue: UseFormSetValue<Game>
+      cacheValue?: Game | null
+      gameProject: GameEntity
+    }) => {
+      setValue('title', cacheValue?.title || gameProject.title)
+      setValue('subtitle', cacheValue?.subtitle || gameProject.subtitle)
+      setValue('community', cacheValue?.community || gameProject.community)
+      setValue('genre', cacheValue?.genre || gameProject.genre)
+      setValue(
+        'paymentMode',
+        cacheValue?.paymentMode || gameProject.paymentMode
+      )
+      setValue(
+        'description',
+        cacheValue?.description || gameProject.description
+      )
+      setValue('gameName', cacheValue?.title || gameProject.gameName)
+      setValue('cover', gameProject.cover)
+      setValue('charset', cacheValue?.charset || gameProject.charset)
+      setValue('screenshots', gameProject.screenshots)
+      setValue(
+        'appStoreLinks',
+        cacheValue?.appStoreLinks || gameProject.appStoreLinks
+      )
+      setValue('kind', cacheValue?.kind || gameProject.kind)
+
+      setValue('tags', cacheValue?.tags || gameProject.tags?.map((i) => i.name))
+    },
+    []
+  )
+
+  /**
+   * Set form edit values
+   * @param setValue
+   * @param cacheValue
+   */
+  const setFormNewValues = useCallback(
+    ({
+      setValue,
+      cacheValue,
+    }: {
+      setValue: UseFormSetValue<Game>
+      cacheValue?: Game | null
+    }) => {
+      if (cacheValue) {
+        setValue('title', cacheValue?.title)
+        setValue('subtitle', cacheValue?.subtitle)
+        setValue('community', cacheValue?.community)
+        setValue('genre', cacheValue?.genre)
+        setValue('paymentMode', cacheValue?.paymentMode)
+        setValue('description', cacheValue?.description)
+        setValue('charset', cacheValue?.charset)
+        setValue('appStoreLinks', cacheValue?.appStoreLinks)
+        setValue('kind', cacheValue?.kind)
+        setValue('tags', cacheValue?.tags)
+      }
+    },
+    []
+  )
+
   const { run } = useThrottleFn(
     () => {
       syncData()
@@ -69,12 +142,10 @@ export function useSetFormCache(gameId?: string | number) {
     { wait: 500 }
   )
 
-  console.log('wwwwww')
-
   useEffect(() => {
     run()
     // watch syncData
   }, [run, syncData])
 
-  return { setFlag }
+  return { setFlag, setFormEditValues, setFormNewValues }
 }

@@ -35,7 +35,7 @@ interface GameContentProps {
 }
 
 const GameContent: FC<GameContentProps> = ({ children, setDescription }) => {
-  const { setFlag } = useSetFormCache()
+  const { setFlag, setFormNewValues } = useSetFormCache()
   const { setValue } = useFormContext<Game>()
 
   // Fetch game data from cache
@@ -43,21 +43,16 @@ const GameContent: FC<GameContentProps> = ({ children, setDescription }) => {
     setFlag(false)
     const cacheValue = getFormDataCache()
     if (cacheValue) {
-      setValue('title', cacheValue?.title)
-      setValue('subtitle', cacheValue?.subtitle)
-      setValue('community', cacheValue?.community)
-      setValue('genre', cacheValue?.genre)
-      setValue('paymentMode', cacheValue?.paymentMode)
-      setValue('description', cacheValue?.description)
-      setValue('charset', cacheValue?.charset)
-      setValue('appStoreLinks', cacheValue?.appStoreLinks)
-      setValue('kind', cacheValue?.kind)
-      setValue('tags', cacheValue?.tags)
+      // Set form edit values
+      setFormNewValues({
+        setValue,
+        cacheValue,
+      })
 
       // Handle description
       setDescription(cacheValue?.description)
     }
-  }, [setValue, setFlag, setDescription])
+  }, [setValue, setFlag, setDescription, setFormNewValues])
 
   useEffect(() => {
     fetchGameProjectFn()
