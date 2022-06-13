@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useWatch } from 'react-hook-form'
 import {
   Community,
@@ -32,15 +32,14 @@ export function useSetFormCache(mode: EditorMode, gameId?: string | number) {
   const screenshots = useWatch<Game>({ name: 'screenshots' }) as string[]
   const charset = useWatch<Game>({ name: 'charset' }) as GameFileCharset
 
-  const cacheKey = getCacheKey(mode, gameId)
+  const [flag, setFlag] = useState(true)
 
-  const cleanFormCache = useCallback(() => {
-    if (typeof window !== 'undefined') {
-      window.sessionStorage.setItem(cacheKey, '{}')
+  // Sync data to session
+  const syncData = useCallback(() => {
+    if (flag) {
+      return
     }
-  }, [cacheKey])
 
-  useEffect(() => {
     const changedGame: Partial<Game> = {
       title,
       subtitle,
@@ -57,27 +56,34 @@ export function useSetFormCache(mode: EditorMode, gameId?: string | number) {
     }
     const cacheJson = JSON.stringify(changedGame)
     if (typeof window !== 'undefined') {
+      const cacheKey = getCacheKey(mode, gameId)
       window.sessionStorage.setItem(cacheKey, cacheJson)
     }
     console.log('gameCache', changedGame)
   }, [
     appStoreLinks,
-    cacheKey,
     charset,
     community,
     cover,
     description,
     genre,
     kind,
-    mode,
     paymentMode,
     screenshots,
     subtitle,
     tags,
     title,
+    mode,
+    gameId,
+    flag,
   ])
 
-  return { cleanFormCache }
+  useEffect(() => {
+    console.log('syncData')
+    syncData()
+  }, [syncData])
+
+  return { setFlag }
 }
 
 export function useGetFormCache(
@@ -86,11 +92,33 @@ export function useGetFormCache(
 ): Game | null {
   const cacheKey = getCacheKey(mode, gameId)
 
-  return useCallback(() => {
-    if (typeof window !== 'undefined') {
-      const cacheJson = window.sessionStorage?.getItem(cacheKey)
-      if (cacheJson) return JSON.parse(cacheJson) as Game
-    }
-    return null
-  }, [cacheKey])()
+  if (typeof window !== 'undefined') {
+    const cacheJson = window.sessionStorage?.getItem(cacheKey)
+    if (cacheJson) return JSON.parse(cacheJson) as Game
+  }
+  return null
+}
+
+export function getFormDataCache(
+  mode: EditorMode,
+  gameId?: string | number
+): Game | null {
+  const cacheKey = getCacheKey(mode, gameId)
+
+  if (typeof window !== 'undefined') {
+    const cacheJson = window.sessionStorage?.getItem(cacheKey)
+    if (cacheJson) return JSON.parse(cacheJson) as Game
+  }
+  return null
+}
+
+// clean
+export const cleanFormDataCache = (
+  mode: EditorMode,
+  gameId?: string | number
+) => {
+  if (typeof window !== 'undefined') {
+    const cacheKey = getCacheKey(mode, gameId)
+    window.sessionStorage.removeItem(cacheKey)
+  }
 }
