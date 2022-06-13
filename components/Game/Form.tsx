@@ -8,12 +8,7 @@ import BigNumber from 'bignumber.js'
 import { TokenList } from 'components'
 import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
 import { utils } from 'ethers'
-import {
-  useAccountInfo,
-  useSetFormCache,
-  useTitle,
-  useTopCenterSnackbar,
-} from 'hooks'
+import { useAccountInfo, useTitle, useTopCenterSnackbar } from 'hooks'
 import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
@@ -28,7 +23,7 @@ import { GameEntity, Token } from 'types'
 import { Api } from 'types/Api'
 import { EditorMode, GameEngine, PaymentMode } from 'types/enum'
 import { ProjectClassification, ReleaseStatus } from 'types/enum'
-import { filenameHandle, fileUrl } from 'utils'
+import { filenameHandle, fileUrl, removeFormDataCache } from 'utils'
 import { Game, inferProjectType, isStringNumber, urlGame } from 'utils'
 import { parseFilename, parseUrl, processMessage } from 'utils'
 
@@ -106,8 +101,6 @@ const GameForm: React.FC<GameFormProps> = ({
     control,
     name: 'appStoreLinks',
   })
-
-  const { cleanFormCache } = useSetFormCache(editorMode, id)
 
   // Watch appStoreLinks change then trigger
   useEffect(() => {
@@ -209,6 +202,8 @@ const GameForm: React.FC<GameFormProps> = ({
     // console.log('createGameResult', createGameResult)
     if (createGameResult.status === 201) {
       saveAlgoliaGame(Number(createGameResult.data.id))
+      // Remove form cache
+      removeFormDataCache(id)
       showSnackbar('Uploaded successfully', 'success')
       router.push('/dashboard')
     } else {
@@ -250,6 +245,8 @@ const GameForm: React.FC<GameFormProps> = ({
     const updateGameResult = await updateGame(Number(id), formData)
     if (updateGameResult.status === 200) {
       saveAlgoliaGame(Number(updateGameResult.data.id))
+      // Remove form cache
+      removeFormDataCache(id)
       showSnackbar('Update completed', 'success')
       router.push(urlGame(id as string))
     } else {
@@ -352,7 +349,6 @@ const GameForm: React.FC<GameFormProps> = ({
 
   const onSubmit: SubmitHandler<Game> = async (data) => {
     handleGame(data)
-    cleanFormCache()
   }
 
   // handle cover
@@ -583,7 +579,6 @@ const GameForm: React.FC<GameFormProps> = ({
                     </div>
                     <div className={`${styles.input_row} tags_input_row`}>
                       <FormTags
-                        editorMode={editorMode}
                         changeTags={(tags) => {
                           setValue('tags', tags)
                         }}
