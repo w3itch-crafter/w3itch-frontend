@@ -211,6 +211,8 @@ const GameForm: React.FC<GameFormProps> = ({
     // console.log('createGameResult', createGameResult)
     if (createGameResult.status === 201) {
       saveAlgoliaGame(Number(createGameResult.data.id))
+      // Remove form cache
+      removeFormDataCache(id)
       showSnackbar('Uploaded successfully', 'success')
       router.push('/dashboard')
     } else {
@@ -252,6 +254,8 @@ const GameForm: React.FC<GameFormProps> = ({
     const updateGameResult = await updateGame(Number(id), formData)
     if (updateGameResult.status === 200) {
       saveAlgoliaGame(Number(updateGameResult.data.id))
+      // Remove form cache
+      removeFormDataCache(id)
       showSnackbar('Update completed', 'success')
       router.push(urlGame(id as string))
     } else {
@@ -354,8 +358,6 @@ const GameForm: React.FC<GameFormProps> = ({
 
   const onSubmit: SubmitHandler<Game> = async (data) => {
     handleGame(data)
-    // Remove form cache
-    removeFormDataCache(id)
   }
 
   // handle cover
