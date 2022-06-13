@@ -21,8 +21,6 @@ export function useSetFormCache(gameId?: string | number) {
   const genre = useWatch<Game>({ name: 'genre' }) as Genre
   const tags = useWatch<Game>({ name: 'tags' }) as string[]
   const appStoreLinks = useWatch<Game>({ name: 'appStoreLinks' }) as string[]
-  const cover = useWatch<Game>({ name: 'cover' }) as string
-  const screenshots = useWatch<Game>({ name: 'screenshots' }) as string[]
   const charset = useWatch<Game>({ name: 'charset' }) as GameFileCharset
 
   // Flag
@@ -44,8 +42,6 @@ export function useSetFormCache(gameId?: string | number) {
       genre,
       tags,
       appStoreLinks,
-      cover,
-      screenshots,
       charset,
     }
 
@@ -55,12 +51,10 @@ export function useSetFormCache(gameId?: string | number) {
     appStoreLinks,
     charset,
     community,
-    cover,
     description,
     genre,
     kind,
     paymentMode,
-    screenshots,
     subtitle,
     tags,
     title,

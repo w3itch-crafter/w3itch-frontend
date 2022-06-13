@@ -53,49 +53,60 @@ const GameContent: FC<GameContentProps> = ({
   const fetchGameProjectFn = useCallback(
     async (id: number) => {
       setFlag(false)
-      const cacheValue = getFormDataCache(id)
 
-      const gameProjectResult = await gameProjectByID(id)
-      if (gameProjectResult.status === 200) {
-        setGameProject(gameProjectResult.data)
+      try {
+        const cacheValue = getFormDataCache(id)
+        const gameProjectResult = await gameProjectByID(id)
+        if (gameProjectResult.status === 200) {
+          setGameProject(gameProjectResult.data)
 
-        const data = Object.assign(gameProjectResult.data, {
-          title: cacheValue?.title,
-          subtitle: cacheValue?.subtitle,
-          kind: cacheValue?.kind,
-          paymentMode: cacheValue?.paymentMode,
-          description: cacheValue?.description,
-          community: cacheValue?.community,
-          genre: cacheValue?.genre,
-          appStoreLinks: cacheValue?.appStoreLinks,
-          cover: cacheValue?.cover,
-          screenshots: cacheValue?.screenshots,
-          charset: cacheValue?.charset,
-        })
+          setValue('title', cacheValue?.title || gameProjectResult.data.title)
+          setValue(
+            'subtitle',
+            cacheValue?.subtitle || gameProjectResult.data.subtitle
+          )
+          setValue(
+            'community',
+            cacheValue?.community || gameProjectResult.data.community
+          )
+          setValue('genre', cacheValue?.genre || gameProjectResult.data.genre)
+          setValue(
+            'paymentMode',
+            cacheValue?.paymentMode || gameProjectResult.data.paymentMode
+          )
+          setValue(
+            'description',
+            cacheValue?.description || gameProjectResult.data.description
+          )
+          setValue(
+            'gameName',
+            cacheValue?.title || gameProjectResult.data.gameName
+          )
+          setValue('cover', gameProjectResult.data.cover)
+          setValue(
+            'charset',
+            cacheValue?.charset || gameProjectResult.data.charset
+          )
+          setValue('screenshots', gameProjectResult.data.screenshots)
+          setValue(
+            'appStoreLinks',
+            cacheValue?.appStoreLinks || gameProjectResult.data.appStoreLinks
+          )
+          setValue('kind', cacheValue?.kind || gameProjectResult.data.kind)
 
-        setValue('title', data.title)
-        setValue('subtitle', data.subtitle)
-        setValue('community', data.community)
-        setValue('genre', data.genre)
-        setValue('paymentMode', data.paymentMode)
-        setValue('description', data.description)
-        setValue('gameName', data.gameName)
-        setValue('cover', data.cover)
-        setValue('charset', data.charset)
-        setValue('screenshots', data.screenshots)
-        setValue('appStoreLinks', data.appStoreLinks)
-        setValue('kind', data.kind)
+          // Tags are handled individually
+          setValue(
+            'tags',
+            cacheValue?.tags || gameProjectResult.data.tags?.map((i) => i.name)
+          )
 
-        // Tags are handled individually
-        setValue(
-          'tags',
-          cacheValue?.tags || gameProjectResult.data.tags?.map((i) => i.name)
-        )
-
-        // Handle description
-        setDescription(
-          cacheValue?.description || gameProjectResult.data.description
-        )
+          // Handle description
+          setDescription(
+            cacheValue?.description || gameProjectResult.data.description
+          )
+        }
+      } catch (e) {
+        console.log(e)
       }
     },
     [setGameProject, setValue, setFlag, setDescription]
