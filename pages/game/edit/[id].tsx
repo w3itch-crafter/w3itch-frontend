@@ -46,7 +46,7 @@ const GameContent: FC<GameContentProps> = ({
 }) => {
   const router = useRouter()
   const id = router.query.id as string
-  const { setFlag } = useSetFormCache(id)
+  const { setFlag, setFormEditValues } = useSetFormCache(id)
   const { setValue } = useFormContext<Game>()
 
   // Fetch game project
@@ -60,45 +60,12 @@ const GameContent: FC<GameContentProps> = ({
         if (gameProjectResult.status === 200) {
           setGameProject(gameProjectResult.data)
 
-          setValue('title', cacheValue?.title || gameProjectResult.data.title)
-          setValue(
-            'subtitle',
-            cacheValue?.subtitle || gameProjectResult.data.subtitle
-          )
-          setValue(
-            'community',
-            cacheValue?.community || gameProjectResult.data.community
-          )
-          setValue('genre', cacheValue?.genre || gameProjectResult.data.genre)
-          setValue(
-            'paymentMode',
-            cacheValue?.paymentMode || gameProjectResult.data.paymentMode
-          )
-          setValue(
-            'description',
-            cacheValue?.description || gameProjectResult.data.description
-          )
-          setValue(
-            'gameName',
-            cacheValue?.title || gameProjectResult.data.gameName
-          )
-          setValue('cover', gameProjectResult.data.cover)
-          setValue(
-            'charset',
-            cacheValue?.charset || gameProjectResult.data.charset
-          )
-          setValue('screenshots', gameProjectResult.data.screenshots)
-          setValue(
-            'appStoreLinks',
-            cacheValue?.appStoreLinks || gameProjectResult.data.appStoreLinks
-          )
-          setValue('kind', cacheValue?.kind || gameProjectResult.data.kind)
-
-          // Tags are handled individually
-          setValue(
-            'tags',
-            cacheValue?.tags || gameProjectResult.data.tags?.map((i) => i.name)
-          )
+          // Set form values
+          setFormEditValues({
+            setValue: setValue,
+            cacheValue,
+            gameProject: gameProjectResult.data,
+          })
 
           // Handle description
           setDescription(
@@ -109,7 +76,7 @@ const GameContent: FC<GameContentProps> = ({
         console.log(e)
       }
     },
-    [setGameProject, setValue, setFlag, setDescription]
+    [setGameProject, setValue, setFlag, setDescription, setFormEditValues]
   )
 
   useEffect(() => {
