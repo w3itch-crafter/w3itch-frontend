@@ -23,18 +23,9 @@ import { GameEntity, Token } from 'types'
 import { Api } from 'types/Api'
 import { EditorMode, GameEngine, PaymentMode } from 'types/enum'
 import { ProjectClassification, ReleaseStatus } from 'types/enum'
-import {
-  filenameHandle,
-  fileUrl,
-  Game,
-  inferProjectType,
-  isStringNumber,
-  parseFilename,
-  parseUrl,
-  processMessage,
-  removeFormDataCache,
-  urlGame,
-} from 'utils'
+import { filenameHandle, fileUrl, removeFormDataCache } from 'utils'
+import { Game, inferProjectType, isStringNumber, urlGame } from 'utils'
+import { parseFilename, parseUrl, processMessage } from 'utils'
 
 import FormCharset from './FormCharset'
 import FormClassification from './FormClassification'
