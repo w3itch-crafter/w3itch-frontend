@@ -1,3 +1,4 @@
+import { useThrottleFn } from 'ahooks'
 import { useCallback, useEffect, useState } from 'react'
 import { useWatch } from 'react-hook-form'
 import {
@@ -67,10 +68,19 @@ export function useSetFormCache(gameId?: string | number) {
     flag,
   ])
 
+  const { run } = useThrottleFn(
+    () => {
+      syncData()
+    },
+    { wait: 500 }
+  )
+
+  console.log('wwwwww')
+
   useEffect(() => {
-    console.log('syncData')
-    syncData()
-  }, [syncData])
+    run()
+    // watch syncData
+  }, [run, syncData])
 
   return { setFlag }
 }
