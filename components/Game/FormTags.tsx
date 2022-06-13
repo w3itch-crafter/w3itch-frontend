@@ -92,7 +92,7 @@ const FormTags: FC<Props> = ({ changeTags }) => {
               setInputTagValue(newInputValue)
             }}
             renderTags={(value: readonly string[], getTagProps) => {
-              console.log('value', value)
+              // console.log('value', value)
               return value.map((tag: string, index: number) => (
                 // eslint-disable-next-line react/jsx-key
                 <Chip
