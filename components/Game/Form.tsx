@@ -95,8 +95,6 @@ const GameForm: React.FC<GameFormProps> = ({
     useState<boolean>(false)
   const [currentDonationAddress, setCurrentDonationAddress] =
     useState<string>('')
-  const [currentDonationAddressFlag, setCurrentDonationAddressFlag] =
-    useState<boolean>(false)
 
   const { tokens } = useTokens()
   const { createGamePageTitle } = useTitle()
@@ -195,7 +193,7 @@ const GameForm: React.FC<GameFormProps> = ({
     }
   }
 
-  const handleCreateGame = async (gameData: Api.GameProjectDto) => {
+  const handleCreateGame = async (gameData: Partial<Api.GameProjectDto>) => {
     MESSAGE_SUBMIT_KEY = showSnackbar('Uploading game...', 'info', {
       persist: true,
     })
@@ -219,12 +217,11 @@ const GameForm: React.FC<GameFormProps> = ({
     }
   }
 
-  const handleUpdateGame = async (game: Api.GameProjectDto) => {
+  const handleUpdateGame = async (gameData: Partial<Api.GameProjectDto>) => {
     MESSAGE_SUBMIT_KEY = showSnackbar('Updating game...', 'info', {
       persist: true,
     })
 
-    const gameData: Partial<Api.GameProjectDto> = { ...game }
     // Update game payload not allow gameName kind classification
     delete gameData.gameName
     delete gameData.kind
@@ -237,7 +234,7 @@ const GameForm: React.FC<GameFormProps> = ({
     // No re-upload screenshots Deleted game screenshots
     if (isEmpty(screenshotsFiles)) {
       // delete all game screenshots
-      if (isEmpty(game.screenshots)) {
+      if (isEmpty(gameData.screenshots)) {
         delete gameData.screenshots
       }
     }
@@ -283,10 +280,6 @@ const GameForm: React.FC<GameFormProps> = ({
         token: currentSelectToken.address,
       })
     }
-    let donationAddress = account?.accountId || ''
-    if (game.paymentMode === PaymentMode.FREE) {
-      donationAddress = utils.getAddress(currentDonationAddress)
-    }
 
     // Parpare game data
     const allImages = await handleAllImages()
@@ -294,7 +287,7 @@ const GameForm: React.FC<GameFormProps> = ({
       game.kind === GameEngine.DEFAULT && uploadGameFile
         ? await inferProjectType(uploadGameFile)
         : game.kind
-    const gameData: Api.GameProjectDto = {
+    const gameData: Partial<Api.GameProjectDto> = {
       title: trim(game.title),
       subtitle: trim(game.subtitle),
       gameName: trim(game.gameName).replaceAll(' ', '_'),
@@ -311,7 +304,12 @@ const GameForm: React.FC<GameFormProps> = ({
       charset: game.charset,
       paymentMode: game.paymentMode,
       prices,
-      donationAddress,
+      donationAddress: currentDonationAddress,
+    }
+
+    // Remove donation address on disable payment
+    if (game.paymentMode === PaymentMode.DISABLE_PAYMENTS) {
+      delete gameData.donationAddress
     }
 
     console.log('file', uploadGameFile)
@@ -415,6 +413,17 @@ const GameForm: React.FC<GameFormProps> = ({
     await handleDescriptionTrigger()
   }, [editorRef, setValue, handleDescriptionTrigger])
 
+  useEffect(() => {
+    // Support default donation address issue-272
+    if (!currentDonationAddress) {
+      const address = gameProject?.donationAddress || account?.accountId
+      if (address) {
+        const checksumAddress = utils.getAddress(address)
+        setCurrentDonationAddress(checksumAddress)
+      }
+    }
+  }, [account?.accountId, currentDonationAddress, gameProject?.donationAddress])
+
   // watch current token fill data
   // paymentMode
   // edit mode has no data
@@ -471,19 +480,6 @@ const GameForm: React.FC<GameFormProps> = ({
         setCurrentSelectTokenAmountFlag(true)
       }
     }
-
-    // execute only once
-    if (
-      !currentDonationAddressFlag &&
-      editorMode === EditorMode.EDIT &&
-      getValues('paymentMode') === PaymentMode.FREE &&
-      !currentDonationAddress
-    ) {
-      setCurrentDonationAddress(
-        (gameProject?.donationAddress || account?.accountId) as string
-      )
-      setCurrentDonationAddressFlag(true)
-    }
   }, [
     currentSelectTokenAmount,
     gameProject,
@@ -499,7 +495,6 @@ const GameForm: React.FC<GameFormProps> = ({
     currentSelectTokenFlag,
     currentSelectTokenChainIdFlag,
     currentSelectTokenAmountFlag,
-    currentDonationAddressFlag,
   ])
 
   return (
