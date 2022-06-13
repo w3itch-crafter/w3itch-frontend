@@ -95,8 +95,6 @@ const GameForm: React.FC<GameFormProps> = ({
     useState<boolean>(false)
   const [currentDonationAddress, setCurrentDonationAddress] =
     useState<string>('')
-  const [currentDonationAddressFlag, setCurrentDonationAddressFlag] =
-    useState<boolean>(false)
 
   const { tokens } = useTokens()
   const { createGamePageTitle } = useTitle()
@@ -283,10 +281,6 @@ const GameForm: React.FC<GameFormProps> = ({
         token: currentSelectToken.address,
       })
     }
-    let donationAddress = account?.accountId || ''
-    if (game.paymentMode === PaymentMode.FREE) {
-      donationAddress = utils.getAddress(currentDonationAddress)
-    }
 
     // Parpare game data
     const allImages = await handleAllImages()
@@ -311,7 +305,7 @@ const GameForm: React.FC<GameFormProps> = ({
       charset: game.charset,
       paymentMode: game.paymentMode,
       prices,
-      donationAddress,
+      donationAddress: currentDonationAddress,
     }
 
     console.log('file', uploadGameFile)
@@ -415,6 +409,17 @@ const GameForm: React.FC<GameFormProps> = ({
     await handleDescriptionTrigger()
   }, [editorRef, setValue, handleDescriptionTrigger])
 
+  useEffect(() => {
+    // Support default donation address issue-272
+    if (!currentDonationAddress) {
+      const address = gameProject?.donationAddress || account?.accountId
+      if (address) {
+        const checksumAddress = utils.getAddress(address)
+        setCurrentDonationAddress(checksumAddress)
+      }
+    }
+  }, [account?.accountId, currentDonationAddress, gameProject?.donationAddress])
+
   // watch current token fill data
   // paymentMode
   // edit mode has no data
@@ -471,19 +476,6 @@ const GameForm: React.FC<GameFormProps> = ({
         setCurrentSelectTokenAmountFlag(true)
       }
     }
-
-    // execute only once
-    if (
-      !currentDonationAddressFlag &&
-      editorMode === EditorMode.EDIT &&
-      getValues('paymentMode') === PaymentMode.FREE &&
-      !currentDonationAddress
-    ) {
-      setCurrentDonationAddress(
-        (gameProject?.donationAddress || account?.accountId) as string
-      )
-      setCurrentDonationAddressFlag(true)
-    }
   }, [
     currentSelectTokenAmount,
     gameProject,
@@ -499,7 +491,6 @@ const GameForm: React.FC<GameFormProps> = ({
     currentSelectTokenFlag,
     currentSelectTokenChainIdFlag,
     currentSelectTokenAmountFlag,
-    currentDonationAddressFlag,
   ])
 
   return (
