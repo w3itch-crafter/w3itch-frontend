@@ -9,8 +9,8 @@ import { TokenList } from 'components'
 import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
 import { utils } from 'ethers'
 import {
+  cleanFormDataCache,
   useAccountInfo,
-  useSetFormCache,
   useTitle,
   useTopCenterSnackbar,
 } from 'hooks'
@@ -109,7 +109,7 @@ const GameForm: React.FC<GameFormProps> = ({
     name: 'appStoreLinks',
   })
 
-  const { cleanFormCache } = useSetFormCache(editorMode, id)
+  // const { cleanFormCache } = useSetFormCache(editorMode, id)
 
   // Watch appStoreLinks change then trigger
   useEffect(() => {
@@ -354,7 +354,7 @@ const GameForm: React.FC<GameFormProps> = ({
 
   const onSubmit: SubmitHandler<Game> = async (data) => {
     handleGame(data)
-    cleanFormCache()
+    cleanFormDataCache(editorMode, id)
   }
 
   // handle cover
@@ -588,7 +588,6 @@ const GameForm: React.FC<GameFormProps> = ({
                     </div>
                     <div className={`${styles.input_row} tags_input_row`}>
                       <FormTags
-                        editorMode={editorMode}
                         changeTags={(tags) => {
                           setValue('tags', tags)
                         }}

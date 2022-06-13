@@ -13,15 +13,13 @@ import { Controller, FieldError, useFormContext } from 'react-hook-form'
 import { getTags } from 'services'
 import styles from 'styles/game/new.module.scss'
 import { Api } from 'types/Api'
-import { EditorMode } from 'types/enum'
 import { Game } from 'utils'
 
 interface Props {
-  readonly editorMode: EditorMode
   changeTags: (value: string[]) => void
 }
 
-const FormTags: FC<Props> = ({ editorMode, changeTags }) => {
+const FormTags: FC<Props> = ({ changeTags }) => {
   const [currentTags, setCurrentTags] = useState<string[]>([])
   const [inputTagValue, setInputTagValue] = useState('')
   const [tags, setTags] = useState<Api.Tag[]>([])
@@ -42,16 +40,12 @@ const FormTags: FC<Props> = ({ editorMode, changeTags }) => {
     }
   }, [])
 
-  // fill data
+  // Fill data
   useEffect(() => {
-    if (
-      editorMode === EditorMode.EDIT &&
-      isEmpty(currentTags) &&
-      getValues('tags')
-    ) {
+    if (isEmpty(currentTags) && getValues('tags')) {
       setCurrentTags(getValues('tags') || [])
     }
-  }, [editorMode, getValues, watchTags, currentTags])
+  }, [getValues, watchTags, currentTags])
 
   useEffect(() => {
     fetchTags()
