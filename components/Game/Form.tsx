@@ -193,7 +193,7 @@ const GameForm: React.FC<GameFormProps> = ({
     }
   }
 
-  const handleCreateGame = async (gameData: Api.GameProjectDto) => {
+  const handleCreateGame = async (gameData: Partial<Api.GameProjectDto>) => {
     MESSAGE_SUBMIT_KEY = showSnackbar('Uploading game...', 'info', {
       persist: true,
     })
@@ -217,12 +217,11 @@ const GameForm: React.FC<GameFormProps> = ({
     }
   }
 
-  const handleUpdateGame = async (game: Api.GameProjectDto) => {
+  const handleUpdateGame = async (gameData: Partial<Api.GameProjectDto>) => {
     MESSAGE_SUBMIT_KEY = showSnackbar('Updating game...', 'info', {
       persist: true,
     })
 
-    const gameData: Partial<Api.GameProjectDto> = { ...game }
     // Update game payload not allow gameName kind classification
     delete gameData.gameName
     delete gameData.kind
@@ -235,7 +234,7 @@ const GameForm: React.FC<GameFormProps> = ({
     // No re-upload screenshots Deleted game screenshots
     if (isEmpty(screenshotsFiles)) {
       // delete all game screenshots
-      if (isEmpty(game.screenshots)) {
+      if (isEmpty(gameData.screenshots)) {
         delete gameData.screenshots
       }
     }
@@ -288,7 +287,7 @@ const GameForm: React.FC<GameFormProps> = ({
       game.kind === GameEngine.DEFAULT && uploadGameFile
         ? await inferProjectType(uploadGameFile)
         : game.kind
-    const gameData: Api.GameProjectDto = {
+    const gameData: Partial<Api.GameProjectDto> = {
       title: trim(game.title),
       subtitle: trim(game.subtitle),
       gameName: trim(game.gameName).replaceAll(' ', '_'),
@@ -306,6 +305,11 @@ const GameForm: React.FC<GameFormProps> = ({
       paymentMode: game.paymentMode,
       prices,
       donationAddress: currentDonationAddress,
+    }
+
+    // Remove donation address on disable payment
+    if (game.paymentMode === PaymentMode.DISABLE_PAYMENTS) {
+      delete gameData.donationAddress
     }
 
     console.log('file', uploadGameFile)
