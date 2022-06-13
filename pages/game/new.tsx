@@ -43,7 +43,7 @@ const GameContent: FC<GameContentProps> = ({ children, setDescription }) => {
     setFlag(false)
     const cacheValue = getFormDataCache()
     if (cacheValue) {
-      // Set form edit values
+      // Set form new values
       setFormNewValues({
         setValue,
         cacheValue,
