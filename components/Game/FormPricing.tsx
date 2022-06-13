@@ -1,5 +1,6 @@
 import {
   Box,
+  Checkbox,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -20,7 +21,7 @@ import {
   WalletSupportedChainNames,
 } from 'constants/chains'
 import { isEmpty } from 'lodash'
-import { Dispatch, FC, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
 import { Token } from 'types'
@@ -38,30 +39,101 @@ interface FormPricingProps {
   setCurrentSelectTokenAmount: Dispatch<SetStateAction<string>>
 }
 
-const FormPricing: FC<FormPricingProps> = ({
-  currentSelectToken,
-  currentDonationAddress,
-  currentSelectTokenChainId,
-  currentSelectTokenAmount,
-  setTtokenListDialogOpen,
-  setCurrentDonationAddress,
-  setCurrentSelectTokenChainId,
-  setCurrentSelectTokenAmount,
-}) => {
+const PriceTokenSelecter: React.FC<FormPricingProps> = (props) => {
+  const {
+    currentSelectToken,
+    currentSelectTokenChainId,
+    currentSelectTokenAmount,
+    setTtokenListDialogOpen,
+    setCurrentSelectTokenChainId,
+    setCurrentSelectTokenAmount,
+  } = props
+  const selected = !isEmpty(currentSelectToken)
+  return (
+    <Stack spacing={1}>
+      {currentSelectTokenChainId && (
+        <Select
+          size="small"
+          value={currentSelectTokenChainId as unknown as string}
+          onChange={(event: SelectChangeEvent) => {
+            setCurrentSelectTokenChainId(
+              event.target.value as unknown as SupportedChainId
+            )
+          }}
+        >
+          {WalletSupportedChainIds.map((chainId, index) => (
+            <MenuItem value={chainId} key={chainId}>
+              {WalletSupportedChainNames[index] || 'Unknown'}
+            </MenuItem>
+          ))}
+        </Select>
+      )}
+      <Button
+        size="small"
+        onClick={() => setTtokenListDialogOpen(true)}
+        variant="contained"
+      >
+        {selected ? 'Select Another' : 'Select'}
+      </Button>
+      {selected && (
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <TokenItem token={currentSelectToken} selectToken={() => void 0} />
+          <TextField
+            value={currentSelectTokenAmount}
+            onChange={(event) =>
+              setCurrentSelectTokenAmount(event.target.value)
+            }
+            size="small"
+            placeholder="Please enter the amount"
+            fullWidth
+          />
+        </Stack>
+      )}
+    </Stack>
+  )
+}
+
+const DonationInput: React.FC<FormPricingProps> = (props) => {
+  const { currentDonationAddress, setCurrentDonationAddress } = props
+  return (
+    <TextField
+      value={currentDonationAddress}
+      onChange={(event) => setCurrentDonationAddress(event.target.value)}
+      size="small"
+      placeholder="Please enter wallet address"
+      fullWidth
+    />
+  )
+}
+
+type FormControllerProps = {
+  payment: PaymentMode
+  enableDonate: boolean
+  handleEnableDonate: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean
+  ) => void
+}
+const FormController: React.FC<FormControllerProps> = (props) => {
+  const { payment, enableDonate, handleEnableDonate } = props
   const {
     control,
     formState: { errors },
-    watch,
   } = useFormContext<Game>()
 
   return (
-    <div>
-      <Controller
-        control={control}
-        name="paymentMode"
-        render={({ field }) => (
-          <FormControl fullWidth error={Boolean(errors.paymentMode)}>
-            <FormLabel id="form-pricing">Pricing</FormLabel>
+    <Controller
+      control={control}
+      name="paymentMode"
+      render={({ field }) => (
+        <FormControl fullWidth error={Boolean(errors.paymentMode)}>
+          <FormLabel id="form-pricing">Pricing</FormLabel>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            spacing={1}
+          >
             <RadioGroup
               {...field}
               row
@@ -76,7 +148,7 @@ const FormPricing: FC<FormPricingProps> = ({
               <FormControlLabel
                 value={PaymentMode.PAID}
                 control={<Radio />}
-                label="Hodl"
+                label="Hold"
               />
               <FormControlLabel
                 value={PaymentMode.DISABLE_PAYMENTS}
@@ -84,83 +156,68 @@ const FormPricing: FC<FormPricingProps> = ({
                 label="No payments"
               />
             </RadioGroup>
-            <FormHelperText>{errors?.paymentMode?.message}</FormHelperText>
-          </FormControl>
-        )}
+            {payment === PaymentMode.PAID && (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={enableDonate}
+                    onChange={handleEnableDonate}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                  />
+                }
+                label="Enable donate"
+              />
+            )}
+          </Stack>
+          <FormHelperText>{errors?.paymentMode?.message}</FormHelperText>
+        </FormControl>
+      )}
+    />
+  )
+}
+
+const FormPricing: React.FC<FormPricingProps> = (props) => {
+  const { watch } = useFormContext<Game>()
+  const payment = watch('paymentMode')
+  const [enableDonate, setEnableDonate] = useState(false)
+  const handleEnableDonate = useCallback(
+    (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      setEnableDonate(checked)
+    },
+    []
+  )
+
+  return (
+    <Box>
+      <FormController
+        payment={payment}
+        enableDonate={enableDonate}
+        handleEnableDonate={handleEnableDonate}
       />
-      <Box
-        sx={{
-          marginTop: '10px',
-        }}
-      >
-        {watch('paymentMode') === PaymentMode.FREE ? (
+      <Box sx={{ marginTop: '10px' }}>
+        {payment === PaymentMode.FREE && (
           <Box>
-            <TextField
-              value={currentDonationAddress}
-              onChange={(event) =>
-                setCurrentDonationAddress(event.target.value)
-              }
-              size="small"
-              placeholder="Please enter wallet address"
-              fullWidth
-            />
+            <DonationInput {...props} />
             <p className={styles.sub}>
               Someone downloading your project will be asked for a donation
               before getting access. They can skip to download for free.
             </p>
           </Box>
-        ) : watch('paymentMode') === PaymentMode.PAID ? (
-          <Stack spacing={1}>
-            {currentSelectTokenChainId && (
-              <Select
-                size="small"
-                value={currentSelectTokenChainId as unknown as string}
-                onChange={(event: SelectChangeEvent) => {
-                  setCurrentSelectTokenChainId(
-                    event.target.value as unknown as SupportedChainId
-                  )
-                }}
-              >
-                {WalletSupportedChainIds.map((chainId, index) => (
-                  <MenuItem value={chainId} key={chainId}>
-                    {WalletSupportedChainNames[index] || 'Unknown'}
-                  </MenuItem>
-                ))}
-              </Select>
-            )}
-
-            <Button
-              size="small"
-              onClick={() => setTtokenListDialogOpen(true)}
-              variant="contained"
-            >
-              Select
-            </Button>
-            {!isEmpty(currentSelectToken) && (
-              <TokenItem
-                token={currentSelectToken}
-                selectToken={() => void 0}
-              />
-            )}
-            <TextField
-              value={currentSelectTokenAmount}
-              onChange={(event) =>
-                setCurrentSelectTokenAmount(event.target.value)
-              }
-              size="small"
-              placeholder="Please enter the amount"
-              fullWidth
-            />
+        )}
+        {payment === PaymentMode.PAID && (
+          <Stack spacing={2}>
+            <PriceTokenSelecter {...props} />
+            {enableDonate && <DonationInput {...props} />}
           </Stack>
-        ) : watch('paymentMode') === PaymentMode.DISABLE_PAYMENTS ? (
+        )}
+        {payment === PaymentMode.DISABLE_PAYMENTS && (
           <p className={styles.sub}>
-            {
-              "The project's files will be freely available and no donations can be made"
-            }
+            The project&apos;s files will be freely available and no donations
+            can be made
           </p>
-        ) : null}
+        )}
       </Box>
-    </div>
+    </Box>
   )
 }
 
