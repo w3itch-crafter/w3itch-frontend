@@ -81,7 +81,7 @@ const GameCreate: NextPage = () => {
 
   const methods = useForm<Game>({
     resolver: resolverGame,
-    defaultValues: { ...defaultValue },
+    defaultValues: defaultValue,
   })
 
   // Initialize description content
