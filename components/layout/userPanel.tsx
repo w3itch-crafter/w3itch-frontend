@@ -86,10 +86,7 @@ export function UserPanel() {
       {!user && (
         <Fragment>
           <Link href="/login" passHref>
-            <PanelButton>{t('login')}</PanelButton>
-          </Link>
-          <Link href="/register" passHref>
-            <PanelButton>{t('Register')}</PanelButton>
+            <PanelButton>{t('Sign In')}</PanelButton>
           </Link>
         </Fragment>
       )}
@@ -123,7 +120,7 @@ export function UserPanel() {
                 <LinkRow>Settings</LinkRow>
               </Link>
               <Link href="/logout" passHref>
-                <LinkRow>Log out</LinkRow>
+                <LinkRow>Sign out</LinkRow>
               </Link>
             </DropMenuGroup>
           </DropMenu>
