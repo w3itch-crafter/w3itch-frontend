@@ -8,7 +8,11 @@ import BigNumber from 'bignumber.js'
 import { TokenList } from 'components'
 import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
 import { utils } from 'ethers'
-import { useAccountInfo, useTitle, useTopCenterSnackbar } from 'hooks'
+import {
+  useFormInitializationData,
+  useTitle,
+  useTopCenterSnackbar,
+} from 'hooks'
 import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
@@ -63,10 +67,9 @@ const GameForm: React.FC<GameFormProps> = ({
   const router = useRouter()
   const id = router.query.id as string
 
-  const { handleSubmit, setValue, control, watch, getValues, trigger } =
+  const { handleSubmit, setValue, control, watch, trigger } =
     useFormContext<Game>()
 
-  const account = useAccountInfo('metamask')
   const showSnackbar = useTopCenterSnackbar()
   const { closeSnackbar } = useSnackbar()
 
@@ -94,9 +97,11 @@ const GameForm: React.FC<GameFormProps> = ({
   const { tokens } = useTokens()
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
+  const { initialization, initializationDonation } = useFormInitializationData({
+    gameProject,
+  })
 
   const watchKind = watch('kind')
-  const watchPaymentMode = watch('paymentMode')
   const watchAppStoreLinks = useWatch({
     control,
     name: 'appStoreLinks',
@@ -410,87 +415,37 @@ const GameForm: React.FC<GameFormProps> = ({
   }, [editorRef, setValue, handleDescriptionTrigger])
 
   useEffect(() => {
-    // Support default donation address issue-272
-    if (!currentDonationAddress) {
-      const address = gameProject?.donationAddress || account?.accountId
-      if (address) {
-        const checksumAddress = utils.getAddress(address)
-        setCurrentDonationAddress(checksumAddress)
-      }
-    }
-  }, [account?.accountId, currentDonationAddress, gameProject?.donationAddress])
+    initialization({
+      editorMode,
+      currentSelectTokenChainIdFlag,
+      currentSelectToken,
+      currentSelectTokenFlag,
+      currentSelectTokenAmountFlag,
+      currentSelectTokenAmount,
+      tokens,
+      setCurrentSelectTokenChainId,
+      setCurrentSelectTokenChainIdFlag,
+      setCurrentSelectToken,
+      setCurrentSelectTokenFlag,
+      setCurrentSelectTokenAmount,
+      setCurrentSelectTokenAmountFlag,
+    })
 
-  // watch current token fill data
-  // paymentMode
-  // edit mode has no data
-  useEffect(() => {
-    if (
-      editorMode === EditorMode.EDIT &&
-      getValues('paymentMode') === PaymentMode.PAID
-    ) {
-      // execute only once
-      if (!currentSelectTokenChainIdFlag && !isEmpty(gameProject?.prices[0])) {
-        setCurrentSelectTokenChainId(gameProject?.prices[0].token.chainId)
-        setCurrentSelectTokenChainIdFlag(true)
-      }
-
-      // execute only once
-      if (
-        isEmpty(currentSelectToken) &&
-        !isEmpty(gameProject?.prices[0]) &&
-        !currentSelectTokenFlag
-      ) {
-        const { address, name, symbol, decimals, chainId } =
-          gameProject.prices[0].token
-        // balanceOf and totalSupply are not processed
-        setCurrentSelectToken({
-          address: address,
-          name: name,
-          symbol: symbol,
-          decimals: decimals,
-          // totalSupply: BigNumberEthers.from(0),
-          // balanceOf: BigNumberEthers.from(0),
-          chainId: chainId,
-          logoURI:
-            tokens.find(
-              (token) =>
-                utils.getAddress(token.address) === utils.getAddress(address) &&
-                token.chainId === chainId
-            )?.logoURI || '',
-        })
-        setCurrentSelectTokenFlag(true)
-      }
-
-      // execute only once
-      if (
-        !currentSelectTokenAmountFlag &&
-        (!currentSelectTokenAmount || currentSelectTokenAmount === '0') &&
-        !isEmpty(gameProject?.prices[0])
-      ) {
-        setCurrentSelectTokenAmount(
-          utils.formatUnits(
-            gameProject.prices[0].amount,
-            gameProject.prices[0].token.decimals
-          )
-        )
-        setCurrentSelectTokenAmountFlag(true)
-      }
-    }
+    initializationDonation({
+      currentDonationAddress,
+      setCurrentDonationAddress,
+    })
   }, [
-    currentSelectTokenAmount,
-    gameProject,
     editorMode,
+    currentSelectTokenChainIdFlag,
     currentSelectToken,
-    watchPaymentMode,
-    getValues,
+    currentSelectTokenFlag,
+    currentSelectTokenAmountFlag,
+    currentSelectTokenAmount,
     tokens,
     currentDonationAddress,
-    account,
-    watchPaymentMode,
-    currentSelectTokenChainId,
-    currentSelectTokenFlag,
-    currentSelectTokenChainIdFlag,
-    currentSelectTokenAmountFlag,
+    initialization,
+    initializationDonation,
   ])
 
   return (
