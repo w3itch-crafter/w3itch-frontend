@@ -168,7 +168,7 @@ const OAuth: NextPage<OAuthProps> = ({ success, code, method }: OAuthProps) => {
             )}
           </Padded>
           <CardFooter>
-            You can retry <Link href="/login">{t('Login')}</Link>
+            You can retry <Link href="/login">{t('Sign In')}</Link>
           </CardFooter>
         </PageCard>
       </Container>

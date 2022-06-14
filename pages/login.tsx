@@ -104,11 +104,11 @@ const Login: NextPage = () => {
   return (
     <Fragment>
       <Head>
-        <title>Log in - w3itch.io</title>
+        <title>Sign in - w3itch.io</title>
       </Head>
       <Container>
         <PageCard>
-          <StatHeader title="Log in to your w3itch.io account" />
+          <StatHeader title="Sign in to your w3itch.io account" />
           <Padded>
             {loginMethod && <StyledBackToSelect onClick={handleBackToSelect} />}
             {!loginMethod && (
@@ -124,9 +124,9 @@ const Login: NextPage = () => {
             <Buttons>
               <RedButton disabled={!canLogin} onClick={handleLogin}>
                 {!loginMethod && 'Select a method'}
-                {loginMethod === 'metamask' && 'Login'}
-                {loginMethod === 'github' && 'Log in with GitHub'}
-                {loginMethod === 'discord' && 'Log in with Discord'}
+                {loginMethod === 'metamask' && 'Sign In'}
+                {loginMethod === 'github' && 'Sign in with GitHub'}
+                {loginMethod === 'discord' && 'Sign in with Discord'}
               </RedButton>
             </Buttons>
           </Padded>

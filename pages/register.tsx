@@ -301,7 +301,7 @@ const Register: NextPage = () => {
                 <LoginMessage>
                   or already have an account?
                   <Link href="/login" passHref>
-                    <Login>{t('login')}</Login>
+                    <Login>{t('Sign In')}</Login>
                   </Link>
                 </LoginMessage>
               </Buttons>
