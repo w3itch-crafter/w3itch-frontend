@@ -1,14 +1,20 @@
 import { SupportedChainId } from 'constants/chains'
 import { utils } from 'ethers'
+import { useAccountInfo } from 'hooks'
 import { isEmpty } from 'lodash'
 import { Dispatch, SetStateAction, useCallback } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { AccountEntity, GameEntity, Token } from 'types'
+import { GameEntity, Token } from 'types'
 import { EditorMode, PaymentMode } from 'types/enum'
 import { Game } from 'utils'
 
-function useFormInitializationData() {
+function useFormInitializationData({
+  gameProject,
+}: {
+  gameProject: GameEntity
+}) {
   const { getValues } = useFormContext<Game>()
+  const account = useAccountInfo('metamask')
 
   // Initialization
   // Execute only once
@@ -16,7 +22,6 @@ function useFormInitializationData() {
     ({
       editorMode,
       currentSelectTokenChainIdFlag,
-      gameProject,
       currentSelectToken,
       currentSelectTokenFlag,
       currentSelectTokenAmountFlag,
@@ -31,7 +36,6 @@ function useFormInitializationData() {
     }: {
       editorMode: EditorMode
       currentSelectTokenChainIdFlag: boolean
-      gameProject: GameEntity
       currentSelectToken: Token
       currentSelectTokenFlag: boolean
       currentSelectTokenAmountFlag: boolean
@@ -100,7 +104,7 @@ function useFormInitializationData() {
         }
       }
     },
-    [getValues]
+    [getValues, gameProject]
   )
 
   // Initialization Donation
@@ -108,13 +112,9 @@ function useFormInitializationData() {
   const initializationDonation = useCallback(
     ({
       currentDonationAddress,
-      gameProject,
-      account,
       setCurrentDonationAddress,
     }: {
       currentDonationAddress: string
-      gameProject: GameEntity
-      account: AccountEntity | null
       setCurrentDonationAddress: Dispatch<SetStateAction<string>>
     }) => {
       // Support default donation address issue-272
@@ -126,7 +126,7 @@ function useFormInitializationData() {
         }
       }
     },
-    []
+    [account, gameProject]
   )
 
   return { initialization, initializationDonation }

@@ -9,7 +9,6 @@ import { TokenList } from 'components'
 import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
 import { utils } from 'ethers'
 import {
-  useAccountInfo,
   useFormInitializationData,
   useTitle,
   useTopCenterSnackbar,
@@ -71,7 +70,6 @@ const GameForm: React.FC<GameFormProps> = ({
   const { handleSubmit, setValue, control, watch, trigger } =
     useFormContext<Game>()
 
-  const account = useAccountInfo('metamask')
   const showSnackbar = useTopCenterSnackbar()
   const { closeSnackbar } = useSnackbar()
 
@@ -99,7 +97,9 @@ const GameForm: React.FC<GameFormProps> = ({
   const { tokens } = useTokens()
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
-  const { initialization, initializationDonation } = useFormInitializationData()
+  const { initialization, initializationDonation } = useFormInitializationData({
+    gameProject,
+  })
 
   const watchKind = watch('kind')
   const watchAppStoreLinks = useWatch({
@@ -418,7 +418,6 @@ const GameForm: React.FC<GameFormProps> = ({
     initialization({
       editorMode,
       currentSelectTokenChainIdFlag,
-      gameProject,
       currentSelectToken,
       currentSelectTokenFlag,
       currentSelectTokenAmountFlag,
@@ -434,21 +433,17 @@ const GameForm: React.FC<GameFormProps> = ({
 
     initializationDonation({
       currentDonationAddress,
-      gameProject,
-      account,
       setCurrentDonationAddress,
     })
   }, [
     editorMode,
     currentSelectTokenChainIdFlag,
-    gameProject,
     currentSelectToken,
     currentSelectTokenFlag,
     currentSelectTokenAmountFlag,
     currentSelectTokenAmount,
     tokens,
     currentDonationAddress,
-    account,
     initialization,
     initializationDonation,
   ])
