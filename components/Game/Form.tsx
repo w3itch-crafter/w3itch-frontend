@@ -8,7 +8,12 @@ import BigNumber from 'bignumber.js'
 import { TokenList } from 'components'
 import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
 import { utils } from 'ethers'
-import { useAccountInfo, useTitle, useTopCenterSnackbar } from 'hooks'
+import {
+  useAccountInfo,
+  useFormInitializationData,
+  useTitle,
+  useTopCenterSnackbar,
+} from 'hooks'
 import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
@@ -94,6 +99,7 @@ const GameForm: React.FC<GameFormProps> = ({
   const { tokens } = useTokens()
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
+  const { initialization } = useFormInitializationData()
 
   const watchKind = watch('kind')
   const watchPaymentMode = watch('paymentMode')
@@ -424,65 +430,28 @@ const GameForm: React.FC<GameFormProps> = ({
   // paymentMode
   // edit mode has no data
   useEffect(() => {
-    if (
-      editorMode === EditorMode.EDIT &&
-      getValues('paymentMode') === PaymentMode.PAID
-    ) {
-      // execute only once
-      if (!currentSelectTokenChainIdFlag && !isEmpty(gameProject?.prices[0])) {
-        setCurrentSelectTokenChainId(gameProject?.prices[0].token.chainId)
-        setCurrentSelectTokenChainIdFlag(true)
-      }
-
-      // execute only once
-      if (
-        isEmpty(currentSelectToken) &&
-        !isEmpty(gameProject?.prices[0]) &&
-        !currentSelectTokenFlag
-      ) {
-        const { address, name, symbol, decimals, chainId } =
-          gameProject.prices[0].token
-        // balanceOf and totalSupply are not processed
-        setCurrentSelectToken({
-          address: address,
-          name: name,
-          symbol: symbol,
-          decimals: decimals,
-          // totalSupply: BigNumberEthers.from(0),
-          // balanceOf: BigNumberEthers.from(0),
-          chainId: chainId,
-          logoURI:
-            tokens.find(
-              (token) =>
-                utils.getAddress(token.address) === utils.getAddress(address) &&
-                token.chainId === chainId
-            )?.logoURI || '',
-        })
-        setCurrentSelectTokenFlag(true)
-      }
-
-      // execute only once
-      if (
-        !currentSelectTokenAmountFlag &&
-        (!currentSelectTokenAmount || currentSelectTokenAmount === '0') &&
-        !isEmpty(gameProject?.prices[0])
-      ) {
-        setCurrentSelectTokenAmount(
-          utils.formatUnits(
-            gameProject.prices[0].amount,
-            gameProject.prices[0].token.decimals
-          )
-        )
-        setCurrentSelectTokenAmountFlag(true)
-      }
-    }
+    initialization({
+      editorMode,
+      currentSelectTokenChainIdFlag,
+      gameProject,
+      currentSelectToken,
+      currentSelectTokenFlag,
+      currentSelectTokenAmountFlag,
+      currentSelectTokenAmount,
+      tokens,
+      setCurrentSelectTokenChainId,
+      setCurrentSelectTokenChainIdFlag,
+      setCurrentSelectToken,
+      setCurrentSelectTokenFlag,
+      setCurrentSelectTokenAmount,
+      setCurrentSelectTokenAmountFlag,
+    })
   }, [
     currentSelectTokenAmount,
     gameProject,
     editorMode,
     currentSelectToken,
     watchPaymentMode,
-    getValues,
     tokens,
     currentDonationAddress,
     account,
@@ -491,6 +460,7 @@ const GameForm: React.FC<GameFormProps> = ({
     currentSelectTokenFlag,
     currentSelectTokenChainIdFlag,
     currentSelectTokenAmountFlag,
+    initialization,
   ])
 
   return (
