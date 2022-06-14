@@ -22,7 +22,7 @@ const Logout: NextPage = () => {
 
   return (
     <Head>
-      <title>Logout - w3itch.io</title>
+      <title>Sign out - w3itch.io</title>
     </Head>
   )
 }

@@ -40,7 +40,7 @@ export function Heads() {
     },
     {
       position: 3,
-      name: 'Login',
+      name: 'Sign In',
       item: `${publicUrl}/login`,
     },
     {
