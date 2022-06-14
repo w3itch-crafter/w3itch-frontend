@@ -3,13 +3,15 @@ import { utils } from 'ethers'
 import { isEmpty } from 'lodash'
 import { Dispatch, SetStateAction, useCallback } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { GameEntity, Token } from 'types'
+import { AccountEntity, GameEntity, Token } from 'types'
 import { EditorMode, PaymentMode } from 'types/enum'
 import { Game } from 'utils'
 
 function useFormInitializationData() {
   const { getValues } = useFormContext<Game>()
 
+  // Initialization
+  // Execute only once
   const initialization = useCallback(
     ({
       editorMode,
@@ -101,7 +103,33 @@ function useFormInitializationData() {
     [getValues]
   )
 
-  return { initialization }
+  // Initialization Donation
+  // Execute only once
+  const initializationDonation = useCallback(
+    ({
+      currentDonationAddress,
+      gameProject,
+      account,
+      setCurrentDonationAddress,
+    }: {
+      currentDonationAddress: string
+      gameProject: GameEntity
+      account: AccountEntity | null
+      setCurrentDonationAddress: Dispatch<SetStateAction<string>>
+    }) => {
+      // Support default donation address issue-272
+      if (!currentDonationAddress) {
+        const address = gameProject?.donationAddress || account?.accountId
+        if (address) {
+          const checksumAddress = utils.getAddress(address)
+          setCurrentDonationAddress(checksumAddress)
+        }
+      }
+    },
+    []
+  )
+
+  return { initialization, initializationDonation }
 }
 
 export { useFormInitializationData }

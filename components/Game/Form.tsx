@@ -68,7 +68,7 @@ const GameForm: React.FC<GameFormProps> = ({
   const router = useRouter()
   const id = router.query.id as string
 
-  const { handleSubmit, setValue, control, watch, getValues, trigger } =
+  const { handleSubmit, setValue, control, watch, trigger } =
     useFormContext<Game>()
 
   const account = useAccountInfo('metamask')
@@ -99,10 +99,9 @@ const GameForm: React.FC<GameFormProps> = ({
   const { tokens } = useTokens()
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
-  const { initialization } = useFormInitializationData()
+  const { initialization, initializationDonation } = useFormInitializationData()
 
   const watchKind = watch('kind')
-  const watchPaymentMode = watch('paymentMode')
   const watchAppStoreLinks = useWatch({
     control,
     name: 'appStoreLinks',
@@ -416,20 +415,6 @@ const GameForm: React.FC<GameFormProps> = ({
   }, [editorRef, setValue, handleDescriptionTrigger])
 
   useEffect(() => {
-    // Support default donation address issue-272
-    if (!currentDonationAddress) {
-      const address = gameProject?.donationAddress || account?.accountId
-      if (address) {
-        const checksumAddress = utils.getAddress(address)
-        setCurrentDonationAddress(checksumAddress)
-      }
-    }
-  }, [account?.accountId, currentDonationAddress, gameProject?.donationAddress])
-
-  // watch current token fill data
-  // paymentMode
-  // edit mode has no data
-  useEffect(() => {
     initialization({
       editorMode,
       currentSelectTokenChainIdFlag,
@@ -446,21 +431,26 @@ const GameForm: React.FC<GameFormProps> = ({
       setCurrentSelectTokenAmount,
       setCurrentSelectTokenAmountFlag,
     })
+
+    initializationDonation({
+      currentDonationAddress,
+      gameProject,
+      account,
+      setCurrentDonationAddress,
+    })
   }, [
-    currentSelectTokenAmount,
-    gameProject,
     editorMode,
+    currentSelectTokenChainIdFlag,
+    gameProject,
     currentSelectToken,
-    watchPaymentMode,
+    currentSelectTokenFlag,
+    currentSelectTokenAmountFlag,
+    currentSelectTokenAmount,
     tokens,
     currentDonationAddress,
     account,
-    watchPaymentMode,
-    currentSelectTokenChainId,
-    currentSelectTokenFlag,
-    currentSelectTokenChainIdFlag,
-    currentSelectTokenAmountFlag,
     initialization,
+    initializationDonation,
   ])
 
   return (
