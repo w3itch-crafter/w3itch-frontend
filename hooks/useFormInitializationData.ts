@@ -8,7 +8,7 @@ import { GameEntity, Token } from 'types'
 import { EditorMode, PaymentMode } from 'types/enum'
 import { Game } from 'utils'
 
-function useFormInitializationData({
+export function useFormInitializationData({
   gameProject,
 }: {
   gameProject: GameEntity
@@ -131,5 +131,3 @@ function useFormInitializationData({
 
   return { initialization, initializationDonation }
 }
-
-export { useFormInitializationData }
