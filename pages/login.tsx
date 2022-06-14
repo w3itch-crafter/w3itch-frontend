@@ -8,13 +8,11 @@ import {
   PageCard,
   StatHeader,
 } from 'components/pages'
-import { AuthenticationContext } from 'context'
 import { useTopRightSnackbar } from 'hooks'
 import { NextPage } from 'next'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { Fragment, useCallback, useContext, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { LoginMethod } from 'types'
 import { useWallet } from 'use-wallet'
 import { Wallet } from 'use-wallet/dist/cjs/types'
@@ -42,7 +40,6 @@ const Login: NextPage = () => {
     margin-bottom: 20px;
   `
   const wallet = useWallet()
-  const router = useRouter()
   const isConnected = wallet.isConnected()
   const accountId = wallet.account || 'No account'
   const [hasStarted, setHasStarted] = useState(false)
@@ -51,21 +48,12 @@ const Login: NextPage = () => {
   const canGitHubLogin = loginMethod === 'github'
   const canDiscordLogin = loginMethod === 'discord'
   const canLogin = canMetaMaskLogin || canGitHubLogin || canDiscordLogin
-  const { dispatch } = useContext(AuthenticationContext)
   const showSnackbar = useTopRightSnackbar()
-  const startWalletLogin = useCallback(
-    async (wallet: Wallet) => {
+  const processLogin = useCallback(
+    async (fn: () => void | Promise<void>) => {
       try {
         setHasStarted(true)
-        showSnackbar(
-          'Your wallet will show you "Signature Request" message that you need to sign.'
-        )
-        showSnackbar(
-          'If your wallet not response for long time, please refresh this page.'
-        )
-        const { user, account } = await loginWallet(wallet)
-        dispatch({ type: 'LOGIN', payload: { user, account: [account] } })
-        await router.replace('/games')
+        await fn()
       } catch (error) {
         if (error instanceof Error) {
           showSnackbar(error.message, 'error')
@@ -74,33 +62,32 @@ const Login: NextPage = () => {
         setHasStarted(false)
       }
     },
-    [dispatch, router, showSnackbar]
+    [showSnackbar]
+  )
+  const startWalletLogin = useCallback(
+    async (wallet: Wallet) => {
+      await processLogin(async () => {
+        showSnackbar(
+          'Your wallet will show you "Signature Request" message that you need to sign.'
+        )
+        showSnackbar(
+          'If your wallet not response for long time, please refresh this page.'
+        )
+        window.location.href = await loginWallet(wallet, '/oauth')
+      })
+    },
+    [processLogin, showSnackbar]
   )
   const startGitHubLogin = useCallback(async () => {
-    try {
-      setHasStarted(true)
-      const oAuthUrl = await loginGitHub('/oauth')
-      window.location.href = oAuthUrl
-    } catch (error) {
-      if (error instanceof Error) {
-        showSnackbar(error.message, 'error')
-      }
-    } finally {
-      setHasStarted(false)
-    }
-  }, [showSnackbar])
+    await processLogin(async () => {
+      window.location.href = await loginGitHub('/oauth')
+    })
+  }, [processLogin])
   const startDiscordLogin = useCallback(async () => {
-    try {
-      setHasStarted(true)
+    await processLogin(async () => {
       window.location.href = await loginDiscord('/oauth')
-    } catch (error) {
-      if (error instanceof Error) {
-        showSnackbar(error.message, 'error')
-      }
-    } finally {
-      setHasStarted(false)
-    }
-  }, [showSnackbar])
+    })
+  }, [processLogin])
   const handleLogin = () => {
     if (!canLogin || hasStarted) return
     if (canMetaMaskLogin) startWalletLogin(wallet)
