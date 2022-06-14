@@ -198,7 +198,8 @@ export const getServerSideProps: GetServerSideProps<OAuthProps> = async (
 
   return {
     props: {
-      ...(await serverSideTranslations(context.locale || 'en-US', ['common'])),
+      // locale: i18n?.defaultLocale https://github.com/vercel/next.js/blob/39302141b5ea3a1e9a55af906129a44675337cf9/packages/next/export/index.ts#L375
+      ...(await serverSideTranslations(context.locale as string, ['common'])),
       // fix Next.js error: "Reason: `undefined` cannot be serialized as JSON. Please use `null` or omit this value."
       ...JSON.parse(JSON.stringify(pageProps)),
     },
