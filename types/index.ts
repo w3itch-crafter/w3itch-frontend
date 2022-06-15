@@ -109,9 +109,11 @@ export declare type GameEntity = BaseEntity & {
   username: string
   /** Game title */
   title: string
-  paymentMode: PaymentMode
+  /** Game title */
+  project_URL: string  
   /** Short description or tagline */
-  subtitle: string
+  subtitle: string  
+  paymentMode: PaymentMode
   /** For player */
   gameName: string
   /** Original name */

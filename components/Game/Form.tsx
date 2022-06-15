@@ -43,9 +43,10 @@ import FormHeader from './FormHeader'
 import FormKind from './FormKind'
 import FormPricing from './FormPricing'
 import FormReleaseStatus from './FormReleaseStatus'
+import FormTitle from './FormTitle'
+import FormProjectURL from './FormProjectURL'
 import FormSubtitle from './FormSubtitle'
 import FormTags from './FormTags'
-import FormTitle from './FormTitle'
 
 interface GameFormProps {
   readonly gameProject: GameEntity
