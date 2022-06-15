@@ -97,7 +97,8 @@ export const getServerSideProps: GetServerSideProps<UserProfileProps> = async (
     username: username as string,
     nickname: '',
     bio: '',
-    avatar: 'https://i.loli.net/2021/05/13/CiEFPgWJzuk5prZ.png',
+    avatar:
+      'https://image.w3itch.io/w3itch-test/attachment/5/c388baa8-c244-4782-9807-978a8dcb7700.png',
     accounts: [],
   }
   const res = await getGamesMine({
