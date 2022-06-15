@@ -43,11 +43,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/game/:path*',
-        headers: COEPHeaders,
-      },
-      {
-        source: '/zh-CN/game/:path*',
+        source: '/:path*',
         headers: COEPHeaders,
       },
       {
