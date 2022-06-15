@@ -80,7 +80,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
     try {
       const result = await getMe()
       if (result) {
-        setMinetestUsername(result.username)
+        setMinetestUsername(getMinetestUsername(result.username))
       } else {
         throw new Error('No user found')
       }
