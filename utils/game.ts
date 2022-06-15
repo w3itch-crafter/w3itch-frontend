@@ -122,5 +122,6 @@ export const fetchAllGames = async (): Promise<GameEntity[]> => {
  * @returns
  */
 export const getMinetestUsername = (username: string | undefined): string => {
-  return username || nanoid(18)
+  // The maximum username is 20, more than this user cannot enter the game.
+  return username?.slice(0, 18) || nanoid(18)
 }
