@@ -517,11 +517,6 @@ const kindOfProjects = [
     description: 'Automatic detection project type',
   },
   {
-    value: 'downloadable',
-    label: 'Downloadable',
-    description: 'You only have files to be downloaded',
-  },
-  {
     value: 'rm2k3e',
     label: 'RPG MAKER',
     description: 'RPG MAKER 2000/2003',
@@ -531,6 +526,16 @@ const kindOfProjects = [
     label: 'Minetest',
     description: 'Minetest World',
   },
+  {
+    value: 'html',
+    label: 'HTML',
+    description: 'You have a ZIP or HTML file that will be played in the browser',
+  },
+  {
+    value: 'downloadable',
+    label: 'Downloadable',
+    description: 'You only have files to be downloaded',
+  },  
 ]
 const kindValues = Object.values(GameEngine)
 export const kinds = kindOfProjects.filter((engine) =>
