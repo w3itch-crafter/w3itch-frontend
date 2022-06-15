@@ -58,6 +58,21 @@ interface GameFormProps {
 
 let MESSAGE_SUBMIT_KEY: string | number
 
+export const defaultCoverLinks = new Map([
+  [
+    GameEngine.DEFAULT,
+    'http://n.sinaimg.cn/auto/transform/20170521/Z87u-fyfkzhs7969292.jpg',
+  ],
+  [
+    GameEngine.RM2K3E,
+    'https://image.w3itch.io/w3itch-test/attachment/30/world-overview.crystal2.8dde7d50-ec9a-11ec-956c-03700aa82971.png',
+  ],
+  [
+    GameEngine.DOWNLOADABLE,
+    'https://dotnet.microsoft.com/static/images/redesign/download/dotnet-framework-runtime.svg?v=22xvQuHVYJL7LD0xeWgHfLKUNROSdPrvv0q3aBlVvsY',
+  ],
+])
+
 const GameForm: React.FC<GameFormProps> = ({
   gameProject,
   editorMode,
@@ -297,7 +312,7 @@ const GameForm: React.FC<GameFormProps> = ({
       kind,
       releaseStatus: ReleaseStatus.RELEASED,
       screenshots: allImages.screenshots,
-      cover: allImages.cover,
+      cover: allImages.cover || defaultCoverLinks.get(kind),
       tags: game.tags,
       appStoreLinks: game.appStoreLinks,
       description: trim(description),
