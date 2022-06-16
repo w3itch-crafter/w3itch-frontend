@@ -1,19 +1,9 @@
-import { AccountEntity, UserEntity } from 'types'
-import {
+import type {
+  GamesListSortBy,
   PancakeSwapSupportedChainId,
   UniswapSupportedChainId,
-} from 'types/enum'
-
-import type {
-  Community,
-  GameEngine,
-  GameFileCharset,
-  GamesListSortBy,
-  Genre,
-  PaymentMode,
-  ProjectClassification,
-  ReleaseStatus,
 } from './enum'
+import { AccountEntity, GameEntity, UserEntity } from './index'
 
 declare namespace Api {
   type UploadToIPFS = {
@@ -38,25 +28,26 @@ declare namespace Api {
     token: string
   }
 
-  type GameProjectDto = {
-    title: string
-    paymentMode: PaymentMode
-    subtitle: string
-    gameName: string
-    charset: GameFileCharset
-    classification: ProjectClassification
-    kind: GameEngine
-    releaseStatus: ReleaseStatus
-    screenshots: string[]
-    cover?: string
-    tags: string[]
-    appStoreLinks: string[]
-    description: string
-    community: Community
-    genre: Genre
-    prices: GameProjectPricesDto[]
-    donationAddress?: string
-  }
+  type GameProjectDto = Partial<
+    Pick<GameEntity, 'cover' | 'donationAddress' | 'screenshots'>
+  > &
+    Omit<
+      GameEntity,
+      | 'id'
+      | 'createdAt'
+      | 'updatedAt'
+      | 'username'
+      | 'file'
+      | 'rating'
+      | 'cover'
+      | 'donationAddress'
+      | 'screenshots'
+      | 'tags'
+      | 'prices'
+    > & {
+      tags: string[]
+      prices: GameProjectPricesDto[]
+    }
 
   type Tag = {
     id: number

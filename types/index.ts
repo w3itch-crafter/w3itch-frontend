@@ -136,7 +136,7 @@ export declare type GameEntity = BaseEntity & {
   /** Tokens to be held/paid to play this game */
   prices: PriceEntity[]
   /** Donate wallet address of the creator */
-  donationAddress?: string
+  donationAddress: string
   /** Links to other app stores */
   appStoreLinks: string[]
   /** Game description (markdown) */
