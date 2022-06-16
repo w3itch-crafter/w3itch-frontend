@@ -89,12 +89,16 @@ export default function Search() {
       return
     }
 
-    autocomplete({
+    const search = autocomplete({
       container: autocompleteContainer.current,
       placeholder: 'Search',
       openOnFocus: true,
       plugins: [querySuggestionsPlugin],
     })
+
+    return () => {
+      search.destroy()
+    }
   }, [])
 
   return (
