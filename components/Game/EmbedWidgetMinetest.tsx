@@ -3,17 +3,26 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import LoadingButton from '@mui/lab/LoadingButton'
-import { gamePlayerMinetest, getMe, minetestGamePortByGameName } from 'api'
+import {
+  gamePlayerIframeMinetest,
+  gamePlayerMinetest,
+  getMe,
+  minetestGamePortByGameName,
+} from 'api'
 import { utils } from 'ethers'
 import { useFullscreenCustomization } from 'hooks/useFullscreenCustomization'
 import { useHoldUnlock } from 'hooks/useHoldUnlock'
-import useMetamask from 'hooks/useMetamask'
 import { isEmpty } from 'lodash'
 import { FC, useCallback, useEffect } from 'react'
 import { useRef, useState } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'
-import { balanceDecimal, getMinetestUsername } from 'utils'
+import {
+  balanceDecimal,
+  getMinetestUsername,
+  isPopUpWindow,
+  openWindow,
+} from 'utils'
 
 const Wrapper = styled.div<{ cover: string }>`
   max-width: 640px;
@@ -36,7 +45,6 @@ interface Props {
 }
 
 const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
-  useMetamask()
   const ref = useRef(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [minetestPort, setMinetestPort] = useState<number>()
@@ -58,9 +66,27 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   // Handle play
   const handlePlay = useCallback(async () => {
     handleUnlock(() => {
-      setRunGameFlag(true)
+      if (isPopUpWindow(gameProject.kind)) {
+        openWindow({
+          url: gamePlayerIframeMinetest({
+            username: minetestUsername as string,
+            port: minetestPort as number,
+          }),
+          title: gameProject.gameName,
+          w: 800,
+          h: 600,
+        })
+      } else {
+        setRunGameFlag(true)
+      }
     })
-  }, [setRunGameFlag, handleUnlock])
+  }, [
+    setRunGameFlag,
+    handleUnlock,
+    gameProject,
+    minetestUsername,
+    minetestPort,
+  ])
 
   // Handle minetest port and username
   const handleMinetestInfo = useCallback(async () => {
