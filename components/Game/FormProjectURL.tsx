@@ -1,13 +1,21 @@
-import { FormControl, FormLabel, TextField } from '@mui/material'
+import {
+  FormControl,
+  FormLabel,
+  InputAdornment,
+  TextField,
+} from '@mui/material'
+import { useAuthentication } from 'hooks'
 import React from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
-import { Game } from 'utils'
+import { Game, userHostUrl } from 'utils'
 
 const FormProjectURL: React.FC = () => {
   const {
     control,
     formState: { errors },
   } = useFormContext<Game>()
+  const { user } = useAuthentication()
+  const profileUrl = userHostUrl(user?.username?.toLowerCase())
 
   return (
     <Controller
@@ -20,6 +28,11 @@ const FormProjectURL: React.FC = () => {
             id="form-projectURL"
             error={!!errors.projectURL}
             helperText={errors.projectURL?.message}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">{profileUrl}/</InputAdornment>
+              ),
+            }}
             {...field}
           />
         </FormControl>
