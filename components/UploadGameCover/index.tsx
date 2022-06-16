@@ -7,6 +7,8 @@ import { useFormContext } from 'react-hook-form'
 import { EditorMode } from 'types/enum'
 import { fileUrl, Game } from 'utils'
 
+import { defaultCoverLinks } from '../Game/Form'
+
 const WrapperDrap = styled.section`
   border: 1px dashed;
   border-color: var(--w3itch-border1);
@@ -114,9 +116,9 @@ export const UploadGameCover: FC<Props> = ({
     <section>
       <WrapperDrap {...getRootProps()}>
         <input {...getInputProps()} />
-        {coverUrl ? (
-          <>
-            <WrapperDrapContainer>
+        <>
+          <WrapperDrapContainer>
+            {coverUrl ? (
               <Image
                 src={coverUrl}
                 width={315}
@@ -124,8 +126,18 @@ export const UploadGameCover: FC<Props> = ({
                 alt="Cover"
                 objectFit="cover"
               />
-            </WrapperDrapContainer>
-            <WrapperDrapContainer>
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={defaultCoverLinks.get(getValues('kind'))}
+                width={315}
+                height={250}
+                alt={'cover placeholder'}
+              />
+            )}
+          </WrapperDrapContainer>
+          <WrapperDrapContainer>
+            {coverUrl ? (
               <WrapperDrapContainerBackdrop>
                 <Button variant="contained" type="button">
                   Replace Cover Image
@@ -134,19 +146,19 @@ export const UploadGameCover: FC<Props> = ({
                   Remove Image
                 </ButtonRemoveImage>
               </WrapperDrapContainerBackdrop>
-            </WrapperDrapContainer>
-          </>
-        ) : (
-          <WrapperDrapContainer>
-            {isDragActive ? (
-              <p>Drop the files here ...</p>
             ) : (
-              <Button variant="contained" type="button">
-                Upload Cover Image
-              </Button>
+              <WrapperDrapContainerBackdrop>
+                {isDragActive ? (
+                  <p>Drop the files here ...</p>
+                ) : (
+                  <Button variant="contained" type="button">
+                    Upload Cover Image
+                  </Button>
+                )}
+              </WrapperDrapContainerBackdrop>
             )}
           </WrapperDrapContainer>
-        )}
+        </>
       </WrapperDrap>
     </section>
   )
