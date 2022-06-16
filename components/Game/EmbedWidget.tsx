@@ -3,7 +3,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import LoadingButton from '@mui/lab/LoadingButton'
-import { gameProjectPlayerHtml } from 'api'
+import { gamePlayerEasyRPG, gameProjectPlayerHtml } from 'api'
 import { utils } from 'ethers'
 import { useFullscreenCustomization } from 'hooks/useFullscreenCustomization'
 import { useHoldUnlock } from 'hooks/useHoldUnlock'
@@ -12,6 +12,7 @@ import { FC, useCallback } from 'react'
 import { useRef, useState } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'
+import { GameEngine } from 'types/enum'
 import { balanceDecimal } from 'utils'
 
 const Wrapper = styled.div<{ cover: string }>`
@@ -34,7 +35,7 @@ interface Props {
   readonly pricesToken?: TokenDetail
 }
 
-const EmbedWidgetHtml: FC<Props> = ({ gameProject, pricesToken }) => {
+const EmbedWidgetEasyRPG: FC<Props> = ({ gameProject, pricesToken }) => {
   const ref = useRef(null)
   const { iosFullscreen, isFullscreen, handleFullscreen } =
     useFullscreenCustomization({
@@ -55,6 +56,18 @@ const EmbedWidgetHtml: FC<Props> = ({ gameProject, pricesToken }) => {
     })
   }, [handleUnlock])
 
+  // player iframe source
+  const playerSource = useCallback(() => {
+    if (gameProject.kind === GameEngine.RM2K3E) {
+      return gamePlayerEasyRPG({
+        gameName: gameProject.gameName,
+        kind: gameProject.kind,
+      })
+    } else if (gameProject.kind === GameEngine.HTML) {
+      return gameProjectPlayerHtml()
+    }
+  }, [gameProject])
+
   return (
     <div className={`${styles.html_embed_widget} ${styles.embed_wrapper}`}>
       <Wrapper cover={gameProject.cover}>
@@ -68,8 +81,9 @@ const EmbedWidgetHtml: FC<Props> = ({ gameProject, pricesToken }) => {
             <iframe
               style={{ width: '100%', height: '100%' }}
               frameBorder="0"
-              src={gameProjectPlayerHtml()}
+              src={playerSource()}
               scrolling="no"
+              id="game_drop"
             ></iframe>
             <div className={styles.full_close} onClick={handleFullscreen}>
               {isFullscreen || iosFullscreen ? (
@@ -106,4 +120,4 @@ const EmbedWidgetHtml: FC<Props> = ({ gameProject, pricesToken }) => {
   )
 }
 
-export default EmbedWidgetHtml
+export default EmbedWidgetEasyRPG
