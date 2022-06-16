@@ -12,6 +12,7 @@ export enum GameEngine {
   RM2K3E = 'rm2k3e',
   MINETEST = 'mt',
   DOWNLOADABLE = 'downloadable',
+  HTML = 'html',
 }
 
 export enum PaymentMode {

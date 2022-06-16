@@ -3,7 +3,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import LoadingButton from '@mui/lab/LoadingButton'
-import { gameProjectPlayer } from 'api'
+import { gameProjectPlayerHtml } from 'api'
 import { utils } from 'ethers'
 import { useFullscreenCustomization } from 'hooks/useFullscreenCustomization'
 import { useHoldUnlock } from 'hooks/useHoldUnlock'
@@ -34,7 +34,7 @@ interface Props {
   readonly pricesToken?: TokenDetail
 }
 
-const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
+const EmbedWidgetHtml: FC<Props> = ({ gameProject, pricesToken }) => {
   const ref = useRef(null)
   const { iosFullscreen, isFullscreen, handleFullscreen } =
     useFullscreenCustomization({
@@ -56,10 +56,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   }, [handleUnlock])
 
   return (
-    <div
-      id="html_embed_widget_78140"
-      className={`${styles.html_embed_widget} ${styles.embed_wrapper}`}
-    >
+    <div className={`${styles.html_embed_widget} ${styles.embed_wrapper}`}>
       <Wrapper cover={gameProject.cover}>
         {runGameFlag ? (
           <div
@@ -71,12 +68,8 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
             <iframe
               style={{ width: '100%', height: '100%' }}
               frameBorder="0"
-              src={gameProjectPlayer({
-                gameName: gameProject.gameName,
-                kind: gameProject.kind,
-              })}
+              src={gameProjectPlayerHtml()}
               scrolling="no"
-              id="game_drop"
             ></iframe>
             <div className={styles.full_close} onClick={handleFullscreen}>
               {isFullscreen || iosFullscreen ? (
@@ -113,4 +106,4 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   )
 }
 
-export default EmbedWidget
+export default EmbedWidgetHtml
