@@ -299,3 +299,7 @@
   background: var(--w3itch-bg2);
 }
 /* disqus end */
+
+#disqus_thread iframe {
+  color-scheme: light;
+}
