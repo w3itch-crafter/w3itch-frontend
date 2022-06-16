@@ -1,10 +1,9 @@
 import { getUser } from 'api'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
-import { useSnackbar } from 'notistack'
+import { useTopCenterSnackbar } from 'hooks'
 import { useCallback, useEffect } from 'react'
-
 export default function useMetamask() {
-  const { enqueueSnackbar } = useSnackbar()
+  const topCenterSnackbar = useTopCenterSnackbar()
 
   // Handle eth send transaction
   const ethSendTransaction = useCallback(
@@ -29,13 +28,7 @@ export default function useMetamask() {
             ],
           })
           .then((txHash: string) => {
-            enqueueSnackbar(`Hash: ${txHash}`, {
-              anchorOrigin: {
-                vertical: 'top',
-                horizontal: 'center',
-              },
-              variant: 'info',
-            })
+            topCenterSnackbar(`Hash: ${txHash}`)
             console.log(txHash)
           })
           .catch((error: unknown) => console.error(error))
@@ -43,20 +36,14 @@ export default function useMetamask() {
         console.error(error)
       }
     },
-    [enqueueSnackbar]
+    [topCenterSnackbar]
   )
 
   // send transaction
   const sendTransaction = useCallback(
     async (username: string, amount: string) => {
       if (!window.ethereum) {
-        enqueueSnackbar('please install MetaMask Wallet', {
-          anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center',
-          },
-          variant: 'info',
-        })
+        topCenterSnackbar('please install MetaMask Wallet')
         return
       }
 
@@ -66,13 +53,7 @@ export default function useMetamask() {
         })
 
         if (!accounts && !accounts[0]) {
-          enqueueSnackbar('account not found', {
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'center',
-            },
-            variant: 'info',
-          })
+          topCenterSnackbar('account not found')
           return
         }
 
@@ -84,13 +65,7 @@ export default function useMetamask() {
         )
 
         if (!account) {
-          enqueueSnackbar('user does not have a wallet address', {
-            anchorOrigin: {
-              vertical: 'top',
-              horizontal: 'center',
-            },
-            variant: 'info',
-          })
+          topCenterSnackbar('user does not have a wallet address')
           return
         }
 
@@ -103,7 +78,7 @@ export default function useMetamask() {
         console.log(e)
       }
     },
-    [enqueueSnackbar, ethSendTransaction]
+    [topCenterSnackbar, ethSendTransaction]
   )
 
   useEffect(() => {
