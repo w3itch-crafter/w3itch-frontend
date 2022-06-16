@@ -35,7 +35,7 @@ interface Props {
   readonly pricesToken?: TokenDetail
 }
 
-const EmbedWidgetEasyRPG: FC<Props> = ({ gameProject, pricesToken }) => {
+const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   const ref = useRef(null)
   const { iosFullscreen, isFullscreen, handleFullscreen } =
     useFullscreenCustomization({
@@ -120,4 +120,4 @@ const EmbedWidgetEasyRPG: FC<Props> = ({ gameProject, pricesToken }) => {
   )
 }
 
-export default EmbedWidgetEasyRPG
+export default EmbedWidget
