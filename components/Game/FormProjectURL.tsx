@@ -12,14 +12,14 @@ const FormProjectURL: React.FC = () => {
   return (
     <Controller
       control={control}
-      name="ProjectURL"
+      name="projectURL"
       render={({ field }) => (
         <FormControl fullWidth error={Boolean(errors.kind)}>
-          <FormLabel id="form-shortDescriptionOrTagline">Project URL</FormLabel>
+          <FormLabel id="form-projectURL">Project URL</FormLabel>
           <TextField
-            id="form-shortDescriptionOrTagline"
-            error={!!errors.ProjectURL}
-            helperText={errors.ProjectURL?.message}
+            id="form-projectURL"
+            error={!!errors.projectURL}
+            helperText={errors.projectURL?.message}
             {...field}
           />
         </FormControl>

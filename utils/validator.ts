@@ -47,6 +47,10 @@ export class Game {
   // @IsEnum(ReleaseStatus)
   // releaseStatus: ReleaseStatus
 
+  @IsString()
+  @IsOptional()
+  projectURL: string
+
   @IsEnum(PaymentMode)
   @IsNotEmpty()
   paymentMode: PaymentMode
