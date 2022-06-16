@@ -1,9 +1,9 @@
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 import { DiscussionEmbed } from 'disqus-react'
 import { useRouter } from 'next/router'
 import { useTheme } from 'next-themes'
 import { FC, useEffect, useState } from 'react'
-
-import { sleep } from '../../utils'
 
 interface Props {
   readonly title: string
@@ -11,21 +11,18 @@ interface Props {
 
 const CommentsDisqus: FC<Props> = ({ title }) => {
   const router = useRouter()
-  const [visible, setVisible] = useState(true)
+  const [visible, setVisible] = useState(false)
   const { resolvedTheme } = useTheme()
   useEffect(() => {
-    console.log(resolvedTheme)
-    if (resolvedTheme === 'light') {
-      setVisible(false)
-      sleep(100).then(() => {
-        setVisible(true)
-      })
-    }
+    setVisible(false)
+    setTimeout(() => {
+      setVisible(true)
+    }, 300)
   }, [resolvedTheme])
 
   return (
     <>
-      {visible && (
+      {visible ? (
         <DiscussionEmbed
           shortname="w3itch"
           config={{
@@ -35,6 +32,10 @@ const CommentsDisqus: FC<Props> = ({ title }) => {
             language: 'en',
           }}
         />
+      ) : (
+        <Box sx={{ display: 'block', textAlign: 'center' }}>
+          <CircularProgress />
+        </Box>
       )}
     </>
   )
