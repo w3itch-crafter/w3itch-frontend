@@ -80,7 +80,7 @@ export const minetestGamePortByGameName = async (
 }
 
 /**
- * game project player
+ * game project player EsayRPG
  * @param param
  * @returns
  */
@@ -120,6 +120,14 @@ export const gamePlayerIframeMinetest = ({
   query.set('port', String(port))
 
   return `/iframe/minetest?${query.toString()}`
+}
+
+/**
+ * game player html
+ * @returns
+ */
+export const gameProjectPlayerHtml = () => {
+  return 'https://v6p9d9t4.ssl.hwcdn.net/html/1653039/index.html?v=1574335021'
 }
 
 /**
