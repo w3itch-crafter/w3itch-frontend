@@ -80,11 +80,11 @@ export const minetestGamePortByGameName = async (
 }
 
 /**
- * game project player EsayRPG
+ * game player EsayRPG
  * @param param
  * @returns
  */
-export const gameProjectPlayer = ({ gameName, kind }: GameProjectPlayer) => {
+export const gamePlayerEasyRPG = ({ gameName, kind }: GameProjectPlayer) => {
   const query = new URLSearchParams()
   query.set('game', gameName)
   query.set('engine', kind)

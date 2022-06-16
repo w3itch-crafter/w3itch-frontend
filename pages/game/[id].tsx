@@ -1,6 +1,5 @@
 import { fetchGameRatingsCount, gameProjectByID } from 'api'
-import EmbedWidgetEasyRPG from 'components/Game/EmbedWidgetEasyRPG'
-import EmbedWidgetHtml from 'components/Game/EmbedWidgetHtml'
+import EmbedWidget from 'components/Game/EmbedWidget'
 import EmbedWidgetMinetest from 'components/Game/EmbedWidgetMinetest'
 import GameLayout from 'components/Game/GameLayout'
 import { GetServerSideProps, NextPage } from 'next'
@@ -35,20 +34,15 @@ const GameID: NextPage<GameProps> = ({
     >
       {gameProject && (
         <>
-          {gameProject.kind === GameEngine.RM2K3E ? (
-            <EmbedWidgetEasyRPG
+          {gameProject.kind === GameEngine.RM2K3E ||
+          gameProject.kind === GameEngine.HTML ? (
+            <EmbedWidget
               gameProject={gameProject}
               // @TODO Temporarily support the first Token
               pricesToken={pricesTokens[0]}
             />
           ) : gameProject.kind === GameEngine.MINETEST ? (
             <EmbedWidgetMinetest
-              gameProject={gameProject}
-              // @TODO Temporarily support the first Token
-              pricesToken={pricesTokens[0]}
-            />
-          ) : gameProject.kind === GameEngine.DOWNLOADABLE ? (
-            <EmbedWidgetHtml
               gameProject={gameProject}
               // @TODO Temporarily support the first Token
               pricesToken={pricesTokens[0]}
