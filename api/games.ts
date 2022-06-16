@@ -107,6 +107,22 @@ export const gamePlayerMinetest = ({ username, port }: GamePlayerMinetest) => {
 }
 
 /**
+ * game player iframe minetest
+ * @param param0
+ * @returns
+ */
+export const gamePlayerIframeMinetest = ({
+  username,
+  port,
+}: GamePlayerMinetest) => {
+  const query = new URLSearchParams()
+  query.set('username', username)
+  query.set('port', String(port))
+
+  return `/iframe/minetest?${query.toString()}`
+}
+
+/**
  * game download url
  * @param param0
  * @returns

@@ -43,7 +43,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/:path*',
+        source: '/iframe/minetest',
         headers: COEPHeaders,
       },
       {
