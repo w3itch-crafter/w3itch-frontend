@@ -285,7 +285,6 @@
 
 .custom-search-wrapper {
   --aa-search-input-height: 36px;
-  z-index: 99;
 }
 
 /* Algolia end */
