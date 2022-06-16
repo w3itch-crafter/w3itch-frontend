@@ -9,7 +9,7 @@ import { GameEntity, GameInfo, UserEntity } from 'types'
 import { urlGame } from 'utils'
 
 declare interface UserProfileProps {
-  user: UserEntity
+  user?: UserEntity
   games: GameInfo[]
 }
 
@@ -28,7 +28,7 @@ const UserProfile: NextPage<UserProfileProps> = ({ user, games }) => {
       color: var(--w3itch-text2);
     }
   `
-  const HeaderAvatar = styled.div<{ src: string }>`
+  const HeaderAvatar = styled.div<{ src?: string }>`
     width: 50px;
     height: 50px;
     display: inline-block;
@@ -51,8 +51,8 @@ const UserProfile: NextPage<UserProfileProps> = ({ user, games }) => {
   `
   const HeaderTitle = (
     <Fragment>
-      <HeaderAvatar src={user.avatar} />
-      <HeaderText>{user.username}</HeaderText>
+      <HeaderAvatar src={user?.avatar} />
+      <HeaderText>{user?.username}</HeaderText>
     </Fragment>
   )
   const title = user?.nickname || user?.username
@@ -89,18 +89,7 @@ export const getServerSideProps: GetServerSideProps<UserProfileProps> = async (
   context
 ) => {
   const { username } = context.query
-  const userRes = await getUser(username as string)
-  const user: UserEntity = {
-    id: 0,
-    createdAt: new Date().toDateString(),
-    updatedAt: new Date().toDateString(),
-    username: username as string,
-    nickname: '',
-    bio: '',
-    avatar:
-      'https://image.w3itch.io/w3itch-test/attachment/5/c388baa8-c244-4782-9807-978a8dcb7700.png',
-    accounts: [],
-  }
+  const user = await getUser(username as string)
   const res = await getGamesMine({
     username: username as string,
     limit: 100,
@@ -113,7 +102,7 @@ export const getServerSideProps: GetServerSideProps<UserProfileProps> = async (
   }))
   return {
     props: {
-      user: { ...user, ...userRes },
+      user,
       games,
       ...(await serverSideTranslations(context.locale as string, ['common'])),
     },
