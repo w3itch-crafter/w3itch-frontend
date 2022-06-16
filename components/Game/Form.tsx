@@ -305,23 +305,18 @@ const GameForm: React.FC<GameFormProps> = ({
         ? await inferProjectType(uploadGameFile)
         : game.kind
     const gameData: Partial<Api.GameProjectDto> = {
+      ...game,
       title: trim(game.title),
       subtitle: trim(game.subtitle),
-      gameName: trim(game.gameName).replaceAll(' ', '_'),
       classification: ProjectClassification.GAMES,
       kind,
       releaseStatus: ReleaseStatus.RELEASED,
-      screenshots: allImages.screenshots,
-      cover: allImages.cover || defaultCoverLinks.get(kind),
-      tags: game.tags,
-      appStoreLinks: game.appStoreLinks,
-      description: trim(description),
-      community: game.community,
-      genre: game.genre,
-      charset: game.charset,
-      paymentMode: game.paymentMode,
       prices,
+      gameName: trim(game.gameName).replaceAll(' ', '_'),
       donationAddress: currentDonationAddress,
+      description: trim(description),
+      cover: allImages.cover || defaultCoverLinks.get(kind),
+      screenshots: allImages.screenshots,
     }
 
     // Remove donation address on disable payment
