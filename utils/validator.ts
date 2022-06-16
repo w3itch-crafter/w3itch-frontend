@@ -33,6 +33,9 @@ export class Game {
   @Matches(/(^[^-_].*[^-_]$)|(^[^-_]$)/)
   gameName: string
 
+  @Length(1, 100)
+  @IsString()
+  ProjectURL: string
   // @IsEnum(ProjectClassification)
   // @IsNotEmpty()
   // classification: ProjectClassification
