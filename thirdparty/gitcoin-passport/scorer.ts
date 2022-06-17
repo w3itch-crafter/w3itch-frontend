@@ -49,6 +49,7 @@ export class PassportScorer {
     if (passportVerified) {
       // Index the stamps by issuer and provider
       const indexedStamps = passportVerified.stamps.reduce((stamps, stamp) => {
+        // @ts-ignore
         stamps[
           `${stamp.credential.issuer}:${stamp.credential.credentialSubject.provider}`
         ] = stamp
@@ -58,6 +59,7 @@ export class PassportScorer {
 
       // extract the score for each of our recognised stamps (in the criteria)
       const scores = this._criteria.map((criteria) => {
+        // @ts-ignore
         const stamp = indexedStamps[
           `${criteria.issuer}:${criteria.provider}`
         ] as Stamp

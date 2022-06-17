@@ -21,6 +21,7 @@ export class PassportVerifier {
 
   async init(): Promise<void> {
     await new Promise((resolve) => resolve(DIDKit)).then(
+        // @ts-ignore
       async (didkit: { default: Promise<DIDKitLib> } | DIDKitLib) => {
         if (didkit.default) {
           await Promise.resolve(didkit.default).then((didkit) => {
