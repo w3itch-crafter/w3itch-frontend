@@ -17,17 +17,11 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { Fragment, useContext, useEffect, useState } from 'react'
-import { LoginMethod, RegisterData } from 'types'
+import { InvalidData, LoginMethod, RegisterData } from 'types'
 import { useWallet } from 'use-wallet'
 import { isEmptyObj, userHostUrl } from 'utils'
 
 import { signupDiscord, signupGitHub, signupWallet } from '../api/account'
-
-declare type InvalidData = {
-  [key in keyof RegisterData]: {
-    message: string
-  }
-}
 
 const Register: NextPage = () => {
   const { t } = useTranslation()
@@ -307,7 +301,7 @@ const Register: NextPage = () => {
                 <LoginMessage>
                   or already have an account?
                   <Link href="/login" passHref>
-                    <Login>{t('login')}</Login>
+                    <Login>{t('Sign In')}</Login>
                   </Link>
                 </LoginMessage>
               </Buttons>

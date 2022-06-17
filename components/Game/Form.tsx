@@ -9,8 +9,7 @@ import { TokenList } from 'components'
 import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
 import { utils } from 'ethers'
 import {
-  useAccountInfo,
-  useSetFormCache,
+  useFormInitializationData,
   useTitle,
   useTopCenterSnackbar,
 } from 'hooks'
@@ -28,7 +27,7 @@ import { GameEntity, Token } from 'types'
 import { Api } from 'types/Api'
 import { EditorMode, GameEngine, PaymentMode } from 'types/enum'
 import { ProjectClassification, ReleaseStatus } from 'types/enum'
-import { filenameHandle, fileUrl } from 'utils'
+import { filenameHandle, fileUrl, removeFormDataCache } from 'utils'
 import { Game, inferProjectType, isStringNumber, urlGame } from 'utils'
 import { parseFilename, parseUrl, processMessage } from 'utils'
 
@@ -59,6 +58,21 @@ interface GameFormProps {
 
 let MESSAGE_SUBMIT_KEY: string | number
 
+export const defaultCoverLinks = new Map([
+  [
+    GameEngine.DEFAULT,
+    'http://n.sinaimg.cn/auto/transform/20170521/Z87u-fyfkzhs7969292.jpg',
+  ],
+  [
+    GameEngine.RM2K3E,
+    'https://image.w3itch.io/w3itch-test/attachment/30/world-overview.crystal2.8dde7d50-ec9a-11ec-956c-03700aa82971.png',
+  ],
+  [
+    GameEngine.DOWNLOADABLE,
+    'https://dotnet.microsoft.com/static/images/redesign/download/dotnet-framework-runtime.svg?v=22xvQuHVYJL7LD0xeWgHfLKUNROSdPrvv0q3aBlVvsY',
+  ],
+])
+
 const GameForm: React.FC<GameFormProps> = ({
   gameProject,
   editorMode,
@@ -68,10 +82,9 @@ const GameForm: React.FC<GameFormProps> = ({
   const router = useRouter()
   const id = router.query.id as string
 
-  const { handleSubmit, setValue, control, watch, getValues, trigger } =
+  const { handleSubmit, setValue, control, watch, trigger } =
     useFormContext<Game>()
 
-  const account = useAccountInfo('metamask')
   const showSnackbar = useTopCenterSnackbar()
   const { closeSnackbar } = useSnackbar()
 
@@ -95,21 +108,19 @@ const GameForm: React.FC<GameFormProps> = ({
     useState<boolean>(false)
   const [currentDonationAddress, setCurrentDonationAddress] =
     useState<string>('')
-  const [currentDonationAddressFlag, setCurrentDonationAddressFlag] =
-    useState<boolean>(false)
 
   const { tokens } = useTokens()
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
+  const { initialization, initializationDonation } = useFormInitializationData({
+    gameProject,
+  })
 
   const watchKind = watch('kind')
-  const watchPaymentMode = watch('paymentMode')
   const watchAppStoreLinks = useWatch({
     control,
     name: 'appStoreLinks',
   })
-
-  const { cleanFormCache } = useSetFormCache(editorMode, id)
 
   // Watch appStoreLinks change then trigger
   useEffect(() => {
@@ -195,7 +206,7 @@ const GameForm: React.FC<GameFormProps> = ({
     }
   }
 
-  const handleCreateGame = async (gameData: Api.GameProjectDto) => {
+  const handleCreateGame = async (gameData: Partial<Api.GameProjectDto>) => {
     MESSAGE_SUBMIT_KEY = showSnackbar('Uploading game...', 'info', {
       persist: true,
     })
@@ -211,6 +222,8 @@ const GameForm: React.FC<GameFormProps> = ({
     // console.log('createGameResult', createGameResult)
     if (createGameResult.status === 201) {
       saveAlgoliaGame(Number(createGameResult.data.id))
+      // Remove form cache
+      removeFormDataCache(id)
       showSnackbar('Uploaded successfully', 'success')
       router.push('/dashboard')
     } else {
@@ -219,12 +232,11 @@ const GameForm: React.FC<GameFormProps> = ({
     }
   }
 
-  const handleUpdateGame = async (game: Api.GameProjectDto) => {
+  const handleUpdateGame = async (gameData: Partial<Api.GameProjectDto>) => {
     MESSAGE_SUBMIT_KEY = showSnackbar('Updating game...', 'info', {
       persist: true,
     })
 
-    const gameData: Partial<Api.GameProjectDto> = { ...game }
     // Update game payload not allow gameName kind classification
     delete gameData.gameName
     delete gameData.kind
@@ -237,7 +249,7 @@ const GameForm: React.FC<GameFormProps> = ({
     // No re-upload screenshots Deleted game screenshots
     if (isEmpty(screenshotsFiles)) {
       // delete all game screenshots
-      if (isEmpty(game.screenshots)) {
+      if (isEmpty(gameData.screenshots)) {
         delete gameData.screenshots
       }
     }
@@ -253,6 +265,8 @@ const GameForm: React.FC<GameFormProps> = ({
     const updateGameResult = await updateGame(Number(id), formData)
     if (updateGameResult.status === 200) {
       saveAlgoliaGame(Number(updateGameResult.data.id))
+      // Remove form cache
+      removeFormDataCache(id)
       showSnackbar('Update completed', 'success')
       router.push(urlGame(id as string))
     } else {
@@ -283,10 +297,6 @@ const GameForm: React.FC<GameFormProps> = ({
         token: currentSelectToken.address,
       })
     }
-    let donationAddress = account?.accountId || ''
-    if (game.paymentMode === PaymentMode.FREE) {
-      donationAddress = utils.getAddress(currentDonationAddress)
-    }
 
     // Parpare game data
     const allImages = await handleAllImages()
@@ -294,7 +304,7 @@ const GameForm: React.FC<GameFormProps> = ({
       game.kind === GameEngine.DEFAULT && uploadGameFile
         ? await inferProjectType(uploadGameFile)
         : game.kind
-    const gameData: Api.GameProjectDto = {
+    const gameData: Partial<Api.GameProjectDto> = {
       title: trim(game.title),
       subtitle: trim(game.subtitle),
       gameName: trim(game.gameName).replaceAll(' ', '_'),
@@ -302,7 +312,7 @@ const GameForm: React.FC<GameFormProps> = ({
       kind,
       releaseStatus: ReleaseStatus.RELEASED,
       screenshots: allImages.screenshots,
-      cover: allImages.cover,
+      cover: allImages.cover || defaultCoverLinks.get(kind),
       tags: game.tags,
       appStoreLinks: game.appStoreLinks,
       description: trim(description),
@@ -311,7 +321,12 @@ const GameForm: React.FC<GameFormProps> = ({
       charset: game.charset,
       paymentMode: game.paymentMode,
       prices,
-      donationAddress,
+      donationAddress: currentDonationAddress,
+    }
+
+    // Remove donation address on disable payment
+    if (game.paymentMode === PaymentMode.DISABLE_PAYMENTS) {
+      delete gameData.donationAddress
     }
 
     console.log('file', uploadGameFile)
@@ -354,7 +369,6 @@ const GameForm: React.FC<GameFormProps> = ({
 
   const onSubmit: SubmitHandler<Game> = async (data) => {
     handleGame(data)
-    cleanFormCache()
   }
 
   // handle cover
@@ -415,91 +429,38 @@ const GameForm: React.FC<GameFormProps> = ({
     await handleDescriptionTrigger()
   }, [editorRef, setValue, handleDescriptionTrigger])
 
-  // watch current token fill data
-  // paymentMode
-  // edit mode has no data
   useEffect(() => {
-    if (
-      editorMode === EditorMode.EDIT &&
-      getValues('paymentMode') === PaymentMode.PAID
-    ) {
-      // execute only once
-      if (!currentSelectTokenChainIdFlag && !isEmpty(gameProject?.prices[0])) {
-        setCurrentSelectTokenChainId(gameProject?.prices[0].token.chainId)
-        setCurrentSelectTokenChainIdFlag(true)
-      }
+    initialization({
+      editorMode,
+      currentSelectTokenChainIdFlag,
+      currentSelectToken,
+      currentSelectTokenFlag,
+      currentSelectTokenAmountFlag,
+      currentSelectTokenAmount,
+      tokens,
+      setCurrentSelectTokenChainId,
+      setCurrentSelectTokenChainIdFlag,
+      setCurrentSelectToken,
+      setCurrentSelectTokenFlag,
+      setCurrentSelectTokenAmount,
+      setCurrentSelectTokenAmountFlag,
+    })
 
-      // execute only once
-      if (
-        isEmpty(currentSelectToken) &&
-        !isEmpty(gameProject?.prices[0]) &&
-        !currentSelectTokenFlag
-      ) {
-        const { address, name, symbol, decimals, chainId } =
-          gameProject.prices[0].token
-        // balanceOf and totalSupply are not processed
-        setCurrentSelectToken({
-          address: address,
-          name: name,
-          symbol: symbol,
-          decimals: decimals,
-          // totalSupply: BigNumberEthers.from(0),
-          // balanceOf: BigNumberEthers.from(0),
-          chainId: chainId,
-          logoURI:
-            tokens.find(
-              (token) =>
-                utils.getAddress(token.address) === utils.getAddress(address) &&
-                token.chainId === chainId
-            )?.logoURI || '',
-        })
-        setCurrentSelectTokenFlag(true)
-      }
-
-      // execute only once
-      if (
-        !currentSelectTokenAmountFlag &&
-        (!currentSelectTokenAmount || currentSelectTokenAmount === '0') &&
-        !isEmpty(gameProject?.prices[0])
-      ) {
-        setCurrentSelectTokenAmount(
-          utils.formatUnits(
-            gameProject.prices[0].amount,
-            gameProject.prices[0].token.decimals
-          )
-        )
-        setCurrentSelectTokenAmountFlag(true)
-      }
-    }
-
-    // execute only once
-    if (
-      !currentDonationAddressFlag &&
-      editorMode === EditorMode.EDIT &&
-      getValues('paymentMode') === PaymentMode.FREE &&
-      !currentDonationAddress
-    ) {
-      setCurrentDonationAddress(
-        (gameProject?.donationAddress || account?.accountId) as string
-      )
-      setCurrentDonationAddressFlag(true)
-    }
+    initializationDonation({
+      currentDonationAddress,
+      setCurrentDonationAddress,
+    })
   }, [
-    currentSelectTokenAmount,
-    gameProject,
     editorMode,
+    currentSelectTokenChainIdFlag,
     currentSelectToken,
-    watchPaymentMode,
-    getValues,
+    currentSelectTokenFlag,
+    currentSelectTokenAmountFlag,
+    currentSelectTokenAmount,
     tokens,
     currentDonationAddress,
-    account,
-    watchPaymentMode,
-    currentSelectTokenChainId,
-    currentSelectTokenFlag,
-    currentSelectTokenChainIdFlag,
-    currentSelectTokenAmountFlag,
-    currentDonationAddressFlag,
+    initialization,
+    initializationDonation,
   ])
 
   return (
@@ -588,7 +549,6 @@ const GameForm: React.FC<GameFormProps> = ({
                     </div>
                     <div className={`${styles.input_row} tags_input_row`}>
                       <FormTags
-                        editorMode={editorMode}
                         changeTags={(tags) => {
                           setValue('tags', tags)
                         }}

@@ -2,7 +2,6 @@ import { SupportedChainId } from 'constants/index'
 import { ethers } from 'ethers'
 import { NextPage } from 'next'
 import React from 'react'
-import { Wallet } from 'use-wallet/dist/cjs/types'
 
 import {
   Community,
@@ -27,6 +26,12 @@ export declare type RegisterData = {
   username: string
   gamer: boolean
   developer: boolean
+}
+
+export declare type InvalidData = {
+  [key in keyof RegisterData]: {
+    message: string
+  }
 }
 
 type Join<K, P> = K extends string
@@ -203,7 +208,6 @@ declare global {
 
   interface Window {
     MINETEST_METAMASK: {
-      wallet: Wallet
       sendTransaction: (username: string, amount: string) => Promise<void>
     }
   }
@@ -237,3 +241,5 @@ export type TokenDetail = Token & {
   readonly totalSupply: ethers.BigNumber
   readonly balanceOf: ethers.BigNumber
 }
+
+export declare type PageLocale = { locale: string }

@@ -1,8 +1,9 @@
 import { getGames } from 'api'
+import { nanoid } from 'nanoid'
 import { fromUrl, parseDomain } from 'parse-domain'
 import { toUnicode } from 'punycode'
 import { GameEntity } from 'types'
-import { v1 as uuidv1 } from 'uuid'
+import { GameEngine } from 'types/enum'
 
 type FetchGamesParams = {
   limit: number
@@ -122,13 +123,15 @@ export const fetchAllGames = async (): Promise<GameEntity[]> => {
  * @returns
  */
 export const getMinetestUsername = (username: string | undefined): string => {
-  // If you need to record the guest information, it is convenient to query
-  // The username of the `guest.`
-  if (username) {
-    return username
-  } else {
-    const uuid = uuidv1()
-    const uuidArr = uuid.split('-')
-    return `guest.${uuidArr[uuidArr.length - 1]}`
-  }
+  // The maximum username is 20, more than this user cannot enter the game.
+  return username?.slice(0, 18) || nanoid(18)
+}
+
+/**
+ * Is pop up window
+ * @param kind
+ * @returns
+ */
+export const isPopUpWindow = (kind: GameEngine) => {
+  return kind === GameEngine.MINETEST || crossOriginIsolated
 }
