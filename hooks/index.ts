@@ -1,4 +1,5 @@
 export * from './useAccount'
+export * from './useBuildHref'
 export * from './useContracts'
 export * from './useFormInitializationData'
 export * from './useForms'
