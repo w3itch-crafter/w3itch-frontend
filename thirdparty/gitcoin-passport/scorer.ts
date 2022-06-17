@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // --- Passport SDK Packages
 import { PassportReader } from '@gitcoinco/passport-sdk-reader'
 // --- Types

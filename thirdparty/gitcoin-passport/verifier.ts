@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // --- DIDKit tooling to verify credentials
 // --- Passport SDK Packages
 import { PassportReader } from '@gitcoinco/passport-sdk-reader'
@@ -21,7 +22,7 @@ export class PassportVerifier {
 
   async init(): Promise<void> {
     await new Promise((resolve) => resolve(DIDKit)).then(
-        // @ts-ignore
+      // @ts-ignore
       async (didkit: { default: Promise<DIDKitLib> } | DIDKitLib) => {
         if (didkit.default) {
           await Promise.resolve(didkit.default).then((didkit) => {
