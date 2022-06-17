@@ -3208,6 +3208,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@gitcoinco/passport-sdk-reader@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@gitcoinco/passport-sdk-reader@npm:0.1.1"
+  dependencies:
+    tulons: ^0.0.5
+  checksum: 59004a28e2a12a7f8899043749cb92a9a51c8f9776240f1e2b53597ae2f30a867f2756f7b921be514feba810426bcb4962e1375c02c2b4cb8989cc92c564312f
+  languageName: node
+  linkType: hard
+
+"@gitcoinco/passport-sdk-types@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@gitcoinco/passport-sdk-types@npm:0.1.1"
+  checksum: 100e3537e054d9d381cfaf81d13d6024b28baca057293eadbfc7c65050a54aa6fcb4ea4d48f58807dcf89555671cd88aed4d831f692039096c95ed74d873de57
+  languageName: node
+  linkType: hard
+
 "@hookform/resolvers@npm:^2.8.10":
   version: 2.8.10
   resolution: "@hookform/resolvers@npm:2.8.10"
@@ -4202,6 +4218,13 @@ __metadata:
   dependencies:
     "@sinonjs/commons": ^1.7.0
   checksum: 7d3aef54e17c1073101cb64d953157c19d62a40e261a30923fa1ee337b049c5f29cc47b1f0c477880f42b5659848ba9ab897607ac8ea4acd5c30ddcfac57fca6
+  languageName: node
+  linkType: hard
+
+"@spruceid/didkit-wasm@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@spruceid/didkit-wasm@npm:0.2.1"
+  checksum: 53d5fb9ab019ebf6f08461e3d97dcb15347474e9fd47f8c4bfd69c88136414cc1ffd4181ab6ffa297c317d490e3f5840ca633e4c0a3e1e8ca04a6a16411d531f
   languageName: node
   linkType: hard
 
@@ -20592,6 +20615,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tulons@npm:^0.0.5":
+  version: 0.0.5
+  resolution: "tulons@npm:0.0.5"
+  checksum: c1366604c482df2bbd1920d497c55feceb8ee85e007cd5b3c80dff440839ff8945115493b674681141c9f6d70c301965e6edd0af3be23343cd660d6357ce215c
+  languageName: node
+  linkType: hard
+
 "tunnel-agent@npm:^0.6.0":
   version: 0.6.0
   resolution: "tunnel-agent@npm:0.6.0"
@@ -21371,11 +21401,14 @@ __metadata:
     "@commitlint/config-conventional": ^17.0.2
     "@emotion/react": ^11.9.0
     "@emotion/styled": ^11.8.1
+    "@gitcoinco/passport-sdk-reader": ^0.1.1
+    "@gitcoinco/passport-sdk-types": ^0.1.1
     "@hookform/resolvers": ^2.8.10
     "@mui/icons-material": ^5.8.2
     "@mui/lab": ^5.0.0-alpha.84
     "@mui/material": ^5.8.2
     "@reduxjs/toolkit": ^1.8.2
+    "@spruceid/didkit-wasm": ^0.2.1
     "@testing-library/jest-dom": ^5.16.4
     "@testing-library/react": ^12.1.5
     "@toast-ui/react-editor": ^3.1.7

@@ -1,13 +1,14 @@
 import styled from '@emotion/styled'
 import { getGamesMine, getUser } from 'api'
-import { IcoMoonIcon } from 'components/icons'
+import { DiscordIcon, GitHubIcon, IcoMoonIcon } from 'components/icons'
 import { Navbar } from 'components/layout'
 import { GameCell } from 'components/pages'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { Fragment, useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { PassportScorer } from 'thirdparty/gitcoin-passport/scorer'
 import { GameEntity, GameInfo, UserEntity } from 'types'
 import { urlGame } from 'utils'
 
@@ -35,6 +36,22 @@ const getProfileURL = (platform: string, username: string) => {
   }
   return x
 }
+
+const providers = [
+  'Google',
+  'Ens',
+  'Poh',
+  'Twitter',
+  'POAP',
+  'Facebook',
+  'Brightid',
+  'Github',
+]
+const criterias = providers.map((provider) => ({
+  provider,
+  issuer: 'did:key:z6MkghvGHLobLEdj1bgRLhS4LPGJAvbMA1tn2zcRyqmYU5LC',
+  score: 1,
+}))
 
 const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
   const Container = styled.div`
@@ -101,6 +118,39 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
     getUserGames()
   }, [getUserGames, getUserInfo])
 
+  const [passportScore, setPassportScore] = useState<number | null>(null)
+
+  const accounts = useMemo(() => user?.accounts ?? [], [user])
+  const platforms = useMemo(
+    () => accounts.map((acc) => acc.platform),
+    [accounts]
+  )
+
+  useEffect(() => {
+    const metamask = accounts.find((acc) => acc.platform === 'metamask')
+    if (metamask) {
+      new PassportScorer(criterias).getScore(metamask.accountId).then((res) => {
+        setPassportScore(res)
+      })
+      return
+    }
+
+    setPassportScore(0)
+  }, [accounts, setPassportScore])
+
+  const magicPoint = useMemo(() => {
+    if (accounts.length === 0 || passportScore === null) {
+      return 0
+    }
+
+    let score = passportScore
+
+    if (platforms.includes('github')) score++
+    if (platforms.includes('discord')) score++
+
+    return score
+  }, [accounts, passportScore, platforms])
+
   return (
     <Fragment>
       <Head>
@@ -123,6 +173,30 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
               </ul>
             )}
           </ProfileColumn>
+          <section>
+            <span style={{ fontWeight: 'bold' }}>Magic Point:</span>{' '}
+            <span>{magicPoint}</span>
+            {(passportScore ?? 0) > 0 && (
+              <div>
+                <img
+                  src="/icons/gitcoin-passport-logo.svg"
+                  alt="GitCoin Passport Logo"
+                  height={16}
+                />{' '}
+                +{passportScore}
+              </div>
+            )}
+            {platforms.includes('github') && (
+              <div>
+                <GitHubIcon size={16} /> +1
+              </div>
+            )}
+            {platforms.includes('discord') && (
+              <div>
+                <DiscordIcon size={16} /> +1
+              </div>
+            )}
+          </section>
           <GameColumn>
             {games.map((game, index) => (
               <GameCell
