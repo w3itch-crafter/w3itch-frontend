@@ -14,6 +14,7 @@ import {
 } from '@mui/material'
 import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
+import { TokenInfo } from '@uniswap/token-lists'
 import TokenItem from 'components/TokenList/TokenItem'
 import type { SupportedChainId } from 'constants/chains'
 import {
@@ -24,12 +25,11 @@ import { isEmpty } from 'lodash'
 import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
-import { Token } from 'types'
 import { PaymentMode } from 'types/enum'
 import { Game } from 'utils'
 
 interface FormPricingProps {
-  readonly currentSelectToken: Token
+  readonly currentSelectToken: TokenInfo
   readonly currentDonationAddress: string
   readonly currentSelectTokenChainId: SupportedChainId
   readonly currentSelectTokenAmount: string

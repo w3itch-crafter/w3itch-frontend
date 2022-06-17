@@ -1,4 +1,4 @@
-import { SupportedChainId } from 'constants/index'
+import { TokenInfo } from '@uniswap/token-lists'
 import { ethers } from 'ethers'
 import { NextPage } from 'next'
 import React from 'react'
@@ -213,15 +213,6 @@ declare global {
   }
 }
 
-export type Token = {
-  chainId: SupportedChainId
-  address: string
-  name: string
-  symbol: string
-  decimals: number
-  logoURI: string
-}
-
 export type Tokens = {
   name: string
   timestamp: Date
@@ -233,10 +224,10 @@ export type Tokens = {
   tags: object
   logoURI: string
   keywords: ['uniswap', 'default']
-  tokens: Token[]
+  tokens: TokenInfo[]
 }
 
-export type TokenDetail = Token & {
+export type TokenDetail = TokenInfo & {
   readonly amount: string
   readonly totalSupply: ethers.BigNumber
   readonly balanceOf: ethers.BigNumber

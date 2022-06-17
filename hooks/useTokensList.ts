@@ -1,8 +1,8 @@
+import { TokenInfo } from '@uniswap/token-lists'
 import type { SupportedChainId } from 'constants/chains'
 import { getAddress } from 'ethers/lib/utils'
 import { useERC20Multicall } from 'hooks/useERC20Multicall'
 import { useEffect, useMemo, useState } from 'react'
-import { Token } from 'types'
 
 import useTokens from './useTokens'
 
@@ -15,7 +15,7 @@ export default function useTokensList({
 }) {
   const { fetchTokensAddress } = useERC20Multicall()
   const { tokens: tokensList } = useTokens()
-  const [searchTokenData, setSearchTokenData] = useState<Token[]>([])
+  const [searchTokenData, setSearchTokenData] = useState<TokenInfo[]>([])
 
   // watch searchTokenAddress
   useEffect(() => {
