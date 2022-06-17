@@ -53,7 +53,7 @@ const nextConfig = {
     ]
   },
   webpack(config) {
-    config.experiments = { asyncWebAssembly: true }
+    Object.assign(config.experiments, { asyncWebAssembly: true })
     return config
   },
 }
