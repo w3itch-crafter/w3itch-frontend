@@ -5285,6 +5285,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@uniswap/token-lists@npm:^1.0.0-beta.30":
+  version: 1.0.0-beta.30
+  resolution: "@uniswap/token-lists@npm:1.0.0-beta.30"
+  checksum: 4138b15eab65c2d20749ab7dcf37f838198a349c402c40d810bcb11ab35dfee6b905d5fb7167e676ac863a562ba0a075bf6dd7fcc1e88dffe8b07fc58ce336ca
+  languageName: node
+  linkType: hard
+
 "@walletconnect/browser-utils@npm:^1.7.7":
   version: 1.7.7
   resolution: "@walletconnect/browser-utils@npm:1.7.7"
@@ -21393,6 +21400,7 @@ __metadata:
     "@types/uuid": ^8.3.4
     "@typescript-eslint/eslint-plugin": ^5.27.0
     "@typescript-eslint/parser": ^5.27.0
+    "@uniswap/token-lists": ^1.0.0-beta.30
     "@wojtekmaj/enzyme-adapter-react-17": ^0.6.7
     adm-zip: ^0.5.9
     ahooks: ^3.4.0

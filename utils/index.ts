@@ -1,3 +1,4 @@
+export * from './address'
 export * from './algolia'
 export * from './calendar'
 export * from './chains'

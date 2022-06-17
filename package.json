@@ -33,6 +33,7 @@
     "@mui/material": "^5.8.2",
     "@reduxjs/toolkit": "^1.8.2",
     "@toast-ui/react-editor": "^3.1.7",
+    "@uniswap/token-lists": "^1.0.0-beta.30",
     "adm-zip": "^0.5.9",
     "ahooks": "^3.4.0",
     "algoliasearch": "^4.13.1",
