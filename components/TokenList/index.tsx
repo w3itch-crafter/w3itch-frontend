@@ -8,12 +8,14 @@ import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import TextField from '@mui/material/TextField'
+import { TokenInfo } from '@uniswap/token-lists'
+import { useDebounceFn, useVirtualList } from 'ahooks'
 import type { SupportedChainId } from 'constants/chains'
-import { getAddress, isAddress } from 'ethers/lib/utils'
-import useTokensList from 'hooks/useTokensList'
+import { isAddress } from 'ethers/lib/utils'
+import { useTokenList } from 'hooks'
 import { isEmpty } from 'lodash'
-import { FC, useCallback, useEffect, useState } from 'react'
-import { Token } from 'types'
+import { FC, useEffect, useMemo, useRef, useState } from 'react'
+import { addressEqual } from 'utils'
 
 import TokenItem from './TokenItem'
 
@@ -28,7 +30,7 @@ export interface GameRatingProps {
   readonly open: boolean
   readonly chainId: SupportedChainId
   setOpen: (value: boolean) => void
-  selectToken: (token: Token) => void
+  selectToken: (token: TokenInfo) => void
 }
 
 export interface DialogTitleProps {
@@ -67,27 +69,58 @@ export const TokenList: FC<GameRatingProps> = ({
   chainId,
   selectToken,
 }) => {
-  // const { enqueueSnackbar } = useSnackbar()
-  const [searchAddress, setSearchAddress] = useState('')
-  const { tokens: tokensList } = useTokensList({
-    chainId: chainId,
-    searchTokenAddress: searchAddress,
-  })
+  const [search, setSearch] = useState('')
+  const tokenList = useTokenList('https://tokens.uniswap.org', chainId)
+  console.log('tokenList', tokenList)
 
-  const handleAddressChange = useCallback((address: string) => {
-    console.log('address', address)
-    if (isAddress(address)) {
-      console.log('aaddress', address, getAddress(address))
+  // Handle search change
+  const { run: handleSearchChange } = useDebounceFn(
+    (val: string) => {
+      console.log('val', val)
+      setSearch(val)
+    },
+    { wait: 500 }
+  )
 
-      setSearchAddress(getAddress(address))
-    } else {
-      setSearchAddress('')
+  // Returns results containing the search
+  const searchTokens = useMemo(() => {
+    if (!search) {
+      return []
     }
-  }, [])
+    return (
+      tokenList?.tokens.filter((token) => {
+        let addressEqualResult = false
+
+        if (isAddress(search)) {
+          try {
+            addressEqualResult = addressEqual(token.address, search)
+          } catch (error) {
+            console.log(error)
+          }
+        }
+
+        return (
+          token.symbol.toLowerCase().includes(search.toLowerCase()) ||
+          token.name.toLowerCase().includes(search.toLowerCase()) ||
+          addressEqualResult
+        )
+      }) || []
+    )
+  }, [search, tokenList])
+
+  // Viirtual list
+  const containerRef = useRef(null)
+  const wrapperRef = useRef(null)
+  const [list] = useVirtualList(tokenList?.tokens || [], {
+    containerTarget: containerRef,
+    wrapperTarget: wrapperRef,
+    itemHeight: 60,
+    overscan: 10,
+  })
 
   useEffect(() => {
     if (!open) {
-      setSearchAddress('')
+      setSearch('')
     }
   }, [open])
 
@@ -100,37 +133,49 @@ export const TokenList: FC<GameRatingProps> = ({
         Select Token
       </BootstrapDialogTitle>
       <DialogContent dividers sx={{ padding: 0, width: '420px' }}>
-        <Box
-          p="20px"
-          sx={{
-            borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-          }}
-        >
+        <Box p="20px" sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}>
           <TextField
             placeholder="Search address"
             fullWidth
-            onChange={(event) => handleAddressChange(event.target.value)}
+            onChange={(event) => handleSearchChange(event.target.value)}
           />
         </Box>
-        <List
-          sx={{
-            height: '500px',
-            overflow: 'auto',
-            padding: 0,
-          }}
-        >
-          {isEmpty(tokensList) && <NoItem>No data</NoItem>}
-          {tokensList.map((token) => (
-            <ListItem
-              key={token.address}
-              sx={{
-                padding: 0,
-              }}
-            >
-              <TokenItem token={token} selectToken={selectToken} />
-            </ListItem>
-          ))}
-        </List>
+        {search ? (
+          <List
+            sx={{
+              height: '500px',
+              overflow: 'auto',
+              padding: 0,
+            }}
+          >
+            {searchTokens.map((token, index) => (
+              <ListItem sx={{ padding: 0 }} key={index}>
+                <TokenItem token={token} selectToken={selectToken} />
+              </ListItem>
+            ))}
+            {isEmpty(searchTokens) && <NoItem>No search results</NoItem>}
+          </List>
+        ) : (
+          <List
+            sx={{
+              height: '500px',
+              overflow: 'auto',
+              padding: 0,
+            }}
+            ref={containerRef}
+          >
+            <div ref={wrapperRef}>
+              {list.map((ele) => (
+                <div style={{ height: 56 }} key={ele.index}>
+                  <ListItem sx={{ padding: 0 }}>
+                    <TokenItem token={ele.data} selectToken={selectToken} />
+                  </ListItem>
+                </div>
+              ))}
+            </div>
+            {isEmpty(list) && <NoItem>No data</NoItem>}
+          </List>
+        )}
       </DialogContent>
     </Dialog>
   )

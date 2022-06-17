@@ -1,8 +1,9 @@
 import HelpIcon from '@mui/icons-material/Help'
 import Avatar from '@mui/material/Avatar'
 import { FC, useMemo, useState } from 'react'
+
 interface TokenLogoProps {
-  readonly src: string
+  readonly src?: string
   readonly symbol: string
 }
 
