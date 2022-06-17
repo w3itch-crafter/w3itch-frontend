@@ -139,7 +139,7 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
   }, [accounts, setPassportScore])
 
   const magicPoint = useMemo(() => {
-    if (accounts.length === 0 || passportScore === null) {
+    if (passportScore === null || accounts.length === 0) {
       return 0
     }
 
