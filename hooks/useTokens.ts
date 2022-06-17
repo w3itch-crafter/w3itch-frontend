@@ -1,12 +1,13 @@
+import { TokenInfo } from '@uniswap/token-lists'
 import axios from 'axios'
 import { AxiosResponse } from 'axios'
 import { DEFAULT_LIST_OF_LISTS } from 'constants/index'
 import { isEqual, uniqWith } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
-import { Token, Tokens } from 'types'
+import { Tokens } from 'types'
 
 export function useTokens() {
-  const [tokens, setTokens] = useState<Token[]>([])
+  const [tokens, setTokens] = useState<TokenInfo[]>([])
 
   const fetchTokens = useCallback(async () => {
     try {

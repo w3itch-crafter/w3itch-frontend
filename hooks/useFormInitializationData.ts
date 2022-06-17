@@ -1,10 +1,11 @@
+import { TokenInfo } from '@uniswap/token-lists'
 import { SupportedChainId } from 'constants/chains'
 import { utils } from 'ethers'
 import { useAccountInfo } from 'hooks'
 import { isEmpty } from 'lodash'
 import { Dispatch, SetStateAction, useCallback } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { GameEntity, Token } from 'types'
+import { GameEntity } from 'types'
 import { EditorMode, PaymentMode } from 'types/enum'
 import { Game } from 'utils'
 
@@ -36,14 +37,14 @@ export function useFormInitializationData({
     }: {
       editorMode: EditorMode
       currentSelectTokenChainIdFlag: boolean
-      currentSelectToken: Token
+      currentSelectToken: TokenInfo
       currentSelectTokenFlag: boolean
       currentSelectTokenAmountFlag: boolean
       currentSelectTokenAmount: string
-      tokens: Token[]
+      tokens: TokenInfo[]
       setCurrentSelectTokenChainId: Dispatch<SetStateAction<SupportedChainId>>
       setCurrentSelectTokenChainIdFlag: Dispatch<SetStateAction<boolean>>
-      setCurrentSelectToken: Dispatch<SetStateAction<Token>>
+      setCurrentSelectToken: Dispatch<SetStateAction<TokenInfo>>
       setCurrentSelectTokenFlag: Dispatch<SetStateAction<boolean>>
       setCurrentSelectTokenAmount: Dispatch<SetStateAction<string>>
       setCurrentSelectTokenAmountFlag: Dispatch<SetStateAction<boolean>>
