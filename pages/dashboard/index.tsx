@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import { Box } from '@mui/material'
 import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack'
 import { deleteGameProject, getGamesMine } from 'api'
@@ -198,7 +199,7 @@ const Dashboard: NextPage = () => {
   const {
     state: { user },
   } = useContext(AuthenticationContext)
-  const { data, error } = useSWR(
+  const { data, error, isValidating } = useSWR(
     {
       page,
       limit,
@@ -207,6 +208,9 @@ const Dashboard: NextPage = () => {
     },
     getGamesMine
   )
+  // useEffect(() => {
+  //   mutate()
+  // }, [])
 
   return (
     <Fragment>
@@ -278,19 +282,25 @@ const Dashboard: NextPage = () => {
             </a>
           </div> */}
             <div className={styles.padded}>
-              {!user ||
-              error ||
-              !data ||
-              (!data.meta.totalItems && !data.data.length) ? (
-                <EmptyGameProject />
-              ) : (
-                <HasGameProject
-                  page={page}
-                  setPage={setPage}
-                  meta={data.meta}
-                  items={data.data}
-                />
-              )}
+              {(() => {
+                if (isValidating)
+                  return (
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                      <CircularProgress />
+                    </Box>
+                  )
+                if (data?.meta.totalItems && data?.data.length)
+                  return (
+                    <HasGameProject
+                      page={page}
+                      setPage={setPage}
+                      meta={data.meta}
+                      items={data.data}
+                    />
+                  )
+                if (error || data?.data.length === 0)
+                  return <EmptyGameProject />
+              })()}
             </div>
           </div>
         </div>
