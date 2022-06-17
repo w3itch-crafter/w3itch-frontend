@@ -5,6 +5,7 @@ import { Navbar } from 'components/layout'
 import { GameCell } from 'components/pages'
 import { NextPage } from 'next'
 import Head from 'next/head'
+import Image from 'next/image'
 import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
@@ -178,7 +179,7 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
             <span>{magicPoint}</span>
             {(passportScore ?? 0) > 0 && (
               <div>
-                <img
+                <Image
                   src="/icons/gitcoin-passport-logo.svg"
                   alt="GitCoin Passport Logo"
                   height={16}
