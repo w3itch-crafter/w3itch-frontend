@@ -39,6 +39,7 @@ const nextConfig = {
   pwa: {
     dest: 'public',
     disable: process.env.NODE_ENV === 'development',
+    maximumFileSizeToCacheInBytes: 10 * 1024 * 1024
   },
   async headers() {
     return [
@@ -52,8 +53,15 @@ const nextConfig = {
       },
     ]
   },
-  webpack(config) {
+  webpack(config, { isServer }) {
     Object.assign(config.experiments, { asyncWebAssembly: true })
+
+    if (isServer) {
+      config.output.webassemblyModuleFilename = '../static/wasm/[modulehash].wasm';
+    }
+
+    config.optimization.moduleIds = 'named';
+
     return config
   },
 }
