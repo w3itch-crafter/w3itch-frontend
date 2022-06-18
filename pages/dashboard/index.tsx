@@ -14,7 +14,7 @@ import { kinds } from 'data'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
-import Router, { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useSnackbar } from 'notistack'
 import { FC, Fragment, useCallback, useContext } from 'react'
@@ -30,6 +30,7 @@ interface HasGameProjectProps {
   meta: PaginationMeta<GameEntity>
   page: number
   setPage: Dispatch<SetStateAction<number>>
+  refreshCallback: () => void
 }
 
 const EmptyGameProject = () => {
@@ -60,6 +61,7 @@ const HasGameProject: FC<HasGameProjectProps> = ({
   meta,
   page,
   setPage,
+  refreshCallback,
 }) => {
   const DeleteGame = styled.a`
     margin-right: 8px;
@@ -82,14 +84,12 @@ const HasGameProject: FC<HasGameProjectProps> = ({
         })
         return setTimeout(() => router.replace('/login'), 1500)
       }
-
       deleteAlgoliaGame(id)
-
       enqueueSnackbar('Game deleted', {
         anchorOrigin: { vertical: 'top', horizontal: 'center' },
         variant: 'success',
       })
-      return Router.reload()
+      return refreshCallback()
     },
     [enqueueSnackbar, router]
   )
@@ -199,14 +199,17 @@ const Dashboard: NextPage = () => {
   const {
     state: { user },
   } = useContext(AuthenticationContext)
-  const { data, error, isValidating } = useSWR(
+  const { data, error, isValidating, mutate } = useSWR(
     {
       page,
       limit,
       username: user?.username,
       order: 'DESC',
     },
-    getGamesMine
+    getGamesMine,
+    {
+      dedupingInterval: 1000,
+    }
   )
   // useEffect(() => {
   //   mutate()
@@ -296,6 +299,7 @@ const Dashboard: NextPage = () => {
                       setPage={setPage}
                       meta={data.meta}
                       items={data.data}
+                      refreshCallback={mutate}
                     />
                   )
                 if (error || data?.data.length === 0)
