@@ -208,7 +208,7 @@ const Dashboard: NextPage = () => {
     },
     getGamesMine,
     {
-      dedupingInterval: 1000,
+      dedupingInterval: 1500,
     }
   )
   // useEffect(() => {
