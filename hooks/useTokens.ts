@@ -2,10 +2,11 @@ import { useLocalStorageState } from 'ahooks'
 import axios from 'axios'
 import { AxiosResponse } from 'axios'
 import { DEFAULT_LIST_OF_LISTS } from 'constants/index'
-import { TokenList } from 'hooks'
 import { isEqual, uniqWith } from 'lodash'
 import { useCallback, useEffect } from 'react'
 import { Tokens } from 'types'
+
+import { TokenList } from './useTokenList'
 
 const KEY_TOKEN_LIST = 'W3ITCH_TOKEN_LIST'
 
