@@ -14,7 +14,6 @@ import {
   useTitle,
   useTopCenterSnackbar,
 } from 'hooks'
-import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -110,7 +109,8 @@ const GameForm: React.FC<GameFormProps> = ({
   const [currentDonationAddress, setCurrentDonationAddress] =
     useState<string>('')
 
-  const { tokens } = useTokens()
+  // const { tokens } = useTokens()
+  const tokens = []
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
   const { initialization, initializationDonation } = useFormInitializationData({
