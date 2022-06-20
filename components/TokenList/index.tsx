@@ -194,7 +194,7 @@ export const TokenList: FC<GameRatingProps> = ({
   // Handle search change
   const { run: handleSearchChange } = useDebounceFn(
     (val: string) => {
-      console.log('val', val)
+      // console.log('val', val)
       if (isAddress(val)) {
         fetchTokenByAddress(val, chainId)
       } else {
