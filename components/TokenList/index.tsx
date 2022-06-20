@@ -157,7 +157,7 @@ export const TokenList: FC<GameRatingProps> = ({
   // console.log('tokenList', tokenList)
   const [searchAddressToken, setSearchAddressToken] = useState<TokenInfo>()
   const [searchAddressTokenLoading, setSearchAddressTokenLoading] =
-    useState<boolean>()
+    useState<boolean>(false)
 
   // Fetch token by address
   const fetchTokenByAddress = useCallback(
@@ -224,9 +224,9 @@ export const TokenList: FC<GameRatingProps> = ({
         }
 
         return (
+          addressEqualResult ||
           token.symbol.toLowerCase().includes(search.toLowerCase()) ||
-          token.name.toLowerCase().includes(search.toLowerCase()) ||
-          addressEqualResult
+          token.name.toLowerCase().includes(search.toLowerCase())
         )
       }) || []
     )
