@@ -1,4 +1,3 @@
-import { TokenInfo } from '@uniswap/token-lists'
 import { useLocalStorageState } from 'ahooks'
 import axios from 'axios'
 import { AxiosResponse } from 'axios'
@@ -24,22 +23,21 @@ export function useTokens(
 
   const fetchTokens = useCallback(async () => {
     try {
+      // Get a list of multiple tokens
       const promiseTokens: Promise<AxiosResponse<Tokens>>[] = []
       DEFAULT_LIST_OF_LISTS.forEach((token) => {
         promiseTokens.push(axios.get(token))
       })
-
       const fetchTokensResult = await Promise.all(promiseTokens)
 
       const lists = fetchTokensResult.map((token) => token.data.tokens)
       const listsFlat = lists.flat(1)
-      const listsFilter = uniqWith(listsFlat, isEqual)
+      const listUniq = uniqWith(listsFlat, isEqual)
 
-      // @TODO list cache
       setTokenList({
         name: 'W3itch',
         logoURI: 'ipfs://',
-        tokens: (listsFilter as TokenInfo[]).filter((token) => {
+        tokens: listUniq.filter((token) => {
           const sameChainId = token.chainId === chainId
           if (!tags) {
             return sameChainId
@@ -55,7 +53,7 @@ export function useTokens(
       console.log(err)
       setTokenList(undefined)
     }
-  }, [chainId, tags])
+  }, [chainId, tags, setTokenList])
 
   useEffect(() => {
     fetchTokens()
