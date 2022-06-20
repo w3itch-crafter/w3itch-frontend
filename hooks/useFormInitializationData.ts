@@ -27,7 +27,6 @@ export function useFormInitializationData({
       currentSelectTokenFlag,
       currentSelectTokenAmountFlag,
       currentSelectTokenAmount,
-      tokens,
       setCurrentSelectTokenChainId,
       setCurrentSelectTokenChainIdFlag,
       setCurrentSelectToken,
@@ -41,7 +40,6 @@ export function useFormInitializationData({
       currentSelectTokenFlag: boolean
       currentSelectTokenAmountFlag: boolean
       currentSelectTokenAmount: string
-      tokens: TokenInfo[]
       setCurrentSelectTokenChainId: Dispatch<SetStateAction<SupportedChainId>>
       setCurrentSelectTokenChainIdFlag: Dispatch<SetStateAction<boolean>>
       setCurrentSelectToken: Dispatch<SetStateAction<TokenInfo>>
@@ -79,12 +77,7 @@ export function useFormInitializationData({
             // totalSupply: BigNumberEthers.from(0),
             // balanceOf: BigNumberEthers.from(0),
             chainId: chainId,
-            logoURI:
-              tokens.find(
-                (token) =>
-                  utils.getAddress(token.address) ===
-                    utils.getAddress(address) && token.chainId === chainId
-              )?.logoURI || '',
+            logoURI: '',
           })
           setCurrentSelectTokenFlag(true)
         }

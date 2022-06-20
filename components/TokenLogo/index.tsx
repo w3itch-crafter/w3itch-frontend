@@ -8,6 +8,7 @@ interface TokenLogoProps {
 }
 
 const TokenLogo: FC<TokenLogoProps> = ({ src, symbol }) => {
+  // https://developer.trustwallet.com/assets/new-asset
   const logo = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${symbol.toLowerCase()}/logo.png`
 
   const [isBad, setIsBad] = useState(false)
