@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import CloseIcon from '@mui/icons-material/Close'
 import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -43,6 +44,7 @@ export interface DialogTitleProps {
 
 interface SearchResultProps {
   readonly tokens: TokenInfo[]
+  readonly loading: boolean
   selectToken: (token: TokenInfo) => void
 }
 
@@ -80,7 +82,11 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
  * @param {*} { tokens, selectToken }
  * @return {*}
  */
-const SearchResult: FC<SearchResultProps> = ({ tokens, selectToken }) => {
+const SearchResult: FC<SearchResultProps> = ({
+  tokens,
+  loading,
+  selectToken,
+}) => {
   return (
     <List
       sx={{
@@ -94,7 +100,13 @@ const SearchResult: FC<SearchResultProps> = ({ tokens, selectToken }) => {
           <TokenItem token={token} selectToken={selectToken} />
         </ListItem>
       ))}
-      {isEmpty(tokens) && <NoItem>No search results</NoItem>}
+      {loading ? (
+        <Box sx={{ display: 'block', textAlign: 'center', margin: '20px 0' }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>{isEmpty(tokens) && <NoItem>No search results</NoItem>}</>
+      )}
     </List>
   )
 }
@@ -144,11 +156,14 @@ export const TokenList: FC<GameRatingProps> = ({
   const { fetchTokensAddress } = useERC20Multicall()
   // console.log('tokenList', tokenList)
   const [searchAddressToken, setSearchAddressToken] = useState<TokenInfo>()
+  const [searchAddressTokenLoading, setSearchAddressTokenLoading] =
+    useState<boolean>()
 
   // Fetch token by address
   const fetchTokenByAddress = useCallback(
     async (address: string, chainId: number) => {
       try {
+        setSearchAddressTokenLoading(true)
         const tokensResponse = await fetchTokensAddress([address], chainId)
         // console.log('tokensResponse', tokensResponse)
         if (tokensResponse) {
@@ -169,6 +184,8 @@ export const TokenList: FC<GameRatingProps> = ({
       } catch (err) {
         console.error(err)
         setSearchAddressToken(undefined)
+      } finally {
+        setSearchAddressTokenLoading(false)
       }
     },
     [fetchTokensAddress]
@@ -252,7 +269,11 @@ export const TokenList: FC<GameRatingProps> = ({
           />
         </Box>
         {search ? (
-          <SearchResult tokens={searchResultList} selectToken={selectToken} />
+          <SearchResult
+            tokens={searchResultList}
+            loading={searchAddressTokenLoading}
+            selectToken={selectToken}
+          />
         ) : (
           <TokenVirtualList tokens={list} selectToken={selectToken} />
         )}
