@@ -1,5 +1,6 @@
 import LoadingButton from '@mui/lab/LoadingButton'
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
+import { TokenInfo } from '@uniswap/token-lists'
 import { useDebounceFn } from 'ahooks'
 import { createGame, gameValidate, saveAlgoliaGame } from 'api/index'
 import { storagesUploadToAWS, updateGame } from 'api/index'
@@ -13,7 +14,6 @@ import {
   useTitle,
   useTopCenterSnackbar,
 } from 'hooks'
-import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -23,7 +23,7 @@ import { SubmitHandler } from 'react-hook-form'
 import { useFormContext, useWatch } from 'react-hook-form'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
-import { GameEntity, Token } from 'types'
+import { GameEntity } from 'types'
 import { Api } from 'types/Api'
 import { EditorMode, GameEngine, PaymentMode } from 'types/enum'
 import { ProjectClassification, ReleaseStatus } from 'types/enum'
@@ -97,8 +97,8 @@ const GameForm: React.FC<GameFormProps> = ({
     useState<SupportedChainId>(WalletSupportedChainIds[0])
   const [currentSelectTokenChainIdFlag, setCurrentSelectTokenChainIdFlag] =
     useState<boolean>(false)
-  const [currentSelectToken, setCurrentSelectToken] = useState<Token>(
-    {} as Token
+  const [currentSelectToken, setCurrentSelectToken] = useState<TokenInfo>(
+    {} as TokenInfo
   )
   const [currentSelectTokenFlag, setCurrentSelectTokenFlag] =
     useState<boolean>(false)
@@ -109,7 +109,6 @@ const GameForm: React.FC<GameFormProps> = ({
   const [currentDonationAddress, setCurrentDonationAddress] =
     useState<string>('')
 
-  const { tokens } = useTokens()
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
   const { initialization, initializationDonation } = useFormInitializationData({
@@ -437,7 +436,6 @@ const GameForm: React.FC<GameFormProps> = ({
       currentSelectTokenFlag,
       currentSelectTokenAmountFlag,
       currentSelectTokenAmount,
-      tokens,
       setCurrentSelectTokenChainId,
       setCurrentSelectTokenChainIdFlag,
       setCurrentSelectToken,
@@ -457,7 +455,6 @@ const GameForm: React.FC<GameFormProps> = ({
     currentSelectTokenFlag,
     currentSelectTokenAmountFlag,
     currentSelectTokenAmount,
-    tokens,
     currentDonationAddress,
     initialization,
     initializationDonation,
@@ -516,7 +513,7 @@ const GameForm: React.FC<GameFormProps> = ({
                         setCurrentSelectTokenChainId={(chainId) => {
                           setCurrentSelectTokenChainId(chainId)
                           // Switch chainId to clear token
-                          setCurrentSelectToken({} as Token)
+                          setCurrentSelectToken({} as TokenInfo)
                         }}
                       />
                     </div>

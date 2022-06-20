@@ -1,12 +1,14 @@
 import HelpIcon from '@mui/icons-material/Help'
 import Avatar from '@mui/material/Avatar'
 import { FC, useMemo, useState } from 'react'
+
 interface TokenLogoProps {
-  readonly src: string
+  readonly src?: string
   readonly symbol: string
 }
 
 const TokenLogo: FC<TokenLogoProps> = ({ src, symbol }) => {
+  // https://developer.trustwallet.com/assets/new-asset
   const logo = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${symbol.toLowerCase()}/logo.png`
 
   const [isBad, setIsBad] = useState(false)
