@@ -13,8 +13,9 @@ import { useDebounceFn } from 'ahooks'
 import type { SupportedChainId } from 'constants/chains'
 import { isAddress } from 'ethers/lib/utils'
 import { useTokens } from 'hooks'
+import { useERC20Multicall } from 'hooks/useERC20Multicall'
 import { isEmpty } from 'lodash'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { FixedSizeList, ListChildComponentProps } from 'react-window'
 import { addressEqual } from 'utils'
 
@@ -140,12 +141,49 @@ export const TokenList: FC<GameRatingProps> = ({
 }) => {
   const [search, setSearch] = useState('')
   const tokenList = useTokens(chainId)
-  console.log('tokenList', tokenList)
+  const { fetchTokensAddress } = useERC20Multicall()
+  // console.log('tokenList', tokenList)
+  const [searchAddressToken, setSearchAddressToken] = useState<TokenInfo>()
+
+  // Fetch token by address
+  const fetchTokenByAddress = useCallback(
+    async (address: string, chainId: number) => {
+      try {
+        const tokensResponse = await fetchTokensAddress([address], chainId)
+        // console.log('tokensResponse', tokensResponse)
+        if (tokensResponse) {
+          const token = tokensResponse[0]
+          if (token) {
+            setSearchAddressToken({
+              chainId: chainId,
+              address: token.address,
+              name: token.data.name,
+              symbol: token.data.symbol,
+              decimals: token.data.decimals,
+              logoURI: '',
+            })
+          }
+        } else {
+          setSearchAddressToken(undefined)
+        }
+      } catch (err) {
+        console.error(err)
+        setSearchAddressToken(undefined)
+      }
+    },
+    [fetchTokensAddress]
+  )
 
   // Handle search change
   const { run: handleSearchChange } = useDebounceFn(
     (val: string) => {
       console.log('val', val)
+      if (isAddress(val)) {
+        fetchTokenByAddress(val, chainId)
+      } else {
+        // Clear search address result
+        setSearchAddressToken(undefined)
+      }
       setSearch(val)
     },
     { wait: 500 }
@@ -177,6 +215,17 @@ export const TokenList: FC<GameRatingProps> = ({
     )
   }, [search, tokenList])
 
+  // Search token result list
+  const searchResultList = useMemo(
+    () =>
+      !isEmpty(searchTokens)
+        ? searchTokens
+        : searchAddressToken
+        ? [searchAddressToken]
+        : [],
+    [searchTokens, searchAddressToken]
+  )
+
   // Viirtual list
   const list = tokenList?.tokens || []
 
@@ -203,7 +252,7 @@ export const TokenList: FC<GameRatingProps> = ({
           />
         </Box>
         {search ? (
-          <SearchResult tokens={searchTokens} selectToken={selectToken} />
+          <SearchResult tokens={searchResultList} selectToken={selectToken} />
         ) : (
           <TokenVirtualList tokens={list} selectToken={selectToken} />
         )}
