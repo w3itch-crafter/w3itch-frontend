@@ -45,6 +45,11 @@ interface SearchResultProps {
   selectToken: (token: TokenInfo) => void
 }
 
+interface TokenVirtualListProps {
+  readonly tokens: TokenInfo[]
+  selectToken: (token: TokenInfo) => void
+}
+
 const BootstrapDialogTitle = (props: DialogTitleProps) => {
   const { children, onClose, ...other } = props
 
@@ -70,7 +75,7 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
 }
 
 /**
- * Search result list
+ * Token search result list
  * @param {*} { tokens, selectToken }
  * @return {*}
  */
@@ -90,6 +95,40 @@ const SearchResult: FC<SearchResultProps> = ({ tokens, selectToken }) => {
       ))}
       {isEmpty(tokens) && <NoItem>No search results</NoItem>}
     </List>
+  )
+}
+
+/**
+ * Token virtual list
+ * @param {*} { tokens, selectToken }
+ * @return {*}
+ */
+const TokenVirtualList: FC<TokenVirtualListProps> = ({
+  tokens,
+  selectToken,
+}) => {
+  // Viirtual render item
+  function renderRow(props: ListChildComponentProps) {
+    const { index, style, data } = props
+
+    return (
+      <ListItem style={style} component="div" disableGutters key={index}>
+        <TokenItem token={data[index]} selectToken={selectToken} />
+      </ListItem>
+    )
+  }
+
+  return (
+    <FixedSizeList
+      height={500}
+      width={420}
+      itemSize={56}
+      itemData={tokens}
+      itemCount={tokens.length}
+      overscanCount={5}
+    >
+      {renderRow}
+    </FixedSizeList>
   )
 }
 
@@ -140,16 +179,6 @@ export const TokenList: FC<GameRatingProps> = ({
 
   // Viirtual list
   const list = tokenList?.tokens || []
-  // Viirtual render item
-  function renderRow(props: ListChildComponentProps) {
-    const { index, style, data } = props
-
-    return (
-      <ListItem style={style} component="div" disableGutters key={index}>
-        <TokenItem token={data[index]} selectToken={selectToken} />
-      </ListItem>
-    )
-  }
 
   useEffect(() => {
     if (!open) {
@@ -176,16 +205,7 @@ export const TokenList: FC<GameRatingProps> = ({
         {search ? (
           <SearchResult tokens={searchTokens} selectToken={selectToken} />
         ) : (
-          <FixedSizeList
-            height={500}
-            width={420}
-            itemSize={56}
-            itemData={list}
-            itemCount={list.length}
-            overscanCount={5}
-          >
-            {renderRow}
-          </FixedSizeList>
+          <TokenVirtualList tokens={list} selectToken={selectToken} />
         )}
       </DialogContent>
     </Dialog>
