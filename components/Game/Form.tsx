@@ -109,8 +109,6 @@ const GameForm: React.FC<GameFormProps> = ({
   const [currentDonationAddress, setCurrentDonationAddress] =
     useState<string>('')
 
-  // const { tokens } = useTokens()
-  const tokens = []
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
   const { initialization, initializationDonation } = useFormInitializationData({
@@ -438,7 +436,6 @@ const GameForm: React.FC<GameFormProps> = ({
       currentSelectTokenFlag,
       currentSelectTokenAmountFlag,
       currentSelectTokenAmount,
-      tokens,
       setCurrentSelectTokenChainId,
       setCurrentSelectTokenChainIdFlag,
       setCurrentSelectToken,
@@ -458,7 +455,6 @@ const GameForm: React.FC<GameFormProps> = ({
     currentSelectTokenFlag,
     currentSelectTokenAmountFlag,
     currentSelectTokenAmount,
-    tokens,
     currentDonationAddress,
     initialization,
     initializationDonation,
