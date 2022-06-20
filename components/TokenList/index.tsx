@@ -12,7 +12,7 @@ import { TokenInfo } from '@uniswap/token-lists'
 import { useDebounceFn } from 'ahooks'
 import type { SupportedChainId } from 'constants/chains'
 import { isAddress } from 'ethers/lib/utils'
-import { useTokenList } from 'hooks'
+import { useTokens } from 'hooks'
 import { isEmpty } from 'lodash'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { FixedSizeList, ListChildComponentProps } from 'react-window'
@@ -139,7 +139,7 @@ export const TokenList: FC<GameRatingProps> = ({
   selectToken,
 }) => {
   const [search, setSearch] = useState('')
-  const tokenList = useTokenList('https://tokens.uniswap.org', chainId)
+  const tokenList = useTokens(chainId)
   console.log('tokenList', tokenList)
 
   // Handle search change
