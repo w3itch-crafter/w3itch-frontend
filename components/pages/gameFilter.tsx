@@ -9,29 +9,28 @@ import { useBuildHref } from 'hooks'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { Fragment } from 'react'
+import { GameEngine, PaymentMode, ReleaseStatus } from 'types/enum'
 import { isEmptyObj } from 'utils'
 
 declare type FilterGroupItems = FilterGroupItemProps[]
 
-const PlatformFilters: FilterGroupItems = [
-  { icon: 'windows8', name: 'Windows', href: 'windows' },
-  { icon: 'apple', name: 'macOS', href: 'macos' },
-  { icon: 'tux', name: 'Linux', href: 'linux' },
-  { icon: 'android', name: 'Android', href: 'android' },
-  { icon: 'apple', name: 'iOS', href: 'ios' },
-  { icon: 'globe', name: 'Web', href: 'web' },
+const KindFilters: FilterGroupItems = [
+  { icon: 'windows8', name: 'RPG Maker 2000/2003', href: GameEngine.RM2K3E },
+  { icon: 'star', name: 'Minetest', href: GameEngine.MINETEST },
+  { icon: 'globe', name: 'Web play', href: GameEngine.HTML },
+  { icon: 'download', name: 'Downloadable', href: GameEngine.DOWNLOADABLE },
 ]
-const PriceFilters: FilterGroupItems = [
-  { icon: 'star', name: 'Free', href: '#' },
-  { icon: 'star', name: 'On Sale', href: '#' },
-  { icon: 'cart', name: 'Paid', href: '#' },
-  { icon: 'cart', name: '$5 or less', href: '#' },
-  { icon: 'cart', name: '$15 or less', href: '#' },
+const PaymentFilters: FilterGroupItems = [
+  { icon: 'coin', name: 'Free', href: PaymentMode.FREE },
+  { icon: 'coin', name: 'Hold', href: PaymentMode.PAID },
+  { icon: 'coin', name: 'No Payment', href: PaymentMode.DISABLE_PAYMENTS },
 ]
-const WhenFilters: FilterGroupItems = [
-  { icon: 'stopwatch', name: 'Last Day', href: '#' },
-  { icon: 'stopwatch', name: 'Last 7 days', href: '#' },
-  { icon: 'stopwatch', name: 'Last 30 days', href: '#' },
+const ReleaseFilters: FilterGroupItems = [
+  { icon: 'star', name: 'Released', href: ReleaseStatus.RELEASED },
+  { icon: 'star', name: 'In development', href: ReleaseStatus.IN_DEVELOPMENT },
+  { icon: 'star', name: 'Prototype', href: ReleaseStatus.PROTOTYPE },
+  { icon: 'star', name: 'On hold', href: ReleaseStatus.ON_HOLD },
+  { icon: 'star', name: 'Cancelled', href: ReleaseStatus.CANCELLED },
 ]
 const GenreFilters: FilterGroupItems = genres.map((genre) => ({
   icon: 'tag',
@@ -86,33 +85,33 @@ export function GameFilter() {
         )}
       </FilterHeader>
       <FilterPickers>
-        <FilterGroup label="Platform" open>
-          {PlatformFilters.map((platform) => (
+        <FilterGroup label="Game kind" open>
+          {KindFilters.map((kind) => (
             <FilterGroupItem
-              icon={platform.icon}
-              name={platform.name}
-              href={buildHref('platform', platform.href)}
-              key={platform.name}
+              icon={kind.icon}
+              name={kind.name}
+              href={buildHref('kind', kind.href)}
+              key={kind.name}
             />
           ))}
         </FilterGroup>
-        <FilterGroup label="Price" open>
-          {PriceFilters.map((price) => (
+        <FilterGroup label="Payment mode" open>
+          {PaymentFilters.map((pay) => (
             <FilterGroupItem
-              icon={price.icon}
-              name={price.name}
-              href={buildHref('price', price.href)}
-              key={price.name}
+              icon={pay.icon}
+              name={pay.name}
+              href={buildHref('paymentMode', pay.href)}
+              key={pay.name}
             />
           ))}
         </FilterGroup>
-        <FilterGroup label="When" open>
-          {WhenFilters.map((when) => (
+        <FilterGroup label="Release status" open>
+          {ReleaseFilters.map((status) => (
             <FilterGroupItem
-              icon={when.icon}
-              name={when.name}
-              href={buildHref('when', when.href)}
-              key={when.name}
+              icon={status.icon}
+              name={status.name}
+              href={buildHref('releaseStatus', status.href)}
+              key={status.name}
             />
           ))}
         </FilterGroup>
