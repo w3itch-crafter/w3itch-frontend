@@ -1,17 +1,25 @@
 import { TokenInfo } from '@uniswap/token-lists'
+import { useLocalStorageState } from 'ahooks'
 import axios from 'axios'
 import { AxiosResponse } from 'axios'
 import { DEFAULT_LIST_OF_LISTS } from 'constants/index'
 import { TokenList } from 'hooks'
 import { isEqual, uniqWith } from 'lodash'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { Tokens } from 'types'
+
+const KEY_TOKEN_LIST = 'W3ITCH_TOKEN_LIST'
 
 export function useTokens(
   overrideChainId: number,
   tags?: string[]
 ): TokenList | undefined {
-  const [tokenList, setTokenList] = useState<TokenList>()
+  const [tokenList, setTokenList] = useLocalStorageState<TokenList>(
+    KEY_TOKEN_LIST,
+    {
+      defaultValue: undefined,
+    }
+  )
   const chainId = overrideChainId
 
   const fetchTokens = useCallback(async () => {
