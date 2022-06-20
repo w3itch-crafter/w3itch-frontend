@@ -9,12 +9,13 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import TextField from '@mui/material/TextField'
 import { TokenInfo } from '@uniswap/token-lists'
-import { useDebounceFn, useVirtualList } from 'ahooks'
+import { useDebounceFn } from 'ahooks'
 import type { SupportedChainId } from 'constants/chains'
 import { isAddress } from 'ethers/lib/utils'
 import { useTokenList } from 'hooks'
 import { isEmpty } from 'lodash'
-import { FC, useEffect, useMemo, useRef, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
+import { FixedSizeList, ListChildComponentProps } from 'react-window'
 import { addressEqual } from 'utils'
 
 import TokenItem from './TokenItem'
@@ -39,6 +40,11 @@ export interface DialogTitleProps {
   onClose: () => void
 }
 
+interface SearchResultProps {
+  readonly tokens: TokenInfo[]
+  selectToken: (token: TokenInfo) => void
+}
+
 const BootstrapDialogTitle = (props: DialogTitleProps) => {
   const { children, onClose, ...other } = props
 
@@ -60,6 +66,30 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
         </IconButton>
       )}
     </DialogTitle>
+  )
+}
+
+/**
+ * Search result list
+ * @param {*} { tokens, selectToken }
+ * @return {*}
+ */
+const SearchResult: FC<SearchResultProps> = ({ tokens, selectToken }) => {
+  return (
+    <List
+      sx={{
+        height: 500,
+        overflow: 'auto',
+        padding: 0,
+      }}
+    >
+      {tokens.map((token, index) => (
+        <ListItem disableGutters key={index}>
+          <TokenItem token={token} selectToken={selectToken} />
+        </ListItem>
+      ))}
+      {isEmpty(tokens) && <NoItem>No search results</NoItem>}
+    </List>
   )
 }
 
@@ -109,14 +139,17 @@ export const TokenList: FC<GameRatingProps> = ({
   }, [search, tokenList])
 
   // Viirtual list
-  const containerRef = useRef(null)
-  const wrapperRef = useRef(null)
-  const [list] = useVirtualList(tokenList?.tokens || [], {
-    containerTarget: containerRef,
-    wrapperTarget: wrapperRef,
-    itemHeight: 60,
-    overscan: 10,
-  })
+  const list = tokenList?.tokens || []
+  // Viirtual render item
+  function renderRow(props: ListChildComponentProps) {
+    const { index, style, data } = props
+
+    return (
+      <ListItem style={style} component="div" disableGutters key={index}>
+        <TokenItem token={data[index]} selectToken={selectToken} />
+      </ListItem>
+    )
+  }
 
   useEffect(() => {
     if (!open) {
@@ -141,40 +174,18 @@ export const TokenList: FC<GameRatingProps> = ({
           />
         </Box>
         {search ? (
-          <List
-            sx={{
-              height: '500px',
-              overflow: 'auto',
-              padding: 0,
-            }}
-          >
-            {searchTokens.map((token, index) => (
-              <ListItem sx={{ padding: 0 }} key={index}>
-                <TokenItem token={token} selectToken={selectToken} />
-              </ListItem>
-            ))}
-            {isEmpty(searchTokens) && <NoItem>No search results</NoItem>}
-          </List>
+          <SearchResult tokens={searchTokens} selectToken={selectToken} />
         ) : (
-          <List
-            sx={{
-              height: '500px',
-              overflow: 'auto',
-              padding: 0,
-            }}
-            ref={containerRef}
+          <FixedSizeList
+            height={500}
+            width={420}
+            itemSize={56}
+            itemData={list}
+            itemCount={list.length}
+            overscanCount={5}
           >
-            <div ref={wrapperRef}>
-              {list.map((ele) => (
-                <div style={{ height: 56 }} key={ele.index}>
-                  <ListItem sx={{ padding: 0 }}>
-                    <TokenItem token={ele.data} selectToken={selectToken} />
-                  </ListItem>
-                </div>
-              ))}
-            </div>
-            {isEmpty(list) && <NoItem>No data</NoItem>}
-          </List>
+            {renderRow}
+          </FixedSizeList>
         )}
       </DialogContent>
     </Dialog>
