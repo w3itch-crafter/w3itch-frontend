@@ -94,7 +94,7 @@ const StyledPagination = styled(Pagination)`
 const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   const router = useRouter()
   const [filterDrawer, setFilterDrawer] = useState<boolean>(false)
-  const { currentPage, totalPages } = pageMeta
+  const { currentPage, totalPages, totalItems } = pageMeta
   const handlePaginationChange = (
     _: React.ChangeEvent<unknown>,
     page: number
@@ -125,7 +125,7 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
             <BrowseHeader>
               <BrowseHeaderTitle>
                 Top Games{tagged}
-                <GameCount> ({games.length} results)</GameCount>
+                <GameCount> ({totalItems} results)</GameCount>
               </BrowseHeaderTitle>
               <Button
                 sx={{ display: { xs: 'flex', md: 'none' } }}
