@@ -1,3 +1,4 @@
+import CookieConsent from 'components/CookieConsent'
 import React, { Fragment } from 'react'
 
 import { Footer } from './footer'
@@ -13,6 +14,7 @@ export function Layout({ children }: LayoutProps) {
       <Navbar />
       <main>{children}</main>
       <Footer />
+      <CookieConsent />
     </Fragment>
   )
 }

@@ -9,6 +9,7 @@
   --w3itch-bg3: #fff0f0;
   --w3itch-bg4: #e5e5e5;
   --w3itch-bg5: #666;
+  --w3itch-bg6: #1b1b1b;
 
   /* border */
   --w3itch-border1: #dadada;
@@ -20,6 +21,7 @@
   --w3itch-text3: #858585;
   --w3itch-text4: #606060;
   --w3itch-text5: #767676;
+  --w3itch-text6: #ddd;
 
   /* commoon */
   --w3itch-btn-color: #ffffff;
@@ -37,6 +39,8 @@
   --w3itch-bg3: rgba(255, 240, 240, 0);
   --w3itch-bg4: rgba(240, 18, 60, 0);
   --w3itch-bg5: rgba(255, 255, 255, 0.1);
+  --w3itch-bg5: rgba(255, 255, 255, 0.1);
+  --w3itch-bg6: #f4f4f4;
 
   /* border */
   --w3itch-border1: rgba(255, 255, 255, 0.1);
@@ -48,6 +52,7 @@
   --w3itch-text3: #7a7a7a;
   --w3itch-text4: #9f9f9f;
   --w3itch-text5: #898989;
+  --w3itch-text6: #222;
 }
 
 body {
