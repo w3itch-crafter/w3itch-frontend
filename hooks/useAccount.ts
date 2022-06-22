@@ -14,6 +14,7 @@ const routeWhiteList = [
   '/game/[id]',
   '/profile/[username]',
   '/jams',
+  '/comment-policy',
 ]
 
 const skipFetchUserPaths = ['/logout']
