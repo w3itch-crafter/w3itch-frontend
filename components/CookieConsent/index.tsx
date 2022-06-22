@@ -25,14 +25,13 @@ const Wrapper = styled.div`
 
 const CookieConsent = () => {
   const [accept, setAccept] = useCookieState(COOKIE_KEY_COOKIE_CONSENT, {
-    defaultValue: 'false',
     // One year
     expires: (() => new Date(+new Date() + 3600 * 1000 * 24 * 365))(),
   })
 
   return (
     <>
-      {accept === 'false' && (
+      {!accept && (
         <Wrapper>
           <Typography variant="h6" gutterBottom>
             Your privacy
