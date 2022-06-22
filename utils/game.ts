@@ -19,7 +19,7 @@ export const calcRating = (rating: number) => parseInt(String(rating / 100))
 
 /**
  * link domain parse
- * @param link
+ * @param url string
  * @returns
  */
 export const linkDomainParser = (url: string): string => {
