@@ -5,7 +5,7 @@ import {
   TextField,
 } from '@mui/material'
 import { useAuthentication } from 'hooks'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { Game, userHostUrl } from 'utils'
 
@@ -13,9 +13,17 @@ const FormProjectURL: React.FC = () => {
   const {
     control,
     formState: { errors },
+    setValue,
   } = useFormContext<Game>()
   const { user } = useAuthentication()
   const profileUrl = userHostUrl(user?.username?.toLowerCase())
+  const handleInputChange = useCallback(
+    (ev: React.ChangeEvent<HTMLInputElement>) => {
+      // @ts-expect-error projectURL can be undefined
+      setValue('projectURL', ev.target.value || undefined)
+    },
+    [setValue]
+  )
 
   return (
     <Controller
@@ -34,6 +42,7 @@ const FormProjectURL: React.FC = () => {
               ),
             }}
             {...field}
+            onChange={handleInputChange}
           />
         </FormControl>
       )}

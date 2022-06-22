@@ -46,6 +46,8 @@ export class Game
   // @IsEnum(ReleaseStatus)
   // releaseStatus: ReleaseStatus
 
+  @Matches(/^[a-zA-Z0-9_-]+$/)
+  @Length(1, 50)
   @IsString()
   @IsOptional()
   projectURL: string
