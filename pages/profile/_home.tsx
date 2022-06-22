@@ -56,20 +56,36 @@ const criterias = providers.map((provider) => ({
 
 const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
   const Container = styled.div`
-    max-width: 1000px;
-    margin: 0 auto;
-    margin-bottom: 40px;
-    padding: 0 20px;
+    font-family: 'Lucida Console', Monaco, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    @media screen and (min-width: 902px) {
+      box-shadow: 0 0 1em black;
+      margin: 4em;
+      padding: 2.5em;
+    }
+    @media screen and (max-width: 901px) {
+      flex-direction: column;
+      mergin: 0;
+      padding: 0;
+    }
 
     & h1 {
-      font-size: 48px;
-      margin: 40px 0 5px 0;
+      font-size: 3em;
     }
   `
   const ProfileColumn = styled.section`
-    margin-bottom: 20px;
+    margin: 0 1.1em;
     line-height: 1.5;
-    font-size: 22px;
+    font-size: 1em;
+  `
+  const TextOverflow = styled.a`
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 50vw;
   `
   const GameColumn = styled.section`
     width: 100%;
@@ -166,9 +182,12 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
               <ul>
                 {user.accounts?.map((x) => (
                   <li key={x.id}>
-                    <a rel="me" href={getProfileURL(x.platform, x.accountId)}>
+                    <TextOverflow
+                      rel="me"
+                      href={getProfileURL(x.platform, x.accountId)}
+                    >
                       {x.platform}: @{x.accountId}
-                    </a>
+                    </TextOverflow>
                   </li>
                 ))}
               </ul>
