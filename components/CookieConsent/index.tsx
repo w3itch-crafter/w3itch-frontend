@@ -3,6 +3,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useCookieState } from 'ahooks'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { cookieConsentDomain } from 'utils'
 
 const COOKIE_KEY_COOKIE_CONSENT = 'W3ITCH_COOKIE_CONSENT'
@@ -24,14 +25,22 @@ const Wrapper = styled.div`
 `
 
 const CookieConsent = () => {
+  const [flag, setFlag] = useState<boolean>(false)
   const [accept, setAccept] = useCookieState(COOKIE_KEY_COOKIE_CONSENT, {
     // One year
     expires: (() => new Date(+new Date() + 3600 * 1000 * 24 * 365))(),
   })
 
+  useEffect(() => {
+    // Waiting for automatic processing of cookie values
+    setTimeout(() => {
+      setFlag(true)
+    }, 3000)
+  }, [])
+
   return (
     <>
-      {!accept && (
+      {!accept && flag && (
         <Wrapper>
           <Typography variant="h6" gutterBottom>
             Your privacy
