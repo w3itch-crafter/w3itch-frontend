@@ -175,3 +175,14 @@ export async function deleteGameProject(id: number) {
     Api.GameProjectDeleteResponse | BackendErrorResponse
   >(`/game-projects/${id}`, { validateStatus: () => true })
 }
+
+export async function getGameIdByProjectURL(
+  username: string,
+  projectURL: string
+) {
+  const params = { username, projectURL }
+  return await backend.get<{ id: number }>(
+    '/game-projects//get-id-by-projecturl',
+    { params }
+  )
+}
