@@ -3,6 +3,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useCookieState } from 'ahooks'
 import Link from 'next/link'
+import { cookieConsentDomain } from 'utils'
 
 const COOKIE_KEY_COOKIE_CONSENT = 'W3ITCH_COOKIE_CONSENT'
 
@@ -45,7 +46,11 @@ const CookieConsent = () => {
             size="small"
             variant="contained"
             sx={{ mt: 2 }}
-            onClick={() => setAccept('true')}
+            onClick={() =>
+              setAccept('true', {
+                domain: cookieConsentDomain(window.location.href),
+              })
+            }
           >
             Accept all cookies
           </Button>

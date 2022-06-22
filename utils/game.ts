@@ -1,6 +1,6 @@
 import { getGames } from 'api'
 import { nanoid } from 'nanoid'
-import { fromUrl, parseDomain } from 'parse-domain'
+import { fromUrl, parseDomain, ParseResultType } from 'parse-domain'
 import { toUnicode } from 'punycode'
 import { GameEntity } from 'types'
 import { GameEngine } from 'types/enum'
@@ -22,15 +22,19 @@ export const calcRating = (rating: number) => parseInt(String(rating / 100))
  * @param link
  * @returns
  */
-export const linkDomainParser = (link: string): string => {
+export const linkDomainParser = (url: string): string => {
+  const defaultValue = 'Links'
   try {
-    // @TODO type fix
-    // @ts-expect-error: Unreachable code error
-    const { domain } = parseDomain(fromUrl(link))
-    return toUnicode(domain)
+    const parseResult = parseDomain(fromUrl(url))
+    if (parseResult.type === ParseResultType.Listed) {
+      const { domain } = parseResult
+      return domain ? toUnicode(domain) : defaultValue
+    } else {
+      return defaultValue
+    }
   } catch (error) {
     console.error(error)
-    return 'Links'
+    return defaultValue
   }
 }
 
