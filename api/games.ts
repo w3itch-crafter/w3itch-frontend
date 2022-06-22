@@ -182,7 +182,7 @@ export async function getGameIdByProjectURL(
 ) {
   const params = { username, projectURL }
   return await backend.get<{ id: number }>(
-    '/game-projects//get-id-by-projecturl',
+    '/game-projects/get-id-by-projecturl',
     { params }
   )
 }
