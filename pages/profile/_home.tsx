@@ -60,25 +60,45 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     @media screen and (min-width: 902px) {
       box-shadow: 0 0 1em black;
       margin: 4em;
       padding: 2.5em;
-    }
-    @media screen and (max-width: 901px) {
-      flex-direction: column;
-      mergin: 0;
-      padding: 0;
     }
 
     & h1 {
       font-size: 3em;
     }
   `
+  const MainInfo = styled.div`
+    @media screen and (max-width: 901px) {
+      flex-direction: column;
+      mergin: 0;
+      padding: 0;
+    }
+  `
   const ProfileColumn = styled.section`
     margin: 0 1.1em;
     line-height: 1.5;
     font-size: 1em;
+  `
+  const MagicScore = styled.div`
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+
+    div {
+      align-items: center;
+      padding: 0 0.6em;
+      display: flex;
+
+      span {
+        margin-left: 0.2em;
+      }
+    }
   `
   const TextOverflow = styled.a`
     display: block;
@@ -88,11 +108,11 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
     max-width: 50vw;
   `
   const GameColumn = styled.section`
-    width: 100%;
     display: flex;
     flex-wrap: wrap;
     gap: 40px 20px;
-
+    flex-direction: column;
+    margin: 1em;
     font-size: 16px;
     width: 100%;
     display: grid;
@@ -175,48 +195,60 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
       </Head>
       <Layout wildcard={wildcard}>
         <Container>
-          <h1>{userInfoHeader}</h1>
-          <ProfileColumn>
-            <LinkGroup href={profileUrl} name={userInfoHeader} icon="globe" />
-            {user?.accounts && user?.accounts.length > 0 && (
-              <ul>
-                {user.accounts?.map((x) => (
-                  <li key={x.id}>
-                    <TextOverflow
-                      rel="me"
-                      href={getProfileURL(x.platform, x.accountId)}
-                    >
-                      {x.platform}: @{x.accountId}
-                    </TextOverflow>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </ProfileColumn>
-          <section>
-            <span style={{ fontWeight: 'bold' }}>Magic Point:</span>{' '}
-            <span>{magicPoint}</span>
-            {(passportScore ?? 0) > 0 && (
-              <div>
-                <Image
-                  src="/icons/gitcoin-passport-logo.svg"
-                  alt="GitCoin Passport Logo"
-                  height={16}
-                />{' '}
-                +{passportScore}
-              </div>
-            )}
-            {platforms.includes('github') && (
-              <div>
-                <GitHubIcon size={16} /> +1
-              </div>
-            )}
-            {platforms.includes('discord') && (
-              <div>
-                <DiscordIcon size={16} /> +1
-              </div>
-            )}
-          </section>
+          <MainInfo>
+            <h1>{userInfoHeader}</h1>
+            <ProfileColumn>
+              <LinkGroup href={profileUrl} name={userInfoHeader} icon="globe" />
+              {user?.accounts && user?.accounts.length > 0 && (
+                <ul>
+                  {user.accounts?.map((x) => (
+                    <li key={x.id}>
+                      <TextOverflow
+                        rel="me"
+                        href={getProfileURL(x.platform, x.accountId)}
+                      >
+                        {(() => {
+                          if (x.platform === 'discord')
+                            return <DiscordIcon size={16} />
+                          if (x.platform === 'github')
+                            return <GitHubIcon size={16} />
+                          if (x.platform === 'metamask')
+                            return <span>MetaMask</span>
+                        })()}{' '}
+                        : @{x.accountId}
+                      </TextOverflow>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </ProfileColumn>
+            <section>
+              <span style={{ fontWeight: 'bold' }}>Magic Point:</span>{' '}
+              <span>{magicPoint}</span>
+              {(passportScore ?? 0) > 0 && (
+                <div>
+                  <Image
+                    src="/icons/gitcoin-passport-logo.svg"
+                    alt="GitCoin Passport Logo"
+                    height={16}
+                  />{' '}
+                  +{passportScore}
+                </div>
+              )}
+              <MagicScore>
+                {platforms.includes('github') && (
+                  <div>
+                    <GitHubIcon size={16} /> <span>+1</span>
+                  </div>
+                )}
+                {platforms.includes('discord') && (
+                  <div>
+                    <DiscordIcon size={16} /> <span>+1</span>
+                  </div>
+                )}
+              </MagicScore>
+            </section>
+          </MainInfo>
           <GameColumn>
             {games.map((game, index) => (
               <GameCell
