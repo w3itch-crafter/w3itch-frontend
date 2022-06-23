@@ -11,12 +11,12 @@ import Cover from 'components/Cover'
 import Navigation from 'components/Dashboard/Navigation'
 import { AuthenticationContext } from 'context'
 import { kinds } from 'data'
+import { useTopCenterSnackbar } from 'hooks'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useSnackbar } from 'notistack'
 import { FC, Fragment, useCallback, useContext, useEffect } from 'react'
 import { Dispatch, SetStateAction, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
@@ -73,7 +73,7 @@ const HasGameProject: FC<HasGameProjectProps> = ({
     text-decoration: underline;
   `
   const router = useRouter()
-  const { enqueueSnackbar } = useSnackbar()
+  const showSnackbar = useTopCenterSnackbar()
 
   const handleDeleteGame = useCallback(
     async (id: number) => {
@@ -85,20 +85,14 @@ const HasGameProject: FC<HasGameProjectProps> = ({
       setPendingdeleteID((list) => list.concat(id))
       const res = await deleteGameProject(id)
       if (res.status === 401) {
-        enqueueSnackbar(res.data.message, {
-          anchorOrigin: { vertical: 'top', horizontal: 'center' },
-          variant: 'error',
-        })
+        showSnackbar(res.data.message, 'error')
         return setTimeout(() => router.replace('/login'), 1500)
       }
       deleteAlgoliaGame(id)
-      enqueueSnackbar('Game deleted', {
-        anchorOrigin: { vertical: 'top', horizontal: 'center' },
-        variant: 'success',
-      })
+      showSnackbar('Game deleted', 'success')
       return refreshCallback()
     },
-    [enqueueSnackbar, router]
+    [loadingDisableCallback, refreshCallback, router, showSnackbar]
   )
   useEffect(() => {
     if (!refreshing) {
