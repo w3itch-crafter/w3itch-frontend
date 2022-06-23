@@ -31,7 +31,7 @@ module.exports = {
     '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
   },
   transformIgnorePatterns: [
-    '!node_modules/',
+    '/node_modules/(?!parse-domain|is-ip|ip-regex|uuid)', // SyntaxError: Unexpected token 'export'
     '^.+\\.module\\.(css|sass|scss)$',
   ],
   setupFiles: [`<rootDir>/jest-shim.js`],
