@@ -1,7 +1,12 @@
 import type { NextPage } from 'next'
+import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import ReactMarkdown from 'react-markdown'
+
+const RenderMarkdown = dynamic(
+  () => import('components/RenderMarkdown/index'),
+  { ssr: false }
+)
 
 const MD_EN = `
 # Privacy Policy
@@ -63,16 +68,9 @@ const CommentPolicy: NextPage = () => (
   <>
     <Head>
       <title>Privacy Policy - w3itch.io</title>
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/4.0.0/github-markdown.min.css"
-      />
     </Head>
-    <div
-      className="markdown-body"
-      style={{ maxWidth: 840, margin: '0 auto', padding: '40px 20px' }}
-    >
-      <ReactMarkdown>{MD_EN}</ReactMarkdown>
+    <div style={{ maxWidth: 840, margin: '0 auto', padding: '40px 20px' }}>
+      <RenderMarkdown md={MD_EN} />
     </div>
   </>
 )
