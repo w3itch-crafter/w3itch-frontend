@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import CloseIcon from '@mui/icons-material/Close'
 import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -8,12 +9,16 @@ import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import TextField from '@mui/material/TextField'
+import { TokenInfo } from '@uniswap/token-lists'
+import { useDebounceFn } from 'ahooks'
 import type { SupportedChainId } from 'constants/chains'
-import { getAddress, isAddress } from 'ethers/lib/utils'
-import useTokensList from 'hooks/useTokensList'
+import { isAddress } from 'ethers/lib/utils'
+import { useTokens } from 'hooks'
+import { useERC20Multicall } from 'hooks/useERC20Multicall'
 import { isEmpty } from 'lodash'
-import { FC, useCallback, useEffect, useState } from 'react'
-import { Token } from 'types'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FixedSizeList, ListChildComponentProps } from 'react-window'
+import { addressEqual } from 'utils'
 
 import TokenItem from './TokenItem'
 
@@ -28,7 +33,7 @@ export interface GameRatingProps {
   readonly open: boolean
   readonly chainId: SupportedChainId
   setOpen: (value: boolean) => void
-  selectToken: (token: Token) => void
+  selectToken: (token: TokenInfo) => void
 }
 
 export interface DialogTitleProps {
@@ -37,13 +42,24 @@ export interface DialogTitleProps {
   onClose: () => void
 }
 
+interface SearchResultProps {
+  readonly tokens: TokenInfo[]
+  readonly loading: boolean
+  selectToken: (token: TokenInfo) => void
+}
+
+interface TokenVirtualListProps {
+  readonly tokens: TokenInfo[]
+  selectToken: (token: TokenInfo) => void
+}
+
 const BootstrapDialogTitle = (props: DialogTitleProps) => {
   const { children, onClose, ...other } = props
 
   return (
     <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
       {children}
-      {onClose ? (
+      {onClose && (
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -56,8 +72,76 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
         >
           <CloseIcon />
         </IconButton>
-      ) : null}
+      )}
     </DialogTitle>
+  )
+}
+
+/**
+ * Token search result list
+ * @param {*} { tokens, selectToken }
+ * @return {*}
+ */
+const SearchResult: FC<SearchResultProps> = ({
+  tokens,
+  loading,
+  selectToken,
+}) => {
+  return (
+    <List
+      sx={{
+        height: 500,
+        overflow: 'auto',
+        padding: 0,
+      }}
+    >
+      {tokens.map((token, index) => (
+        <ListItem disableGutters key={index}>
+          <TokenItem token={token} selectToken={selectToken} />
+        </ListItem>
+      ))}
+      {loading ? (
+        <Box sx={{ display: 'block', textAlign: 'center', margin: '20px 0' }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>{isEmpty(tokens) && <NoItem>No search results</NoItem>}</>
+      )}
+    </List>
+  )
+}
+
+/**
+ * Token virtual list
+ * @param {*} { tokens, selectToken }
+ * @return {*}
+ */
+const TokenVirtualList: FC<TokenVirtualListProps> = ({
+  tokens,
+  selectToken,
+}) => {
+  // Viirtual render item
+  function renderRow(props: ListChildComponentProps) {
+    const { index, style, data } = props
+
+    return (
+      <ListItem style={style} component="div" disableGutters key={index}>
+        <TokenItem token={data[index]} selectToken={selectToken} />
+      </ListItem>
+    )
+  }
+
+  return (
+    <FixedSizeList
+      height={500}
+      width={420}
+      itemSize={56}
+      itemData={tokens}
+      itemCount={tokens.length}
+      overscanCount={5}
+    >
+      {renderRow}
+    </FixedSizeList>
   )
 }
 
@@ -67,27 +151,104 @@ export const TokenList: FC<GameRatingProps> = ({
   chainId,
   selectToken,
 }) => {
-  // const { enqueueSnackbar } = useSnackbar()
-  const [searchAddress, setSearchAddress] = useState('')
-  const { tokens: tokensList } = useTokensList({
-    chainId: chainId,
-    searchTokenAddress: searchAddress,
-  })
+  const [search, setSearch] = useState('')
+  const tokenList = useTokens(chainId)
+  const { fetchTokensAddress } = useERC20Multicall()
+  // console.log('tokenList', tokenList)
+  const [searchAddressToken, setSearchAddressToken] = useState<TokenInfo>()
+  const [searchAddressTokenLoading, setSearchAddressTokenLoading] =
+    useState<boolean>(false)
 
-  const handleAddressChange = useCallback((address: string) => {
-    console.log('address', address)
-    if (isAddress(address)) {
-      console.log('aaddress', address, getAddress(address))
+  // Fetch token by address
+  const fetchTokenByAddress = useCallback(
+    async (address: string, chainId: number) => {
+      try {
+        setSearchAddressTokenLoading(true)
+        const tokensResponse = await fetchTokensAddress([address], chainId)
+        // console.log('tokensResponse', tokensResponse)
+        if (tokensResponse) {
+          const token = tokensResponse[0]
+          if (token) {
+            setSearchAddressToken({
+              chainId: chainId,
+              address: token.address,
+              name: token.data.name,
+              symbol: token.data.symbol,
+              decimals: token.data.decimals,
+              logoURI: '',
+            })
+          }
+        } else {
+          setSearchAddressToken(undefined)
+        }
+      } catch (err) {
+        console.error(err)
+        setSearchAddressToken(undefined)
+      } finally {
+        setSearchAddressTokenLoading(false)
+      }
+    },
+    [fetchTokensAddress]
+  )
 
-      setSearchAddress(getAddress(address))
-    } else {
-      setSearchAddress('')
+  // Handle search change
+  const { run: handleSearchChange } = useDebounceFn(
+    (val: string) => {
+      // console.log('val', val)
+      if (isAddress(val)) {
+        fetchTokenByAddress(val, chainId)
+      } else {
+        // Clear search address result
+        setSearchAddressToken(undefined)
+      }
+      setSearch(val)
+    },
+    { wait: 500 }
+  )
+
+  // Returns results containing the search
+  const searchTokens = useMemo(() => {
+    if (!search) {
+      return []
     }
-  }, [])
+    return (
+      tokenList?.tokens.filter((token) => {
+        let addressEqualResult = false
+
+        if (isAddress(search)) {
+          try {
+            addressEqualResult = addressEqual(token.address, search)
+          } catch (error) {
+            console.log(error)
+          }
+        }
+
+        return (
+          addressEqualResult ||
+          token.symbol.toLowerCase().includes(search.toLowerCase()) ||
+          token.name.toLowerCase().includes(search.toLowerCase())
+        )
+      }) || []
+    )
+  }, [search, tokenList])
+
+  // Search token result list
+  const searchResultList = useMemo(
+    () =>
+      !isEmpty(searchTokens)
+        ? searchTokens
+        : searchAddressToken
+        ? [searchAddressToken]
+        : [],
+    [searchTokens, searchAddressToken]
+  )
+
+  // Viirtual list
+  const list = tokenList?.tokens || []
 
   useEffect(() => {
     if (!open) {
-      setSearchAddress('')
+      setSearch('')
     }
   }, [open])
 
@@ -100,37 +261,22 @@ export const TokenList: FC<GameRatingProps> = ({
         Select Token
       </BootstrapDialogTitle>
       <DialogContent dividers sx={{ padding: 0, width: '420px' }}>
-        <Box
-          p="20px"
-          sx={{
-            borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-          }}
-        >
+        <Box p="20px" sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}>
           <TextField
             placeholder="Search address"
             fullWidth
-            onChange={(event) => handleAddressChange(event.target.value)}
+            onChange={(event) => handleSearchChange(event.target.value)}
           />
         </Box>
-        <List
-          sx={{
-            height: '500px',
-            overflow: 'auto',
-            padding: 0,
-          }}
-        >
-          {isEmpty(tokensList) && <NoItem>No data</NoItem>}
-          {tokensList.map((token) => (
-            <ListItem
-              key={token.address}
-              sx={{
-                padding: 0,
-              }}
-            >
-              <TokenItem token={token} selectToken={selectToken} />
-            </ListItem>
-          ))}
-        </List>
+        {search ? (
+          <SearchResult
+            tokens={searchResultList}
+            loading={searchAddressTokenLoading}
+            selectToken={selectToken}
+          />
+        ) : (
+          <TokenVirtualList tokens={list} selectToken={selectToken} />
+        )}
       </DialogContent>
     </Dialog>
   )

@@ -2,8 +2,8 @@ import styled from '@emotion/styled'
 import Box from '@mui/material/Box'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import ListItemButton from '@mui/material/ListItemButton'
+import { TokenInfo } from '@uniswap/token-lists'
 import { FC } from 'react'
-import { Token } from 'types'
 
 import TokenLogo from '../TokenLogo'
 
@@ -19,8 +19,8 @@ export const TokenName = styled.div`
 `
 
 interface TokenItem {
-  readonly token: Token
-  selectToken: (token: Token) => void
+  readonly token: TokenInfo
+  selectToken: (token: TokenInfo) => void
 }
 
 const TokenItem: FC<TokenItem> = ({ token, selectToken }) => {
@@ -35,7 +35,7 @@ const TokenItem: FC<TokenItem> = ({ token, selectToken }) => {
       }}
     >
       <ListItemAvatar sx={{ minWidth: 24, height: 24 }}>
-        <TokenLogo src={token.logoURI} symbol={token.symbol} />
+        <TokenLogo src={token?.logoURI} symbol={token.symbol} />
       </ListItemAvatar>
       <Box>
         <TokenSymbol>{token.symbol}</TokenSymbol>

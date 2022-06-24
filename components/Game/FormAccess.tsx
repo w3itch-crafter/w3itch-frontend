@@ -5,6 +5,7 @@ import {
   Radio,
   RadioGroup,
 } from '@mui/material'
+import Link from 'next/link'
 import React from 'react'
 import styles from 'styles/game/new.module.scss'
 
@@ -16,9 +17,9 @@ const FormAccess: React.FC = () => {
       </FormLabel>
       <p className={styles.sub}>
         Use Draft to review your page before making it public.{' '}
-        <a href="/docs/creators/access-control" target="blank">
+        <Link href="/docs/creators/access-control" target="blank">
           Learn more about access modes
-        </a>
+        </Link>
       </p>
       <RadioGroup
         aria-labelledby="demo-radio-buttons-group-label"

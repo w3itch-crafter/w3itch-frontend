@@ -1,5 +1,6 @@
 import LoadingButton from '@mui/lab/LoadingButton'
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
+import { TokenInfo } from '@uniswap/token-lists'
 import { useDebounceFn } from 'ahooks'
 import { createGame, gameValidate, saveAlgoliaGame } from 'api/index'
 import { storagesUploadToAWS, updateGame } from 'api/index'
@@ -13,7 +14,6 @@ import {
   useTitle,
   useTopCenterSnackbar,
 } from 'hooks'
-import useTokens from 'hooks/useTokens'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -23,7 +23,7 @@ import { SubmitHandler } from 'react-hook-form'
 import { useFormContext, useWatch } from 'react-hook-form'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
-import { GameEntity, Token } from 'types'
+import { GameEntity } from 'types'
 import { Api } from 'types/Api'
 import { EditorMode, GameEngine, PaymentMode } from 'types/enum'
 import { ProjectClassification, ReleaseStatus } from 'types/enum'
@@ -42,6 +42,7 @@ import FormGenre from './FormGenre'
 import FormHeader from './FormHeader'
 import FormKind from './FormKind'
 import FormPricing from './FormPricing'
+import FormProjectURL from './FormProjectURL'
 import FormReleaseStatus from './FormReleaseStatus'
 import FormSubtitle from './FormSubtitle'
 import FormTags from './FormTags'
@@ -97,8 +98,8 @@ const GameForm: React.FC<GameFormProps> = ({
     useState<SupportedChainId>(WalletSupportedChainIds[0])
   const [currentSelectTokenChainIdFlag, setCurrentSelectTokenChainIdFlag] =
     useState<boolean>(false)
-  const [currentSelectToken, setCurrentSelectToken] = useState<Token>(
-    {} as Token
+  const [currentSelectToken, setCurrentSelectToken] = useState<TokenInfo>(
+    {} as TokenInfo
   )
   const [currentSelectTokenFlag, setCurrentSelectTokenFlag] =
     useState<boolean>(false)
@@ -109,7 +110,6 @@ const GameForm: React.FC<GameFormProps> = ({
   const [currentDonationAddress, setCurrentDonationAddress] =
     useState<string>('')
 
-  const { tokens } = useTokens()
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
   const { initialization, initializationDonation } = useFormInitializationData({
@@ -305,23 +305,18 @@ const GameForm: React.FC<GameFormProps> = ({
         ? await inferProjectType(uploadGameFile)
         : game.kind
     const gameData: Partial<Api.GameProjectDto> = {
+      ...game,
       title: trim(game.title),
       subtitle: trim(game.subtitle),
-      gameName: trim(game.gameName).replaceAll(' ', '_'),
       classification: ProjectClassification.GAMES,
       kind,
       releaseStatus: ReleaseStatus.RELEASED,
-      screenshots: allImages.screenshots,
-      cover: allImages.cover || defaultCoverLinks.get(kind),
-      tags: game.tags,
-      appStoreLinks: game.appStoreLinks,
-      description: trim(description),
-      community: game.community,
-      genre: game.genre,
-      charset: game.charset,
-      paymentMode: game.paymentMode,
       prices,
+      gameName: trim(game.gameName).replaceAll(' ', '_'),
       donationAddress: currentDonationAddress,
+      description: trim(description),
+      cover: allImages.cover || defaultCoverLinks.get(kind),
+      screenshots: allImages.screenshots,
     }
 
     // Remove donation address on disable payment
@@ -437,7 +432,6 @@ const GameForm: React.FC<GameFormProps> = ({
       currentSelectTokenFlag,
       currentSelectTokenAmountFlag,
       currentSelectTokenAmount,
-      tokens,
       setCurrentSelectTokenChainId,
       setCurrentSelectTokenChainIdFlag,
       setCurrentSelectToken,
@@ -457,7 +451,6 @@ const GameForm: React.FC<GameFormProps> = ({
     currentSelectTokenFlag,
     currentSelectTokenAmountFlag,
     currentSelectTokenAmount,
-    tokens,
     currentDonationAddress,
     initialization,
     initializationDonation,
@@ -493,6 +486,9 @@ const GameForm: React.FC<GameFormProps> = ({
                       <FormSubtitle />
                     </div>
                     <div className={styles.input_row}>
+                      <FormProjectURL />
+                    </div>
+                    <div className={styles.input_row}>
                       <FormClassification />
                     </div>
                     <div className={styles.input_row}>
@@ -501,7 +497,6 @@ const GameForm: React.FC<GameFormProps> = ({
                     <div className={styles.input_row}>
                       <FormReleaseStatus />
                     </div>
-
                     <div className={styles.input_row}>
                       <FormPricing
                         currentDonationAddress={currentDonationAddress}
@@ -516,11 +511,10 @@ const GameForm: React.FC<GameFormProps> = ({
                         setCurrentSelectTokenChainId={(chainId) => {
                           setCurrentSelectTokenChainId(chainId)
                           // Switch chainId to clear token
-                          setCurrentSelectToken({} as Token)
+                          setCurrentSelectToken({} as TokenInfo)
                         }}
                       />
                     </div>
-
                     <div
                       className={`${styles.input_row} ${styles.simulation_input}`}
                     >
@@ -529,7 +523,6 @@ const GameForm: React.FC<GameFormProps> = ({
                         onGameFileSelect={handleGameFile}
                       />
                     </div>
-
                     {/* minetest doesn't need charset */}
                     {!(watchKind === GameEngine.MINETEST) && (
                       <div className={styles.input_row}>

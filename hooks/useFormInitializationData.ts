@@ -1,10 +1,11 @@
+import { TokenInfo } from '@uniswap/token-lists'
 import { SupportedChainId } from 'constants/chains'
 import { utils } from 'ethers'
 import { useAccountInfo } from 'hooks'
 import { isEmpty } from 'lodash'
 import { Dispatch, SetStateAction, useCallback } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { GameEntity, Token } from 'types'
+import { GameEntity } from 'types'
 import { EditorMode, PaymentMode } from 'types/enum'
 import { Game } from 'utils'
 
@@ -26,7 +27,6 @@ export function useFormInitializationData({
       currentSelectTokenFlag,
       currentSelectTokenAmountFlag,
       currentSelectTokenAmount,
-      tokens,
       setCurrentSelectTokenChainId,
       setCurrentSelectTokenChainIdFlag,
       setCurrentSelectToken,
@@ -36,14 +36,13 @@ export function useFormInitializationData({
     }: {
       editorMode: EditorMode
       currentSelectTokenChainIdFlag: boolean
-      currentSelectToken: Token
+      currentSelectToken: TokenInfo
       currentSelectTokenFlag: boolean
       currentSelectTokenAmountFlag: boolean
       currentSelectTokenAmount: string
-      tokens: Token[]
       setCurrentSelectTokenChainId: Dispatch<SetStateAction<SupportedChainId>>
       setCurrentSelectTokenChainIdFlag: Dispatch<SetStateAction<boolean>>
-      setCurrentSelectToken: Dispatch<SetStateAction<Token>>
+      setCurrentSelectToken: Dispatch<SetStateAction<TokenInfo>>
       setCurrentSelectTokenFlag: Dispatch<SetStateAction<boolean>>
       setCurrentSelectTokenAmount: Dispatch<SetStateAction<string>>
       setCurrentSelectTokenAmountFlag: Dispatch<SetStateAction<boolean>>
@@ -78,12 +77,7 @@ export function useFormInitializationData({
             // totalSupply: BigNumberEthers.from(0),
             // balanceOf: BigNumberEthers.from(0),
             chainId: chainId,
-            logoURI:
-              tokens.find(
-                (token) =>
-                  utils.getAddress(token.address) ===
-                    utils.getAddress(address) && token.chainId === chainId
-              )?.logoURI || '',
+            logoURI: '',
           })
           setCurrentSelectTokenFlag(true)
         }

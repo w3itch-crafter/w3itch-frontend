@@ -1,4 +1,6 @@
 import assert from 'assert'
+import { fromUrl, parseDomain, ParseResultType } from 'parse-domain'
+import { toUnicode } from 'punycode'
 
 export function buildQuerySting(
   key: string,
@@ -65,4 +67,29 @@ export const urlGoogleSearch = (query: string): string => {
  */
 export const urlGame = (gameId: string | number) => {
   return `/game/${gameId}`
+}
+
+/**
+ * Cookie Consent Domain
+ * example: .w3itch.io
+ * @param url string
+ * @returns
+ */
+export const cookieConsentDomain = (url: string) => {
+  const defaultValue = ''
+
+  try {
+    const parseResult = parseDomain(fromUrl(url))
+    if (parseResult.type === ParseResultType.Listed) {
+      const { domain, topLevelDomains } = parseResult
+      return domain && topLevelDomains
+        ? '.' + toUnicode(domain) + '.' + topLevelDomains.join('.')
+        : defaultValue
+    } else {
+      return defaultValue
+    }
+  } catch (error) {
+    console.error(error)
+    return defaultValue
+  }
 }

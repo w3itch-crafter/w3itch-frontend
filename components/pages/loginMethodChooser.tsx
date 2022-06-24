@@ -17,13 +17,6 @@ export function LoginMethodChooser({
     flex-direction: column;
     gap: 20px;
   `
-
-  const GitHubChooseButton = styled(LoginChooseButton)`
-    svg {
-      border-radius: 100%;
-      background-color: #fff;
-    }
-  `
   const method = methodType === 'login' ? 'Sign in' : 'Sign up'
 
   return (
@@ -36,14 +29,14 @@ export function LoginMethodChooser({
         <EthereumIcon size={32} />
         <span>{method} with Ethereum wallets</span>
       </LoginChooseButton>
-      <GitHubChooseButton
+      <LoginChooseButton
         outline
         color="#161614"
         onClick={() => onChoose('github')}
       >
         <GitHubIcon size={32} />
         <span>{method} with GitHub account</span>
-      </GitHubChooseButton>
+      </LoginChooseButton>
       <LoginChooseButton
         outline
         color="#5865F2"
