@@ -42,6 +42,7 @@ import FormGenre from './FormGenre'
 import FormHeader from './FormHeader'
 import FormKind from './FormKind'
 import FormPricing from './FormPricing'
+import FormProjectURL from './FormProjectURL'
 import FormReleaseStatus from './FormReleaseStatus'
 import FormSubtitle from './FormSubtitle'
 import FormTags from './FormTags'
@@ -304,23 +305,18 @@ const GameForm: React.FC<GameFormProps> = ({
         ? await inferProjectType(uploadGameFile)
         : game.kind
     const gameData: Partial<Api.GameProjectDto> = {
+      ...game,
       title: trim(game.title),
       subtitle: trim(game.subtitle),
-      gameName: trim(game.gameName).replaceAll(' ', '_'),
       classification: ProjectClassification.GAMES,
       kind,
       releaseStatus: ReleaseStatus.RELEASED,
-      screenshots: allImages.screenshots,
-      cover: allImages.cover || defaultCoverLinks.get(kind),
-      tags: game.tags,
-      appStoreLinks: game.appStoreLinks,
-      description: trim(description),
-      community: game.community,
-      genre: game.genre,
-      charset: game.charset,
-      paymentMode: game.paymentMode,
       prices,
+      gameName: trim(game.gameName).replaceAll(' ', '_'),
       donationAddress: currentDonationAddress,
+      description: trim(description),
+      cover: allImages.cover || defaultCoverLinks.get(kind),
+      screenshots: allImages.screenshots,
     }
 
     // Remove donation address on disable payment
@@ -490,6 +486,9 @@ const GameForm: React.FC<GameFormProps> = ({
                       <FormSubtitle />
                     </div>
                     <div className={styles.input_row}>
+                      <FormProjectURL />
+                    </div>
+                    <div className={styles.input_row}>
                       <FormClassification />
                     </div>
                     <div className={styles.input_row}>
@@ -498,7 +497,6 @@ const GameForm: React.FC<GameFormProps> = ({
                     <div className={styles.input_row}>
                       <FormReleaseStatus />
                     </div>
-
                     <div className={styles.input_row}>
                       <FormPricing
                         currentDonationAddress={currentDonationAddress}
@@ -517,7 +515,6 @@ const GameForm: React.FC<GameFormProps> = ({
                         }}
                       />
                     </div>
-
                     <div
                       className={`${styles.input_row} ${styles.simulation_input}`}
                     >
@@ -526,7 +523,6 @@ const GameForm: React.FC<GameFormProps> = ({
                         onGameFileSelect={handleGameFile}
                       />
                     </div>
-
                     {/* minetest doesn't need charset */}
                     {!(watchKind === GameEngine.MINETEST) && (
                       <div className={styles.input_row}>
