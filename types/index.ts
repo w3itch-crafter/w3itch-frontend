@@ -1,4 +1,4 @@
-import { SupportedChainId } from 'constants/index'
+import { TokenInfo } from '@uniswap/token-lists'
 import { ethers } from 'ethers'
 import { NextPage } from 'next'
 import React from 'react'
@@ -109,9 +109,12 @@ export declare type GameEntity = BaseEntity & {
   username: string
   /** Game title */
   title: string
-  paymentMode: PaymentMode
   /** Short description or tagline */
   subtitle: string
+  /** Custom project url */
+  projectURL: string
+  /** Project payment mode */
+  paymentMode: PaymentMode
   /** For player */
   gameName: string
   /** Original name */
@@ -133,7 +136,7 @@ export declare type GameEntity = BaseEntity & {
   /** Tokens to be held/paid to play this game */
   prices: PriceEntity[]
   /** Donate wallet address of the creator */
-  donationAddress?: string
+  donationAddress: string
   /** Links to other app stores */
   appStoreLinks: string[]
   /** Game description (markdown) */
@@ -188,6 +191,12 @@ export declare type NavLinks = NavLink[]
 
 export declare type LoginMethod = 'metamask' | 'github' | 'discord'
 
+export declare type SocialPlatform =
+  | 'metamask'
+  | 'github'
+  | 'discord'
+  | 'twitter'
+
 export declare type AccountServiceAction =
   | 'login'
   | 'signup'
@@ -213,15 +222,6 @@ declare global {
   }
 }
 
-export type Token = {
-  chainId: SupportedChainId
-  address: string
-  name: string
-  symbol: string
-  decimals: number
-  logoURI: string
-}
-
 export type Tokens = {
   name: string
   timestamp: Date
@@ -233,10 +233,10 @@ export type Tokens = {
   tags: object
   logoURI: string
   keywords: ['uniswap', 'default']
-  tokens: Token[]
+  tokens: TokenInfo[]
 }
 
-export type TokenDetail = Token & {
+export type TokenDetail = TokenInfo & {
   readonly amount: string
   readonly totalSupply: ethers.BigNumber
   readonly balanceOf: ethers.BigNumber

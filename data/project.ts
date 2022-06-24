@@ -1,5 +1,16 @@
-import { GameEngine, Genre } from 'types/enum'
+import {
+  GameEngine,
+  Genre,
+  ProjectClassification,
+  ReleaseStatus,
+} from 'types/enum'
 import { enumWord } from 'utils'
+
+type ProjectType<T = unknown> = {
+  value: T
+  label: string
+  description: string
+}
 
 export const tags = [
   'horror',
@@ -455,85 +466,80 @@ export const tags = [
   'kinect',
 ]
 
-export const classifications = [
+export const classifications: ProjectType<ProjectClassification>[] = [
   {
-    value: 'GAMES',
+    value: ProjectClassification.GAMES,
     label: 'Games',
     description: 'A piece of software you can play',
   },
   {
-    value: 'game',
-    label: 'Game',
-    description: 'A piece of software you can play',
-  },
-  {
-    value: 'assets',
+    value: ProjectClassification.GAME_ASSETS,
     label: 'Game assets',
     description:
       'Graphics, fonts, music, sounds one may combine into something else',
   },
   {
-    value: 'game_mod',
+    value: ProjectClassification.GAME_MODS,
     label: 'Game mods',
     description: 'An alteration of the content of a game',
   },
   {
-    value: 'physical_game',
+    value: ProjectClassification.PHYSICAL_GAMES,
     label: 'Physical games',
     description:
       'One you can play without devices (e.g. board game, print & play)',
   },
   {
-    value: 'soundtrack',
-    label: 'Soundtracks',
+    value: ProjectClassification.ALBUMS_AND_SOUNDTRACKS,
+    label: 'Albums and soundtracks',
     description: 'A collection of music',
   },
   {
-    value: 'tool',
+    value: ProjectClassification.TOOLS,
     label: 'Tools',
     description: 'A software utility',
   },
   {
-    value: 'comic',
+    value: ProjectClassification.COMICS,
     label: 'Comics',
     description: 'A story told through drawings',
   },
   {
-    value: 'book',
+    value: ProjectClassification.BOOKS,
     label: 'Books',
     description: 'A story told through words',
   },
   {
-    value: 'Other',
+    value: ProjectClassification.OTHER,
     label: 'Other',
-    description: '',
+    description: 'Other classification',
   },
 ]
 
-const kindOfProjects = [
+const kindOfProjects: ProjectType<GameEngine>[] = [
   {
-    value: 'auto',
+    value: GameEngine.DEFAULT,
     label: 'Auto',
     description: 'Automatic detection project type',
   },
   {
-    value: 'rm2k3e',
+    value: GameEngine.RM2K3E,
     label: 'RPG MAKER',
     description: 'RPG MAKER 2000/2003',
   },
   {
-    value: 'mt',
+    value: GameEngine.MINETEST,
     label: 'Minetest',
     description: 'Minetest World',
   },
   {
-    value: 'html',
+    value: GameEngine.HTML,
     label: 'HTML',
     description:
       'You have a ZIP or HTML file that will be played in the browser',
   },
   {
-    value: 'downloadable',
+    value: GameEngine.DOWNLOADABLE,
     label: 'Downloadable',
     description: 'You only have files to be downloaded',
   },
@@ -543,29 +549,29 @@ export const kinds = kindOfProjects.filter((engine) =>
   kindValues.includes(engine.value as GameEngine)
 )
 
-export const releaseStatus = [
+export const releaseStatus: ProjectType<ReleaseStatus>[] = [
   {
-    value: 'RELEASED',
+    value: ReleaseStatus.RELEASED,
     label: 'Released',
     description: 'Project is complete, but might receive some updates',
   },
   {
-    value: 'IN_DEVELOPMENT',
+    value: ReleaseStatus.IN_DEVELOPMENT,
     label: 'In development',
     description: 'Project is in active development (or in early access)',
   },
   {
-    value: 'ON_HOLD',
+    value: ReleaseStatus.ON_HOLD,
     label: 'On hold',
     description: 'Development is paused for now',
   },
   {
-    value: 'CANCELLED',
+    value: ReleaseStatus.CANCELLED,
     label: 'Canceled',
     description: 'Development has stopped indefinitely',
   },
   {
-    value: 'PROTOTYPE',
+    value: ReleaseStatus.PROTOTYPE,
     label: 'Prototype',
     description:
       'An early prototype for testing an idea out, fate of project unknown',

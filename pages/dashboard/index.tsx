@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import { Box } from '@mui/material'
 import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack'
 import { deleteGameProject, getGamesMine } from 'api'
@@ -10,13 +11,13 @@ import Cover from 'components/Cover'
 import Navigation from 'components/Dashboard/Navigation'
 import { AuthenticationContext } from 'context'
 import { kinds } from 'data'
+import { useTopCenterSnackbar } from 'hooks'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
-import Router, { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useSnackbar } from 'notistack'
-import { FC, Fragment, useCallback, useContext } from 'react'
+import { FC, Fragment, useCallback, useContext, useEffect } from 'react'
 import { Dispatch, SetStateAction, useState } from 'react'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/dashboard.module.scss'
@@ -29,6 +30,9 @@ interface HasGameProjectProps {
   meta: PaginationMeta<GameEntity>
   page: number
   setPage: Dispatch<SetStateAction<number>>
+  refreshCallback: () => void
+  refreshing: boolean
+  loadingDisableCallback: (disabled: boolean) => void
 }
 
 const EmptyGameProject = () => {
@@ -53,45 +57,48 @@ const EmptyGameProject = () => {
     </div>
   )
 }
-
 const HasGameProject: FC<HasGameProjectProps> = ({
   items,
   meta,
   page,
   setPage,
+  refreshCallback,
+  refreshing,
+  loadingDisableCallback,
 }) => {
+  const [pendingdeleteID, setPendingdeleteID] = useState<number[]>([])
   const DeleteGame = styled.a`
     margin-right: 8px;
     cursor: pointer;
     text-decoration: underline;
   `
   const router = useRouter()
-  const { enqueueSnackbar } = useSnackbar()
+  const showSnackbar = useTopCenterSnackbar()
+
   const handleDeleteGame = useCallback(
     async (id: number) => {
       const confirm = window.confirm(
         'Are you sure you want to delete this game?'
       )
       if (!confirm) return
+      loadingDisableCallback(true)
+      setPendingdeleteID((list) => list.concat(id))
       const res = await deleteGameProject(id)
       if (res.status === 401) {
-        enqueueSnackbar(res.data.message, {
-          anchorOrigin: { vertical: 'top', horizontal: 'center' },
-          variant: 'error',
-        })
+        showSnackbar(res.data.message, 'error')
         return setTimeout(() => router.replace('/login'), 1500)
       }
-
       deleteAlgoliaGame(id)
-
-      enqueueSnackbar('Game deleted', {
-        anchorOrigin: { vertical: 'top', horizontal: 'center' },
-        variant: 'success',
-      })
-      return Router.reload()
+      showSnackbar('Game deleted', 'success')
+      return refreshCallback()
     },
-    [enqueueSnackbar, router]
+    [loadingDisableCallback, refreshCallback, router, showSnackbar]
   )
+  useEffect(() => {
+    if (!refreshing) {
+      setTimeout(() => setPendingdeleteID([]), 1000)
+    }
+  }, [loadingDisableCallback, refreshing])
 
   // Handle kind
   const handleKind = useCallback((game: GameEntity) => {
@@ -103,48 +110,52 @@ const HasGameProject: FC<HasGameProjectProps> = ({
     <div className={styles.dashboard_columns}>
       <div className={styles.left_col}>
         <div className={styles.game_list}>
-          {items.map((item) => (
-            <div className={styles.game_row} key={item.id}>
-              <Link href={urlGame(item.id)}>
-                <a className={styles.cover_link}>
-                  <Cover src={item.cover} />
-                </a>
-              </Link>
-              <div className={styles.game_details}>
-                <div dir="auto" className={styles.game_title}>
-                  <Link href={urlGame(item.id)}>
-                    <a className={styles.game_link}>{item.title}</a>
-                  </Link>
-                </div>
-                <div className={styles.game_links}>
-                  <Stack direction="row" spacing={1}>
-                    <Link href={`game/edit/${item.id}`}>
-                      <a>Edit</a>
+          {items
+            .filter((item) => !pendingdeleteID.includes(item.id))
+            .map((item) => (
+              <div className={styles.game_row} key={item.id}>
+                <Link href={urlGame(item.id)}>
+                  <a className={styles.cover_link}>
+                    <Cover src={item.cover} />
+                  </a>
+                </Link>
+                <div className={styles.game_details}>
+                  <div dir="auto" className={styles.game_title}>
+                    <Link href={urlGame(item.id)}>
+                      <a className={styles.game_link}>{item.title}</a>
                     </Link>
-                    <DeleteGame onClick={() => handleDeleteGame(item.id)}>
-                      Delete
-                    </DeleteGame>
-                  </Stack>
-                  <Stack direction="row" spacing={1}>
-                    <div className={styles.publish_status}>
-                      <span className={`${styles.tag_bubble} ${styles.grey}`}>
-                        <Link href={urlGame(item.id)}>
-                          <a>{handleKind(item)}</a>
-                        </Link>
-                      </span>
-                    </div>
-                    <div className={styles.publish_status}>
-                      <span className={`${styles.tag_bubble} ${styles.green}`}>
-                        <Link href={urlGame(item.id)}>
-                          <a>Published</a>
-                        </Link>
-                      </span>
-                    </div>
-                  </Stack>
+                  </div>
+                  <div className={styles.game_links}>
+                    <Stack direction="row" spacing={1}>
+                      <Link href={`game/edit/${item.id}`}>
+                        <a>Edit</a>
+                      </Link>
+                      <DeleteGame onClick={() => handleDeleteGame(item.id)}>
+                        Delete
+                      </DeleteGame>
+                    </Stack>
+                    <Stack direction="row" spacing={1}>
+                      <div className={styles.publish_status}>
+                        <span className={`${styles.tag_bubble} ${styles.grey}`}>
+                          <Link href={urlGame(item.id)}>
+                            <a>{handleKind(item)}</a>
+                          </Link>
+                        </span>
+                      </div>
+                      <div className={styles.publish_status}>
+                        <span
+                          className={`${styles.tag_bubble} ${styles.green}`}
+                        >
+                          <Link href={urlGame(item.id)}>
+                            <a>Published</a>
+                          </Link>
+                        </span>
+                      </div>
+                    </Stack>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
           <Pagination
             onChange={(event, page) => {
               setPage(page)
@@ -193,20 +204,27 @@ const HasGameProject: FC<HasGameProjectProps> = ({
 }
 
 const Dashboard: NextPage = () => {
+  const [loadingDisabled, setLoadingDisable] = useState(false)
   const [page, setPage] = useState(1)
   const [limit] = useState(5)
   const {
     state: { user },
   } = useContext(AuthenticationContext)
-  const { data, error } = useSWR(
+  const { data, error, isValidating, mutate } = useSWR(
     {
       page,
       limit,
       username: user?.username,
       order: 'DESC',
     },
-    getGamesMine
+    getGamesMine,
+    {
+      dedupingInterval: 2000,
+    }
   )
+  // useEffect(() => {
+  //   mutate()
+  // }, [])
 
   return (
     <Fragment>
@@ -278,19 +296,30 @@ const Dashboard: NextPage = () => {
             </a>
           </div> */}
             <div className={styles.padded}>
-              {!user ||
-              error ||
-              !data ||
-              (!data.meta.totalItems && !data.data.length) ? (
-                <EmptyGameProject />
-              ) : (
-                <HasGameProject
-                  page={page}
-                  setPage={setPage}
-                  meta={data.meta}
-                  items={data.data}
-                />
-              )}
+              {(() => {
+                if (isValidating && !loadingDisabled)
+                  return (
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                      <CircularProgress />
+                    </Box>
+                  )
+                if (data?.meta.totalItems && data?.data.length)
+                  return (
+                    <HasGameProject
+                      loadingDisableCallback={setLoadingDisable}
+                      page={page}
+                      setPage={setPage}
+                      meta={data.meta}
+                      items={data.data}
+                      refreshCallback={() =>
+                        mutate().then(() => setLoadingDisable(false))
+                      }
+                      refreshing={isValidating}
+                    />
+                  )
+                if (error || data?.data.length === 0)
+                  return <EmptyGameProject />
+              })()}
             </div>
           </div>
         </div>

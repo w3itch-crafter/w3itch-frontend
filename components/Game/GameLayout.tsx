@@ -39,6 +39,8 @@ import { Community, PaymentMode } from 'types/enum'
 import { SeoArticleJsonLdImages } from 'utils'
 import { SeoImages } from 'utils'
 
+import EditGame from './EditGame'
+
 const RenderMarkdown = dynamic(
   () => import('components/RenderMarkdown/index'),
   { ssr: false }
@@ -313,6 +315,9 @@ const GameLayout: NextPage<GameProps> = ({
                 {children}
                 <div className={styles.columns}>
                   <div className={`${styles.left_col} ${styles.column}`}>
+                    <div className={styles.row}>
+                      <EditGame gameProject={gameProject} />
+                    </div>
                     <div
                       className={`${styles.formatted_description} ${styles.user_formatted}`}
                     >

@@ -5,12 +5,21 @@ export enum GamesListSortBy {
 
 export enum ProjectClassification {
   GAMES = 'GAMES',
+  GAME_ASSETS = 'GAME_ASSETS',
+  GAME_MODS = 'GAME_MODS',
+  PHYSICAL_GAMES = 'PHYSICAL_GAMES',
+  ALBUMS_AND_SOUNDTRACKS = 'ALBUMS_AND_SOUNDTRACKS',
+  TOOLS = 'TOOLS',
+  COMICS = 'COMICS',
+  BOOKS = 'BOOKS',
+  OTHER = 'OTHER',
 }
 
 export enum GameEngine {
   DEFAULT = 'auto',
   RM2K3E = 'rm2k3e',
   MINETEST = 'mt',
+  HTML = 'html',
   DOWNLOADABLE = 'downloadable',
   HTML = 'html',
 }

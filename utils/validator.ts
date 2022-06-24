@@ -7,8 +7,7 @@ import {
   Length,
   Matches,
 } from 'class-validator'
-// @TODO Property 'message' does not exist on type 'FieldError[]'
-// import { NestedValue } from 'react-hook-form'
+import { Api } from 'types/Api'
 import {
   Community,
   GameEngine,
@@ -17,7 +16,10 @@ import {
   PaymentMode,
 } from 'types/enum'
 
-export class Game {
+export class Game
+  implements
+    Omit<Api.GameProjectDto, 'classification' | 'prices' | 'releaseStatus'>
+{
   @Length(1, 50)
   @IsString()
   @IsNotEmpty()
@@ -43,6 +45,12 @@ export class Game {
 
   // @IsEnum(ReleaseStatus)
   // releaseStatus: ReleaseStatus
+
+  @Matches(/^[a-zA-Z0-9_-]+$/)
+  @Length(1, 50)
+  @IsString()
+  @IsOptional()
+  projectURL: string
 
   @IsEnum(PaymentMode)
   @IsNotEmpty()

@@ -1,21 +1,35 @@
 import styled from '@emotion/styled'
 import { getGamesMine, getUser } from 'api'
-import { IcoMoonIcon } from 'components/icons'
+import {
+  DiscordIcon,
+  GitcoinPassportIcon,
+  GitHubIcon,
+  IcoMoonIcon,
+  MetaMaskIcon,
+  TwitterIcon,
+} from 'components/icons'
 import { Navbar } from 'components/layout'
 import { GameCell } from 'components/pages'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { Fragment, useCallback, useEffect, useState } from 'react'
-import { GameEntity, GameInfo, UserEntity } from 'types'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { PassportScorer } from 'thirdparty/gitcoin-passport/scorer'
+import {
+  AccountEntity,
+  GameEntity,
+  GameInfo,
+  SocialPlatform,
+  UserEntity,
+} from 'types'
 import { urlGame } from 'utils'
 
 declare interface ProfileHomeProps {
   wildcard: string | null
 }
 
-const getProfileURL = (platform: string, username: string) => {
+const getProfileURL = (platform: SocialPlatform, username: string) => {
   let x
   switch (platform) {
     case 'twitter':
@@ -36,6 +50,37 @@ const getProfileURL = (platform: string, username: string) => {
   return x
 }
 
+const getSocialIcon = (platform: SocialPlatform) => {
+  switch (platform) {
+    case 'metamask':
+      return <MetaMaskIcon size={22} />
+    case 'github':
+      return <GitHubIcon size={22} />
+    case 'discord':
+      return <DiscordIcon size={22} />
+    case 'twitter':
+      return <TwitterIcon size={22} />
+    default:
+      throw new Error(`Unknown platform: ${platform}`)
+  }
+}
+
+const providers = [
+  'Google',
+  'Ens',
+  'Poh',
+  'Twitter',
+  'POAP',
+  'Facebook',
+  'Brightid',
+  'Github',
+]
+const criterias = providers.map((provider) => ({
+  provider,
+  issuer: 'did:key:z6MkghvGHLobLEdj1bgRLhS4LPGJAvbMA1tn2zcRyqmYU5LC',
+  score: 1,
+}))
+
 const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
   const Container = styled.div`
     max-width: 1000px;
@@ -49,6 +94,9 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
     }
   `
   const ProfileColumn = styled.section`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     margin-bottom: 20px;
     line-height: 1.5;
     font-size: 22px;
@@ -101,6 +149,19 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
     getUserGames()
   }, [getUserGames, getUserInfo])
 
+  const accounts = useMemo(() => user?.accounts ?? [], [user])
+
+  const SocialInfos = () => (
+    <Fragment>
+      {accounts?.map((account) => {
+        const { id, platform, accountId } = account
+        const href = getProfileURL(platform, accountId)
+        const icon = getSocialIcon(platform)
+        return <LinkGroup key={id} href={href} name={accountId} icon={icon} />
+      })}
+    </Fragment>
+  )
+
   return (
     <Fragment>
       <Head>
@@ -110,19 +171,14 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
         <Container>
           <h1>{userInfoHeader}</h1>
           <ProfileColumn>
-            <LinkGroup href={profileUrl} name={userInfoHeader} icon="globe" />
-            {user?.accounts && user?.accounts.length > 0 && (
-              <ul>
-                {user.accounts?.map((x) => (
-                  <li key={x.id}>
-                    <a rel="me" href={getProfileURL(x.platform, x.accountId)}>
-                      {x.platform}: @{x.accountId}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <LinkGroup
+              href={profileUrl}
+              name={userInfoHeader}
+              icon={<IcoMoonIcon name="globe" />}
+            />
+            <SocialInfos />
           </ProfileColumn>
+          <MagicPoint accounts={accounts} />
           <GameColumn>
             {games.map((game, index) => (
               <GameCell
@@ -142,31 +198,105 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
 
 declare interface LinkGroupProps {
   name: string
-  icon: string
   href: string
+  icon: React.ReactNode
 }
 
 function LinkGroup({ name, icon, href }: LinkGroupProps) {
   const Container = styled.div`
-    display: inline-block;
-    margin-right: 12px;
-
-    & .icon {
-      vertical-align: -2px;
-      margin-right: 5px;
-      opacity: 0.6;
-    }
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 16px;
   `
   const StyledLink = styled.a`
     color: var(--w3itch-primary2);
+    margin-left: 8px;
   `
 
   return (
     <Container>
-      <IcoMoonIcon name={icon} />
-      <Link href={href} passHref>
-        <StyledLink>{name}</StyledLink>
+      {icon}
+      <Link rel="me" href={href} passHref>
+        <StyledLink rel="me">{name}</StyledLink>
       </Link>
+    </Container>
+  )
+}
+
+declare interface MagicPointProps {
+  accounts: AccountEntity[]
+}
+
+function MagicPoint({ accounts }: MagicPointProps) {
+  const Container = styled.section`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    font-size: 22px;
+  `
+  const PointTitle = styled.span`
+    font-weight: bold;
+    margin-right: 16px;
+  `
+  const PointRow = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  `
+  const [passportScore, setPassportScore] = useState<number | null>(null)
+  const platforms = useMemo(
+    () => accounts.map((acc) => acc.platform),
+    [accounts]
+  )
+  const magicPoint = useMemo(() => {
+    if (passportScore === null || accounts.length === 0) {
+      return 0
+    }
+
+    let score = passportScore
+
+    if (platforms.includes('github')) score++
+    if (platforms.includes('discord')) score++
+
+    return score
+  }, [accounts, passportScore, platforms])
+
+  useEffect(() => {
+    const metamask = accounts.find((acc) => acc.platform === 'metamask')
+    if (metamask) {
+      new PassportScorer(criterias).getScore(metamask.accountId).then((res) => {
+        setPassportScore(res)
+      })
+      return
+    }
+
+    setPassportScore(0)
+  }, [accounts, setPassportScore])
+
+  return (
+    <Container>
+      <PointTitle>Magic Point:&nbsp;{magicPoint}</PointTitle>
+      {(passportScore ?? 0) > 0 && (
+        <PointRow>
+          <GitcoinPassportIcon style={{ width: 'auto', height: '22px' }} /> +
+          {passportScore}
+        </PointRow>
+      )}
+      {platforms.includes('github') && (
+        <PointRow>
+          <GitHubIcon size={22} /> +1
+        </PointRow>
+      )}
+      {platforms.includes('discord') && (
+        <PointRow>
+          <DiscordIcon size={22} /> +1
+        </PointRow>
+      )}
     </Container>
   )
 }

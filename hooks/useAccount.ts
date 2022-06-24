@@ -14,11 +14,15 @@ const routeWhiteList = [
   '/game/[id]',
   '/profile/[username]',
   '/jams',
+  '/comment-policy',
 ]
+
+const skipFetchUserPaths = ['/logout']
 
 export function useAuthentication() {
   const router = useRouter()
   const { state, dispatch } = useContext(AuthenticationContext)
+  const isSkipPath = skipFetchUserPaths.includes(router.pathname)
   const fetchUser = useCallback(async () => {
     if (!state.isAuthenticated && !state.isLogout) {
       const user = await getMe()
@@ -32,8 +36,8 @@ export function useAuthentication() {
   }, [dispatch, router, state.isAuthenticated, state.isLogout])
 
   useEffect(() => {
-    fetchUser()
-  }, [fetchUser])
+    if (!isSkipPath) fetchUser()
+  }, [fetchUser, isSkipPath])
 
   return state
 }

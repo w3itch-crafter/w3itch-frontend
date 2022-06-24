@@ -10,10 +10,11 @@ import { logout } from '../api/account'
 const Logout: NextPage = () => {
   const router = useRouter()
   const { dispatch } = useContext(AuthenticationContext)
-  const startLogout = useCallback(async () => {
-    await logout()
-    dispatch({ type: 'LOGOUT' })
-    await router.push('/games')
+  const startLogout = useCallback(() => {
+    logout().then(async () => {
+      dispatch({ type: 'LOGOUT' })
+      await router.push('/games')
+    })
   }, [dispatch, router])
 
   useEffect(() => {
