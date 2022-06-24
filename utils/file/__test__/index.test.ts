@@ -1,4 +1,4 @@
-import { parseFileExtension, parseFilename } from '../../utils/file'
+import { parseFileExtension, parseFilename } from '../index'
 
 describe('Utils file', () => {
   it('parseFilename', () => {
