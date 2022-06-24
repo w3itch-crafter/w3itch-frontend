@@ -6,6 +6,7 @@ export declare interface IconProps {
   size: number
   color?: string
 }
+
 const StyledSvgIcon = styled(SvgIcon)<IconProps>`
   width: ${(p) => p.size}px;
   height: ${(p) => p.size}px;
@@ -239,6 +240,7 @@ export function CloseIcon({ size, ...props }: SvgIconProps & IconProps) {
 export declare interface IcoMoonIconProps {
   name: string
 }
+
 export function IcoMoonIcon({ name }: IcoMoonIconProps) {
   const Icon = styled.span``
 
