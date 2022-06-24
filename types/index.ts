@@ -109,9 +109,12 @@ export declare type GameEntity = BaseEntity & {
   username: string
   /** Game title */
   title: string
-  paymentMode: PaymentMode
   /** Short description or tagline */
   subtitle: string
+  /** Custom project url */
+  projectURL: string
+  /** Project payment mode */
+  paymentMode: PaymentMode
   /** For player */
   gameName: string
   /** Original name */
@@ -133,7 +136,7 @@ export declare type GameEntity = BaseEntity & {
   /** Tokens to be held/paid to play this game */
   prices: PriceEntity[]
   /** Donate wallet address of the creator */
-  donationAddress?: string
+  donationAddress: string
   /** Links to other app stores */
   appStoreLinks: string[]
   /** Game description (markdown) */
