@@ -191,6 +191,12 @@ export declare type NavLinks = NavLink[]
 
 export declare type LoginMethod = 'metamask' | 'github' | 'discord'
 
+export declare type SocialPlatform =
+  | 'metamask'
+  | 'github'
+  | 'discord'
+  | 'twitter'
+
 export declare type AccountServiceAction =
   | 'login'
   | 'signup'
