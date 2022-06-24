@@ -38,13 +38,6 @@ const OAuthContainer = styled.div`
   max-width: 480px;
 `
 
-const GitHubChooseButton = styled(LoginChooseButton)`
-  svg {
-    border-radius: 100%;
-    background-color: #fff;
-  }
-`
-
 const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -187,14 +180,14 @@ const ConnectedAccounts: NextPageWithLayout = () => {
           <EthereumIcon size={32} />
           {renderText('metamask', metamask)}
         </LoginChooseButton>
-        <GitHubChooseButton
+        <LoginChooseButton
           size="small"
           color="#161614"
           onClick={() => handleButtonClick('github')}
         >
           <GitHubIcon size={32} />
           {renderText('github', github)}
-        </GitHubChooseButton>
+        </LoginChooseButton>
         <LoginChooseButton
           size="small"
           color="#5865F2"
