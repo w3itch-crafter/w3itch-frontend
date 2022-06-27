@@ -1,6 +1,8 @@
 import {
   cookieConsentDomain,
   parseUsernameFromHost,
+  urlGame,
+  urlHostnameParse,
   userHostUrl,
 } from '../index'
 
@@ -77,5 +79,21 @@ describe('cookieConsentDomain', () => {
     expect(domain2).toBe('.w3itch-test.vercel.app')
     expect(domain3).toBe('.w3itch.io')
     expect(domain4).toBe('.w3itch.io')
+  })
+})
+
+describe('urlHostnameParse', () => {
+  it('should support url', () => {
+    const result = urlHostnameParse('https://w3itch.io')
+
+    expect(result).toBe('w3itch.io')
+  })
+})
+
+describe('urlGame', () => {
+  it('should support ID', () => {
+    const urlGameId = urlGame('100')
+
+    expect(urlGameId).toBe('/game/100')
   })
 })

@@ -270,13 +270,9 @@ const GameLayout: NextPage<GameProps> = ({
            * An array of images (object) to be used by social media platforms, slack etc as a preview. If multiple supplied you can choose one when sharing. See Examples
            */
           images: SeoImages(
-            gameProject
-              ? ([
-                  gameProject.cover,
-                  gameProject.screenshots,
-                  gameProject.cover,
-                ] as string[])
-              : undefined,
+            [gameProject?.cover, gameProject?.screenshots, gameProject?.cover]
+              .flat(1)
+              .filter((item) => !!item) as string[],
             gameTitle
           ),
         }}
@@ -284,10 +280,11 @@ const GameLayout: NextPage<GameProps> = ({
       <ArticleJsonLd
         url={process.env.NEXT_PUBLIC_URL as string}
         title={gameProject?.title || 'W3itch'}
-        images={SeoArticleJsonLdImages([
-          gameProject?.cover,
-          gameProject?.screenshots,
-        ] as string[])}
+        images={SeoArticleJsonLdImages(
+          [gameProject?.cover, gameProject?.screenshots]
+            .flat(1)
+            .filter((item) => !!item) as string[]
+        )}
         datePublished={gameProject?.createdAt as string}
         dateModified={gameProject?.updatedAt as string}
         // Warning, author url is temporarily not supported
