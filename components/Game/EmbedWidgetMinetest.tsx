@@ -44,7 +44,7 @@ interface Props {
   readonly pricesToken?: TokenDetail
 }
 
-const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
+const EmbedWidgetMinetest: FC<Props> = ({ gameProject, pricesToken }) => {
   const ref = useRef(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [minetestPort, setMinetestPort] = useState<number>()
@@ -187,4 +187,4 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   )
 }
 
-export default EmbedWidget
+export default EmbedWidgetMinetest

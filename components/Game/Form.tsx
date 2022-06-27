@@ -523,8 +523,11 @@ const GameForm: React.FC<GameFormProps> = ({
                         onGameFileSelect={handleGameFile}
                       />
                     </div>
-                    {/* minetest doesn't need charset */}
-                    {!(watchKind === GameEngine.MINETEST) && (
+                    {/* minetest, html doesn't need charset */}
+                    {!(
+                      watchKind === GameEngine.MINETEST ||
+                      watchKind === GameEngine.HTML
+                    ) && (
                       <div className={styles.input_row}>
                         <FormCharset />
                       </div>

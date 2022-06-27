@@ -3,7 +3,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import LoadingButton from '@mui/lab/LoadingButton'
-import { gameProjectPlayer } from 'api'
+import { gamePlayerEasyRPG, gameProjectPlayerHtml } from 'api'
 import { utils } from 'ethers'
 import { useFullscreenCustomization } from 'hooks/useFullscreenCustomization'
 import { useHoldUnlock } from 'hooks/useHoldUnlock'
@@ -12,6 +12,7 @@ import { FC, useCallback } from 'react'
 import { useRef, useState } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'
+import { GameEngine } from 'types/enum'
 import { balanceDecimal } from 'utils'
 
 const Wrapper = styled.div<{ cover: string }>`
@@ -55,11 +56,20 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
     })
   }, [handleUnlock])
 
+  // player iframe source
+  const playerSource = useCallback(() => {
+    if (gameProject.kind === GameEngine.RM2K3E) {
+      return gamePlayerEasyRPG({
+        gameName: gameProject.gameName,
+        kind: gameProject.kind,
+      })
+    } else if (gameProject.kind === GameEngine.HTML) {
+      return gameProjectPlayerHtml()
+    }
+  }, [gameProject])
+
   return (
-    <div
-      id="html_embed_widget_78140"
-      className={`${styles.html_embed_widget} ${styles.embed_wrapper}`}
-    >
+    <div className={`${styles.html_embed_widget} ${styles.embed_wrapper}`}>
       <Wrapper cover={gameProject.cover}>
         {runGameFlag ? (
           <div
@@ -71,10 +81,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
             <iframe
               style={{ width: '100%', height: '100%' }}
               frameBorder="0"
-              src={gameProjectPlayer({
-                gameName: gameProject.gameName,
-                kind: gameProject.kind,
-              })}
+              src={playerSource()}
               scrolling="no"
               id="game_drop"
             ></iframe>
