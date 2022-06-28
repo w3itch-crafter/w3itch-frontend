@@ -21,7 +21,6 @@ export enum GameEngine {
   MINETEST = 'mt',
   HTML = 'html',
   DOWNLOADABLE = 'downloadable',
-  HTML = 'html',
 }
 
 export enum PaymentMode {
