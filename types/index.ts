@@ -186,7 +186,7 @@ export declare type GameInfo = GameEntity & {
 
 export declare type TagOption = Omit<TagEntity, 'createdAt' | 'updatedAt'>
 
-export declare type NavLink = { href: string; name: string }
+export declare type NavLink = { href: string; name: string; blank?: boolean }
 export declare type NavLinks = NavLink[]
 
 export declare type LoginMethod = 'metamask' | 'github' | 'discord'

@@ -24,6 +24,12 @@ const GameID: NextPage<GameProps> = ({
   // hold unlock token
   const [pricesTokens, setPricesTokens] = useState<TokenDetail[]>([])
 
+  const IsEmbedWidget =
+    gameProject?.kind === GameEngine.RM2K3E ||
+    gameProject?.kind === GameEngine.HTML
+
+  const IsEmbedWidgetMinetest = gameProject?.kind === GameEngine.MINETEST
+
   return (
     <GameLayout
       gameRatingsCountData={gameRatingsCountData}
@@ -32,23 +38,19 @@ const GameID: NextPage<GameProps> = ({
       gameProject={gameProject}
       setGameProject={setGameProject}
     >
-      {gameProject && (
-        <>
-          {gameProject.kind === GameEngine.RM2K3E ? (
-            <EmbedWidget
-              gameProject={gameProject}
-              // @TODO Temporarily support the first Token
-              pricesToken={pricesTokens[0]}
-            />
-          ) : gameProject.kind === GameEngine.MINETEST ? (
-            <EmbedWidgetMinetest
-              gameProject={gameProject}
-              // @TODO Temporarily support the first Token
-              pricesToken={pricesTokens[0]}
-            />
-          ) : null}
-        </>
-      )}
+      {IsEmbedWidget ? (
+        <EmbedWidget
+          gameProject={gameProject}
+          // @TODO Temporarily support the first Token
+          pricesToken={pricesTokens[0]}
+        />
+      ) : IsEmbedWidgetMinetest ? (
+        <EmbedWidgetMinetest
+          gameProject={gameProject}
+          // @TODO Temporarily support the first Token
+          pricesToken={pricesTokens[0]}
+        />
+      ) : null}
     </GameLayout>
   )
 }
