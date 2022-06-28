@@ -1,7 +1,6 @@
+import backend from 'services/backend'
 import { BackendErrorResponse, UserEntity } from 'types'
 import { Api } from 'types/Api'
-
-import backend from './backend'
 
 export async function validateUsername(
   username: string

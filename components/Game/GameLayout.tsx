@@ -2,11 +2,6 @@ import styled from '@emotion/styled'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useInterval, useMount } from 'ahooks'
-import {
-  fetchGameRatingsCount,
-  fetchGameRatingsMine,
-  gameProjectByID,
-} from 'api'
 import Donation from 'components/Game/Donation'
 import Download from 'components/Game/Download'
 import GameRating from 'components/Game/GameRating'
@@ -31,6 +26,11 @@ import {
   useEffect,
   useState,
 } from 'react'
+import {
+  fetchGameRatingsCount,
+  fetchGameRatingsMine,
+  gameProjectByID,
+} from 'services'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'

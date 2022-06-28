@@ -1,7 +1,6 @@
 import { AxiosResponse } from 'axios'
+import backend from 'services/backend'
 import { Api } from 'types/Api'
-
-import backend from './backend'
 
 /**
  * fetch BlockchainsEvmTokens

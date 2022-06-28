@@ -1,5 +1,4 @@
 import styled from '@emotion/styled'
-import { getGamesMine, getUser } from 'api'
 import {
   DiscordIcon,
   GitcoinPassportIcon,
@@ -15,6 +14,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { getGamesMine, getUser } from 'services'
 import { PassportScorer } from 'thirdparty/gitcoin-passport/scorer'
 import {
   AccountEntity,

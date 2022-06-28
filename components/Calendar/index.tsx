@@ -12,11 +12,11 @@ import {
   TooltipProps,
   Typography,
 } from '@mui/material'
-import backend from 'api/backend'
 import * as date from 'date-fns'
 import * as ICAL from 'ical.js'
 import Link from 'next/link'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import backend from 'services/backend'
 
 const CalendarWrapper = styled.section`
   background-color: var(--w3itch-bg2);

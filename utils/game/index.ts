@@ -1,7 +1,7 @@
-import { getGames } from 'api'
 import { nanoid } from 'nanoid'
 import { fromUrl, parseDomain, ParseResultType } from 'parse-domain'
 import { toUnicode } from 'punycode'
+import { getGames } from 'services'
 import { GameEntity } from 'types'
 import { GameEngine } from 'types/enum'
 

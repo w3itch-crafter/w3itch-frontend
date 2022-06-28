@@ -1,10 +1,10 @@
 import styled from '@emotion/styled'
-import { getGamesMine, getUser } from 'api'
 import { GameCarousel, GameCell, PageCard, StatHeader } from 'components/pages'
 import { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Fragment } from 'react'
+import { getGamesMine, getUser } from 'services'
 import { GameEntity, GameInfo, UserEntity } from 'types'
 import { urlGame } from 'utils'
 

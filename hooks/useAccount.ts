@@ -1,7 +1,7 @@
-import { getMe, getMine } from 'api'
 import { AuthenticationContext } from 'context'
 import { useRouter } from 'next/router'
 import { useCallback, useContext, useEffect } from 'react'
+import { getMe, getMine } from 'services'
 import { AccountEntity, LoginMethod } from 'types'
 
 const routeWhiteList = [

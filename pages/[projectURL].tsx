@@ -1,10 +1,10 @@
+import { GetServerSideProps, NextPage } from 'next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import {
   fetchGameRatingsCount,
   gameProjectByID,
   getGameIdByProjectURL,
-} from 'api'
-import { GetServerSideProps, NextPage } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+} from 'services'
 import { GameEntity } from 'types'
 import { BackendError, parseUsernameFromHost } from 'utils'
 

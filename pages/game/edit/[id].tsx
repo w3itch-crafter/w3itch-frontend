@@ -1,4 +1,3 @@
-import { gameProjectByID } from 'api'
 import GameForm from 'components/Game/Form'
 import { useSetFormCache } from 'hooks'
 import { GetServerSideProps, NextPage } from 'next'
@@ -17,6 +16,7 @@ import {
   FormProvider as GameFormProvider,
   useFormContext,
 } from 'react-hook-form'
+import { gameProjectByID } from 'services'
 import {
   Community,
   EditorMode,

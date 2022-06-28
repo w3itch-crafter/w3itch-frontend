@@ -1,8 +1,8 @@
 import styled from '@emotion/styled'
-import { gamePlayerMinetest } from 'api'
 import useMetamask from 'hooks/useMetamask'
 import { useRouter } from 'next/router'
 import { ReactElement } from 'react'
+import { gamePlayerMinetest } from 'services'
 
 const Wrapper = styled.section`
   width: 100vw;
