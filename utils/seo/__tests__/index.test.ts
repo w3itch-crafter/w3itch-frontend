@@ -1,5 +1,11 @@
-import SEO, { seoLogo } from '../../../next-seo.config'
-import { SeoArticleJsonLdImages, SeoDescription, SeoImages } from '../index'
+import SEO, { seoKeywords, seoLogo } from 'next-seo.config'
+
+import {
+  SeoArticleJsonLdImages,
+  SeoDescription,
+  SeoImages,
+  SeoKeywords,
+} from '../index'
 
 describe('SeoDescription', () => {
   it('should support empty string', () => {
@@ -43,5 +49,18 @@ describe('SeoArticleJsonLdImages', () => {
     const result = SeoArticleJsonLdImages([url])
 
     expect(result).toContain(url)
+  })
+})
+
+describe('SeoKeywords', () => {
+  it('should support empty array', () => {
+    const result = SeoKeywords([])
+
+    expect(result).toBe(seoKeywords)
+  })
+  it('should return seo keywords', () => {
+    const result = SeoKeywords(['jest'])
+
+    expect(result).toBe('jest' + ' ,' + seoKeywords)
   })
 })

@@ -16,13 +16,13 @@ import UserTools from 'components/Game/UserTools'
 import { useERC20Multicall } from 'hooks/useERC20Multicall'
 import { useTitle } from 'hooks/useTitle'
 import Konami from 'konami'
-import { groupBy, isEmpty } from 'lodash'
+import { groupBy, isEmpty, uniq } from 'lodash'
 import { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { NextSeo } from 'next-seo'
 import { ArticleJsonLd } from 'next-seo'
-import { seoKeywords, seoLogo } from 'next-seo.config'
+import { seoLogo } from 'next-seo.config'
 import { useSnackbar } from 'notistack'
 import {
   Dispatch,
@@ -37,7 +37,7 @@ import { GameEntity, TokenDetail } from 'types'
 import { Api } from 'types/Api'
 import { Community, PaymentMode } from 'types/enum'
 import { SeoArticleJsonLdImages } from 'utils'
-import { SeoImages } from 'utils'
+import { SeoImages, SeoKeywords } from 'utils'
 
 import EditGame from './EditGame'
 
@@ -255,13 +255,19 @@ const GameLayout: NextPage<GameProps> = ({
         additionalMetaTags={[
           {
             property: 'keywords',
-            content:
-              `${gameProject?.title}, ` +
-              `${gameProject?.username}, ` +
-              `${gameProject?.gameName}, ` +
-              `${gameProject?.file}, ` +
-              `${gameProject?.tags.map((i) => i.label).join(', ')}, ` +
-              seoKeywords,
+            content: SeoKeywords(
+              uniq(
+                [
+                  gameProject?.title,
+                  gameProject?.username,
+                  gameProject?.gameName,
+                  gameProject?.file,
+                  gameProject?.tags.map((i) => i.label),
+                ]
+                  .flat(1)
+                  .filter((item) => !!item)
+              ) as string[]
+            ),
           },
         ]}
         openGraph={{
