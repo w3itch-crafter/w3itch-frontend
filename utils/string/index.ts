@@ -1,13 +1,19 @@
+/**
+ * Enum Word
+ * @param word
+ * @returns
+ */
 export const enumWord = (word: string): string => {
-  const genreWord = word.toLocaleLowerCase()
-  const result = genreWord
-    .split('_')
-    .map((word) => {
-      const [first, ...other] = word
-      return first.toLocaleUpperCase() + other.join('')
-    })
-    .join(' ')
-  return result
+  return word
+    ? word
+        .toLocaleLowerCase()
+        .split('_')
+        .map((word) => {
+          const [first, ...other] = word
+          return first.toLocaleUpperCase() + other.join('')
+        })
+        .join(' ')
+    : ''
 }
 /**
  * enum word
@@ -17,6 +23,13 @@ export const enumWord = (word: string): string => {
 export const enumWords = (words: string[]) =>
   words.map((word: string) => enumWord(word))
 
+/**
+ * string Slice
+ * @param str
+ * @param start
+ * @param end
+ * @returns
+ */
 export function stringSlice(str: string, start: number, end: number): string {
   return `${str.slice(0, start)}...${str.slice(-Math.abs(end))}`
 }
