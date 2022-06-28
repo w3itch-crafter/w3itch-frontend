@@ -48,17 +48,27 @@ const fetchGames = async ({ limit, page }) => {
 const handler = async () => {
   await fetchGames({ limit, page })
 
-  const listData = list.map((game) => ({
-    objectID: game.id,
-    ...game,
-  }))
+  const listData = list.map((game) => {
+    const data = {
+      objectID: game.id,
+      ...game,
+    }
+    delete data.description
+
+    return data
+  })
 
   const index = algoliaIndex()
-  const clearObjectsResult = await index.clearObjects()
-  const saveObjectsResult = await index.saveObjects(listData)
 
-  console.log('clear: ', clearObjectsResult)
-  console.log('save: ', saveObjectsResult)
+  try {
+    const clearObjectsResult = await index.clearObjects()
+    const saveObjectsResult = await index.saveObjects(listData)
+
+    console.log('clear: ', clearObjectsResult)
+    console.log('save: ', saveObjectsResult)
+  } catch (e) {
+    console.error('algolia sync failed', e)
+  }
 }
 
 try {
