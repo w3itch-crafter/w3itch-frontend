@@ -1,7 +1,5 @@
 import styled from '@emotion/styled'
 import { Alert, AlertColor, CircularProgress, Snackbar } from '@mui/material'
-import { storagesUploadToAWS } from 'api'
-import { updateMe } from 'api/users'
 import { RedButton } from 'components/buttons'
 import { InputRow } from 'components/forms'
 import { AuthenticationContext } from 'context'
@@ -10,6 +8,8 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import path from 'path'
 import { Fragment, useContext, useEffect, useRef, useState } from 'react'
+import { updateMe } from 'services'
+import { storagesUploadToAWS } from 'services'
 import {
   BackendErrorResponse,
   isBackendError,

@@ -3,18 +3,18 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen'
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import LoadingButton from '@mui/lab/LoadingButton'
-import {
-  gamePlayerIframeMinetest,
-  gamePlayerMinetest,
-  getMe,
-  minetestGamePortByGameName,
-} from 'api'
 import { utils } from 'ethers'
 import { useFullscreenCustomization } from 'hooks/useFullscreenCustomization'
 import { useHoldUnlock } from 'hooks/useHoldUnlock'
 import { isEmpty } from 'lodash'
 import { FC, useCallback, useEffect } from 'react'
 import { useRef, useState } from 'react'
+import {
+  gamePlayerIframeMinetest,
+  gamePlayerMinetest,
+  getMe,
+  minetestGamePortByGameName,
+} from 'services'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'
 import {

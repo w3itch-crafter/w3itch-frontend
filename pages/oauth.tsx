@@ -1,5 +1,4 @@
 import styled from '@emotion/styled'
-import { authSignup } from 'api'
 import { RedButton } from 'components/buttons'
 import { InputRow } from 'components/forms'
 import { PageCard, StatHeader } from 'components/pages'
@@ -12,6 +11,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Fragment, useContext, useState } from 'react'
+import { authSignup } from 'services'
 import { InvalidData, RegisterData } from 'types'
 import { isEmptyObj, userHostUrl } from 'utils'
 

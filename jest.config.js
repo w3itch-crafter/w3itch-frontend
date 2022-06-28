@@ -28,12 +28,19 @@ module.exports = {
   transform: {
     // Use babel-jest to transpile tests with the next/babel preset
     // https://jestjs.io/docs/configuration#transform-objectstring-pathtotransformer--pathtotransformer-object
-    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
+    '^.+\\.(js|jsx|ts|tsx)$': [
+      'babel-jest',
+      {
+        presets: ['next/babel'],
+        plugins: [['@babel/plugin-proposal-decorators', { legacy: true }]],
+      },
+    ],
   },
   transformIgnorePatterns: [
-    '/node_modules/(?!parse-domain|is-ip|ip-regex|uuid)', // SyntaxError: Unexpected token 'export'
+    '/node_modules/(?!parse-domain|is-ip|ip-regex|uuid|nanoid)', // SyntaxError: Unexpected token 'export'
     '^.+\\.module\\.(css|sass|scss)$',
   ],
   setupFiles: [`<rootDir>/jest-shim.js`],
   testEnvironment: 'jest-environment-jsdom',
+  moduleDirectories: ['<rootDir>/node_modules', '<rootDir>'],
 }

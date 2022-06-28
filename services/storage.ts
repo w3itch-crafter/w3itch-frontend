@@ -1,7 +1,6 @@
 import { AxiosResponse } from 'axios'
+import backend from 'services/backend'
 import type { Api } from 'types/Api'
-
-import backend from './backend'
 
 /**
  * upload to ipfs (fleek)

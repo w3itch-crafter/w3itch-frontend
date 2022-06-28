@@ -13,11 +13,10 @@ import { NextPage } from 'next'
 import Head from 'next/head'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Fragment, useCallback, useState } from 'react'
+import { loginDiscord, loginGitHub, loginWallet } from 'services'
 import { LoginMethod } from 'types'
 import { useWallet } from 'use-wallet'
 import { Wallet } from 'use-wallet/dist/cjs/types'
-
-import { loginDiscord, loginGitHub, loginWallet } from '../api/account'
 
 const Login: NextPage = () => {
   const Container = styled.div`

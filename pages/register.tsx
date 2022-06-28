@@ -17,11 +17,10 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { Fragment, useContext, useEffect, useState } from 'react'
+import { signupDiscord, signupGitHub, signupWallet } from 'services'
 import { InvalidData, LoginMethod, RegisterData } from 'types'
 import { useWallet } from 'use-wallet'
 import { isEmptyObj, userHostUrl } from 'utils'
-
-import { signupDiscord, signupGitHub, signupWallet } from '../api/account'
 
 const Register: NextPage = () => {
   const { t } = useTranslation()

@@ -2,8 +2,6 @@ import LoadingButton from '@mui/lab/LoadingButton'
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { TokenInfo } from '@uniswap/token-lists'
 import { useDebounceFn } from 'ahooks'
-import { createGame, gameValidate, saveAlgoliaGame } from 'api/index'
-import { storagesUploadToAWS, updateGame } from 'api/index'
 import { AxiosError } from 'axios'
 import BigNumber from 'bignumber.js'
 import { TokenList } from 'components'
@@ -21,6 +19,13 @@ import { useSnackbar } from 'notistack'
 import React, { Fragment, useEffect, useState } from 'react'
 import { SubmitHandler } from 'react-hook-form'
 import { useFormContext, useWatch } from 'react-hook-form'
+import {
+  createGame,
+  gameValidate,
+  saveAlgoliaGame,
+  storagesUploadToAWS,
+  updateGame,
+} from 'services'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
 import { GameEntity } from 'types'

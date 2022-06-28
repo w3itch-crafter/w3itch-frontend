@@ -1,8 +1,7 @@
+import backend from 'services/backend'
 import { AccountEntity, AccountServiceAction, UserEntity } from 'types'
 import { Api } from 'types/Api'
 import type { Wallet } from 'use-wallet/dist/cjs/types'
-
-import backend from './backend'
 
 declare type WalletSignatureService = {
   account: string

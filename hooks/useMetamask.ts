@@ -1,7 +1,7 @@
-import { getUser } from 'api'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { useTopCenterSnackbar } from 'hooks'
 import { useCallback, useEffect } from 'react'
+import { getUser } from 'services'
 export default function useMetamask() {
   const topCenterSnackbar = useTopCenterSnackbar()
 

@@ -2,15 +2,6 @@ import styled from '@emotion/styled'
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import { SxProps, Theme } from '@mui/material/styles'
-import {
-  bindDiscord,
-  bindGitHub,
-  bindWallet,
-  getMine,
-  unbindDiscord,
-  unbindGitHub,
-  unbindWallet,
-} from 'api'
 import { LoginChooseButton, RedButton } from 'components/buttons'
 import { InputRow } from 'components/forms'
 import {
@@ -24,6 +15,15 @@ import { AuthenticationContext } from 'context'
 import { useAccountInfo, useTopRightSnackbar } from 'hooks'
 import { useRouter } from 'next/router'
 import { Fragment, useCallback, useContext, useState } from 'react'
+import {
+  bindDiscord,
+  bindGitHub,
+  bindWallet,
+  getMine,
+  unbindDiscord,
+  unbindGitHub,
+  unbindWallet,
+} from 'services'
 import { AccountEntity, LoginMethod, NextPageWithLayout } from 'types'
 import { useWallet } from 'use-wallet'
 import { Wallet } from 'use-wallet/dist/cjs/types'

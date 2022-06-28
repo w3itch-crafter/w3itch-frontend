@@ -1,5 +1,5 @@
-import { getMe } from 'api/users'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { getMe } from 'services'
 import { UserEntity } from 'types'
 
 export function useUser() {

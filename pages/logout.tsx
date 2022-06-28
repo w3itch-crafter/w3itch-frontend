@@ -4,8 +4,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useCallback, useContext, useEffect } from 'react'
-
-import { logout } from '../api/account'
+import { logout } from 'services'
 
 const Logout: NextPage = () => {
   const router = useRouter()

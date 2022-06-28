@@ -1,8 +1,7 @@
 import { AxiosResponse } from 'axios'
+import backend from 'services/backend'
 import { BackendErrorResponse, GameEntity, Pagination } from 'types'
 import { Api } from 'types/Api'
-
-import backend from './backend'
 
 type GameProjectPlayer = {
   gameName: string

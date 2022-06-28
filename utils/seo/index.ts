@@ -1,6 +1,5 @@
+import SEO, { seoKeywords, seoLogo } from 'next-seo.config'
 import { OpenGraphMedia } from 'next-seo/lib/types'
-
-import SEO, { seoLogo } from '../next-seo.config'
 
 /**
  * seo description
@@ -8,8 +7,7 @@ import SEO, { seoLogo } from '../next-seo.config'
  * @param length
  * @returns
  */
-export const SeoDescription = (description?: string, length = 100) => {
-  // @TODO Using the description, replaceAll is wrong. replaceAll is not a function
+export const SeoDescription = (description: string, length = 100) => {
   if (!description) {
     return ''
   }
@@ -20,10 +18,9 @@ export const SeoDescription = (description?: string, length = 100) => {
         : description
 
     const regRule = /\n|\r\n/g
-    return result.replaceAll(regRule, '')
+    return result.replace(regRule, '')
   } catch (err) {
     console.error('SeoDescription Error: ', err)
-    console.log('SeoDescription Result: ', description)
     return ''
   }
 }
@@ -34,18 +31,12 @@ export const SeoDescription = (description?: string, length = 100) => {
  * @param alt
  * @returns
  */
-export const SeoImages = (
-  images: string[] | undefined,
-  alt: string
-): OpenGraphMedia[] => {
-  return images
-    ? images
-        .flat(1)
-        .filter((image) => !!image)
-        .map((image) => ({
-          url: image,
-          alt: alt,
-        }))
+export const SeoImages = (images: string[], alt: string): OpenGraphMedia[] => {
+  return images && images.length
+    ? images.map((image) => ({
+        url: image,
+        alt: alt,
+      }))
     : (SEO.openGraph.images as OpenGraphMedia[])
 }
 
@@ -55,5 +46,16 @@ export const SeoImages = (
  * @returns
  */
 export const SeoArticleJsonLdImages = (images: string[]): string[] => {
-  return images ? images.flat(1).filter((image) => !!image) : [seoLogo]
+  return images && images.length ? images : [seoLogo]
+}
+
+/**
+ * SEO Keywords
+ * @param keywords
+ * @returns
+ */
+export const SeoKeywords = (keywords: string[]): string => {
+  return keywords && keywords.length
+    ? keywords.join(' ,') + ' ,' + seoKeywords
+    : seoKeywords
 }

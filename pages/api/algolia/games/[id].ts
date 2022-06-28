@@ -1,6 +1,6 @@
-import { gameProjectByID } from 'api'
 import { algoliaIndex } from 'constants/index'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { gameProjectByID } from 'services'
 
 const index = algoliaIndex()
 

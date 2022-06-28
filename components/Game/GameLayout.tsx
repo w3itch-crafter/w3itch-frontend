@@ -2,11 +2,6 @@ import styled from '@emotion/styled'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useInterval, useMount } from 'ahooks'
-import {
-  fetchGameRatingsCount,
-  fetchGameRatingsMine,
-  gameProjectByID,
-} from 'api'
 import Donation from 'components/Game/Donation'
 import Download from 'components/Game/Download'
 import GameRating from 'components/Game/GameRating'
@@ -16,13 +11,13 @@ import UserTools from 'components/Game/UserTools'
 import { useERC20Multicall } from 'hooks/useERC20Multicall'
 import { useTitle } from 'hooks/useTitle'
 import Konami from 'konami'
-import { groupBy, isEmpty } from 'lodash'
+import { groupBy, isEmpty, uniq } from 'lodash'
 import { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { NextSeo } from 'next-seo'
 import { ArticleJsonLd } from 'next-seo'
-import { seoKeywords, seoLogo } from 'next-seo.config'
+import { seoLogo } from 'next-seo.config'
 import { useSnackbar } from 'notistack'
 import {
   Dispatch,
@@ -31,13 +26,18 @@ import {
   useEffect,
   useState,
 } from 'react'
+import {
+  fetchGameRatingsCount,
+  fetchGameRatingsMine,
+  gameProjectByID,
+} from 'services'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'
 import { Api } from 'types/Api'
 import { Community, PaymentMode } from 'types/enum'
 import { SeoArticleJsonLdImages } from 'utils'
-import { SeoImages } from 'utils'
+import { SeoImages, SeoKeywords } from 'utils'
 
 import EditGame from './EditGame'
 
@@ -255,13 +255,19 @@ const GameLayout: NextPage<GameProps> = ({
         additionalMetaTags={[
           {
             property: 'keywords',
-            content:
-              `${gameProject?.title}, ` +
-              `${gameProject?.username}, ` +
-              `${gameProject?.gameName}, ` +
-              `${gameProject?.file}, ` +
-              `${gameProject?.tags.map((i) => i.label).join(', ')}, ` +
-              seoKeywords,
+            content: SeoKeywords(
+              uniq(
+                [
+                  gameProject?.title,
+                  gameProject?.username,
+                  gameProject?.gameName,
+                  gameProject?.file,
+                  gameProject?.tags.map((i) => i.label),
+                ]
+                  .flat(1)
+                  .filter((item) => !!item)
+              ) as string[]
+            ),
           },
         ]}
         openGraph={{
@@ -270,13 +276,9 @@ const GameLayout: NextPage<GameProps> = ({
            * An array of images (object) to be used by social media platforms, slack etc as a preview. If multiple supplied you can choose one when sharing. See Examples
            */
           images: SeoImages(
-            gameProject
-              ? ([
-                  gameProject.cover,
-                  gameProject.screenshots,
-                  gameProject.cover,
-                ] as string[])
-              : undefined,
+            [gameProject?.cover, gameProject?.screenshots, gameProject?.cover]
+              .flat(1)
+              .filter((item) => !!item) as string[],
             gameTitle
           ),
         }}
@@ -284,10 +286,11 @@ const GameLayout: NextPage<GameProps> = ({
       <ArticleJsonLd
         url={process.env.NEXT_PUBLIC_URL as string}
         title={gameProject?.title || 'W3itch'}
-        images={SeoArticleJsonLdImages([
-          gameProject?.cover,
-          gameProject?.screenshots,
-        ] as string[])}
+        images={SeoArticleJsonLdImages(
+          [gameProject?.cover, gameProject?.screenshots]
+            .flat(1)
+            .filter((item) => !!item) as string[]
+        )}
         datePublished={gameProject?.createdAt as string}
         dateModified={gameProject?.updatedAt as string}
         // Warning, author url is temporarily not supported

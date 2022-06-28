@@ -1,12 +1,11 @@
 import assert from 'assert'
-
 import {
   CHAIN_IDS_TO_NAMES,
   CHAIN_INFO,
   ChainInfo,
   SupportedChainId,
-} from '../constants/chains'
-import { stringSlice } from './string'
+} from 'constants/chains'
+import { stringSlice } from 'utils'
 
 export function getChainIdFromName(name: string): number | undefined {
   const entry = Object.entries(CHAIN_IDS_TO_NAMES).find(([, n]) => n === name)
