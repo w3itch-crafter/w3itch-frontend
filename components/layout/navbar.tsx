@@ -67,7 +67,11 @@ export function Navbar() {
     { href: `/games`, name: t('Browse Games') },
     { href: `/jams`, name: t('Jams') },
     { href: `/dashboard`, name: t('Dashboard') },
-    { href: `https://discord.gg/UaHazgHc8q`, name: t('Community') },
+    {
+      href: `https://discord.gg/UaHazgHc8q`,
+      name: t('Community'),
+      blank: true,
+    },
   ]
 
   const router = useRouter()
@@ -95,11 +99,12 @@ export function Navbar() {
         {!isHref('/login') && (
           <Fragment>
             <HeaderButtons sx={{ display: { xs: 'none', md: 'flex' } }}>
-              {navLinks.map(({ href, name }) => (
+              {navLinks.map(({ href, name, blank }) => (
                 <NavLink
                   href={href}
                   name={name}
                   active={isHref(href)}
+                  blank={blank}
                   key={href}
                 />
               ))}
@@ -142,9 +147,10 @@ declare interface NavLinkProps {
   href: string
   name: string
   active: boolean
+  blank?: boolean
 }
 
-function NavLink({ href, name, active }: NavLinkProps) {
+function NavLink({ href, name, active, blank }: NavLinkProps) {
   const HeaderButton = styled.a<HeaderButtonProps>`
     display: flex;
     align-items: center;
@@ -162,10 +168,14 @@ function NavLink({ href, name, active }: NavLinkProps) {
       ${(props) => (props.active ? '#FF2449' : 'transparent')};
     border-top: 4px solid transparent;
   `
+  const target = blank ? '_blank' : undefined
+  const rel = blank ? 'noopener' : undefined
 
   return (
     <Link href={href} passHref>
-      <HeaderButton active={active}>{name}</HeaderButton>
+      <HeaderButton active={active} target={target} rel={rel}>
+        {name}
+      </HeaderButton>
     </Link>
   )
 }
