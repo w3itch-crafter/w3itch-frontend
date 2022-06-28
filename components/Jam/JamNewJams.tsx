@@ -4,16 +4,12 @@ import StarBorderIcon from '@mui/icons-material/StarBorder'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
+import { compose } from '@reduxjs/toolkit'
 import JamCarousel from 'components/Jam/JamCarousel'
 import { isEmpty } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { getCalendar } from 'services'
-import {
-  calendarFormatData,
-  calendarNewJams,
-  calendarSortAsc,
-  compose,
-} from 'utils'
+import { calendarFormatData, calendarNewJams, calendarSortAsc } from 'utils'
 
 const NewJams = styled.div`
   background-color: var(--w3itch-bg2);
