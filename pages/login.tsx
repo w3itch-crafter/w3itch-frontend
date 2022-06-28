@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { loginDiscord, loginGitHub, loginWallet } from 'api'
 import { RedButton } from 'components/buttons'
 import { InputRow } from 'components/forms'
 import {
@@ -16,8 +17,6 @@ import { Fragment, useCallback, useState } from 'react'
 import { LoginMethod } from 'types'
 import { useWallet } from 'use-wallet'
 import { Wallet } from 'use-wallet/dist/cjs/types'
-
-import { loginDiscord, loginGitHub, loginWallet } from '../api/account'
 
 const Login: NextPage = () => {
   const Container = styled.div`

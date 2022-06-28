@@ -1,11 +1,10 @@
+import { logout } from 'api'
 import { AuthenticationContext } from 'context'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useCallback, useContext, useEffect } from 'react'
-
-import { logout } from '../api/account'
 
 const Logout: NextPage = () => {
   const router = useRouter()

@@ -1,4 +1,4 @@
-import { getMe } from 'api/users'
+import { getMe } from 'api'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { UserEntity } from 'types'
 

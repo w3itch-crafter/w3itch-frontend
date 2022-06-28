@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { signupDiscord, signupGitHub, signupWallet } from 'api'
 import { RedButton } from 'components/buttons'
 import { InputRow } from 'components/forms'
 import {
@@ -20,8 +21,6 @@ import React, { Fragment, useContext, useEffect, useState } from 'react'
 import { InvalidData, LoginMethod, RegisterData } from 'types'
 import { useWallet } from 'use-wallet'
 import { isEmptyObj, userHostUrl } from 'utils'
-
-import { signupDiscord, signupGitHub, signupWallet } from '../api/account'
 
 const Register: NextPage = () => {
   const { t } = useTranslation()
