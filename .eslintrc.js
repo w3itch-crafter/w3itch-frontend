@@ -4,9 +4,14 @@ module.exports = {
     'eslint:recommended',
     'next/core-web-vitals',
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
+    'prettier',
   ],
-  plugins: ['@typescript-eslint', 'simple-import-sort', 'unused-imports', 'prettier'],
+  plugins: [
+    '@typescript-eslint',
+    'simple-import-sort',
+    'unused-imports',
+    'prettier',
+  ],
   rules: {
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/no-explicit-any': 'error',
