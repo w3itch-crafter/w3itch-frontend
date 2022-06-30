@@ -8682,13 +8682,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"confusing-browser-globals@npm:1.0.11":
-  version: 1.0.11
-  resolution: "confusing-browser-globals@npm:1.0.11"
-  checksum: 3afc635abd37e566477f610e7978b15753f0e84025c25d49236f1f14d480117185516bdd40d2a2167e6bed8048641a9854964b9c067e3dcdfa6b5d0ad3c3a5ef
-  languageName: node
-  linkType: hard
-
 "console-control-strings@npm:^1.0.0, console-control-strings@npm:^1.1.0, console-control-strings@npm:~1.1.0":
   version: 1.1.0
   resolution: "console-control-strings@npm:1.1.0"
@@ -10162,17 +10155,6 @@ __metadata:
   bin:
     eslint-config-prettier: bin/cli.js
   checksum: 0d0f5c32e7a0ad91249467ce71ca92394ccd343178277d318baf32063b79ea90216f4c81d1065d60f96366fdc60f151d4d68ae7811a58bd37228b84c2083f893
-  languageName: node
-  linkType: hard
-
-"eslint-config-xo@npm:^0.41.0":
-  version: 0.41.0
-  resolution: "eslint-config-xo@npm:0.41.0"
-  dependencies:
-    confusing-browser-globals: 1.0.11
-  peerDependencies:
-    eslint: ">=8.14.0"
-  checksum: 9c709ad670b62e4cecb75f5ddceb8c4c85ad4c0e5ed7ebc803c7f21ea2e8738c1849e269eb89764cc57f38a66bc6764bfec66fc69fa252150e678bafca0409da
   languageName: node
   linkType: hard
 
@@ -21911,7 +21893,6 @@ __metadata:
     eslint: ^8.16.0
     eslint-config-next: ^12.1.6
     eslint-config-prettier: ^8.5.0
-    eslint-config-xo: ^0.41.0
     eslint-plugin-prettier: ^4.0.0
     eslint-plugin-react: ^7.30.0
     eslint-plugin-react-hooks: ^4.5.0

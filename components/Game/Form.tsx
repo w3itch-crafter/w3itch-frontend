@@ -7,11 +7,7 @@ import BigNumber from 'bignumber.js'
 import { TokenList } from 'components'
 import { SupportedChainId, WalletSupportedChainIds } from 'constants/chains'
 import { utils } from 'ethers'
-import {
-  useFormInitializationData,
-  useTitle,
-  useTopCenterSnackbar,
-} from 'hooks'
+import { useFormInitializationData, useTitle, useTopCenterSnackbar } from 'hooks'
 import { isEmpty, trim } from 'lodash'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -19,13 +15,7 @@ import { useSnackbar } from 'notistack'
 import React, { Fragment, useEffect, useState } from 'react'
 import { SubmitHandler } from 'react-hook-form'
 import { useFormContext, useWatch } from 'react-hook-form'
-import {
-  createGame,
-  gameValidate,
-  saveAlgoliaGame,
-  storagesUploadToAWS,
-  updateGame,
-} from 'services'
+import { createGame, gameValidate, saveAlgoliaGame, storagesUploadToAWS, updateGame } from 'services'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/new.module.scss'
 import { GameEntity } from 'types'
@@ -57,39 +47,25 @@ interface GameFormProps {
   readonly gameProject: GameEntity
   readonly editorMode: EditorMode
   readonly editorRef: React.MutableRefObject<ToastUiEditor> | undefined
-  setEditorRef: React.Dispatch<
-    React.SetStateAction<React.MutableRefObject<ToastUiEditor> | undefined>
-  >
+  setEditorRef: React.Dispatch<React.SetStateAction<React.MutableRefObject<ToastUiEditor> | undefined>>
 }
 
 let MESSAGE_SUBMIT_KEY: string | number
 
 export const defaultCoverLinks = new Map([
-  [
-    GameEngine.DEFAULT,
-    'http://n.sinaimg.cn/auto/transform/20170521/Z87u-fyfkzhs7969292.jpg',
-  ],
-  [
-    GameEngine.RM2K3E,
-    'https://image.w3itch.io/w3itch-test/attachment/30/world-overview.crystal2.8dde7d50-ec9a-11ec-956c-03700aa82971.png',
-  ],
+  [GameEngine.DEFAULT, 'http://n.sinaimg.cn/auto/transform/20170521/Z87u-fyfkzhs7969292.jpg'],
+  [GameEngine.RM2K3E, 'https://image.w3itch.io/w3itch-test/attachment/30/world-overview.crystal2.8dde7d50-ec9a-11ec-956c-03700aa82971.png'],
   [
     GameEngine.DOWNLOADABLE,
     'https://dotnet.microsoft.com/static/images/redesign/download/dotnet-framework-runtime.svg?v=22xvQuHVYJL7LD0xeWgHfLKUNROSdPrvv0q3aBlVvsY',
   ],
 ])
 
-const GameForm: React.FC<GameFormProps> = ({
-  gameProject,
-  editorMode,
-  editorRef,
-  setEditorRef,
-}) => {
+const GameForm: React.FC<GameFormProps> = ({ gameProject, editorMode, editorRef, setEditorRef }) => {
   const router = useRouter()
   const id = router.query.id as string
 
-  const { handleSubmit, setValue, control, watch, trigger } =
-    useFormContext<Game>()
+  const { handleSubmit, setValue, control, watch, trigger } = useFormContext<Game>()
 
   const showSnackbar = useTopCenterSnackbar()
   const { closeSnackbar } = useSnackbar()
@@ -99,21 +75,13 @@ const GameForm: React.FC<GameFormProps> = ({
   const [screenshotsFiles, setScreenshotsFiles] = useState<File[]>()
   const [submitLoading, setSubmitLoading] = useState<boolean>(false)
   const [tokenListDialogOpen, setTtokenListDialogOpen] = useState(false)
-  const [currentSelectTokenChainId, setCurrentSelectTokenChainId] =
-    useState<SupportedChainId>(WalletSupportedChainIds[0])
-  const [currentSelectTokenChainIdFlag, setCurrentSelectTokenChainIdFlag] =
-    useState<boolean>(false)
-  const [currentSelectToken, setCurrentSelectToken] = useState<TokenInfo>(
-    {} as TokenInfo
-  )
-  const [currentSelectTokenFlag, setCurrentSelectTokenFlag] =
-    useState<boolean>(false)
-  const [currentSelectTokenAmount, setCurrentSelectTokenAmount] =
-    useState<string>('0')
-  const [currentSelectTokenAmountFlag, setCurrentSelectTokenAmountFlag] =
-    useState<boolean>(false)
-  const [currentDonationAddress, setCurrentDonationAddress] =
-    useState<string>('')
+  const [currentSelectTokenChainId, setCurrentSelectTokenChainId] = useState<SupportedChainId>(WalletSupportedChainIds[0])
+  const [currentSelectTokenChainIdFlag, setCurrentSelectTokenChainIdFlag] = useState<boolean>(false)
+  const [currentSelectToken, setCurrentSelectToken] = useState<TokenInfo>({} as TokenInfo)
+  const [currentSelectTokenFlag, setCurrentSelectTokenFlag] = useState<boolean>(false)
+  const [currentSelectTokenAmount, setCurrentSelectTokenAmount] = useState<string>('0')
+  const [currentSelectTokenAmountFlag, setCurrentSelectTokenAmountFlag] = useState<boolean>(false)
+  const [currentDonationAddress, setCurrentDonationAddress] = useState<string>('')
 
   const { createGamePageTitle } = useTitle()
   const pageTitle = createGamePageTitle(editorMode)
@@ -137,37 +105,20 @@ const GameForm: React.FC<GameFormProps> = ({
   }
 
   // 先支持 编辑
-  const validateGameFile = () =>
-    validate(
-      editorMode === EditorMode.CREATE && !uploadGameFile,
-      'Please upload game files'
-    )
+  const validateGameFile = () => validate(editorMode === EditorMode.CREATE && !uploadGameFile, 'Please upload game files')
 
-  const validateDescription = (description: string) =>
-    validate(!description, 'Description cannot be empty')
+  const validateDescription = (description: string) => validate(!description, 'Description cannot be empty')
 
   const validatePaymentMode = (game: Game) => {
     if (game.paymentMode === PaymentMode.PAID) {
       validate(!currentSelectTokenChainId, 'Please select chainId')
       validate(isEmpty(currentSelectToken), 'Please select Token')
-      validate(
-        !currentSelectTokenAmount || currentSelectTokenAmount === '0',
-        'Please enter amount'
-      )
-      validate(
-        !isStringNumber(currentSelectTokenAmount),
-        'Please enter the correct amount'
-      )
-      validate(
-        new BigNumber(currentSelectTokenAmount).lte('0'),
-        'Amount needs to be greater than zero'
-      )
+      validate(!currentSelectTokenAmount || currentSelectTokenAmount === '0', 'Please enter amount')
+      validate(!isStringNumber(currentSelectTokenAmount), 'Please enter the correct amount')
+      validate(new BigNumber(currentSelectTokenAmount).lte('0'), 'Amount needs to be greater than zero')
     }
     if (game.paymentMode === PaymentMode.FREE) {
-      validate(
-        !currentDonationAddress || !utils.isAddress(currentDonationAddress),
-        'Please set a donation address'
-      )
+      validate(!currentDonationAddress || !utils.isAddress(currentDonationAddress), 'Please set a donation address')
     }
   }
   const validateGamePayload = async (data: Partial<Api.GameProjectDto>) => {
@@ -296,19 +247,14 @@ const GameForm: React.FC<GameFormProps> = ({
     if (game.paymentMode === PaymentMode.PAID) {
       prices.push({
         chainId: currentSelectTokenChainId,
-        amount: utils
-          .parseUnits(currentSelectTokenAmount, currentSelectToken.decimals)
-          .toString(),
+        amount: utils.parseUnits(currentSelectTokenAmount, currentSelectToken.decimals).toString(),
         token: currentSelectToken.address,
       })
     }
 
     // Parpare game data
     const allImages = await handleAllImages()
-    const kind =
-      game.kind === GameEngine.DEFAULT && uploadGameFile
-        ? await inferProjectType(uploadGameFile)
-        : game.kind
+    const kind = game.kind === GameEngine.DEFAULT && uploadGameFile ? await inferProjectType(uploadGameFile) : game.kind
     const gameData: Partial<Api.GameProjectDto> = {
       ...game,
       title: trim(game.title),
@@ -386,9 +332,7 @@ const GameForm: React.FC<GameFormProps> = ({
     async (files: File[] | undefined) => {
       setScreenshotsFiles(files)
 
-      const screenshotsUrls = files
-        ? files.map((file) => parseUrl(fileUrl(file)))
-        : []
+      const screenshotsUrls = files ? files.map((file) => parseUrl(fileUrl(file))) : []
 
       setValue('screenshots', screenshotsUrls)
       await trigger('screenshots')
@@ -468,19 +412,12 @@ const GameForm: React.FC<GameFormProps> = ({
       </Head>
       <div className={stylesCommon.main}>
         <div className={stylesCommon.inner_column}>
-          <div
-            id="edit_game_page_43096"
-            className={`${styles.edit_game_page} dashboard_game_edit_base_page ${styles.page_widget} ${styles.form} is_game`}
-          >
+          <div id="edit_game_page_43096" className={`${styles.edit_game_page} dashboard_game_edit_base_page ${styles.page_widget} ${styles.form} is_game`}>
             <FormHeader title={pageTitle} />
             {/* <FormPaymentWarn /> */}
 
             <div className={styles.padded}>
-              <form
-                className={styles.game_edit_form}
-                autoComplete="off"
-                onSubmit={handleSubmit(onSubmit)}
-              >
+              <form className={styles.game_edit_form} autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
                 <div className={styles.columns}>
                   <div className={`main ${styles.left_col} first`}>
                     {/* <FormContentGuidelines /> */}
@@ -510,9 +447,7 @@ const GameForm: React.FC<GameFormProps> = ({
                         setTtokenListDialogOpen={setTtokenListDialogOpen}
                         setCurrentDonationAddress={setCurrentDonationAddress}
                         currentSelectTokenAmount={currentSelectTokenAmount}
-                        setCurrentSelectTokenAmount={
-                          setCurrentSelectTokenAmount
-                        }
+                        setCurrentSelectTokenAmount={setCurrentSelectTokenAmount}
                         setCurrentSelectTokenChainId={(chainId) => {
                           setCurrentSelectTokenChainId(chainId)
                           // Switch chainId to clear token
@@ -520,30 +455,17 @@ const GameForm: React.FC<GameFormProps> = ({
                         }}
                       />
                     </div>
-                    <div
-                      className={`${styles.input_row} ${styles.simulation_input}`}
-                    >
-                      <FormGameFile
-                        editorMode={editorMode}
-                        onGameFileSelect={handleGameFile}
-                      />
+                    <div className={`${styles.input_row} ${styles.simulation_input}`}>
+                      <FormGameFile editorMode={editorMode} onGameFileSelect={handleGameFile} />
                     </div>
                     {/* minetest, html doesn't need charset */}
-                    {!(
-                      watchKind === GameEngine.MINETEST ||
-                      watchKind === GameEngine.HTML
-                    ) && (
+                    {!(watchKind === GameEngine.MINETEST || watchKind === GameEngine.HTML) && (
                       <div className={styles.input_row}>
                         <FormCharset />
                       </div>
                     )}
-                    <div
-                      className={`${styles.input_row} ${styles.simulation_input}`}
-                    >
-                      <FormDescription
-                        setRef={setEditorRef}
-                        onChange={handleDescription}
-                      />
+                    <div className={`${styles.input_row} ${styles.simulation_input}`}>
+                      <FormDescription setRef={setEditorRef} onChange={handleDescription} />
                     </div>
                     <div className={`${styles.input_row}`}>
                       <FormGenre />
@@ -565,26 +487,15 @@ const GameForm: React.FC<GameFormProps> = ({
                   </div>
                   <div className={`misc ${styles.right_col}`}>
                     <div className={styles.simulation_input}>
-                      <FormGameCover
-                        editorMode={editorMode}
-                        onCoverFileSelect={handleCover}
-                      />
+                      <FormGameCover editorMode={editorMode} onCoverFileSelect={handleCover} />
                     </div>
                     <section className={styles.screenshot_editor}>
-                      <FormGameScreenshots
-                        editorMode={editorMode}
-                        onScreenshotFilesSelect={handleScreenshots}
-                      />
+                      <FormGameScreenshots editorMode={editorMode} onScreenshotFilesSelect={handleScreenshots} />
                     </section>
                   </div>
                 </div>
                 <div className={styles.buttons}>
-                  <LoadingButton
-                    variant="contained"
-                    type="submit"
-                    loading={submitLoading}
-                    sx={{ width: { xs: '100%', sm: 'auto' } }}
-                  >
+                  <LoadingButton variant="contained" type="submit" loading={submitLoading} sx={{ width: { xs: '100%', sm: 'auto' } }}>
                     {editorMode === EditorMode.CREATE && 'Save'}
                     {editorMode === EditorMode.EDIT && 'Update'}
                   </LoadingButton>

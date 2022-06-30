@@ -2,11 +2,7 @@ import assert from 'assert'
 import { fromUrl, parseDomain, ParseResultType } from 'parse-domain'
 import { toUnicode } from 'punycode'
 
-export function buildQuerySting(
-  key: string,
-  value?: string,
-  initial: Record<string, string | string[]> = {}
-): string {
+export function buildQuerySting(key: string, value?: string, initial: Record<string, string | string[]> = {}): string {
   const query = new URLSearchParams()
   if (initial) {
     for (const [key, value] of Object.entries(initial)) {
@@ -50,11 +46,7 @@ export const urlHostnameParse = (url: string) => new URL(url).hostname
  * @returns
  */
 export const urlGoogleSearch = (query: string): string => {
-  const searchContent = encodeURIComponent(
-    `site:${urlHostnameParse(process.env.NEXT_PUBLIC_URL as string)}` +
-      ' ' +
-      query
-  )
+  const searchContent = encodeURIComponent(`site:${urlHostnameParse(process.env.NEXT_PUBLIC_URL as string)}` + ' ' + query)
 
   return `https://google.com/search?q=${searchContent}`
 }
@@ -82,9 +74,7 @@ export const cookieConsentDomain = (url: string) => {
     const parseResult = parseDomain(fromUrl(url))
     if (parseResult.type === ParseResultType.Listed) {
       const { domain, topLevelDomains } = parseResult
-      return domain && topLevelDomains
-        ? '.' + toUnicode(domain) + '.' + topLevelDomains.join('.')
-        : defaultValue
+      return domain && topLevelDomains ? '.' + toUnicode(domain) + '.' + topLevelDomains.join('.') : defaultValue
     } else {
       return defaultValue
     }

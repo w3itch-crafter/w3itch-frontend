@@ -19,18 +19,8 @@ import { NextSeo } from 'next-seo'
 import { ArticleJsonLd } from 'next-seo'
 import { seoLogo } from 'next-seo.config'
 import { useSnackbar } from 'notistack'
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
-import {
-  fetchGameRatingsCount,
-  fetchGameRatingsMine,
-  gameProjectByID,
-} from 'services'
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { fetchGameRatingsCount, fetchGameRatingsMine, gameProjectByID } from 'services'
 import stylesCommon from 'styles/common.module.scss'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'
@@ -41,10 +31,7 @@ import { SeoImages, SeoKeywords } from 'utils'
 
 import EditGame from './EditGame'
 
-const RenderMarkdown = dynamic(
-  () => import('components/RenderMarkdown/index'),
-  { ssr: false }
-)
+const RenderMarkdown = dynamic(() => import('components/RenderMarkdown/index'), { ssr: false })
 const CommentsDisqus = dynamic(() => import('components/Game/CommentsDisqus'), {
   ssr: false,
 })
@@ -70,14 +57,7 @@ const NoGame = styled.div`
   justify-content: center;
 `
 
-const GameLayout: NextPage<GameProps> = ({
-  children,
-  gameRatingsCountData,
-  pricesTokens,
-  setPricesTokens,
-  gameProject,
-  setGameProject,
-}) => {
+const GameLayout: NextPage<GameProps> = ({ children, gameRatingsCountData, pricesTokens, setPricesTokens, gameProject, setGameProject }) => {
   const router = useRouter()
   const id = router.query.id
   const { fetchTokensAddress } = useERC20Multicall()
@@ -89,14 +69,11 @@ const GameLayout: NextPage<GameProps> = ({
   // const [gameProject, setGameProject] = useState<GameEntity | null>(
   //   gameProjectData
   // )
-  const [gameRatingsCount, setGameRatingsCount] =
-    useState<number>(gameRatingsCountData)
+  const [gameRatingsCount, setGameRatingsCount] = useState<number>(gameRatingsCountData)
 
-  const [gameRatingDialogOpen, setGameRatingDialogOpen] =
-    useState<boolean>(false)
+  const [gameRatingDialogOpen, setGameRatingDialogOpen] = useState<boolean>(false)
 
-  const [gameRatingMine, setGameRatingMine] =
-    useState<Api.GameProjectsRatingResponse>()
+  const [gameRatingMine, setGameRatingMine] = useState<Api.GameProjectsRatingResponse>()
 
   const gameTitle = gamePageTitle(gameProject?.title, gameProject?.username)
 
@@ -257,13 +234,7 @@ const GameLayout: NextPage<GameProps> = ({
             property: 'keywords',
             content: SeoKeywords(
               uniq(
-                [
-                  gameProject?.title,
-                  gameProject?.username,
-                  gameProject?.gameName,
-                  gameProject?.file,
-                  gameProject?.tags.map((i) => i.label),
-                ]
+                [gameProject?.title, gameProject?.username, gameProject?.gameName, gameProject?.file, gameProject?.tags.map((i) => i.label)]
                   .flat(1)
                   .filter((item) => !!item)
               ) as string[]
@@ -275,22 +246,13 @@ const GameLayout: NextPage<GameProps> = ({
            * Because most platforms use the last image address.
            * An array of images (object) to be used by social media platforms, slack etc as a preview. If multiple supplied you can choose one when sharing. See Examples
            */
-          images: SeoImages(
-            [gameProject?.cover, gameProject?.screenshots, gameProject?.cover]
-              .flat(1)
-              .filter((item) => !!item) as string[],
-            gameTitle
-          ),
+          images: SeoImages([gameProject?.cover, gameProject?.screenshots, gameProject?.cover].flat(1).filter((item) => !!item) as string[], gameTitle),
         }}
       />
       <ArticleJsonLd
         url={process.env.NEXT_PUBLIC_URL as string}
         title={gameProject?.title || 'W3itch'}
-        images={SeoArticleJsonLdImages(
-          [gameProject?.cover, gameProject?.screenshots]
-            .flat(1)
-            .filter((item) => !!item) as string[]
-        )}
+        images={SeoArticleJsonLdImages([gameProject?.cover, gameProject?.screenshots].flat(1).filter((item) => !!item) as string[])}
         datePublished={gameProject?.createdAt as string}
         dateModified={gameProject?.updatedAt as string}
         // Warning, author url is temporarily not supported
@@ -301,60 +263,42 @@ const GameLayout: NextPage<GameProps> = ({
       />
       {gameProject ? (
         <>
-          <UserTools
-            setGameRatingDialogOpen={setGameRatingDialogOpen}
-            gameRatingMine={gameRatingMine}
-          />
+          <UserTools setGameRatingDialogOpen={setGameRatingDialogOpen} gameRatingMine={gameRatingMine} />
           <div className={`main ${styles.wrapper}`}>
             <div
               className={`${stylesCommon.inner_column} ${styles.inner_column} ${styles.size_large} family_lato`}
               id="inner_column"
               style={{ minHeight: '767px' }}
             >
-              <div
-                id="view_html_game_page_667"
-                className={`${styles.view_html_game_page} ${styles.view_game_page} page_widget direct_download ready`}
-              >
+              <div id="view_html_game_page_667" className={`${styles.view_html_game_page} ${styles.view_game_page} page_widget direct_download ready`}>
                 {children}
                 <div className={styles.columns}>
                   <div className={`${styles.left_col} ${styles.column}`}>
                     <div className={styles.row}>
                       <EditGame gameProject={gameProject} />
                     </div>
-                    <div
-                      className={`${styles.formatted_description} ${styles.user_formatted}`}
-                    >
+                    <div className={`${styles.formatted_description} ${styles.user_formatted}`}>
                       <RenderMarkdown md={gameProject.description} />
                     </div>
 
                     {!matchesMd && !isEmpty(gameProject.screenshots) && (
                       <div className={styles.row}>
-                        <Screenshots
-                          screenshots={gameProject.screenshots}
-                        ></Screenshots>
+                        <Screenshots screenshots={gameProject.screenshots}></Screenshots>
                       </div>
                     )}
 
                     <div className={styles.row}>
-                      <MoreInformation
-                        gameProject={gameProject}
-                        gameRatingsCount={gameRatingsCount}
-                      />
+                      <MoreInformation gameProject={gameProject} gameRatingsCount={gameRatingsCount} />
                     </div>
                     {gameProject.paymentMode === PaymentMode.PAID ? (
                       !isEmpty(gameProject.prices) && (
                         <div className={styles.row}>
-                          <Purchase
-                            pricesTokens={pricesTokens}
-                            refresh={refreshPricesToken}
-                          />
+                          <Purchase pricesTokens={pricesTokens} refresh={refreshPricesToken} />
                         </div>
                       )
                     ) : gameProject.paymentMode === PaymentMode.FREE ? (
                       <div className={styles.row}>
-                        <Donation
-                          donationAddress={gameProject.donationAddress || ''}
-                        />
+                        <Donation donationAddress={gameProject.donationAddress || ''} />
                       </div>
                     ) : null}
 
@@ -375,9 +319,7 @@ const GameLayout: NextPage<GameProps> = ({
                   </div>
                   {matchesMd && !isEmpty(gameProject.screenshots) && (
                     <div className={`${styles.right_col} ${styles.column}`}>
-                      <Screenshots
-                        screenshots={gameProject.screenshots}
-                      ></Screenshots>
+                      <Screenshots screenshots={gameProject.screenshots}></Screenshots>
                     </div>
                   )}
                 </div>
