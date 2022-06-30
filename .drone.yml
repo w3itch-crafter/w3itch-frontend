@@ -1,9 +1,0 @@
-kind: pipeline
-name: default
-
-steps:
-  - name: test
-    image: node
-    commands:
-      - yarn install
-      - yarn test:ci
