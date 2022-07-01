@@ -1,38 +1,35 @@
-import type { GetServerSideProps } from 'next'
-import { Fragment } from 'react'
-import { NextPageWithLayout } from 'types'
-import { parseUsernameFromHost } from 'utils'
+import type { NextPage } from 'next'
+import Head from 'next/head'
 
-import Home from './_home'
-import ProfileHome from './profile/_home'
+const Home: NextPage = () => (
+  <>
+    <Head>
+      <title>Home</title>
+    </Head>
+    <div className="permission_denied">
+      <div className="denied__wrapper">
+        <h1>404</h1>
+        <h3>
+          LOST IN <span>SPACE</span> App-Name? Hmm, looks like that page {"doesn't"} exist.
+        </h3>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://raw.githubusercontent.com/w3itch-crafter/w3itch-frontend/886309b4905cdd1df58a2d5c9bde5d0c7a21d24a/images/astronaut.svg"
+          id="astronaut"
+          alt="astronaut"
+        />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://raw.githubusercontent.com/w3itch-crafter/w3itch-frontend/886309b4905cdd1df58a2d5c9bde5d0c7a21d24a/images/planet.svg"
+          id="planet"
+          alt="planet"
+        />
+        <a href="#">
+          <button className="denied__link">Go Home</button>
+        </a>
+      </div>
+    </div>
+  </>
+)
 
-declare interface IndexProps {
-  wildcard: string | null
-}
-
-const Index: NextPageWithLayout<IndexProps> = (props) => {
-  const { wildcard } = props
-  if (wildcard) return <ProfileHome {...props} />
-  return <Home />
-}
-
-Index.getLayout = function getLayout(page: React.ReactElement) {
-  return <Fragment>{page}</Fragment>
-}
-
-export const getServerSideProps: GetServerSideProps<IndexProps> = async (
-  context
-) => {
-  const { host } = context.req.headers
-  const wildcard = parseUsernameFromHost(host)
-  if (wildcard === null) {
-    if (context?.locale !== context?.defaultLocale) {
-      context.res.writeHead(301, { Location: `/${context.locale}/games` }).end()
-    } else {
-      context.res.writeHead(301, { Location: `/games` }).end()
-    }
-  }
-  return { props: { wildcard } }
-}
-
-export default Index
+export default Home

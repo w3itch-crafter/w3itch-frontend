@@ -1,7 +1,6 @@
 import '../styles/theme.css'
 import '../styles/globals.css'
 
-import { Layout } from 'components/layout'
 import type { AppProps, NextWebVitalsMetric } from 'next/app'
 import { appWithTranslation } from 'next-i18next'
 import { event } from 'nextjs-google-analytics'
@@ -9,15 +8,9 @@ import { Fragment } from 'react'
 import { NextPageWithLayout } from 'types'
 
 import { Heads } from '../components/head'
-import { Providers } from '../components/provider'
 
 // Google Analytics
-export function reportWebVitals({
-  id,
-  name,
-  label,
-  value,
-}: NextWebVitalsMetric) {
+export function reportWebVitals({ id, name, label, value }: NextWebVitalsMetric) {
   event(name, {
     category: label === 'web-vital' ? 'Web Vitals' : 'Next.js custom metric',
     value: Math.round(name === 'CLS' ? value * 1000 : value), // values must be integers
@@ -32,12 +25,12 @@ type AppPropsWithLayout = AppProps & {
 }
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const getLayout = Component.getLayout ?? ((page) => <Layout>{page}</Layout>) // Do not change this line
+  const getLayout = Component.getLayout ?? ((page) => page) // Do not change this line
 
   return (
     <Fragment>
       <Heads />
-      <Providers>{getLayout(<Component {...pageProps} />)}</Providers>
+      {getLayout(<Component {...pageProps} />)}
     </Fragment>
   )
 }
