@@ -8,7 +8,8 @@ import GameID from './game/[id]'
 
 declare interface GameProps {
   readonly gameProjectData: GameEntity | null
-  readonly gameRatingsCountData: number
+  readonly gameRatingsCountData: number,
+  readonly gameProjectId: number
 }
 
 const GameProject: NextPage<GameProps> = (props) => {
@@ -32,13 +33,14 @@ export const getServerSideProps: GetServerSideProps<GameProps> = async (context)
       props: {
         gameProjectData,
         gameRatingsCountData,
+        gameProjectId: id,
         ...(await serverSideTranslations(context.locale as string, ['common'])),
       },
     }
   } catch (error) {
     if (error instanceof BackendError && error.statusCode === 404) {
       // If backend returns 404 show No Game on page
-      return { props: { gameProjectData: null, gameRatingsCountData: 0 } }
+      return { props: { gameProjectData: null, gameRatingsCountData: 0, gameProjectId: 0} }
     }
     // Otherwise show 404 page
     return { notFound: true }
