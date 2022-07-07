@@ -93,17 +93,11 @@ const JamCarousel: FC<JamCarouselProps> = ({ jam }) => {
           </JamCover>
           <JamInfo>
             <JamInfoTitle>
-              <a
-                href={jam.link || ''}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={jam.link || ''} target="_blank" rel="noopener noreferrer">
                 {jam.summary}
               </a>
             </JamInfoTitle>
-            <JamInfoDescription>
-              {stringSummary(jam.description || '-', 66)}
-            </JamInfoDescription>
+            <JamInfoDescription>{stringSummary(jam.description || '-', 66)}</JamInfoDescription>
           </JamInfo>
         </JamTopRow>
         <JamHosted>

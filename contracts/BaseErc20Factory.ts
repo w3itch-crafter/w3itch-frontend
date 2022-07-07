@@ -13,18 +13,8 @@ export class BaseErc20Factory extends ContractFactory {
     super(_abi, _bytecode, signer)
   }
 
-  deploy(
-    name: string,
-    symbol: string,
-    decimals: BigNumberish,
-    overrides?: Overrides
-  ): Promise<BaseErc20> {
-    return super.deploy(
-      name,
-      symbol,
-      decimals,
-      overrides || {}
-    ) as Promise<BaseErc20>
+  deploy(name: string, symbol: string, decimals: BigNumberish, overrides?: Overrides): Promise<BaseErc20> {
+    return super.deploy(name, symbol, decimals, overrides || {}) as Promise<BaseErc20>
   }
   getDeployTransaction(
     name: string,
@@ -40,10 +30,7 @@ export class BaseErc20Factory extends ContractFactory {
   connect(signer: Signer): BaseErc20Factory {
     return super.connect(signer) as BaseErc20Factory
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): BaseErc20 {
+  static connect(address: string, signerOrProvider: Signer | Provider): BaseErc20 {
     return new Contract(address, _abi, signerOrProvider) as BaseErc20
   }
 }

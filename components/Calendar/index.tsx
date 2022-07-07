@@ -157,13 +157,11 @@ type Event = {
 }
 
 const Calendar = () => {
-  const HtmlTooltip = styled(
-    ({ className, children, ...props }: TooltipProps) => (
-      <Tooltip {...props} classes={{ popper: className }}>
-        {children}
-      </Tooltip>
-    )
-  )(() => ({
+  const HtmlTooltip = styled(({ className, children, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }}>
+      {children}
+    </Tooltip>
+  ))(() => ({
     [`& .${tooltipClasses.tooltip}`]: {
       backgroundColor: 'var(--w3itch-bg2)',
       color: 'var(--w3itch-text4)',
@@ -200,11 +198,7 @@ const Calendar = () => {
   const [duration, setDuration] = useState(Number.MAX_SAFE_INTEGER)
   const filteredData = useMemo(() => {
     const now = new Date()
-    return data?.filter(
-      (x) =>
-        date.isAfter(x.end, now) &&
-        date.differenceInCalendarDays(x.end, x.start) < duration
-    )
+    return data?.filter((x) => date.isAfter(x.end, now) && date.differenceInCalendarDays(x.end, x.start) < duration)
   }, [data, duration])
   const { interval, days, mouths, hours } = useMemo(() => {
     const now = new Date()
@@ -278,9 +272,7 @@ const Calendar = () => {
               <MenuItem value={3}>Less than 3 days</MenuItem>
               <MenuItem value={7}>Less than 7 days</MenuItem>
               <MenuItem value={15}>Less than 15 days</MenuItem>
-              <MenuItem value={Number.MAX_SAFE_INTEGER}>
-                Greater than 15 days
-              </MenuItem>
+              <MenuItem value={Number.MAX_SAFE_INTEGER}>Greater than 15 days</MenuItem>
             </Select>
           </FormControl>
         </Filter>
@@ -293,10 +285,7 @@ const Calendar = () => {
           >
             <CalendarRows>
               {filteredData?.map((x, index) => {
-                const lx = date.differenceInCalendarDays(
-                  x.start,
-                  interval.start
-                )
+                const lx = date.differenceInCalendarDays(x.start, interval.start)
                 const k = date.differenceInHours(x.end, x.start)
 
                 // magic color
@@ -352,10 +341,7 @@ const Calendar = () => {
             </DayMarkers>
             <MonthMarkers>
               {mouths.map((d, index) => {
-                const lx = date.differenceInCalendarDays(
-                  date.max([d, interval.start]),
-                  interval.start
-                )
+                const lx = date.differenceInCalendarDays(date.max([d, interval.start]), interval.start)
                 const k = date.differenceInCalendarDays(
                   date.min([interval.end, date.addMonths(d, 1)]),
                   date.max([d, interval.start])

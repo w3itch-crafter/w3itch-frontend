@@ -46,7 +46,9 @@ export const urlHostnameParse = (url: string) => new URL(url).hostname
  * @returns
  */
 export const urlGoogleSearch = (query: string): string => {
-  const searchContent = encodeURIComponent(`site:${urlHostnameParse(process.env.NEXT_PUBLIC_URL as string)}` + ' ' + query)
+  const searchContent = encodeURIComponent(
+    `site:${urlHostnameParse(process.env.NEXT_PUBLIC_URL as string)}` + ' ' + query
+  )
 
   return `https://google.com/search?q=${searchContent}`
 }

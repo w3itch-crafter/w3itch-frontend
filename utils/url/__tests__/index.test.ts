@@ -1,10 +1,4 @@
-import {
-  cookieConsentDomain,
-  parseUsernameFromHost,
-  urlGame,
-  urlHostnameParse,
-  userHostUrl,
-} from '../index'
+import { cookieConsentDomain, parseUsernameFromHost, urlGame, urlHostnameParse, userHostUrl } from '../index'
 
 describe('Parse user host url', () => {
   it('Public host w3itch.io', () => {
@@ -62,8 +56,7 @@ describe('cookieConsentDomain', () => {
   })
 
   it('should support domain name', () => {
-    const url1 =
-      'https://w3itch-frontend-9hx6ipu0f-w3itch.vercel.app/zh-CN/games'
+    const url1 = 'https://w3itch-frontend-9hx6ipu0f-w3itch.vercel.app/zh-CN/games'
     const domain1 = cookieConsentDomain(url1)
 
     const url2 = 'https://w3itch-test.vercel.app/zh-CN/games'

@@ -21,11 +21,7 @@ const TokenLogo: FC<TokenLogoProps> = ({ src, symbol }) => {
       {isBad ? (
         <HelpIcon sx={{ width: 24, height: 24 }}></HelpIcon>
       ) : (
-        <Avatar
-          sx={{ width: 24, height: 24 }}
-          src={logoSrc}
-          onError={() => setIsBad(true)}
-        ></Avatar>
+        <Avatar sx={{ width: 24, height: 24 }} src={logoSrc} onError={() => setIsBad(true)}></Avatar>
       )}
     </>
   )

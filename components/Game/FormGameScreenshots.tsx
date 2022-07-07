@@ -12,10 +12,7 @@ interface Props {
   onScreenshotFilesSelect: (files?: File[]) => void | Promise<void>
 }
 
-const FormGameScreenshots: React.FC<Props> = ({
-  editorMode,
-  onScreenshotFilesSelect,
-}) => {
+const FormGameScreenshots: React.FC<Props> = ({ editorMode, onScreenshotFilesSelect }) => {
   const {
     formState: { errors },
   } = useFormContext<Game>()
@@ -24,18 +21,13 @@ const FormGameScreenshots: React.FC<Props> = ({
     <Fragment>
       <div className={styles.label}>Screenshots</div>
       <p className={styles.sub}>
-        <span className="when_default">
-          {"Screenshots will appear on your game's page."}{' '}
-        </span>
+        <span className="when_default">{"Screenshots will appear on your game's page."} </span>
         Optional but highly recommended. Upload 3 to 5 for best results.
       </p>
       <FormHelperText error={Boolean(errors?.screenshots)}>
         {(errors?.screenshots as unknown as FieldError)?.message}
       </FormHelperText>
-      <UploadGameScreenshots
-        editorMode={editorMode}
-        onScreenshotFilesSelect={onScreenshotFilesSelect}
-      />
+      <UploadGameScreenshots editorMode={editorMode} onScreenshotFilesSelect={onScreenshotFilesSelect} />
     </Fragment>
   )
 }

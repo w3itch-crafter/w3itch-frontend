@@ -14,19 +14,12 @@ declare interface GameProps {
   readonly gameRatingsCountData: number
 }
 
-const GameID: NextPage<GameProps> = ({
-  gameProjectData,
-  gameRatingsCountData,
-}) => {
-  const [gameProject, setGameProject] = useState<GameEntity | null>(
-    gameProjectData
-  )
+const GameID: NextPage<GameProps> = ({ gameProjectData, gameRatingsCountData }) => {
+  const [gameProject, setGameProject] = useState<GameEntity | null>(gameProjectData)
   // hold unlock token
   const [pricesTokens, setPricesTokens] = useState<TokenDetail[]>([])
 
-  const IsEmbedWidget =
-    gameProject?.kind === GameEngine.RM2K3E ||
-    gameProject?.kind === GameEngine.HTML
+  const IsEmbedWidget = gameProject?.kind === GameEngine.RM2K3E || gameProject?.kind === GameEngine.HTML
 
   const IsEmbedWidgetMinetest = gameProject?.kind === GameEngine.MINETEST
 
@@ -55,9 +48,7 @@ const GameID: NextPage<GameProps> = ({
   )
 }
 
-export const getServerSideProps: GetServerSideProps<GameProps> = async (
-  ctx
-) => {
+export const getServerSideProps: GetServerSideProps<GameProps> = async (ctx) => {
   const id = ctx.query.id
   try {
     const gameProjectResult = await gameProjectByID(Number(id))

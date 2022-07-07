@@ -17,8 +17,7 @@ const CommentsDisqus = dynamic(() => import('components/Game/CommentsDisqus'), {
 
 const Admin = () => {
   const { enqueueSnackbar } = useSnackbar()
-  const [algoliaInitializationLoading, setAlgoliaInitializationLoading] =
-    useState<boolean>(false)
+  const [algoliaInitializationLoading, setAlgoliaInitializationLoading] = useState<boolean>(false)
   const wallet = useWallet()
 
   useMetamask()
@@ -64,10 +63,7 @@ const Admin = () => {
           >
             sendTransaction
           </Button>
-          <Button
-            variant="contained"
-            onClick={() => wallet.connect('injected')}
-          >
+          <Button variant="contained" onClick={() => wallet.connect('injected')}>
             MetaMask Connect
           </Button>
           <Button variant="contained" onClick={() => wallet.reset()}>

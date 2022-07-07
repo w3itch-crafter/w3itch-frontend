@@ -27,10 +27,7 @@ interface Props {
   // setFiles: Dispatch<SetStateAction<File[] | undefined>>
 }
 
-export const UploadGameScreenshots: FC<Props> = ({
-  editorMode,
-  onScreenshotFilesSelect,
-}) => {
+export const UploadGameScreenshots: FC<Props> = ({ editorMode, onScreenshotFilesSelect }) => {
   const [screenshotsFiles, setScreenshotsFiles] = useState<FileWithPath[]>()
   const [screenshotsUrl, setScreenshotsUrl] = useState<string[]>([])
   const { getValues, watch } = useFormContext<Game>()
@@ -77,11 +74,7 @@ export const UploadGameScreenshots: FC<Props> = ({
         <WrapperItem>
           {screenshotsUrl?.map((screenshot, index) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={`${index}-${screenshot}`}
-              src={screenshot}
-              alt="screenshot"
-            />
+            <img key={`${index}-${screenshot}`} src={screenshot} alt="screenshot" />
           ))}
         </WrapperItem>
       ) : null}

@@ -19,11 +19,7 @@ export function useTopRightSnackbar() {
 export function useTopCenterSnackbar() {
   const { enqueueSnackbar } = useSnackbar()
   const showSnackbar = useCallback(
-    (
-      message: string,
-      variant: VariantType = 'info',
-      options?: OptionsObject
-    ) => {
+    (message: string, variant: VariantType = 'info', options?: OptionsObject) => {
       return enqueueSnackbar(message, {
         variant,
         anchorOrigin: { vertical: 'top', horizontal: 'center' },

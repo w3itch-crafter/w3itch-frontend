@@ -28,17 +28,11 @@ declare module 'ical.js' {
     public getAllProperties(name?: string): Property[]
 
     public addProperty(property: Property): Property
-    public addPropertyWithValue(
-      name: string,
-      value: string | number | object
-    ): Property
+    public addPropertyWithValue(name: string, value: string | number | object): Property
 
     public hasProperty(name?: string): boolean
 
-    public updatePropertyWithValue(
-      name: string,
-      value: string | number | object
-    ): Property
+    public updatePropertyWithValue(name: string, value: string | number | object): Property
 
     public removeAllProperties(name?: string): boolean
 
@@ -156,11 +150,7 @@ declare module 'ical.js' {
   export class Timezone {
     public static utcTimezone: Timezone
     public static localTimezone: Timezone
-    public static convert_time(
-      tt: Time,
-      fromZone: Timezone,
-      toZone: Timezone
-    ): Time
+    public static convert_time(tt: Time, fromZone: Timezone, toZone: Timezone): Time
 
     public tzid: string
     public component: Component
@@ -186,14 +176,7 @@ declare module 'ical.js' {
     public static remove(tzid: string): Timezone | null
   }
 
-  export type FrequencyValues =
-    | 'YEARLY'
-    | 'MONTHLY'
-    | 'WEEKLY'
-    | 'DAILY'
-    | 'HOURLY'
-    | 'MINUTELY'
-    | 'SECONDLY'
+  export type FrequencyValues = 'YEARLY' | 'MONTHLY' | 'WEEKLY' | 'DAILY' | 'HOURLY' | 'MINUTELY' | 'SECONDLY'
 
   export enum WeekDay {
     SU = 1,

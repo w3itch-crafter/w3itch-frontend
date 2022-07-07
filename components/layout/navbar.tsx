@@ -100,13 +100,7 @@ export function Navbar() {
           <Fragment>
             <HeaderButtons sx={{ display: { xs: 'none', md: 'flex' } }}>
               {navLinks.map(({ href, name, blank }) => (
-                <NavLink
-                  href={href}
-                  name={name}
-                  active={isHref(href)}
-                  blank={blank}
-                  key={href}
-                />
+                <NavLink href={href} name={name} active={isHref(href)} blank={blank} key={href} />
               ))}
             </HeaderButtons>
           </Fragment>
@@ -129,11 +123,7 @@ export function Navbar() {
         {/* @TODO */}
         {/* Don't know where re-render is triggered No transition effect */}
         {/* Found that Navbar has too many definitions, put it on hold for the time being */}
-        <NavBarDrawer
-          navLinksDrawer={navLinksDrawer}
-          setNavLinksDrawer={setNavLinksDrawer}
-          navLinks={navLinks}
-        />
+        <NavBarDrawer navLinksDrawer={navLinksDrawer} setNavLinksDrawer={setNavLinksDrawer} navLinks={navLinks} />
       </PrimaryHeader>
     </HeaderWidget>
   )
@@ -164,8 +154,7 @@ function NavLink({ href, name, active, blank }: NavLinkProps) {
     white-space: nowrap;
     box-sizing: border-box;
     height: 100%;
-    border-bottom: 4px solid
-      ${(props) => (props.active ? '#FF2449' : 'transparent')};
+    border-bottom: 4px solid ${(props) => (props.active ? '#FF2449' : 'transparent')};
     border-top: 4px solid transparent;
   `
   const target = blank ? '_blank' : undefined

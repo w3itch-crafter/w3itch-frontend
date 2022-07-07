@@ -12,10 +12,7 @@ export const SeoDescription = (description: string, length = 100) => {
     return ''
   }
   try {
-    const result =
-      description.length >= 100
-        ? description.slice(0, length - 3) + '...'
-        : description
+    const result = description.length >= 100 ? description.slice(0, length - 3) + '...' : description
 
     const regRule = /\n|\r\n/g
     return result.replace(regRule, '')
@@ -55,7 +52,5 @@ export const SeoArticleJsonLdImages = (images: string[]): string[] => {
  * @returns
  */
 export const SeoKeywords = (keywords: string[]): string => {
-  return keywords && keywords.length
-    ? keywords.join(' ,') + ' ,' + seoKeywords
-    : seoKeywords
+  return keywords && keywords.length ? keywords.join(' ,') + ' ,' + seoKeywords : seoKeywords
 }

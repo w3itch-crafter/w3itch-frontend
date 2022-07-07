@@ -13,11 +13,7 @@ export declare interface SortOptionsProps {
   children: React.ReactNode
 }
 
-export function SortOptions({
-  sortKey,
-  className,
-  children,
-}: SortOptionsProps) {
+export function SortOptions({ sortKey, className, children }: SortOptionsProps) {
   const Container = styled.div`
     padding-right: 25px;
     padding-left: 20px;
@@ -60,9 +56,7 @@ export function SortOptions({
         <div>Sort by</div>
       </Label>
       <Sorts>
-        <SortOptionsContext.Provider value={context}>
-          {children}
-        </SortOptionsContext.Provider>
+        <SortOptionsContext.Provider value={context}>{children}</SortOptionsContext.Provider>
       </Sorts>
     </Container>
   )

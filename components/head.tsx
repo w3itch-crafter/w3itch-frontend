@@ -1,10 +1,5 @@
 import Head from 'next/head'
-import {
-  BreadcrumbJsonLd,
-  DefaultSeo,
-  LogoJsonLd,
-  SiteLinksSearchBoxJsonLd,
-} from 'next-seo'
+import { BreadcrumbJsonLd, DefaultSeo, LogoJsonLd, SiteLinksSearchBoxJsonLd } from 'next-seo'
 import { PotentialAction } from 'next-seo/lib/jsonld/siteLinksSearchBox'
 import { ItemListElements } from 'next-seo/lib/types'
 import { GoogleAnalytics, usePagesViews } from 'nextjs-google-analytics'
@@ -21,9 +16,7 @@ export function Heads() {
       queryInput: 'search_term_string',
     },
     {
-      target: `android-app://com.example/https/${urlHostnameParse(
-        publicUrl
-      )}/search/?q`,
+      target: `android-app://com.example/https/${urlHostnameParse(publicUrl)}/search/?q`,
       queryInput: 'search_term_string',
     },
   ]

@@ -1,9 +1,4 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  TextField,
-} from '@mui/material'
+import { FormControl, FormHelperText, FormLabel, TextField } from '@mui/material'
 import React from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
@@ -32,12 +27,8 @@ const FormGameFile: React.FC<Props> = ({ editorMode, onGameFileSelect }) => {
       render={({ field }) => (
         <FormControl fullWidth error={Boolean(errors.gameName)}>
           <FormLabel id="form-genre">Uploads</FormLabel>
-          <section
-            data-label="Tip"
-            className={`${styles.hint} ${styles.butler_tip}`}
-          >
-            File size limit: 1 GB. Game name doesn&apos;t allow starts or ends
-            with _ or -.
+          <section data-label="Tip" className={`${styles.hint} ${styles.butler_tip}`}>
+            File size limit: 1 GB. Game name doesn&apos;t allow starts or ends with _ or -.
           </section>
           <UploadGame onGameFileSelect={onGameFileSelect} />
           <TextField
@@ -48,9 +39,7 @@ const FormGameFile: React.FC<Props> = ({ editorMode, onGameFileSelect }) => {
             }}
             {...field}
           />
-          {editorMode === EditorMode.EDIT && (
-            <FormGameName>{getValues('gameName')}</FormGameName>
-          )}
+          {editorMode === EditorMode.EDIT && <FormGameName>{getValues('gameName')}</FormGameName>}
           <FormHelperText>{errors?.gameName?.message}</FormHelperText>
         </FormControl>
       )}

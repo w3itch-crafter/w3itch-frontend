@@ -1,10 +1,5 @@
 import assert from 'assert'
-import {
-  CHAIN_IDS_TO_NAMES,
-  CHAIN_INFO,
-  ChainInfo,
-  SupportedChainId,
-} from 'constants/chains'
+import { CHAIN_IDS_TO_NAMES, CHAIN_INFO, ChainInfo, SupportedChainId } from 'constants/chains'
 import { stringSlice } from 'utils'
 
 export function getChainIdFromName(name: string): number | undefined {
@@ -26,11 +21,7 @@ export function getChainInfoFromId(id: string | number): ChainInfo | undefined {
   return CHAIN_INFO[id as SupportedChainId]
 }
 
-export function getSwapURL(
-  id: string | number,
-  inputCurrency?: string,
-  outputCurrency?: string
-): string | undefined {
+export function getSwapURL(id: string | number, inputCurrency?: string, outputCurrency?: string): string | undefined {
   const chainInfo = getChainInfoFromId(id)
   if (!chainInfo) return undefined
   const { name, swapLink } = chainInfo
@@ -45,10 +36,7 @@ export function getRpcUrl(id: string | number): string | undefined {
   if (!chainInfo) return undefined
   if (chainInfo.infuraNameKey) {
     const { NEXT_PUBLIC_INFURA_API_KEY } = process.env
-    assert(
-      NEXT_PUBLIC_INFURA_API_KEY,
-      new TypeError('NEXT_PUBLIC_INFURA_API_KEY not set')
-    )
+    assert(NEXT_PUBLIC_INFURA_API_KEY, new TypeError('NEXT_PUBLIC_INFURA_API_KEY not set'))
     return `https://${chainInfo.infuraNameKey}.infura.io/v3/${NEXT_PUBLIC_INFURA_API_KEY}`
   }
   if (chainInfo.rpcUrl) return chainInfo.rpcUrl

@@ -69,13 +69,7 @@ const UserProfile: NextPage<UserProfileProps> = ({ user, games }) => {
             <h3>Creator of</h3>
             <StyledGameCarousel>
               {games.map((game, index) => (
-                <GameCell
-                  small
-                  key={`${game.id}-${index}`}
-                  game={game}
-                  width={220}
-                  height={174}
-                />
+                <GameCell small key={`${game.id}-${index}`} game={game} width={220} height={174} />
               ))}
             </StyledGameCarousel>
           </Padded>
@@ -85,9 +79,7 @@ const UserProfile: NextPage<UserProfileProps> = ({ user, games }) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps<UserProfileProps> = async (
-  context
-) => {
+export const getServerSideProps: GetServerSideProps<UserProfileProps> = async (context) => {
   const { username } = context.query
   const user = await getUser(username as string)
   const res = await getGamesMine({

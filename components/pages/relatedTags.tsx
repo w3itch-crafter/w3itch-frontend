@@ -1,12 +1,7 @@
 import styled from '@emotion/styled'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import Select, {
-  ActionMeta,
-  GroupBase,
-  SingleValue,
-  StylesConfig,
-} from 'react-select'
+import Select, { ActionMeta, GroupBase, SingleValue, StylesConfig } from 'react-select'
 import { TagOption } from 'types'
 
 export declare interface RelatedTagsProps {
@@ -96,10 +91,7 @@ export function RelatedTags({ tags, placeholder }: RelatedTagsProps) {
     const query = { ...router.query, page: '1', tags: [...selectedTags] }
     router.push({ pathname, query })
   }
-  const handleSelectChange = (
-    newValue: SingleValue<TagOption>,
-    actionMeta: ActionMeta<TagOption>
-  ) => {
+  const handleSelectChange = (newValue: SingleValue<TagOption>, actionMeta: ActionMeta<TagOption>) => {
     if (newValue && actionMeta.action === 'select-option') {
       selectedTags.add(newValue.name)
       pushNewRoute()

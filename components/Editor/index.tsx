@@ -6,14 +6,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { useThemeReRender } from 'hooks'
 import { useTheme } from 'next-themes'
-import {
-  Dispatch,
-  FC,
-  MutableRefObject,
-  SetStateAction,
-  useEffect,
-  useRef,
-} from 'react'
+import { Dispatch, FC, MutableRefObject, SetStateAction, useEffect, useRef } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { ThemeMode } from 'types/enum'
 import { getEditorTheme } from 'utils'

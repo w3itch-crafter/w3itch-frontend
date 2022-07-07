@@ -25,10 +25,7 @@ function processAccountInfo(accounts: AccountEntity[] | null): AccountEntity[] {
   })
 }
 
-function authenticationReducer(
-  state: AuthenticationState,
-  action: AuthenticationAction
-): AuthenticationState {
+function authenticationReducer(state: AuthenticationState, action: AuthenticationAction): AuthenticationState {
   switch (action.type) {
     case 'LOGIN': {
       const account = processAccountInfo(action.payload.account)
@@ -68,14 +65,7 @@ declare interface AuthenticationProps {
 }
 
 export function AuthenticationProvider({ children }: AuthenticationProps) {
-  const [state, dispatch] = React.useReducer(
-    authenticationReducer,
-    initialState
-  )
+  const [state, dispatch] = React.useReducer(authenticationReducer, initialState)
 
-  return (
-    <AuthenticationContext.Provider value={{ state, dispatch }}>
-      {children}
-    </AuthenticationContext.Provider>
-  )
+  return <AuthenticationContext.Provider value={{ state, dispatch }}>{children}</AuthenticationContext.Provider>
 }

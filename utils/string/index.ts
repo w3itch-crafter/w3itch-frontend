@@ -20,8 +20,7 @@ export const enumWord = (word: string): string => {
  * @param words
  * @returns
  */
-export const enumWords = (words: string[]) =>
-  words.map((word: string) => enumWord(word))
+export const enumWords = (words: string[]) => words.map((word: string) => enumWord(word))
 
 /**
  * string Slice

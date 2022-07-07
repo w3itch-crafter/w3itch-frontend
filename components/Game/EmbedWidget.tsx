@@ -37,11 +37,10 @@ interface Props {
 
 const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
   const ref = useRef(null)
-  const { iosFullscreen, isFullscreen, handleFullscreen } =
-    useFullscreenCustomization({
-      ref,
-      keyboardLock: ['Escape'],
-    })
+  const { iosFullscreen, isFullscreen, handleFullscreen } = useFullscreenCustomization({
+    ref,
+    keyboardLock: ['Escape'],
+  })
   const { holdUnlock, handleUnlock } = useHoldUnlock({
     game: gameProject,
     token: pricesToken,
@@ -72,12 +71,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
     <div className={`${styles.html_embed_widget} ${styles.embed_wrapper}`}>
       <Wrapper cover={gameProject.cover}>
         {runGameFlag ? (
-          <div
-            className={`${styles.iframe_wrapper}${
-              iosFullscreen ? ' ' + styles.open : ''
-            }`}
-            ref={ref}
-          >
+          <div className={`${styles.iframe_wrapper}${iosFullscreen ? ' ' + styles.open : ''}`} ref={ref}>
             <iframe
               style={{ width: '100%', height: '100%' }}
               frameBorder="0"
@@ -105,12 +99,9 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
               {holdUnlock
                 ? isEmpty(pricesToken) || !pricesToken
                   ? `Need to hold Token`
-                  : `Need to hold ${balanceDecimal(
-                      utils.formatUnits(
-                        pricesToken.amount,
-                        pricesToken.decimals
-                      )
-                    )} ${pricesToken.symbol}`
+                  : `Need to hold ${balanceDecimal(utils.formatUnits(pricesToken.amount, pricesToken.decimals))} ${
+                      pricesToken.symbol
+                    }`
                 : 'Play'}
             </LoadingButton>
           </div>

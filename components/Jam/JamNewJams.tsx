@@ -43,11 +43,7 @@ const JamNewJams = () => {
     try {
       const result = await getCalendar()
       // console.log('result', result)
-      const calendarData = compose(
-        calendarSortAsc,
-        calendarNewJams,
-        calendarFormatData
-      )(result?.data)
+      const calendarData = compose(calendarSortAsc, calendarNewJams, calendarFormatData)(result?.data)
 
       // console.log('calendarData', calendarData)
       setNewJams(calendarData)

@@ -37,9 +37,7 @@ const ErrorMessage = styled.span<Pick<InputRowProps, 'invalid' | 'disabled'>>`
   opacity: ${(p) => (p.invalid && !p.disabled ? 1 : 0)};
   color: var(--w3itch-primary1);
 `
-const Input = styled.input<
-  Pick<InputRowProps, 'invalid' | 'center' | 'disabled' | 'preview'>
->`
+const Input = styled.input<Pick<InputRowProps, 'invalid' | 'center' | 'disabled' | 'preview'>>`
   box-sizing: border-box;
   max-width: 526px;
   width: 100%;
@@ -57,10 +55,7 @@ const Input = styled.input<
     background-color: var(--w3itch-bg1);
     opacity: 0.5;
   }
-  ${(p) =>
-    p.invalid &&
-    !p.disabled &&
-    `border-color: var(--w3itch-primary1); color: var(--w3itch-primary1);`}
+  ${(p) => p.invalid && !p.disabled && `border-color: var(--w3itch-primary1); color: var(--w3itch-primary1);`}
   ${(p) => p.center && `text-align: center;`}
     ${(p) => p.preview && `border: none; font-size: 14px;`}
 `

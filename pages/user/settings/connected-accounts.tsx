@@ -4,26 +4,13 @@ import Modal from '@mui/material/Modal'
 import { SxProps, Theme } from '@mui/material/styles'
 import { LoginChooseButton, RedButton } from 'components/buttons'
 import { InputRow } from 'components/forms'
-import {
-  CloseIcon,
-  DiscordIcon,
-  EthereumIcon,
-  GitHubIcon,
-} from 'components/icons'
+import { CloseIcon, DiscordIcon, EthereumIcon, GitHubIcon } from 'components/icons'
 import { ConnectWallet } from 'components/pages'
 import { AuthenticationContext } from 'context'
 import { useAccountInfo, useTopRightSnackbar } from 'hooks'
 import { useRouter } from 'next/router'
 import { Fragment, useCallback, useContext, useState } from 'react'
-import {
-  bindDiscord,
-  bindGitHub,
-  bindWallet,
-  getMine,
-  unbindDiscord,
-  unbindGitHub,
-  unbindWallet,
-} from 'services'
+import { bindDiscord, bindGitHub, bindWallet, getMine, unbindDiscord, unbindGitHub, unbindWallet } from 'services'
 import { AccountEntity, LoginMethod, NextPageWithLayout } from 'types'
 import { useWallet } from 'use-wallet'
 import { Wallet } from 'use-wallet/dist/cjs/types'
@@ -67,15 +54,11 @@ const loginMethods: Record<LoginMethod, string> = {
   discord: 'Discord',
 }
 
-const renderText = (
-  platform: LoginMethod,
-  account?: AccountEntity | null
-): string => {
+const renderText = (platform: LoginMethod, account?: AccountEntity | null): string => {
   const commonText = ` ${loginMethods[platform]} account`
   if (!account) return `Bind ${commonText}`
   const { accountId } = account
-  const accountText =
-    platform === 'metamask' ? shortAddress(accountId) : accountId
+  const accountText = platform === 'metamask' ? shortAddress(accountId) : accountId
   return `Unbind ${commonText} (${accountText})`
 }
 
@@ -128,12 +111,8 @@ const ConnectedAccounts: NextPageWithLayout = () => {
       if (hasStarted) return
       try {
         setHasStarted(true)
-        showSnackbar(
-          'Your wallet will show you "Signature Request" message that you need to sign.'
-        )
-        showSnackbar(
-          'If your wallet not response for long time, please refresh this page.'
-        )
+        showSnackbar('Your wallet will show you "Signature Request" message that you need to sign.')
+        showSnackbar('If your wallet not response for long time, please refresh this page.')
         await bindWallet(wallet)
         await updateMineInfo()
         setModalOpen(false)
@@ -172,27 +151,15 @@ const ConnectedAccounts: NextPageWithLayout = () => {
     <Fragment>
       <h2>Connected accounts</h2>
       <OAuthContainer>
-        <LoginChooseButton
-          size="small"
-          color="#716b94"
-          onClick={() => handleButtonClick('metamask')}
-        >
+        <LoginChooseButton size="small" color="#716b94" onClick={() => handleButtonClick('metamask')}>
           <EthereumIcon size={32} />
           {renderText('metamask', metamask)}
         </LoginChooseButton>
-        <LoginChooseButton
-          size="small"
-          color="#161614"
-          onClick={() => handleButtonClick('github')}
-        >
+        <LoginChooseButton size="small" color="#161614" onClick={() => handleButtonClick('github')}>
           <GitHubIcon size={32} />
           {renderText('github', github)}
         </LoginChooseButton>
-        <LoginChooseButton
-          size="small"
-          color="#5865F2"
-          onClick={() => handleButtonClick('discord')}
-        >
+        <LoginChooseButton size="small" color="#5865F2" onClick={() => handleButtonClick('discord')}>
           <DiscordIcon size={32} />
           {renderText('discord', discord)}
         </LoginChooseButton>
@@ -208,15 +175,8 @@ const ConnectedAccounts: NextPageWithLayout = () => {
           {!isConnected && <ConnectWallet />}
           {isConnected && (
             <Fragment>
-              <InputRow
-                disabled
-                label="Wallet account"
-                value={wallet.account || ''}
-              />
-              <RedButton
-                disabled={hasStarted}
-                onClick={() => handleBindWallet(wallet)}
-              >
+              <InputRow disabled label="Wallet account" value={wallet.account || ''} />
+              <RedButton disabled={hasStarted} onClick={() => handleBindWallet(wallet)}>
                 Bind
               </RedButton>
             </Fragment>

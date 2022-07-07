@@ -2,12 +2,7 @@
 // --- DIDKit tooling to verify credentials
 // --- Passport SDK Packages
 import { PassportReader } from '@gitcoinco/passport-sdk-reader'
-import {
-  DIDKitLib,
-  Passport,
-  Stamp,
-  VerifiableCredential,
-} from '@gitcoinco/passport-sdk-types'
+import { DIDKitLib, Passport, Stamp, VerifiableCredential } from '@gitcoinco/passport-sdk-types'
 import * as DIDKit from '@spruceid/didkit-wasm'
 
 // --- PassportVerifier - Read and verify the content of a Passport
@@ -51,11 +46,7 @@ export class PassportVerifier {
         stamps: await Promise.all(
           stamps.map(async (stamp: Stamp) => {
             // return the stamp with verifications in place
-            return (await this.verifyStamp(
-              address,
-              stamp,
-              additionalStampChecks
-            )) as Stamp
+            return (await this.verifyStamp(address, stamp, additionalStampChecks)) as Stamp
           })
         ),
       } as Passport
@@ -75,13 +66,10 @@ export class PassportVerifier {
       stamp.verified = true
 
       // extract the stamps address
-      const stampAddress = stamp.credential.credentialSubject.id
-        .replace('did:pkh:eip155:1:', '')
-        .toLowerCase()
+      const stampAddress = stamp.credential.credentialSubject.id.replace('did:pkh:eip155:1:', '').toLowerCase()
 
       // add verification stemp for the given address
-      stamp.verified =
-        stampAddress !== address.toLowerCase() ? false : stamp.verified
+      stamp.verified = stampAddress !== address.toLowerCase() ? false : stamp.verified
 
       // carryout additional verification check
       if (stamp.verified && additionalStampChecks) {
@@ -111,10 +99,7 @@ export class PassportVerifier {
       try {
         // parse the result of attempting to verify
         const verify = JSON.parse(
-          await this._DIDKit.verifyCredential(
-            JSON.stringify(credential),
-            `{"proofPurpose":"${proof.proofPurpose}"}`
-          )
+          await this._DIDKit.verifyCredential(JSON.stringify(credential), `{"proofPurpose":"${proof.proofPurpose}"}`)
         ) as { checks: string[]; warnings: string[]; errors: string[] }
 
         // did we get any errors when we attempted to verify?

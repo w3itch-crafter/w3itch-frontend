@@ -79,9 +79,7 @@ const OAuth: NextPage<OAuthProps> = ({ success, code, method }: OAuthProps) => {
     </Fragment>
   )
   const [registerData, setRegisterData] = useState<RegisterData>(defaultData)
-  const [profileUrl, setProfileUrl] = useState<string>(
-    'https://username.w3itch.io/'
-  )
+  const [profileUrl, setProfileUrl] = useState<string>('https://username.w3itch.io/')
   const [invalidData, setInvalidData] = useState<Partial<InvalidData>>({})
   const [hasStarted, setHasStarted] = useState(false)
   const showSnackbar = useTopRightSnackbar()
@@ -91,8 +89,7 @@ const OAuth: NextPage<OAuthProps> = ({ success, code, method }: OAuthProps) => {
     const value = target.type === 'checkbox' ? target.checked : target.value
     const name = target.name
     setRegisterData({ ...registerData, [name]: value })
-    if (name === 'username')
-      setProfileUrl(userHostUrl(String(value).toLowerCase()))
+    if (name === 'username') setProfileUrl(userHostUrl(String(value).toLowerCase()))
     setInvalidData({})
   }
   const checkRegisterData = async () => {
@@ -131,9 +128,7 @@ const OAuth: NextPage<OAuthProps> = ({ success, code, method }: OAuthProps) => {
           <Padded>
             {!isOAuthSuccess && (
               <Fragment>
-                <ErrorTitle>
-                  {t('May be due to the following reasons:')}
-                </ErrorTitle>
+                <ErrorTitle>{t('May be due to the following reasons:')}</ErrorTitle>
                 <ErrorList>
                   {code === '400' && code400}
                   {code === '401' && code401}
@@ -176,9 +171,7 @@ const OAuth: NextPage<OAuthProps> = ({ success, code, method }: OAuthProps) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps<OAuthProps> = async (
-  context
-) => {
+export const getServerSideProps: GetServerSideProps<OAuthProps> = async (context) => {
   const { success, code, method, service } = context.query as OAuthProps
   const isOAuthSuccess = success === 'true' && code === '200'
 

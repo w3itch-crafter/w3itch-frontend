@@ -42,17 +42,7 @@ export const linkDomainParser = (url: string): string => {
  * open window
  * @param param0
  */
-export const openWindow = ({
-  w,
-  h,
-  title,
-  url,
-}: {
-  w: number
-  h: number
-  title: string
-  url: string
-}) => {
+export const openWindow = ({ w, h, title, url }: { w: number; h: number; title: string; url: string }) => {
   // https://stackoverflow.com/questions/4068373/center-a-popup-window-on-screen
 
   // Fixes dual-screen position
@@ -61,26 +51,15 @@ export const openWindow = ({
   const dualScreenLeft = window.screenLeft || window.screenX
   const dualScreenTop = window.screenTop || window.screenY
 
-  const width =
-    window.innerWidth ||
-    document.documentElement.clientWidth ||
-    document.body.clientWidth ||
-    screen.width
+  const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || screen.width
   const height =
-    window.innerHeight ||
-    document.body.clientHeight ||
-    document.documentElement.clientHeight ||
-    screen.height
+    window.innerHeight || document.body.clientHeight || document.documentElement.clientHeight || screen.height
 
   const systemZoom = width / window.screen.availWidth
   const left = (width - w) / 2 / systemZoom + dualScreenLeft
   const top = (height - h) / 2 / systemZoom + dualScreenTop
 
-  window.open(
-    url,
-    title,
-    `width=${w / systemZoom},height=${h / systemZoom},top=${top},left=${left}`
-  )
+  window.open(url, title, `width=${w / systemZoom},height=${h / systemZoom},top=${top},left=${left}`)
 }
 
 /**

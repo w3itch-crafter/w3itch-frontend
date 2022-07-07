@@ -46,9 +46,8 @@ const CookieConsent = () => {
             Your privacy
           </Typography>
           <Typography variant="body2" gutterBottom>
-            By clicking “Accept all cookies”, you agree W3itch can store cookies
-            on your device and disclose information in accordance with our
-            &nbsp;<Link href="/comment-policy">Cookie Policy</Link>.
+            By clicking “Accept all cookies”, you agree W3itch can store cookies on your device and disclose information
+            in accordance with our &nbsp;<Link href="/comment-policy">Cookie Policy</Link>.
           </Typography>
           <Button
             size="small"

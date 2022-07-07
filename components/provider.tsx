@@ -12,9 +12,9 @@ import { getMuiTheme, getRpcUrl } from 'utils'
 
 import store from '../store/store'
 
-export const WalletSupportedRpcUrls = WalletSupportedChainIds.map(
-  (chainId) => ({ [`${chainId}`]: getRpcUrl(chainId) })
-).reduce((result, current) => ({ ...result, ...current }), {})
+export const WalletSupportedRpcUrls = WalletSupportedChainIds.map((chainId) => ({
+  [`${chainId}`]: getRpcUrl(chainId),
+})).reduce((result, current) => ({ ...result, ...current }), {})
 
 type ProvidersProps = {
   children: React.ReactNode
@@ -22,9 +22,7 @@ type ProvidersProps = {
 
 function MuiThemeProviderWrapper({ children }: ProvidersProps) {
   const { resolvedTheme } = useTheme()
-  const [activeMuiTheme, setActiveMuiTheme] = useState(
-    getMuiTheme(ThemeMode.Light)
-  )
+  const [activeMuiTheme, setActiveMuiTheme] = useState(getMuiTheme(ThemeMode.Light))
 
   useEffect(() => {
     setActiveMuiTheme(getMuiTheme(resolvedTheme as ThemeMode))

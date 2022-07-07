@@ -33,59 +33,29 @@ export interface ERC20Interface extends utils.Interface {
     'transferFrom(address,address,uint256)': FunctionFragment
   }
 
-  encodeFunctionData(
-    functionFragment: 'allowance',
-    values: [string, string]
-  ): string
-  encodeFunctionData(
-    functionFragment: 'approve',
-    values: [string, BigNumberish]
-  ): string
+  encodeFunctionData(functionFragment: 'allowance', values: [string, string]): string
+  encodeFunctionData(functionFragment: 'approve', values: [string, BigNumberish]): string
   encodeFunctionData(functionFragment: 'balanceOf', values: [string]): string
   encodeFunctionData(functionFragment: 'decimals', values?: undefined): string
-  encodeFunctionData(
-    functionFragment: 'decreaseAllowance',
-    values: [string, BigNumberish]
-  ): string
-  encodeFunctionData(
-    functionFragment: 'increaseAllowance',
-    values: [string, BigNumberish]
-  ): string
+  encodeFunctionData(functionFragment: 'decreaseAllowance', values: [string, BigNumberish]): string
+  encodeFunctionData(functionFragment: 'increaseAllowance', values: [string, BigNumberish]): string
   encodeFunctionData(functionFragment: 'name', values?: undefined): string
   encodeFunctionData(functionFragment: 'symbol', values?: undefined): string
-  encodeFunctionData(
-    functionFragment: 'totalSupply',
-    values?: undefined
-  ): string
-  encodeFunctionData(
-    functionFragment: 'transfer',
-    values: [string, BigNumberish]
-  ): string
-  encodeFunctionData(
-    functionFragment: 'transferFrom',
-    values: [string, string, BigNumberish]
-  ): string
+  encodeFunctionData(functionFragment: 'totalSupply', values?: undefined): string
+  encodeFunctionData(functionFragment: 'transfer', values: [string, BigNumberish]): string
+  encodeFunctionData(functionFragment: 'transferFrom', values: [string, string, BigNumberish]): string
 
   decodeFunctionResult(functionFragment: 'allowance', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'balanceOf', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'decimals', data: BytesLike): Result
-  decodeFunctionResult(
-    functionFragment: 'decreaseAllowance',
-    data: BytesLike
-  ): Result
-  decodeFunctionResult(
-    functionFragment: 'increaseAllowance',
-    data: BytesLike
-  ): Result
+  decodeFunctionResult(functionFragment: 'decreaseAllowance', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'increaseAllowance', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'name', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'symbol', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'totalSupply', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'transfer', data: BytesLike): Result
-  decodeFunctionResult(
-    functionFragment: 'transferFrom',
-    data: BytesLike
-  ): Result
+  decodeFunctionResult(functionFragment: 'transferFrom', data: BytesLike): Result
 
   events: {
     'Approval(address,address,uint256)': EventFragment
@@ -103,10 +73,7 @@ export type ApprovalEvent = TypedEvent<
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>
 
-export type TransferEvent = TypedEvent<
-  [string, string, BigNumber],
-  { from: string; to: string; value: BigNumber }
->
+export type TransferEvent = TypedEvent<[string, string, BigNumber], { from: string; to: string; value: BigNumber }>
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>
 
@@ -124,13 +91,9 @@ export interface ERC20 extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TEvent>>
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>
+  listeners<TEvent extends TypedEvent>(eventFilter?: TypedEventFilter<TEvent>): Array<TypedListener<TEvent>>
   listeners(eventName?: string): Array<Listener>
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this
+  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this
   removeAllListeners(eventName?: string): this
   off: OnEvent<this>
   on: OnEvent<this>
@@ -138,11 +101,7 @@ export interface ERC20 extends BaseContract {
   removeListener: OnEvent<this>
 
   functions: {
-    allowance(
-      owner: string,
-      spender: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>
+    allowance(owner: string, spender: string, overrides?: CallOverrides): Promise<[BigNumber]>
 
     approve(
       spender: string,
@@ -186,11 +145,7 @@ export interface ERC20 extends BaseContract {
     ): Promise<ContractTransaction>
   }
 
-  allowance(
-    owner: string,
-    spender: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>
+  allowance(owner: string, spender: string, overrides?: CallOverrides): Promise<BigNumber>
 
   approve(
     spender: string,
@@ -234,33 +189,17 @@ export interface ERC20 extends BaseContract {
   ): Promise<ContractTransaction>
 
   callStatic: {
-    allowance(
-      owner: string,
-      spender: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>
+    allowance(owner: string, spender: string, overrides?: CallOverrides): Promise<BigNumber>
 
-    approve(
-      spender: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>
+    approve(spender: string, amount: BigNumberish, overrides?: CallOverrides): Promise<boolean>
 
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>
 
     decimals(overrides?: CallOverrides): Promise<number>
 
-    decreaseAllowance(
-      spender: string,
-      subtractedValue: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>
+    decreaseAllowance(spender: string, subtractedValue: BigNumberish, overrides?: CallOverrides): Promise<boolean>
 
-    increaseAllowance(
-      spender: string,
-      addedValue: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>
+    increaseAllowance(spender: string, addedValue: BigNumberish, overrides?: CallOverrides): Promise<boolean>
 
     name(overrides?: CallOverrides): Promise<string>
 
@@ -268,18 +207,9 @@ export interface ERC20 extends BaseContract {
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>
 
-    transfer(
-      to: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>
+    transfer(to: string, amount: BigNumberish, overrides?: CallOverrides): Promise<boolean>
 
-    transferFrom(
-      from: string,
-      to: string,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>
+    transferFrom(from: string, to: string, amount: BigNumberish, overrides?: CallOverrides): Promise<boolean>
   }
 
   filters: {
@@ -288,30 +218,14 @@ export interface ERC20 extends BaseContract {
       spender?: string | null,
       value?: null
     ): ApprovalEventFilter
-    Approval(
-      owner?: string | null,
-      spender?: string | null,
-      value?: null
-    ): ApprovalEventFilter
+    Approval(owner?: string | null, spender?: string | null, value?: null): ApprovalEventFilter
 
-    'Transfer(address,address,uint256)'(
-      from?: string | null,
-      to?: string | null,
-      value?: null
-    ): TransferEventFilter
-    Transfer(
-      from?: string | null,
-      to?: string | null,
-      value?: null
-    ): TransferEventFilter
+    'Transfer(address,address,uint256)'(from?: string | null, to?: string | null, value?: null): TransferEventFilter
+    Transfer(from?: string | null, to?: string | null, value?: null): TransferEventFilter
   }
 
   estimateGas: {
-    allowance(
-      owner: string,
-      spender: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>
+    allowance(owner: string, spender: string, overrides?: CallOverrides): Promise<BigNumber>
 
     approve(
       spender: string,
@@ -356,11 +270,7 @@ export interface ERC20 extends BaseContract {
   }
 
   populateTransaction: {
-    allowance(
-      owner: string,
-      spender: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>
+    allowance(owner: string, spender: string, overrides?: CallOverrides): Promise<PopulatedTransaction>
 
     approve(
       spender: string,
@@ -368,10 +278,7 @@ export interface ERC20 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>
 
-    balanceOf(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>
+    balanceOf(account: string, overrides?: CallOverrides): Promise<PopulatedTransaction>
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>
 

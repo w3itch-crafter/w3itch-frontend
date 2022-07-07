@@ -12,12 +12,7 @@ import { Heads } from '../components/head'
 import { Providers } from '../components/provider'
 
 // Google Analytics
-export function reportWebVitals({
-  id,
-  name,
-  label,
-  value,
-}: NextWebVitalsMetric) {
+export function reportWebVitals({ id, name, label, value }: NextWebVitalsMetric) {
   event(name, {
     category: label === 'web-vital' ? 'Web Vitals' : 'Next.js custom metric',
     value: Math.round(name === 'CLS' ? value * 1000 : value), // values must be integers

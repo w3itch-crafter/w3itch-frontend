@@ -39,15 +39,10 @@ const ERC20Interface = new utils.Interface(_abi)
 export function useERC20Multicall() {
   const accountInfo = useAccountInfo('metamask')
 
-  const account = isAddress(accountInfo?.accountId || '')
-    ? getAddress(accountInfo?.accountId || '')
-    : ''
+  const account = isAddress(accountInfo?.accountId || '') ? getAddress(accountInfo?.accountId || '') : ''
 
   const fetchTokensAddress = useCallback(
-    async (
-      address: string[],
-      chainId: SupportedChainId
-    ): Promise<ERC20MulticallResult[] | undefined> => {
+    async (address: string[], chainId: SupportedChainId): Promise<ERC20MulticallResult[] | undefined> => {
       console.log('useERC20Multicall account', account)
 
       if (!address.length) {
@@ -72,19 +67,14 @@ export function useERC20Multicall() {
         for (let j = 0; j < len; j++) {
           calls.push({
             target: ele,
-            callData: ERC20Interface.encodeFunctionData(
-              keys[j],
-              keys[j] === 'balanceOf' && account ? [account] : []
-            ),
+            callData: ERC20Interface.encodeFunctionData(keys[j], keys[j] === 'balanceOf' && account ? [account] : []),
           })
         }
       }
 
       // aggregate
       const staticMulticallChainId = staticMulticallByChainId(chainId)
-      const { returnData } = await staticMulticallChainId.callStatic.aggregate(
-        calls
-      )
+      const { returnData } = await staticMulticallChainId.callStatic.aggregate(calls)
 
       // merged
       const chunkReturnData = chunk(returnData, len)

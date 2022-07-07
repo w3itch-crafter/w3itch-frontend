@@ -8,11 +8,7 @@ const FormClassification: React.FC = () => {
     <FormControl fullWidth>
       <FormLabel id="form-classification">Classification</FormLabel>
       <p className={styles.sub}>What are you uploading?</p>
-      <Select
-        id="form-classification"
-        disabled
-        defaultValue={classifications[0].value}
-      >
+      <Select id="form-classification" disabled defaultValue={classifications[0].value}>
         {classifications.map((classification) => (
           <MenuItem value={classification.value} key={classification.value}>
             {classification.label}

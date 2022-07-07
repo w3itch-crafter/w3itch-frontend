@@ -22,9 +22,7 @@ export const SortByItems = [
 ]
 // Hopefully the defaults are not affected by the array coordinates
 const SortByItemDefaultValue = 'popular'
-export const SortByItemDefault = SortByItems.find(
-  (item) => item.value === SortByItemDefaultValue
-) as {
+export const SortByItemDefault = SortByItems.find((item) => item.value === SortByItemDefaultValue) as {
   value: string
   name: string
 }

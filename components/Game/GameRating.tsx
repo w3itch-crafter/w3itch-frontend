@@ -119,12 +119,7 @@ const GameRating: FC<GameRatingProps> = ({
   }, [gameRatingDialogOpen, gameRatingMine])
 
   return (
-    <Dialog
-      onClose={() => setGameRatingDialogOpen(false)}
-      open={gameRatingDialogOpen}
-      maxWidth={'sm'}
-      fullWidth
-    >
+    <Dialog onClose={() => setGameRatingDialogOpen(false)} open={gameRatingDialogOpen} maxWidth={'sm'} fullWidth>
       <DialogTitle>Rate</DialogTitle>
       <Box px={3} py={2}>
         <Typography>Choose a rating from 1 to 5 stars.</Typography>

@@ -41,29 +41,15 @@ const Donation: FC<PurchaseProps> = ({ donationAddress }) => {
       <h2 className={styles.row_title}>Donation</h2>
       {donationAddress && (
         <>
-          <Link
-            passHref
-            href={getExplorerLink(
-              CurrentChainId,
-              getAddress(donationAddress),
-              ExplorerDataType.ADDRESS
-            )}
-          >
+          <Link passHref href={getExplorerLink(CurrentChainId, getAddress(donationAddress), ExplorerDataType.ADDRESS)}>
             <ExplorerLink target="_blank" rel="noopener noreferrer">
               {donationAddress}
             </ExplorerLink>
           </Link>
 
           <Stack direction="row" spacing={2} mt="10px">
-            <CopyToClipboard
-              text={getAddress(donationAddress)}
-              onCopy={handleCopy}
-            >
-              <Button
-                size="small"
-                variant="contained"
-                startIcon={<ContentCopyIcon />}
-              >
+            <CopyToClipboard text={getAddress(donationAddress)} onCopy={handleCopy}>
+              <Button size="small" variant="contained" startIcon={<ContentCopyIcon />}>
                 Copy
               </Button>
             </CopyToClipboard>

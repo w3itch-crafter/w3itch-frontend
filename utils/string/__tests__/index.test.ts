@@ -32,11 +32,7 @@ describe('enumWords', () => {
 
 describe('stringSlice', () => {
   it('should support address', () => {
-    const result = stringSlice(
-      '0x8Dd609188f6479732AC5aEa52e53264FF8Dc0Eb6',
-      6,
-      4
-    )
+    const result = stringSlice('0x8Dd609188f6479732AC5aEa52e53264FF8Dc0Eb6', 6, 4)
 
     expect(result).toBe('0x8Dd6...0Eb6')
   })

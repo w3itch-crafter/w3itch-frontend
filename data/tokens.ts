@@ -19,8 +19,7 @@ export const tokens = {
       name: 'Aave',
       symbol: 'AAVE',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110',
+      logoURI: 'https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110',
     },
     {
       chainId: 1,
@@ -28,8 +27,7 @@ export const tokens = {
       name: 'Amp',
       symbol: 'AMP',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/12409/thumb/amp-200x200.png?1599625397',
+      logoURI: 'https://assets.coingecko.com/coins/images/12409/thumb/amp-200x200.png?1599625397',
     },
     {
       name: 'Aragon Network Token',
@@ -46,8 +44,7 @@ export const tokens = {
       name: 'ApeCoin',
       symbol: 'APE',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/24383/small/apecoin.jpg?1647476455',
+      logoURI: 'https://assets.coingecko.com/coins/images/24383/small/apecoin.jpg?1647476455',
     },
     {
       name: 'Balancer',
@@ -64,8 +61,7 @@ export const tokens = {
       name: 'Band Protocol',
       symbol: 'BAND',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/9545/thumb/band-protocol.png?1568730326',
+      logoURI: 'https://assets.coingecko.com/coins/images/9545/thumb/band-protocol.png?1568730326',
     },
     {
       name: 'Bancor Network Token',
@@ -100,8 +96,7 @@ export const tokens = {
       name: 'Civic',
       symbol: 'CVC',
       decimals: 8,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/788/thumb/civic.png?1547034556',
+      logoURI: 'https://assets.coingecko.com/coins/images/788/thumb/civic.png?1547034556',
     },
     {
       name: 'Dai Stablecoin',
@@ -118,8 +113,7 @@ export const tokens = {
       name: 'district0x',
       symbol: 'DNT',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/849/thumb/district0x.png?1547223762',
+      logoURI: 'https://assets.coingecko.com/coins/images/849/thumb/district0x.png?1547223762',
     },
     {
       chainId: 1,
@@ -127,8 +121,7 @@ export const tokens = {
       name: 'Ethereum Name Service',
       symbol: 'ENS',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/19785/thumb/acatxTm8_400x400.jpg?1635850140',
+      logoURI: 'https://assets.coingecko.com/coins/images/19785/thumb/acatxTm8_400x400.jpg?1635850140',
     },
     {
       name: 'Gnosis Token',
@@ -145,8 +138,7 @@ export const tokens = {
       name: 'The Graph',
       symbol: 'GRT',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/13397/thumb/Graph_Token.png?1608145566',
+      logoURI: 'https://assets.coingecko.com/coins/images/13397/thumb/Graph_Token.png?1608145566',
     },
     {
       chainId: 1,
@@ -154,8 +146,7 @@ export const tokens = {
       name: 'Keep Network',
       symbol: 'KEEP',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/3373/thumb/IuNzUb5b_400x400.jpg?1589526336',
+      logoURI: 'https://assets.coingecko.com/coins/images/3373/thumb/IuNzUb5b_400x400.jpg?1589526336',
     },
     {
       name: 'Kyber Network Crystal',
@@ -199,8 +190,7 @@ export const tokens = {
       name: 'Decentraland',
       symbol: 'MANA',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/878/thumb/decentraland-mana.png?1550108745',
+      logoURI: 'https://assets.coingecko.com/coins/images/878/thumb/decentraland-mana.png?1550108745',
     },
     {
       chainId: 1,
@@ -208,8 +198,7 @@ export const tokens = {
       name: 'Polygon',
       symbol: 'MATIC',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/4713/thumb/matic-token-icon.png?1624446912',
+      logoURI: 'https://assets.coingecko.com/coins/images/4713/thumb/matic-token-icon.png?1624446912',
     },
     {
       name: 'Maker',
@@ -226,8 +215,7 @@ export const tokens = {
       name: 'Melon',
       symbol: 'MLN',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/605/thumb/melon.png?1547034295',
+      logoURI: 'https://assets.coingecko.com/coins/images/605/thumb/melon.png?1547034295',
     },
     {
       name: 'Numeraire',
@@ -244,8 +232,7 @@ export const tokens = {
       name: 'NuCypher',
       symbol: 'NU',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/3318/thumb/photo1198982838879365035.jpg?1547037916',
+      logoURI: 'https://assets.coingecko.com/coins/images/3318/thumb/photo1198982838879365035.jpg?1547037916',
     },
     {
       name: 'Orchid',
@@ -307,8 +294,7 @@ export const tokens = {
       symbol: 'sUSD',
       decimals: 18,
       chainId: 1,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/5013/thumb/sUSD.png?1616150765',
+      logoURI: 'https://assets.coingecko.com/coins/images/5013/thumb/sUSD.png?1616150765',
     },
     {
       chainId: 1,
@@ -316,8 +302,7 @@ export const tokens = {
       name: 'tBTC',
       symbol: 'TBTC',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/11224/thumb/tBTC.png?1589620754',
+      logoURI: 'https://assets.coingecko.com/coins/images/11224/thumb/tBTC.png?1589620754',
     },
     {
       name: 'UMA Voting Token v1',
@@ -378,8 +363,7 @@ export const tokens = {
       name: 'yearn finance',
       symbol: 'YFI',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/11849/thumb/yfi-192x192.png?1598325330',
+      logoURI: 'https://assets.coingecko.com/coins/images/11849/thumb/yfi-192x192.png?1598325330',
     },
     {
       name: '0x Protocol Token',
@@ -509,8 +493,7 @@ export const tokens = {
       name: 'Aave',
       symbol: 'AAVE',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110',
+      logoURI: 'https://assets.coingecko.com/coins/images/12645/thumb/AAVE.png?1601374110',
     },
     {
       chainId: 137,
@@ -518,8 +501,7 @@ export const tokens = {
       name: 'Amp',
       symbol: 'AMP',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/12409/thumb/amp-200x200.png?1599625397',
+      logoURI: 'https://assets.coingecko.com/coins/images/12409/thumb/amp-200x200.png?1599625397',
     },
     {
       name: 'Balancer',
@@ -536,8 +518,7 @@ export const tokens = {
       name: 'Band Protocol',
       symbol: 'BAND',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/9545/thumb/band-protocol.png?1568730326',
+      logoURI: 'https://assets.coingecko.com/coins/images/9545/thumb/band-protocol.png?1568730326',
     },
     {
       name: 'Bancor Network Token',
@@ -572,8 +553,7 @@ export const tokens = {
       name: 'Civic',
       symbol: 'CVC',
       decimals: 8,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/788/thumb/civic.png?1547034556',
+      logoURI: 'https://assets.coingecko.com/coins/images/788/thumb/civic.png?1547034556',
     },
     {
       name: 'Dai Stablecoin',
@@ -590,8 +570,7 @@ export const tokens = {
       name: 'Ethereum Name Service',
       symbol: 'ENS',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/19785/thumb/acatxTm8_400x400.jpg?1635850140',
+      logoURI: 'https://assets.coingecko.com/coins/images/19785/thumb/acatxTm8_400x400.jpg?1635850140',
     },
     {
       name: 'Gnosis Token',
@@ -608,8 +587,7 @@ export const tokens = {
       name: 'The Graph',
       symbol: 'GRT',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/13397/thumb/Graph_Token.png?1608145566',
+      logoURI: 'https://assets.coingecko.com/coins/images/13397/thumb/Graph_Token.png?1608145566',
     },
     {
       chainId: 137,
@@ -617,8 +595,7 @@ export const tokens = {
       name: 'Keep Network',
       symbol: 'KEEP',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/3373/thumb/IuNzUb5b_400x400.jpg?1589526336',
+      logoURI: 'https://assets.coingecko.com/coins/images/3373/thumb/IuNzUb5b_400x400.jpg?1589526336',
     },
     {
       name: 'Kyber Network Crystal',
@@ -662,8 +639,7 @@ export const tokens = {
       name: 'Decentraland',
       symbol: 'MANA',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/878/thumb/decentraland-mana.png?1550108745',
+      logoURI: 'https://assets.coingecko.com/coins/images/878/thumb/decentraland-mana.png?1550108745',
     },
     {
       name: 'Maker',
@@ -734,8 +710,7 @@ export const tokens = {
       symbol: 'sUSD',
       decimals: 18,
       chainId: 137,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/5013/thumb/sUSD.png?1616150765',
+      logoURI: 'https://assets.coingecko.com/coins/images/5013/thumb/sUSD.png?1616150765',
     },
     {
       chainId: 137,
@@ -743,8 +718,7 @@ export const tokens = {
       name: 'tBTC',
       symbol: 'TBTC',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/11224/thumb/tBTC.png?1589620754',
+      logoURI: 'https://assets.coingecko.com/coins/images/11224/thumb/tBTC.png?1589620754',
     },
     {
       name: 'UMA Voting Token v1',
@@ -805,8 +779,7 @@ export const tokens = {
       symbol: 'WMATIC',
       decimals: 18,
       chainId: 137,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/4713/thumb/matic-token-icon.png?1624446912',
+      logoURI: 'https://assets.coingecko.com/coins/images/4713/thumb/matic-token-icon.png?1624446912',
     },
     {
       chainId: 137,
@@ -814,8 +787,7 @@ export const tokens = {
       name: 'yearn finance',
       symbol: 'YFI',
       decimals: 18,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/11849/thumb/yfi-192x192.png?1598325330',
+      logoURI: 'https://assets.coingecko.com/coins/images/11849/thumb/yfi-192x192.png?1598325330',
     },
     {
       name: '0x Protocol Token',
@@ -841,8 +813,7 @@ export const tokens = {
       symbol: 'WMATIC',
       decimals: 18,
       chainId: 80001,
-      logoURI:
-        'https://assets.coingecko.com/coins/images/4713/thumb/matic-token-icon.png?1624446912',
+      logoURI: 'https://assets.coingecko.com/coins/images/4713/thumb/matic-token-icon.png?1624446912',
     },
   ],
 }

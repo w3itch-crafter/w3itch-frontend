@@ -14,9 +14,7 @@ export function ConnectWallet() {
       if (wallet.error?.name === 'ChainUnsupportedError') {
         const message = `Supported network${
           WalletSupportedChainNames.length > 1 ? 's' : ''
-        } are ${WalletSupportedChainNames.join(
-          ', '
-        )}, please switch your wallet network.`
+        } are ${WalletSupportedChainNames.join(', ')}, please switch your wallet network.`
         return showSnackbar(message, 'error')
       } else {
         return showSnackbar(wallet.error.message, 'error')

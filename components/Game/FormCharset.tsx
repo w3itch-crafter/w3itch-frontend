@@ -1,10 +1,4 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  MenuItem,
-  Select,
-} from '@mui/material'
+import { FormControl, FormHelperText, FormLabel, MenuItem, Select } from '@mui/material'
 import { FC } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
@@ -33,10 +27,8 @@ const FormCharset: FC = () => {
           </Select>
           <FormHelperText>{errors?.charset?.message}</FormHelperText>
           <p className={styles.sub}>
-            The current game file does not automatically recognize the encoding.
-            If the packaging system is not{' '}
-            <span style={{ fontWeight: 'bold' }}>{GameFileCharset.UTF8}</span>,
-            the author needs to manually select.
+            The current game file does not automatically recognize the encoding. If the packaging system is not{' '}
+            <span style={{ fontWeight: 'bold' }}>{GameFileCharset.UTF8}</span>, the author needs to manually select.
           </p>
         </FormControl>
       )}

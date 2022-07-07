@@ -31,10 +31,7 @@ const MoreInformation: FC<Props> = ({ gameProject, gameRatingsCount }) => {
                 <span className={styles.time}>
                   <AccessTimeIcon fontSize="small" />
                   &nbsp;
-                  {format(
-                    new Date(gameProject.createdAt),
-                    'MMM d, yyyy HH:mm:ss'
-                  )}
+                  {format(new Date(gameProject.createdAt), 'MMM d, yyyy HH:mm:ss')}
                 </span>
               </td>
             </tr>
@@ -57,8 +54,7 @@ const MoreInformation: FC<Props> = ({ gameProject, gameRatingsCount }) => {
             <tr>
               <td>Rating</td>
               <td>
-                <Rating readOnly value={calcRating(gameProject.rating || 0)} />(
-                {gameRatingsCount})
+                <Rating readOnly value={calcRating(gameProject.rating || 0)} />({gameRatingsCount})
               </td>
             </tr>
             <tr>
@@ -97,12 +93,7 @@ const MoreInformation: FC<Props> = ({ gameProject, gameRatingsCount }) => {
                 <td>Links</td>
                 <td>
                   {gameProject.appStoreLinks.map((appStoreLink) => (
-                    <a
-                      key={appStoreLink}
-                      rel="nofollow noopener noreferrer"
-                      target="_blank"
-                      href={appStoreLink}
-                    >
+                    <a key={appStoreLink} rel="nofollow noopener noreferrer" target="_blank" href={appStoreLink}>
                       {linkDomainParser(appStoreLink)}
                     </a>
                   ))}

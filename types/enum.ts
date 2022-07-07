@@ -102,3 +102,8 @@ export enum ThemeMode {
   Dark = 'dark',
   // System = 'system',
 }
+
+export enum AccessType {
+  PUBLIC = 'PUBLIC',
+  PRIVATE = 'PRIVATE',
+}

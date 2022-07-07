@@ -16,9 +16,7 @@ const SearchGoogle = () => {
       autoComplete={'on'}
       action={'https://google.com/search'}
       onSubmit={(e) => {
-        const formData = Object.fromEntries(
-          new FormData(e.target as HTMLFormElement)
-        )
+        const formData = Object.fromEntries(new FormData(e.target as HTMLFormElement))
         window.open(urlGoogleSearch(formData.q as string))
         e.preventDefault()
       }}

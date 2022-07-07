@@ -25,26 +25,18 @@ const querySuggestionsPlugin = createQuerySuggestionsPlugin({
         ...source.templates,
         item(params) {
           const { item, html, components } = params
-          return html`<a
-            class="custom-aa-ItemLink"
-            href="${urlGame(item.id as unknown as string)}"
-            target="_blank"
-          >
+          return html`<a class="custom-aa-ItemLink" href="${urlGame(item.id as unknown as string)}" target="_blank">
             <div class="InterfaceDemoHit aa-ItemWrapper">
               <div class="aa-ItemContent">
                 <div class="aa-ItemContentBody">
-                  <div
-                    class="aa-ItemContentTitle custom-aa-ItemContentTitle PrimaryAttribute"
-                  >
+                  <div class="aa-ItemContentTitle custom-aa-ItemContentTitle PrimaryAttribute">
                     ${components.Highlight({
                       hit: item,
                       attribute: 'title',
                       tagName: 'span',
                     })}
                   </div>
-                  <div
-                    class="aa-ItemContentDescription custom-aa-ItemContentDescription SecondaryAttribute"
-                  >
+                  <div class="aa-ItemContentDescription custom-aa-ItemContentDescription SecondaryAttribute">
                     ${components.Snippet({
                       hit: item,
                       attribute: 'subtitle',
@@ -53,17 +45,8 @@ const querySuggestionsPlugin = createQuerySuggestionsPlugin({
                 </div>
               </div>
               <div class="aa-ItemActions">
-                <button
-                  class="aa-ItemActionButton aa-DesktopOnly aa-ActiveOnly"
-                  type="button"
-                  title="Select"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="20"
-                    height="20"
-                    fill="currentColor"
-                  >
+                <button class="aa-ItemActionButton aa-DesktopOnly aa-ActiveOnly" type="button" title="Select">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                     <path
                       d="M18.984 6.984h2.016v6h-15.188l3.609 3.609-1.406 1.406-6-6 6-6 1.406 1.406-3.609 3.609h13.172v-4.031z"
                     />
@@ -101,7 +84,5 @@ export default function Search() {
     }
   }, [])
 
-  return (
-    <div className="custom-search-wrapper" ref={autocompleteContainer}></div>
-  )
+  return <div className="custom-search-wrapper" ref={autocompleteContainer}></div>
 }

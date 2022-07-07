@@ -1,11 +1,6 @@
 import SEO, { seoKeywords, seoLogo } from 'next-seo.config'
 
-import {
-  SeoArticleJsonLdImages,
-  SeoDescription,
-  SeoImages,
-  SeoKeywords,
-} from '../index'
+import { SeoArticleJsonLdImages, SeoDescription, SeoImages, SeoKeywords } from '../index'
 
 describe('SeoDescription', () => {
   it('should support empty string', () => {

@@ -1,12 +1,7 @@
 import { darkTheme, lightTheme } from 'theme'
 import { ThemeMode } from 'types/enum'
 
-import {
-  getEditorTheme,
-  getMuiTheme,
-  getViewerTheme,
-  toggleTheme,
-} from '../index'
+import { getEditorTheme, getMuiTheme, getViewerTheme, toggleTheme } from '../index'
 
 describe('getMuiTheme', () => {
   it('should return theme', () => {

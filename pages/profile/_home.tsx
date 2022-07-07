@@ -1,12 +1,5 @@
 import styled from '@emotion/styled'
-import {
-  DiscordIcon,
-  GitcoinPassportIcon,
-  GitHubIcon,
-  IcoMoonIcon,
-  MetaMaskIcon,
-  TwitterIcon,
-} from 'components/icons'
+import { DiscordIcon, GitcoinPassportIcon, GitHubIcon, IcoMoonIcon, MetaMaskIcon, TwitterIcon } from 'components/icons'
 import { Navbar } from 'components/layout'
 import { GameCell } from 'components/pages'
 import { NextPage } from 'next'
@@ -16,13 +9,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { getGamesMine, getUser } from 'services'
 import { PassportScorer } from 'thirdparty/gitcoin-passport/scorer'
-import {
-  AccountEntity,
-  GameEntity,
-  GameInfo,
-  SocialPlatform,
-  UserEntity,
-} from 'types'
+import { AccountEntity, GameEntity, GameInfo, SocialPlatform, UserEntity } from 'types'
 import { urlGame } from 'utils'
 
 declare interface ProfileHomeProps {
@@ -65,16 +52,7 @@ const getSocialIcon = (platform: SocialPlatform) => {
   }
 }
 
-const providers = [
-  'Google',
-  'Ens',
-  'Poh',
-  'Twitter',
-  'POAP',
-  'Facebook',
-  'Brightid',
-  'Github',
-]
+const providers = ['Google', 'Ens', 'Poh', 'Twitter', 'POAP', 'Facebook', 'Brightid', 'Github']
 const criterias = providers.map((provider) => ({
   provider,
   issuer: 'did:key:z6MkghvGHLobLEdj1bgRLhS4LPGJAvbMA1tn2zcRyqmYU5LC',
@@ -141,8 +119,7 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
     }))
     setGames(games)
   }, [wildcard])
-  const userInfoHeader =
-    user?.nickname || user?.username || (wildcard as string)
+  const userInfoHeader = user?.nickname || user?.username || (wildcard as string)
 
   useEffect(() => {
     getUserInfo()
@@ -171,11 +148,7 @@ const ProfileHome: NextPage<ProfileHomeProps> = ({ wildcard }) => {
         <Container>
           <h1>{userInfoHeader}</h1>
           <ProfileColumn>
-            <LinkGroup
-              href={profileUrl}
-              name={userInfoHeader}
-              icon={<IcoMoonIcon name="globe" />}
-            />
+            <LinkGroup href={profileUrl} name={userInfoHeader} icon={<IcoMoonIcon name="globe" />} />
             <SocialInfos />
           </ProfileColumn>
           <MagicPoint accounts={accounts} />
@@ -249,10 +222,7 @@ function MagicPoint({ accounts }: MagicPointProps) {
     gap: 8px;
   `
   const [passportScore, setPassportScore] = useState<number | null>(null)
-  const platforms = useMemo(
-    () => accounts.map((acc) => acc.platform),
-    [accounts]
-  )
+  const platforms = useMemo(() => accounts.map((acc) => acc.platform), [accounts])
   const magicPoint = useMemo(() => {
     if (passportScore === null || accounts.length === 0) {
       return 0
@@ -283,8 +253,7 @@ function MagicPoint({ accounts }: MagicPointProps) {
       <PointTitle>Magic Point:&nbsp;{magicPoint}</PointTitle>
       {(passportScore ?? 0) > 0 && (
         <PointRow>
-          <GitcoinPassportIcon style={{ width: 'auto', height: '22px' }} /> +
-          {passportScore}
+          <GitcoinPassportIcon style={{ width: 'auto', height: '22px' }} /> +{passportScore}
         </PointRow>
       )}
       {platforms.includes('github') && (

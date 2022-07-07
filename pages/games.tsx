@@ -95,10 +95,7 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   const router = useRouter()
   const [filterDrawer, setFilterDrawer] = useState<boolean>(false)
   const { currentPage, totalPages, totalItems } = pageMeta
-  const handlePaginationChange = (
-    _: React.ChangeEvent<unknown>,
-    page: number
-  ) => {
+  const handlePaginationChange = (_: React.ChangeEvent<unknown>, page: number) => {
     router.push({ pathname: router.pathname, query: { ...router.query, page } })
   }
   const handleOpenFilterDrawer = () => setFilterDrawer(true)
@@ -156,11 +153,7 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
         </GridColumn>
       </Container>
       <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-        <Drawer
-          anchor={'left'}
-          open={filterDrawer}
-          onClose={handleCloseFilterDrawer}
-        >
+        <Drawer anchor={'left'} open={filterDrawer} onClose={handleCloseFilterDrawer}>
           <GameFilter />
         </Drawer>
       </Box>
@@ -168,9 +161,7 @@ const Games: NextPage<GamesProps> = ({ tags, games, pageMeta }) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps<GamesProps> = async (
-  context
-) => {
+export const getServerSideProps: GetServerSideProps<GamesProps> = async (context) => {
   const tagsRes = await getTags()
   const { query } = context
   const { data, meta } = await getGames({ ...query, limit: 20, order: 'DESC' })

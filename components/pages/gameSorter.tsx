@@ -35,11 +35,7 @@ export function GameSorter({ sortKey }: GameSorterProps) {
       <Box sx={{ display: { xs: 'none', sm: 'block' }, marginBottom: '-10px' }}>
         <StyledSortOptions sortKey={sortKey}>
           {SortByItems.map((item) => (
-            <SortOptionItem
-              key={item.value}
-              value={sortValueDefault(item.value)}
-              name={item.name}
-            />
+            <SortOptionItem key={item.value} value={sortValueDefault(item.value)} name={item.name} />
           ))}
         </StyledSortOptions>
       </Box>
@@ -55,11 +51,7 @@ export function GameSorter({ sortKey }: GameSorterProps) {
           )}
         >
           {SortByItems.map((item) => (
-            <Link
-              key={item.value}
-              href={buildHref(sortKey, sortValueDefault(item.value))}
-              passHref
-            >
+            <Link key={item.value} href={buildHref(sortKey, sortValueDefault(item.value))} passHref>
               <MenuItem value={item.value}>{item.name}</MenuItem>
             </Link>
           ))}

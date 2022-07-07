@@ -13,9 +13,7 @@ type GamePlayerMinetest = {
   port: number
 }
 
-export async function getGames(
-  params: Api.GameProjectsParams
-): Promise<Pagination<GameEntity>> {
+export async function getGames(params: Api.GameProjectsParams): Promise<Pagination<GameEntity>> {
   const res = await backend.get<Pagination<GameEntity>>('/game-projects', {
     params,
   })
@@ -28,8 +26,7 @@ export async function getGames(
  * @returns
  */
 export async function getGamesMine(
-  params: Required<Pick<Api.GameProjectsParams, 'username'>> &
-    Omit<Api.GameProjectsParams, 'username'>
+  params: Required<Pick<Api.GameProjectsParams, 'username'>> & Omit<Api.GameProjectsParams, 'username'>
 ): Promise<Pagination<GameEntity> | undefined> {
   if (!params.username) return
   const res = await backend.get<Pagination<GameEntity>>('/game-projects', {
@@ -43,9 +40,7 @@ export async function getGamesMine(
  * @param data
  * @returns
  */
-export const createGame = async (
-  data: FormData
-): Promise<AxiosResponse<GameEntity>> => {
+export const createGame = async (data: FormData): Promise<AxiosResponse<GameEntity>> => {
   return await backend({
     url: '/game-projects',
     method: 'POST',
@@ -61,9 +56,7 @@ export const createGame = async (
  * @param id
  * @returns
  */
-export const gameProjectByID = async (
-  id: number
-): Promise<AxiosResponse<GameEntity>> => {
+export const gameProjectByID = async (id: number): Promise<AxiosResponse<GameEntity>> => {
   return await backend.get(`/game-projects/${id}`)
 }
 
@@ -110,10 +103,7 @@ export const gamePlayerMinetest = ({ username, port }: GamePlayerMinetest) => {
  * @param param0
  * @returns
  */
-export const gamePlayerIframeMinetest = ({
-  username,
-  port,
-}: GamePlayerMinetest) => {
+export const gamePlayerIframeMinetest = ({ username, port }: GamePlayerMinetest) => {
   const query = new URLSearchParams()
   query.set('username', username)
   query.set('port', String(port))
@@ -134,22 +124,15 @@ export const gameProjectPlayerHtml = () => {
  * @param param0
  * @returns
  */
-export const gameDownloadUrl = ({
-  gameName,
-  file,
-}: {
-  gameName: string
-  file: string
-}) => `${process.env.NEXT_PUBLIC_API_URL}/downloads/${gameName}/${file}`
+export const gameDownloadUrl = ({ gameName, file }: { gameName: string; file: string }) =>
+  `${process.env.NEXT_PUBLIC_API_URL}/downloads/${gameName}/${file}`
 
 /**
  * game project validate
  * @param data
  * @returns
  */
-export const gameValidate = async (
-  data: Partial<Api.GameProjectDto>
-): Promise<AxiosResponse<unknown>> => {
+export const gameValidate = async (data: Partial<Api.GameProjectDto>): Promise<AxiosResponse<unknown>> => {
   return await backend({
     url: '/game-projects/validate',
     method: 'POST',
@@ -163,10 +146,7 @@ export const gameValidate = async (
  * @param data
  * @returns
  */
-export const updateGame = async (
-  id: number,
-  data: FormData
-): Promise<AxiosResponse<GameEntity>> => {
+export const updateGame = async (id: number, data: FormData): Promise<AxiosResponse<GameEntity>> => {
   return await backend({
     url: `/game-projects/${id}`,
     method: 'PATCH',
@@ -178,18 +158,12 @@ export const updateGame = async (
 }
 
 export async function deleteGameProject(id: number) {
-  return await backend.delete<
-    Api.GameProjectDeleteResponse | BackendErrorResponse
-  >(`/game-projects/${id}`, { validateStatus: () => true })
+  return await backend.delete<Api.GameProjectDeleteResponse | BackendErrorResponse>(`/game-projects/${id}`, {
+    validateStatus: () => true,
+  })
 }
 
-export async function getGameIdByProjectURL(
-  username: string,
-  projectURL: string
-) {
+export async function getGameIdByProjectURL(username: string, projectURL: string) {
   const params = { username, projectURL }
-  return await backend.get<{ id: number }>(
-    '/game-projects/get-id-by-projecturl',
-    { params }
-  )
+  return await backend.get<{ id: number }>('/game-projects/get-id-by-projecturl', { params })
 }

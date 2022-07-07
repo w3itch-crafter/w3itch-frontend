@@ -1,9 +1,4 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  TextField,
-} from '@mui/material'
+import { FormControl, FormHelperText, FormLabel, TextField } from '@mui/material'
 import { Editor as ToastUiEditor } from '@toast-ui/react-editor'
 import { EditorType } from 'components/Editor/index'
 import dynamic from 'next/dynamic'
@@ -14,9 +9,7 @@ const Editor = dynamic(() => import('components/Editor/index'), { ssr: false })
 import { Game } from 'utils'
 
 interface Props {
-  setRef: React.Dispatch<
-    React.SetStateAction<React.MutableRefObject<ToastUiEditor> | undefined>
-  >
+  setRef: React.Dispatch<React.SetStateAction<React.MutableRefObject<ToastUiEditor> | undefined>>
   onChange: (editorType: EditorType) => void
 }
 
@@ -34,14 +27,9 @@ const FormDescription: React.FC<Props> = (props) => {
       render={({ field }) => (
         <FormControl fullWidth error={Boolean(errors.description)}>
           <FormLabel id="form-genre">Details</FormLabel>
-          <p className={styles.sub}>
-            Description — This will make up the content of your game page.
-          </p>
+          <p className={styles.sub}>Description — This will make up the content of your game page.</p>
           <Editor setRef={setRef} onChange={onChange} />
-          <TextField
-            style={{ opacity: '0', position: 'absolute', zIndex: -99 }}
-            {...field}
-          />
+          <TextField style={{ opacity: '0', position: 'absolute', zIndex: -99 }} {...field} />
           <FormHelperText>{errors?.description?.message}</FormHelperText>
         </FormControl>
       )}

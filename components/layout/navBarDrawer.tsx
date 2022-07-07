@@ -13,17 +13,9 @@ interface NavBarDrawerProps {
   setNavLinksDrawer: Dispatch<SetStateAction<boolean>>
 }
 
-const NavBarDrawer: FC<NavBarDrawerProps> = ({
-  navLinks,
-  navLinksDrawer,
-  setNavLinksDrawer,
-}) => {
+const NavBarDrawer: FC<NavBarDrawerProps> = ({ navLinks, navLinksDrawer, setNavLinksDrawer }) => {
   return (
-    <Drawer
-      anchor={'right'}
-      open={navLinksDrawer}
-      onClose={() => setNavLinksDrawer(false)}
-    >
+    <Drawer anchor={'right'} open={navLinksDrawer} onClose={() => setNavLinksDrawer(false)}>
       <List>
         {navLinks.map((nav) => (
           <Link href={nav.href} passHref key={nav.href}>

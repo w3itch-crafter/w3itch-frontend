@@ -42,9 +42,7 @@ export const initializationAlgoliaGame = async () => {
   }
 
   try {
-    return await axios.post<{ code: number; mmessage: string }>(
-      '/api/algolia/games/initialization'
-    )
+    return await axios.post<{ code: number; mmessage: string }>('/api/algolia/games/initialization')
   } catch (error) {
     console.error('initializationAlgoliaGame error: ', error)
   }

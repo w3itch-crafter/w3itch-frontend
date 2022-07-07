@@ -28,8 +28,8 @@ const Jams: NextPage = () => {
     <Wrapper>
       <HeaderTitle>Jams Calendar</HeaderTitle>
       <HeaderDescription>
-        w3itch.io Aggregate Jam Calendar. w3itch.io is a place to host and
-        participate in online games. Anyone can create and instantly.
+        w3itch.io Aggregate Jam Calendar. w3itch.io is a place to host and participate in online games. Anyone can
+        create and instantly.
       </HeaderDescription>
       <JamNewJams />
       <Calendar />

@@ -11,9 +11,7 @@ declare interface CarouselState {
   dir: Direction
 }
 
-declare type CarouselAction =
-  | { type: Direction; numItems: number }
-  | { type: 'stopSliding' }
+declare type CarouselAction = { type: Direction; numItems: number } | { type: 'stopSliding' }
 
 function getOrder(index: number, pos: number, numItems: number) {
   return index - pos < 0 ? numItems - Math.abs(index - pos) : index - pos
@@ -118,9 +116,7 @@ export function GameCarousel({ children, className }: GameCarouselProps) {
       <Wrapper>
         <CarouselContainer dir={state.dir} sliding={state.sliding}>
           {Children.map(children, (child, index) => (
-            <CarouselSlot order={getOrder(index, state.pos, numItems)}>
-              {child}
-            </CarouselSlot>
+            <CarouselSlot order={getOrder(index, state.pos, numItems)}>{child}</CarouselSlot>
           ))}
         </CarouselContainer>
       </Wrapper>

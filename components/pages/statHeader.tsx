@@ -37,13 +37,7 @@ export function StatHeader({ children, title }: StatHeaderProps) {
   return (
     <Container>
       {title && (
-        <TextContainer>
-          {typeof title === 'string' ? (
-            <Text>{title}</Text>
-          ) : (
-            <Fragment>{title}</Fragment>
-          )}
-        </TextContainer>
+        <TextContainer>{typeof title === 'string' ? <Text>{title}</Text> : <Fragment>{title}</Fragment>}</TextContainer>
       )}
       <StatsContainer>{children}</StatsContainer>
     </Container>

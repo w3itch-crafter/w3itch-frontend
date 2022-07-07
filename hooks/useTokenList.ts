@@ -49,11 +49,7 @@ export interface TokenList {
  * @see [Token list json example](https://github.com/Uniswap/token-lists/blob/main/test/schema/example.tokenlist.json)
  * @see [`TokenInfo` object](https://github.com/Uniswap/token-lists/blob/main/src/types.ts)
  */
-export function useTokenList(
-  tokenListURI: string,
-  overrideChainId: number,
-  tags?: string[]
-): TokenList | undefined {
+export function useTokenList(tokenListURI: string, overrideChainId: number, tags?: string[]): TokenList | undefined {
   const [tokenList, setTokenList] = useState<TokenList>()
 
   const chainId = overrideChainId
@@ -71,11 +67,7 @@ export function useTokenList(
               if (!tags) {
                 return sameChainId
               }
-              return (
-                sameChainId &&
-                token.tags &&
-                token.tags.some((tag) => tags.includes(tag))
-              )
+              return sameChainId && token.tags && token.tags.some((tag) => tags.includes(tag))
             }),
           })
         } else {

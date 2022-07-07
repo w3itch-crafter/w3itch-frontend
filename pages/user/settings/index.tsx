@@ -10,12 +10,7 @@ import path from 'path'
 import { Fragment, useContext, useEffect, useRef, useState } from 'react'
 import { updateMe } from 'services'
 import { storagesUploadToAWS } from 'services'
-import {
-  BackendErrorResponse,
-  isBackendError,
-  NextPageWithLayout,
-  UserEntity,
-} from 'types'
+import { BackendErrorResponse, isBackendError, NextPageWithLayout, UserEntity } from 'types'
 import { BackendError, userHostUrl } from 'utils'
 import { v4 as uuid } from 'uuid'
 
@@ -75,9 +70,7 @@ const Settings: NextPageWithLayout = () => {
     setUser((u) => ({ ...u, [name]: value }))
     setUpdateUser((u) => ({ ...u, [name]: value }))
   }
-  const handleChangeAvatar = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChangeAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation()
     event.preventDefault()
     if (event.target.files !== null) {
@@ -127,10 +120,7 @@ const Settings: NextPageWithLayout = () => {
   return (
     <Fragment>
       <h2>Profile</h2>
-      <InputRow
-        label="Username"
-        subLabel=" — Used to log into your account and for your page URL"
-      >
+      <InputRow label="Username" subLabel=" — Used to log into your account and for your page URL">
         <UsernameRow>
           <span>{user?.username}</span>
         </UsernameRow>
@@ -144,11 +134,7 @@ const Settings: NextPageWithLayout = () => {
         label="Profile image"
         subLabel=" — Shown next to your name when you take an action on the site (square dimensions)"
       >
-        <AvatarUploader
-          avatar={user?.avatar}
-          uploading={uploading}
-          onChangeFile={handleChangeAvatar}
-        />
+        <AvatarUploader avatar={user?.avatar} uploading={uploading} onChangeFile={handleChangeAvatar} />
       </InputRow>
       <InputRow
         label="Display name"
@@ -226,11 +212,7 @@ const Uploading = styled.div`
   height: 100%;
   z-index: 1;
 `
-function AvatarUploader({
-  avatar,
-  uploading,
-  onChangeFile,
-}: AvatarUploaderProps) {
+function AvatarUploader({ avatar, uploading, onChangeFile }: AvatarUploaderProps) {
   const buttonText = avatar ? 'Replace image' : 'Upload image'
   const inputFile = useRef<HTMLInputElement>(null)
   const handleButtonClick = () => {
