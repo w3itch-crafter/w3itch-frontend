@@ -1,22 +1,11 @@
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
-import {
-  Box,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  TextField,
-} from '@mui/material'
+import { Box, FormControl, FormHelperText, FormLabel, TextField } from '@mui/material'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { FC } from 'react'
-import {
-  Controller,
-  FieldError,
-  useFieldArray,
-  useFormContext,
-} from 'react-hook-form'
+import { Controller, FieldError, useFieldArray, useFormContext } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
 import { Game } from 'utils'
 
@@ -39,9 +28,7 @@ const FormAppStoreLinks: FC = () => {
     <>
       <FormControl fullWidth error={Boolean(errors.appStoreLinks)}>
         <FormLabel id="form-appStoreLink">App store links</FormLabel>
-        <p className={styles.sub}>
-          {"If your project is available on any other stores we'll link to it."}
-        </p>
+        <p className={styles.sub}>{"If your project is available on any other stores we'll link to it."}</p>
         <Stack spacing={1}>
           {fields.map((field, index) => (
             <Controller
@@ -63,11 +50,7 @@ const FormAppStoreLinks: FC = () => {
                       alignItems: 'center',
                     }}
                   >
-                    <IconButton
-                      aria-label="delete"
-                      size="small"
-                      onClick={() => remove(index)}
-                    >
+                    <IconButton aria-label="delete" size="small" onClick={() => remove(index)}>
                       <DeleteIcon />
                     </IconButton>
                   </Box>
@@ -90,9 +73,7 @@ const FormAppStoreLinks: FC = () => {
           </Button>
         )}
 
-        <FormHelperText>
-          {(errors?.appStoreLinks as unknown as FieldError)?.message}
-        </FormHelperText>
+        <FormHelperText>{(errors?.appStoreLinks as unknown as FieldError)?.message}</FormHelperText>
       </FormControl>
       <Button
         type="button"

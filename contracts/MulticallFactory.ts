@@ -8,10 +8,7 @@ import { Provider } from '@ethersproject/providers'
 import type { Multicall } from './Multicall'
 
 export class Multicall__factory {
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): Multicall {
+  static connect(address: string, signerOrProvider: Signer | Provider): Multicall {
     return new Contract(address, _abi, signerOrProvider) as Multicall
   }
 }

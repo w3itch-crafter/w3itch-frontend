@@ -1,16 +1,7 @@
-import {
-  PancakeSwapSupportedChainId,
-  UniswapSupportedChainId,
-} from '../types/enum'
+import { PancakeSwapSupportedChainId, UniswapSupportedChainId } from '../types/enum'
 
-export type SupportedChainId =
-  | UniswapSupportedChainId
-  | PancakeSwapSupportedChainId
-export const SupportedChainId = Object.assign(
-  {},
-  UniswapSupportedChainId,
-  PancakeSwapSupportedChainId
-)
+export type SupportedChainId = UniswapSupportedChainId | PancakeSwapSupportedChainId
+export const SupportedChainId = Object.assign({}, UniswapSupportedChainId, PancakeSwapSupportedChainId)
 
 export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.MAINNET]: 'mainnet',
@@ -31,10 +22,9 @@ export const CHAIN_IDS_TO_NAMES = {
 /**
  * Array of all the supported chain IDs
  */
-export const ALL_UNISWAP_SUPPORTED_CHAIN_IDS: SupportedChainId[] =
-  Object.values(SupportedChainId).filter(
-    (id) => typeof id === 'number'
-  ) as SupportedChainId[]
+export const ALL_UNISWAP_SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(
+  (id) => typeof id === 'number'
+) as SupportedChainId[]
 
 const ethereumLogoUrl = 'public/icons/ethereum-eth-logo.png'
 const arbitrumLogoUrl = 'public/icons/arbitrum-logo.svg'
@@ -133,8 +123,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infuraNameKey: 'optimism',
     logoUrl: optimismLogoUrl,
     statusPage: 'https://optimism.io/status',
-    helpCenterUrl:
-      'https://help.uniswap.org/en/collections/3137778-uniswap-on-optimistic-ethereum-oξ',
+    helpCenterUrl: 'https://help.uniswap.org/en/collections/3137778-uniswap-on-optimistic-ethereum-oξ',
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   },
   [SupportedChainId.OPTIMISTIC_KOVAN]: {
@@ -148,8 +137,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     infuraNameKey: 'optimism-kovan',
     logoUrl: optimismLogoUrl,
     statusPage: 'https://optimism.io/status',
-    helpCenterUrl:
-      'https://help.uniswap.org/en/collections/3137778-uniswap-on-optimistic-ethereum-oξ',
+    helpCenterUrl: 'https://help.uniswap.org/en/collections/3137778-uniswap-on-optimistic-ethereum-oξ',
     nativeCurrency: {
       name: 'Optimistic Kovan Ether',
       symbol: 'kovOpETH',
@@ -166,8 +154,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.ARBITRUM_ONE],
     infuraNameKey: 'arbitrum-mainnet',
     logoUrl: arbitrumLogoUrl,
-    helpCenterUrl:
-      'https://help.uniswap.org/en/collections/3137787-uniswap-on-arbitrum',
+    helpCenterUrl: 'https://help.uniswap.org/en/collections/3137787-uniswap-on-arbitrum',
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   },
   [SupportedChainId.ARBITRUM_RINKEBY]: {
@@ -180,8 +167,7 @@ export const CHAIN_INFO: ChainInfoMap = {
     name: CHAIN_IDS_TO_NAMES[SupportedChainId.ARBITRUM_RINKEBY],
     infuraNameKey: 'arbitrum-rinkeby',
     logoUrl: arbitrumLogoUrl,
-    helpCenterUrl:
-      'https://help.uniswap.org/en/collections/3137787-uniswap-on-arbitrum',
+    helpCenterUrl: 'https://help.uniswap.org/en/collections/3137787-uniswap-on-arbitrum',
     nativeCurrency: {
       name: 'Rinkeby Arbitrum Ether',
       symbol: 'rinkArbETH',
@@ -241,18 +227,12 @@ export const CHAIN_INFO: ChainInfoMap = {
   },
 }
 
-export const CurrentChainId = Number(
-  UniswapSupportedChainId.RINKEBY
-) as SupportedChainId
+export const CurrentChainId = Number(UniswapSupportedChainId.RINKEBY) as SupportedChainId
 
 const EnvSupportedChainId = process.env.NEXT_PUBLIC_CHAIN_ID
-  ? (process.env.NEXT_PUBLIC_CHAIN_ID.split(',').map((s) =>
-      Number(s)
-    ) as SupportedChainId[])
+  ? (process.env.NEXT_PUBLIC_CHAIN_ID.split(',').map((s) => Number(s)) as SupportedChainId[])
   : [SupportedChainId.RINKEBY]
 
 export const WalletSupportedChainIds = EnvSupportedChainId
 
-export const WalletSupportedChainNames = WalletSupportedChainIds.map(
-  (chainId) => CHAIN_INFO[chainId]?.label
-)
+export const WalletSupportedChainNames = WalletSupportedChainIds.map((chainId) => CHAIN_INFO[chainId]?.label)

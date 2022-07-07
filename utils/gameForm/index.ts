@@ -46,10 +46,7 @@ export const removeFormDataCache = (id?: string | number): void => {
  * @param data
  * @param id
  */
-export const setFormDataCache = (
-  data: Partial<Game>,
-  id?: string | number
-): void => {
+export const setFormDataCache = (data: Partial<Game>, id?: string | number): void => {
   const cacheJson = JSON.stringify(data)
   if (typeof window !== 'undefined') {
     const cacheKey = getFormDataCacheKey(id)

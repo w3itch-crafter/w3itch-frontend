@@ -8,16 +8,13 @@ declare type WalletSignatureService = {
   signature: string
 }
 
-async function walletSignatureService(
-  wallet: Wallet
-): Promise<WalletSignatureService> {
+async function walletSignatureService(wallet: Wallet): Promise<WalletSignatureService> {
   const walletAccount = wallet.account as string
   const {
     data: { code },
-  } = await backend.post<Api.AccountsMetamaskVerificationCodeResponse>(
-    '/accounts/metamask/verification-code',
-    { key: walletAccount }
-  )
+  } = await backend.post<Api.AccountsMetamaskVerificationCodeResponse>('/accounts/metamask/verification-code', {
+    key: walletAccount,
+  })
   const message = `\x19Ethereum Signed Message:\n Code Length: ${code.length}; Code: ${code}`
   const signature = await wallet.ethereum.request({
     method: 'personal_sign',
@@ -26,11 +23,7 @@ async function walletSignatureService(
   return { account: walletAccount, signature }
 }
 
-async function walletAccountService(
-  action: 'login',
-  wallet: Wallet,
-  redirectUri?: string
-): Promise<string>
+async function walletAccountService(action: 'login', wallet: Wallet, redirectUri?: string): Promise<string>
 async function walletAccountService(
   action: Exclude<AccountServiceAction, 'login'>,
   wallet: Wallet,
@@ -44,22 +37,17 @@ async function walletAccountService(
   const sigObj = await walletSignatureService(wallet)
   const { account, signature } = sigObj
   const args = action === 'login' ? { redirectUri: arg3 } : { username: arg3 }
-  const res = await backend.post<Api.AccountsMetamaskActionResponse | string>(
-    `/accounts/metamask/${action}`,
-    { account, signature, ...args }
-  )
+  const res = await backend.post<Api.AccountsMetamaskActionResponse | string>(`/accounts/metamask/${action}`, {
+    account,
+    signature,
+    ...args,
+  })
   return res.data
 }
-export async function signupWallet(
-  wallet: Wallet,
-  username: string
-): Promise<Api.AccountsMetamaskActionResponse> {
+export async function signupWallet(wallet: Wallet, username: string): Promise<Api.AccountsMetamaskActionResponse> {
   return await walletAccountService('signup', wallet, username)
 }
-export async function loginWallet(
-  wallet: Wallet,
-  redirectUri: string
-): Promise<string> {
+export async function loginWallet(wallet: Wallet, redirectUri: string): Promise<string> {
   return await walletAccountService('login', wallet, redirectUri)
 }
 export async function bindWallet(wallet: Wallet): Promise<void> {
@@ -80,10 +68,7 @@ async function githubAccountService(
   })
   return res.data
 }
-export async function signupGitHub(
-  username: string,
-  redirectUri?: string
-): Promise<string> {
+export async function signupGitHub(username: string, redirectUri?: string): Promise<string> {
   return await githubAccountService('signup', username, redirectUri)
 }
 export async function loginGitHub(redirectUri?: string): Promise<string> {
@@ -107,10 +92,7 @@ async function discordAccountService(
   })
   return res.data
 }
-export async function signupDiscord(
-  username: string,
-  redirectUri?: string
-): Promise<string> {
+export async function signupDiscord(username: string, redirectUri?: string): Promise<string> {
   return await discordAccountService('signup', username, redirectUri)
 }
 export async function loginDiscord(redirectUri?: string): Promise<string> {
@@ -145,12 +127,7 @@ export async function getMine(): Promise<AccountEntity[] | null> {
   }
 }
 
-export async function authSignup(
-  username: string
-): Promise<Api.AccountsAuthSignupResponse> {
-  const res = await backend.post<Api.AccountsAuthSignupResponse>(
-    '/accounts/authorize-callback-signup',
-    { username }
-  )
+export async function authSignup(username: string): Promise<Api.AccountsAuthSignupResponse> {
+  const res = await backend.post<Api.AccountsAuthSignupResponse>('/accounts/authorize-callback-signup', { username })
   return res.data
 }

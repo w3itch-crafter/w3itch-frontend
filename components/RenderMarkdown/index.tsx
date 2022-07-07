@@ -21,10 +21,7 @@ const RenderMarkdown: FC<Props> = ({ md }) => {
   return (
     <>
       {visible ? (
-        <Viewer
-          initialValue={md}
-          theme={getViewerTheme(resolvedTheme as ThemeMode)}
-        />
+        <Viewer initialValue={md} theme={getViewerTheme(resolvedTheme as ThemeMode)} />
       ) : (
         <Box sx={{ display: 'block', textAlign: 'center' }}>
           <CircularProgress />

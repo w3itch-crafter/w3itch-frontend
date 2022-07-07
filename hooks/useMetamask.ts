@@ -60,20 +60,14 @@ export default function useMetamask() {
         // fetch user
         const user = await getUser(username)
         // user account wallet address
-        const account = user?.accounts.find(
-          (account) => account.platform === 'metamask'
-        )
+        const account = user?.accounts.find((account) => account.platform === 'metamask')
 
         if (!account) {
           topCenterSnackbar('user does not have a wallet address')
           return
         }
 
-        ethSendTransaction(
-          getAddress(accounts[0]),
-          getAddress(account.accountId),
-          amount
-        )
+        ethSendTransaction(getAddress(accounts[0]), getAddress(account.accountId), amount)
       } catch (e) {
         console.log(e)
       }

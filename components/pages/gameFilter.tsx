@@ -1,9 +1,5 @@
 import styled from '@emotion/styled'
-import {
-  FilterGroup,
-  FilterGroupItem,
-  FilterGroupItemProps,
-} from 'components/pages'
+import { FilterGroup, FilterGroupItem, FilterGroupItemProps } from 'components/pages'
 import { genres } from 'data'
 import { useBuildHref } from 'hooks'
 import Link from 'next/link'
@@ -87,22 +83,12 @@ export function GameFilter() {
       <FilterPickers>
         <FilterGroup label="Game kind" open>
           {KindFilters.map((kind) => (
-            <FilterGroupItem
-              icon={kind.icon}
-              name={kind.name}
-              href={buildHref('kind', kind.href)}
-              key={kind.name}
-            />
+            <FilterGroupItem icon={kind.icon} name={kind.name} href={buildHref('kind', kind.href)} key={kind.name} />
           ))}
         </FilterGroup>
         <FilterGroup label="Payment mode" open>
           {PaymentFilters.map((pay) => (
-            <FilterGroupItem
-              icon={pay.icon}
-              name={pay.name}
-              href={buildHref('paymentMode', pay.href)}
-              key={pay.name}
-            />
+            <FilterGroupItem icon={pay.icon} name={pay.name} href={buildHref('paymentMode', pay.href)} key={pay.name} />
           ))}
         </FilterGroup>
         <FilterGroup label="Release status" open>
@@ -117,12 +103,7 @@ export function GameFilter() {
         </FilterGroup>
         <FilterGroup label="Genre">
           {GenreFilters.map((genre) => (
-            <FilterGroupItem
-              icon="tag"
-              href={buildHref('genre', genre.href)}
-              name={genre.name}
-              key={genre.name}
-            />
+            <FilterGroupItem icon="tag" href={buildHref('genre', genre.href)} name={genre.name} key={genre.name} />
           ))}
         </FilterGroup>
       </FilterPickers>

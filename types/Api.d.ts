@@ -1,8 +1,4 @@
-import type {
-  GamesListSortBy,
-  PancakeSwapSupportedChainId,
-  UniswapSupportedChainId,
-} from './enum'
+import type { GamesListSortBy, PancakeSwapSupportedChainId, UniswapSupportedChainId } from './enum'
 import { AccountEntity, GameEntity, UserEntity } from './index'
 
 declare namespace Api {
@@ -28,9 +24,7 @@ declare namespace Api {
     token: string
   }
 
-  type GameProjectDto = Partial<
-    Pick<GameEntity, 'cover' | 'donationAddress' | 'screenshots'>
-  > &
+  type GameProjectDto = Partial<Pick<GameEntity, 'cover' | 'donationAddress' | 'screenshots'>> &
     Omit<
       GameEntity,
       | 'id'

@@ -36,14 +36,12 @@ export const UploadGame: FC<Props> = ({ onGameFileSelect }) => {
     [onGameFileSelect]
   )
 
-  const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
-    useDropzone({
-      onDrop,
-      multiple: false,
-      maxSize: 1024 * 1024 * 1024, // 1GB
-      accept:
-        'zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed',
-    })
+  const { acceptedFiles, getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: false,
+    maxSize: 1024 * 1024 * 1024, // 1GB
+    accept: 'zip,application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed',
+  })
 
   const files = acceptedFiles.map((file: FileWithPath) => (
     <li key={file.path}>

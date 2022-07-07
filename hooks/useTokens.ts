@@ -10,16 +10,10 @@ import { TokenList } from './useTokenList'
 
 const KEY_TOKEN_LIST = 'W3ITCH_TOKEN_LIST'
 
-export function useTokens(
-  overrideChainId: number,
-  tags?: string[]
-): TokenList | undefined {
-  const [tokenList, setTokenList] = useLocalStorageState<TokenList>(
-    KEY_TOKEN_LIST,
-    {
-      defaultValue: undefined,
-    }
-  )
+export function useTokens(overrideChainId: number, tags?: string[]): TokenList | undefined {
+  const [tokenList, setTokenList] = useLocalStorageState<TokenList>(KEY_TOKEN_LIST, {
+    defaultValue: undefined,
+  })
   const chainId = overrideChainId
 
   const fetchTokens = useCallback(async () => {
@@ -43,11 +37,7 @@ export function useTokens(
           if (!tags) {
             return sameChainId
           }
-          return (
-            sameChainId &&
-            token.tags &&
-            token.tags.some((tag) => tags.includes(tag))
-          )
+          return sameChainId && token.tags && token.tags.some((tag) => tags.includes(tag))
         }),
       })
     } catch (err) {

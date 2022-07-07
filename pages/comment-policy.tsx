@@ -3,10 +3,7 @@ import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-const RenderMarkdown = dynamic(
-  () => import('components/RenderMarkdown/index'),
-  { ssr: false }
-)
+const RenderMarkdown = dynamic(() => import('components/RenderMarkdown/index'), { ssr: false })
 
 const MD_EN = `
 # Privacy Policy

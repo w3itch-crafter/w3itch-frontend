@@ -1,11 +1,4 @@
-import {
-  Autocomplete,
-  Chip,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  TextField,
-} from '@mui/material'
+import { Autocomplete, Chip, FormControl, FormHelperText, FormLabel, TextField } from '@mui/material'
 import { trim } from 'lodash'
 import { isEmpty } from 'lodash'
 import { FC, useCallback, useEffect, useState } from 'react'
@@ -74,12 +67,9 @@ const FormTags: FC<Props> = ({ changeTags }) => {
             </span>
           </FormLabel>
           <p className={styles.tags_description_sub}>
-            Any other keywords someone might search to find your game. Max of
-            10.
+            Any other keywords someone might search to find your game. Max of 10.
           </p>
-          <p className={styles.tags_description_sub}>
-            Avoid duplicating any platforms provided on files above.
-          </p>
+          <p className={styles.tags_description_sub}>Avoid duplicating any platforms provided on files above.</p>
           <Autocomplete
             multiple
             id="form-tags"
@@ -95,23 +85,14 @@ const FormTags: FC<Props> = ({ changeTags }) => {
               // console.log('value', value)
               return value.map((tag: string, index: number) => (
                 // eslint-disable-next-line react/jsx-key
-                <Chip
-                  variant="outlined"
-                  label={tag}
-                  {...getTagProps({ index })}
-                />
+                <Chip variant="outlined" label={tag} {...getTagProps({ index })} />
               ))
             }}
             renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder="Click to view options, type to filter or enter custom tag"
-              />
+              <TextField {...params} placeholder="Click to view options, type to filter or enter custom tag" />
             )}
           />
-          <FormHelperText>
-            {(errors?.tags as unknown as FieldError)?.message}
-          </FormHelperText>
+          <FormHelperText>{(errors?.tags as unknown as FieldError)?.message}</FormHelperText>
         </FormControl>
       )}
     />

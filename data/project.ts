@@ -1,9 +1,4 @@
-import {
-  GameEngine,
-  Genre,
-  ProjectClassification,
-  ReleaseStatus,
-} from 'types/enum'
+import { GameEngine, Genre, ProjectClassification, ReleaseStatus } from 'types/enum'
 import { enumWord } from 'utils'
 
 type ProjectType<T = unknown> = {
@@ -475,8 +470,7 @@ export const classifications: ProjectType<ProjectClassification>[] = [
   {
     value: ProjectClassification.GAME_ASSETS,
     label: 'Game assets',
-    description:
-      'Graphics, fonts, music, sounds one may combine into something else',
+    description: 'Graphics, fonts, music, sounds one may combine into something else',
   },
   {
     value: ProjectClassification.GAME_MODS,
@@ -486,8 +480,7 @@ export const classifications: ProjectType<ProjectClassification>[] = [
   {
     value: ProjectClassification.PHYSICAL_GAMES,
     label: 'Physical games',
-    description:
-      'One you can play without devices (e.g. board game, print & play)',
+    description: 'One you can play without devices (e.g. board game, print & play)',
   },
   {
     value: ProjectClassification.ALBUMS_AND_SOUNDTRACKS,
@@ -535,8 +528,7 @@ const kindOfProjects: ProjectType<GameEngine>[] = [
   {
     value: GameEngine.HTML,
     label: 'HTML',
-    description:
-      'You have a ZIP or HTML file that will be played in the browser',
+    description: 'You have a ZIP or HTML file that will be played in the browser',
   },
   {
     value: GameEngine.DOWNLOADABLE,
@@ -545,9 +537,7 @@ const kindOfProjects: ProjectType<GameEngine>[] = [
   },
 ]
 const kindValues = Object.values(GameEngine)
-export const kinds = kindOfProjects.filter((engine) =>
-  kindValues.includes(engine.value as GameEngine)
-)
+export const kinds = kindOfProjects.filter((engine) => kindValues.includes(engine.value as GameEngine))
 
 export const releaseStatus: ProjectType<ReleaseStatus>[] = [
   {
@@ -573,8 +563,7 @@ export const releaseStatus: ProjectType<ReleaseStatus>[] = [
   {
     value: ReleaseStatus.PROTOTYPE,
     label: 'Prototype',
-    description:
-      'An early prototype for testing an idea out, fate of project unknown',
+    description: 'An early prototype for testing an idea out, fate of project unknown',
   },
 ]
 

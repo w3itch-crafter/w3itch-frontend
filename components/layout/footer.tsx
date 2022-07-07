@@ -74,10 +74,7 @@ export function Footer() {
         <Link href="https://blog.w3itch.io/" passHref>
           <PrimaryLink>Blog</PrimaryLink>
         </Link>
-        <Link
-          href="https://docs.w3itch.io/support.html#bugs-feature-requests"
-          passHref
-        >
+        <Link href="https://docs.w3itch.io/support.html#bugs-feature-requests" passHref>
           <PrimaryLink>Contact us</PrimaryLink>
         </Link>
         <Link href="https://docs.w3itch.io/CONTRIBUTING.html" passHref>

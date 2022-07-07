@@ -4,26 +4,11 @@ import GameForm from 'components/Game/Form'
 import { useSetFormCache } from 'hooks'
 import type { NextPage } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import {
-  Dispatch,
-  FC,
-  MutableRefObject,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { Dispatch, FC, MutableRefObject, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { DefaultValues, useForm, useFormContext } from 'react-hook-form'
 import { FormProvider as GameFormProvider } from 'react-hook-form'
 import { GameEntity } from 'types'
-import {
-  Community,
-  EditorMode,
-  GameEngine,
-  GameFileCharset,
-  Genre,
-  PaymentMode,
-} from 'types/enum'
+import { Community, EditorMode, GameEngine, GameFileCharset, Genre, PaymentMode } from 'types/enum'
 import { getFormDataCache } from 'utils'
 import { Game } from 'utils/validator'
 

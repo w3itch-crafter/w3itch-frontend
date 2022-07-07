@@ -11,11 +11,7 @@ export declare interface FilterGroupProps {
   children: React.ReactNode
 }
 
-export function FilterGroup({
-  label,
-  children,
-  open = false,
-}: FilterGroupProps) {
+export function FilterGroup({ label, children, open = false }: FilterGroupProps) {
   const Container = styled.div`
     border: 1px solid transparent;
   `

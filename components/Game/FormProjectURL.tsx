@@ -1,9 +1,4 @@
-import {
-  FormControl,
-  FormLabel,
-  InputAdornment,
-  TextField,
-} from '@mui/material'
+import { FormControl, FormLabel, InputAdornment, TextField } from '@mui/material'
 import { useAuthentication } from 'hooks'
 import React, { useCallback } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
@@ -37,9 +32,7 @@ const FormProjectURL: React.FC = () => {
             error={!!errors.projectURL}
             helperText={errors.projectURL?.message}
             InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">{profileUrl}/</InputAdornment>
-              ),
+              startAdornment: <InputAdornment position="start">{profileUrl}/</InputAdornment>,
             }}
             {...field}
             onChange={handleInputChange}

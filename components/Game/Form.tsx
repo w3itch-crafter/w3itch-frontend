@@ -26,6 +26,7 @@ import { filenameHandle, fileUrl, removeFormDataCache } from 'utils'
 import { Game, inferProjectType, isStringNumber, urlGame } from 'utils'
 import { parseFilename, parseUrl, processMessage } from 'utils'
 
+import FormAccessType from './FormAccessType'
 import FormCharset from './FormCharset'
 import FormClassification from './FormClassification'
 import FormCommunity from './FormCommunity'
@@ -54,7 +55,10 @@ let MESSAGE_SUBMIT_KEY: string | number
 
 export const defaultCoverLinks = new Map([
   [GameEngine.DEFAULT, 'http://n.sinaimg.cn/auto/transform/20170521/Z87u-fyfkzhs7969292.jpg'],
-  [GameEngine.RM2K3E, 'https://image.w3itch.io/w3itch-test/attachment/30/world-overview.crystal2.8dde7d50-ec9a-11ec-956c-03700aa82971.png'],
+  [
+    GameEngine.RM2K3E,
+    'https://image.w3itch.io/w3itch-test/attachment/30/world-overview.crystal2.8dde7d50-ec9a-11ec-956c-03700aa82971.png',
+  ],
   [
     GameEngine.DOWNLOADABLE,
     'https://dotnet.microsoft.com/static/images/redesign/download/dotnet-framework-runtime.svg?v=22xvQuHVYJL7LD0xeWgHfLKUNROSdPrvv0q3aBlVvsY',
@@ -75,7 +79,9 @@ const GameForm: React.FC<GameFormProps> = ({ gameProject, editorMode, editorRef,
   const [screenshotsFiles, setScreenshotsFiles] = useState<File[]>()
   const [submitLoading, setSubmitLoading] = useState<boolean>(false)
   const [tokenListDialogOpen, setTtokenListDialogOpen] = useState(false)
-  const [currentSelectTokenChainId, setCurrentSelectTokenChainId] = useState<SupportedChainId>(WalletSupportedChainIds[0])
+  const [currentSelectTokenChainId, setCurrentSelectTokenChainId] = useState<SupportedChainId>(
+    WalletSupportedChainIds[0]
+  )
   const [currentSelectTokenChainIdFlag, setCurrentSelectTokenChainIdFlag] = useState<boolean>(false)
   const [currentSelectToken, setCurrentSelectToken] = useState<TokenInfo>({} as TokenInfo)
   const [currentSelectTokenFlag, setCurrentSelectTokenFlag] = useState<boolean>(false)
@@ -105,7 +111,8 @@ const GameForm: React.FC<GameFormProps> = ({ gameProject, editorMode, editorRef,
   }
 
   // 先支持 编辑
-  const validateGameFile = () => validate(editorMode === EditorMode.CREATE && !uploadGameFile, 'Please upload game files')
+  const validateGameFile = () =>
+    validate(editorMode === EditorMode.CREATE && !uploadGameFile, 'Please upload game files')
 
   const validateDescription = (description: string) => validate(!description, 'Description cannot be empty')
 
@@ -412,7 +419,10 @@ const GameForm: React.FC<GameFormProps> = ({ gameProject, editorMode, editorRef,
       </Head>
       <div className={stylesCommon.main}>
         <div className={stylesCommon.inner_column}>
-          <div id="edit_game_page_43096" className={`${styles.edit_game_page} dashboard_game_edit_base_page ${styles.page_widget} ${styles.form} is_game`}>
+          <div
+            id="edit_game_page_43096"
+            className={`${styles.edit_game_page} dashboard_game_edit_base_page ${styles.page_widget} ${styles.form} is_game`}
+          >
             <FormHeader title={pageTitle} />
             {/* <FormPaymentWarn /> */}
 
@@ -435,6 +445,9 @@ const GameForm: React.FC<GameFormProps> = ({ gameProject, editorMode, editorRef,
                     </div>
                     <div className={styles.input_row}>
                       <FormKind {...{ editorMode }} />
+                    </div>
+                    <div className={styles.input_row}>
+                      <FormAccessType />
                     </div>
                     <div className={styles.input_row}>
                       <FormReleaseStatus />
@@ -495,7 +508,12 @@ const GameForm: React.FC<GameFormProps> = ({ gameProject, editorMode, editorRef,
                   </div>
                 </div>
                 <div className={styles.buttons}>
-                  <LoadingButton variant="contained" type="submit" loading={submitLoading} sx={{ width: { xs: '100%', sm: 'auto' } }}>
+                  <LoadingButton
+                    variant="contained"
+                    type="submit"
+                    loading={submitLoading}
+                    sx={{ width: { xs: '100%', sm: 'auto' } }}
+                  >
                     {editorMode === EditorMode.CREATE && 'Save'}
                     {editorMode === EditorMode.EDIT && 'Update'}
                   </LoadingButton>

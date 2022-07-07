@@ -8,10 +8,7 @@ export declare interface LoginMethodChooserProps {
   onChoose: (method: LoginMethod) => void
 }
 
-export function LoginMethodChooser({
-  methodType,
-  onChoose,
-}: LoginMethodChooserProps) {
+export function LoginMethodChooser({ methodType, onChoose }: LoginMethodChooserProps) {
   const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -21,27 +18,15 @@ export function LoginMethodChooser({
 
   return (
     <Container>
-      <LoginChooseButton
-        outline
-        color="#716b94"
-        onClick={() => onChoose('metamask')}
-      >
+      <LoginChooseButton outline color="#716b94" onClick={() => onChoose('metamask')}>
         <EthereumIcon size={32} />
         <span>{method} with Ethereum wallets</span>
       </LoginChooseButton>
-      <LoginChooseButton
-        outline
-        color="#161614"
-        onClick={() => onChoose('github')}
-      >
+      <LoginChooseButton outline color="#161614" onClick={() => onChoose('github')}>
         <GitHubIcon size={32} />
         <span>{method} with GitHub account</span>
       </LoginChooseButton>
-      <LoginChooseButton
-        outline
-        color="#5865F2"
-        onClick={() => onChoose('discord')}
-      >
+      <LoginChooseButton outline color="#5865F2" onClick={() => onChoose('discord')}>
         <DiscordIcon size={32} />
         <span>{method} with Discord account</span>
       </LoginChooseButton>

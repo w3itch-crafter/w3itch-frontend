@@ -20,12 +20,7 @@ const Screenshots: FC<Props> = ({ screenshots }) => {
   return (
     <Wrapper>
       {screenshots.map((screenshot, index) => (
-        <Card
-          key={`${index}-${screenshot}`}
-          href={screenshot}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <Card key={`${index}-${screenshot}`} href={screenshot} target="_blank" rel="noopener noreferrer">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={screenshot} alt="screenshot" />
         </Card>

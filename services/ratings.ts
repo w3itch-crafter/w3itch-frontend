@@ -7,9 +7,7 @@ import { Api } from 'types/Api'
  * @param id
  * @returns
  */
-export async function fetchGameRatingsCount(
-  id: number
-): Promise<AxiosResponse<number>> {
+export async function fetchGameRatingsCount(id: number): Promise<AxiosResponse<number>> {
   return await backend(`game-projects/${id}/ratings/count`, {
     method: 'GET',
   })
@@ -20,9 +18,7 @@ export async function fetchGameRatingsCount(
  * @param id
  * @returns
  */
-export async function fetchGameRatingsMine(
-  id: number
-): Promise<AxiosResponse<Api.GameProjectsRatingResponse>> {
+export async function fetchGameRatingsMine(id: number): Promise<AxiosResponse<Api.GameProjectsRatingResponse>> {
   return await backend(`game-projects/${id}/ratings/mine`, {
     method: 'GET',
   })
@@ -52,9 +48,7 @@ export const UpdateGameRatingsMine = async (
  * @param id
  * @returns
  */
-export const DeleteGameRatingsMine = async (
-  id: number
-): Promise<AxiosResponse<void>> => {
+export const DeleteGameRatingsMine = async (id: number): Promise<AxiosResponse<void>> => {
   return await backend({
     url: `/game-projects/${id}/ratings/mine`,
     method: 'DELETE',

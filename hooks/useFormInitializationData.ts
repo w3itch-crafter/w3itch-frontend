@@ -9,11 +9,7 @@ import { GameEntity } from 'types'
 import { EditorMode, PaymentMode } from 'types/enum'
 import { Game } from 'utils'
 
-export function useFormInitializationData({
-  gameProject,
-}: {
-  gameProject: GameEntity
-}) {
+export function useFormInitializationData({ gameProject }: { gameProject: GameEntity }) {
   const { getValues } = useFormContext<Game>()
   const account = useAccountInfo('metamask')
 
@@ -47,27 +43,16 @@ export function useFormInitializationData({
       setCurrentSelectTokenAmount: Dispatch<SetStateAction<string>>
       setCurrentSelectTokenAmountFlag: Dispatch<SetStateAction<boolean>>
     }) => {
-      if (
-        editorMode === EditorMode.EDIT &&
-        getValues('paymentMode') === PaymentMode.PAID
-      ) {
+      if (editorMode === EditorMode.EDIT && getValues('paymentMode') === PaymentMode.PAID) {
         // execute only once
-        if (
-          !currentSelectTokenChainIdFlag &&
-          !isEmpty(gameProject?.prices[0])
-        ) {
+        if (!currentSelectTokenChainIdFlag && !isEmpty(gameProject?.prices[0])) {
           setCurrentSelectTokenChainId(gameProject?.prices[0].token.chainId)
           setCurrentSelectTokenChainIdFlag(true)
         }
 
         // execute only once
-        if (
-          isEmpty(currentSelectToken) &&
-          !isEmpty(gameProject?.prices[0]) &&
-          !currentSelectTokenFlag
-        ) {
-          const { address, name, symbol, decimals, chainId } =
-            gameProject.prices[0].token
+        if (isEmpty(currentSelectToken) && !isEmpty(gameProject?.prices[0]) && !currentSelectTokenFlag) {
+          const { address, name, symbol, decimals, chainId } = gameProject.prices[0].token
           // balanceOf and totalSupply are not processed
           setCurrentSelectToken({
             address: address,
@@ -89,10 +74,7 @@ export function useFormInitializationData({
           !isEmpty(gameProject?.prices[0])
         ) {
           setCurrentSelectTokenAmount(
-            utils.formatUnits(
-              gameProject.prices[0].amount,
-              gameProject.prices[0].token.decimals
-            )
+            utils.formatUnits(gameProject.prices[0].amount, gameProject.prices[0].token.decimals)
           )
           setCurrentSelectTokenAmountFlag(true)
         }

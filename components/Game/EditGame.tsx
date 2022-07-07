@@ -7,15 +7,11 @@ interface EditGameProps {
   gameProject: GameEntity
 }
 
-const EditGame: FC<EditGameProps> = ({
-  gameProject: { id, username: projectUsername },
-}) => {
+const EditGame: FC<EditGameProps> = ({ gameProject: { id, username: projectUsername } }) => {
   const {
     state: { user },
   } = useContext(AuthenticationContext)
   const editRef = `/game/edit/${id}`
-  return user?.username === projectUsername ? (
-    <Link href={editRef}>Edit</Link>
-  ) : null
+  return user?.username === projectUsername ? <Link href={editRef}>Edit</Link> : null
 }
 export default EditGame

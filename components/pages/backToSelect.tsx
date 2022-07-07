@@ -2,8 +2,7 @@ import styled from '@emotion/styled'
 import { IcoMoonIcon } from 'components/icons'
 import { DetailedHTMLProps, HTMLAttributes } from 'react'
 
-export declare interface BackToSelectProps
-  extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+export declare interface BackToSelectProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   className?: string
 }
 

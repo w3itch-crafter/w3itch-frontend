@@ -68,9 +68,9 @@ export function useHoldUnlock({ game, token }: UseHoldUnlock) {
         return
       }
 
-      const isUnlock = new BigNumber(
-        utils.formatUnits(token.balanceOf, token.decimals)
-      ).gte(utils.formatUnits(token.amount, token.decimals))
+      const isUnlock = new BigNumber(utils.formatUnits(token.balanceOf, token.decimals)).gte(
+        utils.formatUnits(token.amount, token.decimals)
+      )
 
       if (isUnlock) {
         setHoldUnlock(false)

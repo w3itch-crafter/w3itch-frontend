@@ -18,11 +18,7 @@ export class PassportScorer {
   _verifier: PassportVerifier
   _criteria: Criteria[]
 
-  constructor(
-    criteria: Criteria[],
-    url = 'https://ceramic.passport-iam.gitcoin.co',
-    network = '1'
-  ) {
+  constructor(criteria: Criteria[], url = 'https://ceramic.passport-iam.gitcoin.co', network = '1') {
     // attach an instance of the reader
     this._reader = new PassportReader(url, network)
     // attach an instance of the verifier
@@ -37,23 +33,16 @@ export class PassportScorer {
     additionalStampChecks?: (stamp: Stamp) => boolean
   ): Promise<number> {
     // get the passport
-    const passportRecord = (passport ||
-      (await this._reader.getPassport(address))) as Passport
+    const passportRecord = (passport || (await this._reader.getPassport(address))) as Passport
     // get the passport with .verified state on the stamps
-    const passportVerified = await this._verifier.verifyPassport(
-      address,
-      passportRecord,
-      additionalStampChecks
-    )
+    const passportVerified = await this._verifier.verifyPassport(address, passportRecord, additionalStampChecks)
 
     // when passport exists - score the stamps
     if (passportVerified) {
       // Index the stamps by issuer and provider
       const indexedStamps = passportVerified.stamps.reduce((stamps, stamp) => {
         // @ts-ignore
-        stamps[
-          `${stamp.credential.issuer}:${stamp.credential.credentialSubject.provider}`
-        ] = stamp
+        stamps[`${stamp.credential.issuer}:${stamp.credential.credentialSubject.provider}`] = stamp
 
         return stamps
       }, {})
@@ -61,9 +50,7 @@ export class PassportScorer {
       // extract the score for each of our recognised stamps (in the criteria)
       const scores = this._criteria.map((criteria) => {
         // @ts-ignore
-        const stamp = indexedStamps[
-          `${criteria.issuer}:${criteria.provider}`
-        ] as Stamp
+        const stamp = indexedStamps[`${criteria.issuer}:${criteria.provider}`] as Stamp
 
         // given the stamp exists...
         if (stamp) {

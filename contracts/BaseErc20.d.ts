@@ -2,20 +2,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import {
-  ethers,
-  EventFilter,
-  Signer,
-  BigNumber,
-  BigNumberish,
-  PopulatedTransaction,
-} from 'ethers'
-import {
-  Contract,
-  ContractTransaction,
-  Overrides,
-  CallOverrides,
-} from '@ethersproject/contracts'
+import { ethers, EventFilter, Signer, BigNumber, BigNumberish, PopulatedTransaction } from 'ethers'
+import { Contract, ContractTransaction, Overrides, CallOverrides } from '@ethersproject/contracts'
 import { BytesLike } from '@ethersproject/bytes'
 import { Listener, Provider } from '@ethersproject/providers'
 import { FunctionFragment, EventFragment, Result } from '@ethersproject/abi'
@@ -37,43 +25,19 @@ interface BaseErc20Interface extends ethers.utils.Interface {
     'transferOwnership(address)': FunctionFragment
   }
 
-  encodeFunctionData(
-    functionFragment: 'allowance',
-    values: [string, string]
-  ): string
-  encodeFunctionData(
-    functionFragment: 'approve',
-    values: [string, BigNumberish]
-  ): string
+  encodeFunctionData(functionFragment: 'allowance', values: [string, string]): string
+  encodeFunctionData(functionFragment: 'approve', values: [string, BigNumberish]): string
   encodeFunctionData(functionFragment: 'balanceOf', values: [string]): string
   encodeFunctionData(functionFragment: 'decimals', values?: undefined): string
-  encodeFunctionData(
-    functionFragment: 'mint',
-    values: [string, BigNumberish]
-  ): string
+  encodeFunctionData(functionFragment: 'mint', values: [string, BigNumberish]): string
   encodeFunctionData(functionFragment: 'name', values?: undefined): string
   encodeFunctionData(functionFragment: 'owner', values?: undefined): string
-  encodeFunctionData(
-    functionFragment: 'renounceOwnership',
-    values?: undefined
-  ): string
+  encodeFunctionData(functionFragment: 'renounceOwnership', values?: undefined): string
   encodeFunctionData(functionFragment: 'symbol', values?: undefined): string
-  encodeFunctionData(
-    functionFragment: 'totalSupply',
-    values?: undefined
-  ): string
-  encodeFunctionData(
-    functionFragment: 'transfer',
-    values: [string, BigNumberish]
-  ): string
-  encodeFunctionData(
-    functionFragment: 'transferFrom',
-    values: [string, string, BigNumberish]
-  ): string
-  encodeFunctionData(
-    functionFragment: 'transferOwnership',
-    values: [string]
-  ): string
+  encodeFunctionData(functionFragment: 'totalSupply', values?: undefined): string
+  encodeFunctionData(functionFragment: 'transfer', values: [string, BigNumberish]): string
+  encodeFunctionData(functionFragment: 'transferFrom', values: [string, string, BigNumberish]): string
+  encodeFunctionData(functionFragment: 'transferOwnership', values: [string]): string
 
   decodeFunctionResult(functionFragment: 'allowance', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result
@@ -82,21 +46,12 @@ interface BaseErc20Interface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: 'mint', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'name', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result
-  decodeFunctionResult(
-    functionFragment: 'renounceOwnership',
-    data: BytesLike
-  ): Result
+  decodeFunctionResult(functionFragment: 'renounceOwnership', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'symbol', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'totalSupply', data: BytesLike): Result
   decodeFunctionResult(functionFragment: 'transfer', data: BytesLike): Result
-  decodeFunctionResult(
-    functionFragment: 'transferFrom',
-    data: BytesLike
-  ): Result
-  decodeFunctionResult(
-    functionFragment: 'transferOwnership',
-    data: BytesLike
-  ): Result
+  decodeFunctionResult(functionFragment: 'transferFrom', data: BytesLike): Result
+  decodeFunctionResult(functionFragment: 'transferOwnership', data: BytesLike): Result
 
   events: {
     'Approval(address,address,uint256)': EventFragment
@@ -139,11 +94,7 @@ export class BaseErc20 extends Contract {
       0: BigNumber
     }>
 
-    approve(
-      spender: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>
+    approve(spender: string, value: BigNumberish, overrides?: Overrides): Promise<ContractTransaction>
 
     'approve(address,uint256)'(
       spender: string,
@@ -173,17 +124,9 @@ export class BaseErc20 extends Contract {
       0: number
     }>
 
-    mint(
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>
+    mint(to: string, value: BigNumberish, overrides?: Overrides): Promise<ContractTransaction>
 
-    'mint(address,uint256)'(
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>
+    'mint(address,uint256)'(to: string, value: BigNumberish, overrides?: Overrides): Promise<ContractTransaction>
 
     name(overrides?: CallOverrides): Promise<{
       0: string
@@ -221,24 +164,11 @@ export class BaseErc20 extends Contract {
       0: BigNumber
     }>
 
-    transfer(
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>
+    transfer(to: string, value: BigNumberish, overrides?: Overrides): Promise<ContractTransaction>
 
-    'transfer(address,uint256)'(
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>
+    'transfer(address,uint256)'(to: string, value: BigNumberish, overrides?: Overrides): Promise<ContractTransaction>
 
-    transferFrom(
-      from: string,
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>
+    transferFrom(from: string, to: string, value: BigNumberish, overrides?: Overrides): Promise<ContractTransaction>
 
     'transferFrom(address,address,uint256)'(
       from: string,
@@ -247,63 +177,30 @@ export class BaseErc20 extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>
 
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>
+    transferOwnership(newOwner: string, overrides?: Overrides): Promise<ContractTransaction>
 
-    'transferOwnership(address)'(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>
+    'transferOwnership(address)'(newOwner: string, overrides?: Overrides): Promise<ContractTransaction>
   }
 
-  allowance(
-    owner: string,
-    spender: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>
+  allowance(owner: string, spender: string, overrides?: CallOverrides): Promise<BigNumber>
 
-  'allowance(address,address)'(
-    owner: string,
-    spender: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>
+  'allowance(address,address)'(owner: string, spender: string, overrides?: CallOverrides): Promise<BigNumber>
 
-  approve(
-    spender: string,
-    value: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>
+  approve(spender: string, value: BigNumberish, overrides?: Overrides): Promise<ContractTransaction>
 
-  'approve(address,uint256)'(
-    spender: string,
-    value: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>
+  'approve(address,uint256)'(spender: string, value: BigNumberish, overrides?: Overrides): Promise<ContractTransaction>
 
   balanceOf(who: string, overrides?: CallOverrides): Promise<BigNumber>
 
-  'balanceOf(address)'(
-    who: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>
+  'balanceOf(address)'(who: string, overrides?: CallOverrides): Promise<BigNumber>
 
   decimals(overrides?: CallOverrides): Promise<number>
 
   'decimals()'(overrides?: CallOverrides): Promise<number>
 
-  mint(
-    to: string,
-    value: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>
+  mint(to: string, value: BigNumberish, overrides?: Overrides): Promise<ContractTransaction>
 
-  'mint(address,uint256)'(
-    to: string,
-    value: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>
+  'mint(address,uint256)'(to: string, value: BigNumberish, overrides?: Overrides): Promise<ContractTransaction>
 
   name(overrides?: CallOverrides): Promise<string>
 
@@ -325,24 +222,11 @@ export class BaseErc20 extends Contract {
 
   'totalSupply()'(overrides?: CallOverrides): Promise<BigNumber>
 
-  transfer(
-    to: string,
-    value: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>
+  transfer(to: string, value: BigNumberish, overrides?: Overrides): Promise<ContractTransaction>
 
-  'transfer(address,uint256)'(
-    to: string,
-    value: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>
+  'transfer(address,uint256)'(to: string, value: BigNumberish, overrides?: Overrides): Promise<ContractTransaction>
 
-  transferFrom(
-    from: string,
-    to: string,
-    value: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>
+  transferFrom(from: string, to: string, value: BigNumberish, overrides?: Overrides): Promise<ContractTransaction>
 
   'transferFrom(address,address,uint256)'(
     from: string,
@@ -351,63 +235,30 @@ export class BaseErc20 extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>
 
-  transferOwnership(
-    newOwner: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>
+  transferOwnership(newOwner: string, overrides?: Overrides): Promise<ContractTransaction>
 
-  'transferOwnership(address)'(
-    newOwner: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>
+  'transferOwnership(address)'(newOwner: string, overrides?: Overrides): Promise<ContractTransaction>
 
   callStatic: {
-    allowance(
-      owner: string,
-      spender: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>
+    allowance(owner: string, spender: string, overrides?: CallOverrides): Promise<BigNumber>
 
-    'allowance(address,address)'(
-      owner: string,
-      spender: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>
+    'allowance(address,address)'(owner: string, spender: string, overrides?: CallOverrides): Promise<BigNumber>
 
-    approve(
-      spender: string,
-      value: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>
+    approve(spender: string, value: BigNumberish, overrides?: CallOverrides): Promise<boolean>
 
-    'approve(address,uint256)'(
-      spender: string,
-      value: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>
+    'approve(address,uint256)'(spender: string, value: BigNumberish, overrides?: CallOverrides): Promise<boolean>
 
     balanceOf(who: string, overrides?: CallOverrides): Promise<BigNumber>
 
-    'balanceOf(address)'(
-      who: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>
+    'balanceOf(address)'(who: string, overrides?: CallOverrides): Promise<BigNumber>
 
     decimals(overrides?: CallOverrides): Promise<number>
 
     'decimals()'(overrides?: CallOverrides): Promise<number>
 
-    mint(
-      to: string,
-      value: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>
+    mint(to: string, value: BigNumberish, overrides?: CallOverrides): Promise<void>
 
-    'mint(address,uint256)'(
-      to: string,
-      value: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>
+    'mint(address,uint256)'(to: string, value: BigNumberish, overrides?: CallOverrides): Promise<void>
 
     name(overrides?: CallOverrides): Promise<string>
 
@@ -429,24 +280,11 @@ export class BaseErc20 extends Contract {
 
     'totalSupply()'(overrides?: CallOverrides): Promise<BigNumber>
 
-    transfer(
-      to: string,
-      value: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>
+    transfer(to: string, value: BigNumberish, overrides?: CallOverrides): Promise<boolean>
 
-    'transfer(address,uint256)'(
-      to: string,
-      value: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>
+    'transfer(address,uint256)'(to: string, value: BigNumberish, overrides?: CallOverrides): Promise<boolean>
 
-    transferFrom(
-      from: string,
-      to: string,
-      value: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>
+    transferFrom(from: string, to: string, value: BigNumberish, overrides?: CallOverrides): Promise<boolean>
 
     'transferFrom(address,address,uint256)'(
       from: string,
@@ -455,79 +293,39 @@ export class BaseErc20 extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>
 
-    transferOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>
+    transferOwnership(newOwner: string, overrides?: CallOverrides): Promise<void>
 
-    'transferOwnership(address)'(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>
+    'transferOwnership(address)'(newOwner: string, overrides?: CallOverrides): Promise<void>
   }
 
   filters: {
-    Approval(
-      owner: string | null,
-      spender: string | null,
-      value: null
-    ): EventFilter
+    Approval(owner: string | null, spender: string | null, value: null): EventFilter
 
-    OwnershipTransferred(
-      previousOwner: string | null,
-      newOwner: string | null
-    ): EventFilter
+    OwnershipTransferred(previousOwner: string | null, newOwner: string | null): EventFilter
 
     Transfer(from: string | null, to: string | null, value: null): EventFilter
   }
 
   estimateGas: {
-    allowance(
-      owner: string,
-      spender: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>
+    allowance(owner: string, spender: string, overrides?: CallOverrides): Promise<BigNumber>
 
-    'allowance(address,address)'(
-      owner: string,
-      spender: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>
+    'allowance(address,address)'(owner: string, spender: string, overrides?: CallOverrides): Promise<BigNumber>
 
-    approve(
-      spender: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>
+    approve(spender: string, value: BigNumberish, overrides?: Overrides): Promise<BigNumber>
 
-    'approve(address,uint256)'(
-      spender: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>
+    'approve(address,uint256)'(spender: string, value: BigNumberish, overrides?: Overrides): Promise<BigNumber>
 
     balanceOf(who: string, overrides?: CallOverrides): Promise<BigNumber>
 
-    'balanceOf(address)'(
-      who: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>
+    'balanceOf(address)'(who: string, overrides?: CallOverrides): Promise<BigNumber>
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>
 
     'decimals()'(overrides?: CallOverrides): Promise<BigNumber>
 
-    mint(
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>
+    mint(to: string, value: BigNumberish, overrides?: Overrides): Promise<BigNumber>
 
-    'mint(address,uint256)'(
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>
+    'mint(address,uint256)'(to: string, value: BigNumberish, overrides?: Overrides): Promise<BigNumber>
 
     name(overrides?: CallOverrides): Promise<BigNumber>
 
@@ -549,24 +347,11 @@ export class BaseErc20 extends Contract {
 
     'totalSupply()'(overrides?: CallOverrides): Promise<BigNumber>
 
-    transfer(
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>
+    transfer(to: string, value: BigNumberish, overrides?: Overrides): Promise<BigNumber>
 
-    'transfer(address,uint256)'(
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>
+    'transfer(address,uint256)'(to: string, value: BigNumberish, overrides?: Overrides): Promise<BigNumber>
 
-    transferFrom(
-      from: string,
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>
+    transferFrom(from: string, to: string, value: BigNumberish, overrides?: Overrides): Promise<BigNumber>
 
     'transferFrom(address,address,uint256)'(
       from: string,
@@ -575,23 +360,13 @@ export class BaseErc20 extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>
 
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>
+    transferOwnership(newOwner: string, overrides?: Overrides): Promise<BigNumber>
 
-    'transferOwnership(address)'(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>
+    'transferOwnership(address)'(newOwner: string, overrides?: Overrides): Promise<BigNumber>
   }
 
   populateTransaction: {
-    allowance(
-      owner: string,
-      spender: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>
+    allowance(owner: string, spender: string, overrides?: CallOverrides): Promise<PopulatedTransaction>
 
     'allowance(address,address)'(
       owner: string,
@@ -599,11 +374,7 @@ export class BaseErc20 extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>
 
-    approve(
-      spender: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>
+    approve(spender: string, value: BigNumberish, overrides?: Overrides): Promise<PopulatedTransaction>
 
     'approve(address,uint256)'(
       spender: string,
@@ -611,31 +382,17 @@ export class BaseErc20 extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>
 
-    balanceOf(
-      who: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>
+    balanceOf(who: string, overrides?: CallOverrides): Promise<PopulatedTransaction>
 
-    'balanceOf(address)'(
-      who: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>
+    'balanceOf(address)'(who: string, overrides?: CallOverrides): Promise<PopulatedTransaction>
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
     'decimals()'(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
-    mint(
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>
+    mint(to: string, value: BigNumberish, overrides?: Overrides): Promise<PopulatedTransaction>
 
-    'mint(address,uint256)'(
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>
+    'mint(address,uint256)'(to: string, value: BigNumberish, overrides?: Overrides): Promise<PopulatedTransaction>
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
@@ -657,24 +414,11 @@ export class BaseErc20 extends Contract {
 
     'totalSupply()'(overrides?: CallOverrides): Promise<PopulatedTransaction>
 
-    transfer(
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>
+    transfer(to: string, value: BigNumberish, overrides?: Overrides): Promise<PopulatedTransaction>
 
-    'transfer(address,uint256)'(
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>
+    'transfer(address,uint256)'(to: string, value: BigNumberish, overrides?: Overrides): Promise<PopulatedTransaction>
 
-    transferFrom(
-      from: string,
-      to: string,
-      value: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>
+    transferFrom(from: string, to: string, value: BigNumberish, overrides?: Overrides): Promise<PopulatedTransaction>
 
     'transferFrom(address,address,uint256)'(
       from: string,
@@ -683,14 +427,8 @@ export class BaseErc20 extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>
 
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>
+    transferOwnership(newOwner: string, overrides?: Overrides): Promise<PopulatedTransaction>
 
-    'transferOwnership(address)'(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>
+    'transferOwnership(address)'(newOwner: string, overrides?: Overrides): Promise<PopulatedTransaction>
   }
 }

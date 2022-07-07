@@ -14,13 +14,7 @@ export declare interface GameCellProps {
   collectionLink?: string
 }
 
-export function GameCell({
-  game,
-  width,
-  height = 250,
-  small = false,
-  collectionLink,
-}: GameCellProps) {
+export function GameCell({ game, width, height = 250, small = false, collectionLink }: GameCellProps) {
   const Container = styled.div<Pick<GameCellProps, 'width'>>`
     display: inline-block;
     position: relative;
@@ -36,9 +30,7 @@ export function GameCell({
   const GameThumbLink = styled.a`
     text-decoration: none;
   `
-  const GameThumb = styled.div<
-    Pick<GameCellProps, 'width' | 'height'> & { cover: string }
-  >`
+  const GameThumb = styled.div<Pick<GameCellProps, 'width' | 'height'> & { cover: string }>`
     background-image: ${(p) => (p.cover ? `url(${p.cover})` : 'none')};
     background-position: 50% 50%;
     background-size: cover;
@@ -177,12 +169,7 @@ export function GameCell({
     <Container className="game-cell" width={width}>
       <Link href={link} passHref>
         <GameThumbLink>
-          <GameThumb
-            cover={cover}
-            width={width}
-            height={height}
-            aria-label="Game Thumb"
-          />
+          <GameThumb cover={cover} width={width} height={height} aria-label="Game Thumb" />
         </GameThumbLink>
       </Link>
       {collectionLink && (
@@ -204,8 +191,7 @@ export function GameCell({
             <Link href={link} passHref>
               <GameMetaTag>
                 <GamePriceValue>
-                  {formatUnits(price.amount, price.token.decimals)}{' '}
-                  {price.token.symbol}
+                  {formatUnits(price.amount, price.token.decimals)} {price.token.symbol}
                 </GamePriceValue>
                 {gameSale && <GameSaleValue>-30%</GameSaleValue>}
               </GameMetaTag>

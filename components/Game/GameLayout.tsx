@@ -57,7 +57,14 @@ const NoGame = styled.div`
   justify-content: center;
 `
 
-const GameLayout: NextPage<GameProps> = ({ children, gameRatingsCountData, pricesTokens, setPricesTokens, gameProject, setGameProject }) => {
+const GameLayout: NextPage<GameProps> = ({
+  children,
+  gameRatingsCountData,
+  pricesTokens,
+  setPricesTokens,
+  gameProject,
+  setGameProject,
+}) => {
   const router = useRouter()
   const id = router.query.id
   const { fetchTokensAddress } = useERC20Multicall()
@@ -234,7 +241,13 @@ const GameLayout: NextPage<GameProps> = ({ children, gameRatingsCountData, price
             property: 'keywords',
             content: SeoKeywords(
               uniq(
-                [gameProject?.title, gameProject?.username, gameProject?.gameName, gameProject?.file, gameProject?.tags.map((i) => i.label)]
+                [
+                  gameProject?.title,
+                  gameProject?.username,
+                  gameProject?.gameName,
+                  gameProject?.file,
+                  gameProject?.tags.map((i) => i.label),
+                ]
                   .flat(1)
                   .filter((item) => !!item)
               ) as string[]
@@ -246,13 +259,20 @@ const GameLayout: NextPage<GameProps> = ({ children, gameRatingsCountData, price
            * Because most platforms use the last image address.
            * An array of images (object) to be used by social media platforms, slack etc as a preview. If multiple supplied you can choose one when sharing. See Examples
            */
-          images: SeoImages([gameProject?.cover, gameProject?.screenshots, gameProject?.cover].flat(1).filter((item) => !!item) as string[], gameTitle),
+          images: SeoImages(
+            [gameProject?.cover, gameProject?.screenshots, gameProject?.cover]
+              .flat(1)
+              .filter((item) => !!item) as string[],
+            gameTitle
+          ),
         }}
       />
       <ArticleJsonLd
         url={process.env.NEXT_PUBLIC_URL as string}
         title={gameProject?.title || 'W3itch'}
-        images={SeoArticleJsonLdImages([gameProject?.cover, gameProject?.screenshots].flat(1).filter((item) => !!item) as string[])}
+        images={SeoArticleJsonLdImages(
+          [gameProject?.cover, gameProject?.screenshots].flat(1).filter((item) => !!item) as string[]
+        )}
         datePublished={gameProject?.createdAt as string}
         dateModified={gameProject?.updatedAt as string}
         // Warning, author url is temporarily not supported
@@ -270,7 +290,10 @@ const GameLayout: NextPage<GameProps> = ({ children, gameRatingsCountData, price
               id="inner_column"
               style={{ minHeight: '767px' }}
             >
-              <div id="view_html_game_page_667" className={`${styles.view_html_game_page} ${styles.view_game_page} page_widget direct_download ready`}>
+              <div
+                id="view_html_game_page_667"
+                className={`${styles.view_html_game_page} ${styles.view_game_page} page_widget direct_download ready`}
+              >
                 {children}
                 <div className={styles.columns}>
                   <div className={`${styles.left_col} ${styles.column}`}>

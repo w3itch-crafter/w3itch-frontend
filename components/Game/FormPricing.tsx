@@ -17,10 +17,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { TokenInfo } from '@uniswap/token-lists'
 import TokenItem from 'components/TokenList/TokenItem'
 import type { SupportedChainId } from 'constants/chains'
-import {
-  WalletSupportedChainIds,
-  WalletSupportedChainNames,
-} from 'constants/chains'
+import { WalletSupportedChainIds, WalletSupportedChainNames } from 'constants/chains'
 import { isEmpty } from 'lodash'
 import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
@@ -56,9 +53,7 @@ const PriceTokenSelecter: React.FC<FormPricingProps> = (props) => {
           size="small"
           value={currentSelectTokenChainId as unknown as string}
           onChange={(event: SelectChangeEvent) => {
-            setCurrentSelectTokenChainId(
-              event.target.value as unknown as SupportedChainId
-            )
+            setCurrentSelectTokenChainId(event.target.value as unknown as SupportedChainId)
           }}
         >
           {WalletSupportedChainIds.map((chainId, index) => (
@@ -68,11 +63,7 @@ const PriceTokenSelecter: React.FC<FormPricingProps> = (props) => {
           ))}
         </Select>
       )}
-      <Button
-        size="small"
-        onClick={() => setTtokenListDialogOpen(true)}
-        variant="contained"
-      >
+      <Button size="small" onClick={() => setTtokenListDialogOpen(true)} variant="contained">
         {selected ? 'Select Another' : 'Select'}
       </Button>
       {selected && (
@@ -80,9 +71,7 @@ const PriceTokenSelecter: React.FC<FormPricingProps> = (props) => {
           <TokenItem token={currentSelectToken} selectToken={() => void 0} />
           <TextField
             value={currentSelectTokenAmount}
-            onChange={(event) =>
-              setCurrentSelectTokenAmount(event.target.value)
-            }
+            onChange={(event) => setCurrentSelectTokenAmount(event.target.value)}
             size="small"
             placeholder="Please enter the amount"
             fullWidth
@@ -109,10 +98,7 @@ const DonationInput: React.FC<FormPricingProps> = (props) => {
 type FormControllerProps = {
   payment: PaymentMode
   enableDonate: boolean
-  handleEnableDonate: (
-    event: React.ChangeEvent<HTMLInputElement>,
-    checked: boolean
-  ) => void
+  handleEnableDonate: (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void
 }
 const FormController: React.FC<FormControllerProps> = (props) => {
   const { payment, enableDonate, handleEnableDonate } = props
@@ -128,33 +114,11 @@ const FormController: React.FC<FormControllerProps> = (props) => {
       render={({ field }) => (
         <FormControl fullWidth error={Boolean(errors.paymentMode)}>
           <FormLabel id="form-pricing">Pricing</FormLabel>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            spacing={1}
-          >
-            <RadioGroup
-              {...field}
-              row
-              aria-labelledby="form-pricing"
-              defaultValue={PaymentMode.DISABLE_PAYMENTS}
-            >
-              <FormControlLabel
-                value={PaymentMode.FREE}
-                control={<Radio />}
-                label="$0 or donate"
-              />
-              <FormControlLabel
-                value={PaymentMode.PAID}
-                control={<Radio />}
-                label="Hold"
-              />
-              <FormControlLabel
-                value={PaymentMode.DISABLE_PAYMENTS}
-                control={<Radio />}
-                label="No payments"
-              />
+          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
+            <RadioGroup {...field} row aria-labelledby="form-pricing" defaultValue={PaymentMode.DISABLE_PAYMENTS}>
+              <FormControlLabel value={PaymentMode.FREE} control={<Radio />} label="$0 or donate" />
+              <FormControlLabel value={PaymentMode.PAID} control={<Radio />} label="Hold" />
+              <FormControlLabel value={PaymentMode.DISABLE_PAYMENTS} control={<Radio />} label="No payments" />
             </RadioGroup>
             {payment === PaymentMode.PAID && (
               <FormControlLabel
@@ -180,27 +144,20 @@ const FormPricing: React.FC<FormPricingProps> = (props) => {
   const { watch } = useFormContext<Game>()
   const payment = watch('paymentMode')
   const [enableDonate, setEnableDonate] = useState(false)
-  const handleEnableDonate = useCallback(
-    (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-      setEnableDonate(checked)
-    },
-    []
-  )
+  const handleEnableDonate = useCallback((_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+    setEnableDonate(checked)
+  }, [])
 
   return (
     <Box>
-      <FormController
-        payment={payment}
-        enableDonate={enableDonate}
-        handleEnableDonate={handleEnableDonate}
-      />
+      <FormController payment={payment} enableDonate={enableDonate} handleEnableDonate={handleEnableDonate} />
       <Box sx={{ marginTop: '10px' }}>
         {payment === PaymentMode.FREE && (
           <Box>
             <DonationInput {...props} />
             <p className={styles.sub}>
-              Someone downloading your project will be asked for a donation
-              before getting access. They can skip to download for free.
+              Someone downloading your project will be asked for a donation before getting access. They can skip to
+              download for free.
             </p>
           </Box>
         )}
@@ -211,10 +168,7 @@ const FormPricing: React.FC<FormPricingProps> = (props) => {
           </Stack>
         )}
         {payment === PaymentMode.DISABLE_PAYMENTS && (
-          <p className={styles.sub}>
-            The project&apos;s files will be freely available and no donations
-            can be made
-          </p>
+          <p className={styles.sub}>The project&apos;s files will be freely available and no donations can be made</p>
         )}
       </Box>
     </Box>

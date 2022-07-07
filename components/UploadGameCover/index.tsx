@@ -63,19 +63,14 @@ interface Props {
   // setFile: Dispatch<SetStateAction<File | undefined>>
 }
 
-export const UploadGameCover: FC<Props> = ({
-  onCoverFileSelect,
-  editorMode,
-}) => {
+export const UploadGameCover: FC<Props> = ({ onCoverFileSelect, editorMode }) => {
   const [coverFile, setCoverFile] = useState<FileWithPath>()
   const [coverUrl, setCoverUrl] = useState<string>('')
 
   const { getValues, watch } = useFormContext<Game>()
   const watchCover = watch('cover')
 
-  const handleRemoveCover = useCallback<
-    React.MouseEventHandler<HTMLButtonElement>
-  >(
+  const handleRemoveCover = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
     (event) => {
       event.stopPropagation()
       setCoverFile(undefined)
@@ -119,21 +114,10 @@ export const UploadGameCover: FC<Props> = ({
         <>
           <WrapperDrapContainer>
             {coverUrl ? (
-              <Image
-                src={coverUrl}
-                width={315}
-                height={250}
-                alt="Cover"
-                objectFit="cover"
-              />
+              <Image src={coverUrl} width={315} height={250} alt="Cover" objectFit="cover" />
             ) : (
               // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={defaultCoverLinks.get(getValues('kind'))}
-                width={315}
-                height={250}
-                alt={'cover placeholder'}
-              />
+              <img src={defaultCoverLinks.get(getValues('kind'))} width={315} height={250} alt={'cover placeholder'} />
             )}
           </WrapperDrapContainer>
           <WrapperDrapContainer>

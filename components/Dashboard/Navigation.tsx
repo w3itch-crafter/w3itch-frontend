@@ -44,11 +44,7 @@ const Navigation = () => {
       <div className={styles.header_nav_tabs}>
         {routersItems.map((routersItem) => (
           <Link href={routersItem.url} key={routersItem.url}>
-            <a
-              className={`${styles.nav_btn}${
-                router.route === routersItem.url ? ` ${styles.active}` : ''
-              }`}
-            >
+            <a className={`${styles.nav_btn}${router.route === routersItem.url ? ` ${styles.active}` : ''}`}>
               {routersItem.name}
             </a>
           </Link>

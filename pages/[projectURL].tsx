@@ -1,10 +1,6 @@
 import { GetServerSideProps, NextPage } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import {
-  fetchGameRatingsCount,
-  gameProjectByID,
-  getGameIdByProjectURL,
-} from 'services'
+import { fetchGameRatingsCount, gameProjectByID, getGameIdByProjectURL } from 'services'
 import { GameEntity } from 'types'
 import { BackendError, parseUsernameFromHost } from 'utils'
 
@@ -19,9 +15,7 @@ const GameProject: NextPage<GameProps> = (props) => {
   return <GameID {...props} />
 }
 
-export const getServerSideProps: GetServerSideProps<GameProps> = async (
-  context
-) => {
+export const getServerSideProps: GetServerSideProps<GameProps> = async (context) => {
   const { host } = context.req.headers
   const { projectURL } = context.query
   const username = parseUsernameFromHost(host)

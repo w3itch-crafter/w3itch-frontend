@@ -40,9 +40,7 @@ export const parseUrl = (url: string): string => {
  * @param file
  * @returns
  */
-export const filenameHandle = (
-  file: File | FileWithPath
-): File | FileWithPath => {
+export const filenameHandle = (file: File | FileWithPath): File | FileWithPath => {
   const name = MD5(file.name).toString().toLowerCase()
   const uuid = uuidv1()
 

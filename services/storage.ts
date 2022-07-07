@@ -7,9 +7,7 @@ import type { Api } from 'types/Api'
  * @param data file
  * @returns
  */
-export const storagesUploadToIPFS = async (
-  data: FormData
-): Promise<AxiosResponse<Api.UploadToIPFS>> => {
+export const storagesUploadToIPFS = async (data: FormData): Promise<AxiosResponse<Api.UploadToIPFS>> => {
   return await backend({
     url: '/storages/upload-to-ipfs',
     method: 'POST',
@@ -25,9 +23,7 @@ export const storagesUploadToIPFS = async (
  * @param data file
  * @returns
  */
-export const storagesUploadToAWS = async (
-  data: FormData
-): Promise<AxiosResponse<Api.UploadToIPFS>> => {
+export const storagesUploadToAWS = async (data: FormData): Promise<AxiosResponse<Api.UploadToIPFS>> => {
   return await backend({
     url: '/storages/upload-to-aws',
     method: 'POST',

@@ -9,20 +9,10 @@ import { useHoldUnlock } from 'hooks/useHoldUnlock'
 import { isEmpty } from 'lodash'
 import { FC, useCallback, useEffect } from 'react'
 import { useRef, useState } from 'react'
-import {
-  gamePlayerIframeMinetest,
-  gamePlayerMinetest,
-  getMe,
-  minetestGamePortByGameName,
-} from 'services'
+import { gamePlayerIframeMinetest, gamePlayerMinetest, getMe, minetestGamePortByGameName } from 'services'
 import styles from 'styles/game/id.module.scss'
 import { GameEntity, TokenDetail } from 'types'
-import {
-  balanceDecimal,
-  getMinetestUsername,
-  isPopUpWindow,
-  openWindow,
-} from 'utils'
+import { balanceDecimal, getMinetestUsername, isPopUpWindow, openWindow } from 'utils'
 
 const Wrapper = styled.div<{ cover: string }>`
   max-width: 640px;
@@ -50,11 +40,10 @@ const EmbedWidgetMinetest: FC<Props> = ({ gameProject, pricesToken }) => {
   const [minetestPort, setMinetestPort] = useState<number>()
   const [minetestUsername, setMinetestUsername] = useState<string>()
 
-  const { iosFullscreen, isFullscreen, handleFullscreen } =
-    useFullscreenCustomization({
-      ref,
-      keyboardLock: ['Escape'],
-    })
+  const { iosFullscreen, isFullscreen, handleFullscreen } = useFullscreenCustomization({
+    ref,
+    keyboardLock: ['Escape'],
+  })
 
   const { holdUnlock, handleUnlock } = useHoldUnlock({
     game: gameProject,
@@ -80,22 +69,14 @@ const EmbedWidgetMinetest: FC<Props> = ({ gameProject, pricesToken }) => {
         setRunGameFlag(true)
       }
     })
-  }, [
-    setRunGameFlag,
-    handleUnlock,
-    gameProject,
-    minetestUsername,
-    minetestPort,
-  ])
+  }, [setRunGameFlag, handleUnlock, gameProject, minetestUsername, minetestPort])
 
   // Handle minetest port and username
   const handleMinetestInfo = useCallback(async () => {
     try {
       const result = await minetestGamePortByGameName(gameProject.gameName)
       if (result.status === 200) {
-        setMinetestPort(
-          result.data.port || Number(process.env.NEXT_PUBLIC_MINETEST_PORT)
-        )
+        setMinetestPort(result.data.port || Number(process.env.NEXT_PUBLIC_MINETEST_PORT))
       } else {
         throw new Error('No port found')
       }
@@ -121,18 +102,10 @@ const EmbedWidgetMinetest: FC<Props> = ({ gameProject, pricesToken }) => {
   }, [handleMinetestInfo])
 
   return (
-    <div
-      id="html_embed_widget_78140"
-      className={`${styles.html_embed_widget} ${styles.embed_wrapper}`}
-    >
+    <div id="html_embed_widget_78140" className={`${styles.html_embed_widget} ${styles.embed_wrapper}`}>
       <Wrapper cover={gameProject.cover}>
         {runGameFlag ? (
-          <div
-            className={`${styles.iframe_wrapper}${
-              iosFullscreen ? ' ' + styles.open : ''
-            }`}
-            ref={ref}
-          >
+          <div className={`${styles.iframe_wrapper}${iosFullscreen ? ' ' + styles.open : ''}`} ref={ref}>
             {minetestUsername && minetestPort && (
               <iframe
                 style={{ width: '100%', height: '100%' }}
@@ -172,12 +145,9 @@ const EmbedWidgetMinetest: FC<Props> = ({ gameProject, pricesToken }) => {
               {holdUnlock
                 ? isEmpty(pricesToken) || !pricesToken
                   ? `Need to hold Token`
-                  : `Need to hold ${balanceDecimal(
-                      utils.formatUnits(
-                        pricesToken.amount,
-                        pricesToken.decimals
-                      )
-                    )} ${pricesToken.symbol}`
+                  : `Need to hold ${balanceDecimal(utils.formatUnits(pricesToken.amount, pricesToken.decimals))} ${
+                      pricesToken.symbol
+                    }`
                 : 'Play'}
             </LoadingButton>
           </div>

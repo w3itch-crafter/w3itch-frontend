@@ -1,13 +1,7 @@
 import styled from '@emotion/styled'
 import { RedButton } from 'components/buttons'
 import { InputRow } from 'components/forms'
-import {
-  BackToSelect,
-  ConnectWallet,
-  LoginMethodChooser,
-  PageCard,
-  StatHeader,
-} from 'components/pages'
+import { BackToSelect, ConnectWallet, LoginMethodChooser, PageCard, StatHeader } from 'components/pages'
 import { useTopRightSnackbar } from 'hooks'
 import { NextPage } from 'next'
 import Head from 'next/head'
@@ -66,12 +60,8 @@ const Login: NextPage = () => {
   const startWalletLogin = useCallback(
     async (wallet: Wallet) => {
       await processLogin(async () => {
-        showSnackbar(
-          'Your wallet will show you "Signature Request" message that you need to sign.'
-        )
-        showSnackbar(
-          'If your wallet not response for long time, please refresh this page.'
-        )
+        showSnackbar('Your wallet will show you "Signature Request" message that you need to sign.')
+        showSnackbar('If your wallet not response for long time, please refresh this page.')
         window.location.href = await loginWallet(wallet, '/oauth')
       })
     },
@@ -110,12 +100,7 @@ const Login: NextPage = () => {
           <StatHeader title="Sign in to your w3itch.io account" />
           <Padded>
             {loginMethod && <StyledBackToSelect onClick={handleBackToSelect} />}
-            {!loginMethod && (
-              <LoginMethodChooser
-                methodType="login"
-                onChoose={handleMethodChange}
-              />
-            )}
+            {!loginMethod && <LoginMethodChooser methodType="login" onChoose={handleMethodChange} />}
             {loginMethod === 'metamask' && !isConnected && <ConnectWallet />}
             {loginMethod === 'metamask' && isConnected && (
               <InputRow disabled label="Wallet account" value={accountId} />

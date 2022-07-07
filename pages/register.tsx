@@ -1,13 +1,7 @@
 import styled from '@emotion/styled'
 import { RedButton } from 'components/buttons'
 import { InputRow } from 'components/forms'
-import {
-  BackToSelect,
-  ConnectWallet,
-  LoginMethodChooser,
-  PageCard,
-  StatHeader,
-} from 'components/pages'
+import { BackToSelect, ConnectWallet, LoginMethodChooser, PageCard, StatHeader } from 'components/pages'
 import { AuthenticationContext } from 'context'
 import { useTopRightSnackbar } from 'hooks'
 import { NextPage } from 'next'
@@ -120,9 +114,7 @@ const Register: NextPage = () => {
     developer: false,
   }
   const [registerData, setRegisterData] = useState<RegisterData>(defaultData)
-  const [profileUrl, setProfileUrl] = useState<string>(
-    'https://username.w3itch.io/'
-  )
+  const [profileUrl, setProfileUrl] = useState<string>('https://username.w3itch.io/')
   const [invalidData, setInvalidData] = useState<Partial<InvalidData>>({})
   const [registerMethod, setRegisterMethod] = useState<LoginMethod | null>(null)
   const { dispatch } = useContext(AuthenticationContext)
@@ -131,8 +123,7 @@ const Register: NextPage = () => {
     const value = target.type === 'checkbox' ? target.checked : target.value
     const name = target.name
     setRegisterData({ ...registerData, [name]: value })
-    if (name === 'username')
-      setProfileUrl(userHostUrl(String(value).toLowerCase()))
+    if (name === 'username') setProfileUrl(userHostUrl(String(value).toLowerCase()))
     setInvalidData({})
   }
   const checkRegisterData = async () => {
@@ -149,22 +140,14 @@ const Register: NextPage = () => {
     return isEmptyObj(invalid)
   }
   const handleRegisterSubmit = async () => {
-    if (!registerMethod)
-      return showSnackbar('Please select a method', 'warning')
+    if (!registerMethod) return showSnackbar('Please select a method', 'warning')
     const check = await checkRegisterData()
     if (!check) return
     try {
       if (registerMethod === 'metamask') {
-        showSnackbar(
-          'Your wallet will show you "Signature Request" message that you need to sign.'
-        )
-        showSnackbar(
-          'If your wallet not response for long time, please refresh this page.'
-        )
-        const { user, account } = await signupWallet(
-          wallet,
-          registerData.username
-        )
+        showSnackbar('Your wallet will show you "Signature Request" message that you need to sign.')
+        showSnackbar('If your wallet not response for long time, please refresh this page.')
+        const { user, account } = await signupWallet(wallet, registerData.username)
         dispatch({ type: 'LOGIN', payload: { user, account: [account] } })
         await router.replace('/games')
       }
@@ -205,26 +188,15 @@ const Register: NextPage = () => {
           <StatHeader title={t('Create an account on w3itch.io')} />
           <RegisterForm>
             <FormColumn>
-              {registerMethod && (
-                <StyledBackToSelect onClick={handleBackToSelect} />
-              )}
-              {!registerMethod && (
-                <LoginMethodChooser
-                  methodType="register"
-                  onChoose={handleMethodChange}
-                />
-              )}
+              {registerMethod && <StyledBackToSelect onClick={handleBackToSelect} />}
+              {!registerMethod && <LoginMethodChooser methodType="register" onChoose={handleMethodChange} />}
               {registerMethod === 'metamask' && (
                 <Fragment>
                   {!isConnected && (
                     <ConnectWalletWrapper>
                       <ConnectLabelWrapper>
                         <ConnectLabel>Connect wallet</ConnectLabel>
-                        {invalidData.address && (
-                          <ConnectMessage>
-                            {invalidData.address.message}
-                          </ConnectMessage>
-                        )}
+                        {invalidData.address && <ConnectMessage>{invalidData.address.message}</ConnectMessage>}
                       </ConnectLabelWrapper>
                       <ConnectWallet />
                     </ConnectWalletWrapper>
@@ -291,10 +263,7 @@ const Register: NextPage = () => {
                 </Fragment>
               )}
               <Buttons>
-                <RedButton
-                  disabled={!registerMethod}
-                  onClick={() => handleRegisterSubmit()}
-                >
+                <RedButton disabled={!registerMethod} onClick={() => handleRegisterSubmit()}>
                   {registerMethod ? t('Create account') : t('Select a method')}
                 </RedButton>
                 <LoginMessage>
@@ -308,26 +277,20 @@ const Register: NextPage = () => {
             <FormColumn>
               <h2>Who should register on w3itch.io?</h2>
               <p>
-                <strong>w3itch.io</strong> was originally created for
-                independent video games but hosts a wide range of creative
-                digital content. If you’re buying something an account is
-                optional, but recommended.
+                <strong>w3itch.io</strong> was originally created for independent video games but hosts a wide range of
+                creative digital content. If you’re buying something an account is optional, but recommended.
               </p>
               <h3>I want to play games!</h3>
               <p>
-                Although registration isn’t required, creating an account will
-                give you the ability to create collections of your favorites and
-                soon to be favorites. If you’ve bought anything on{' '}
-                <strong>w3itch.io</strong> you can even link those purchases to
-                your account to keep track of them.
+                Although registration isn’t required, creating an account will give you the ability to create
+                collections of your favorites and soon to be favorites. If you’ve bought anything on{' '}
+                <strong>w3itch.io</strong> you can even link those purchases to your account to keep track of them.
               </p>
               <h3>I’m a developer/creator!</h3>
               <p>
-                Great! <strong>w3itch.io</strong> is designed for creative types
-                of all kinds to quickly distribute their work easily as
-                possible. If you’re selling your content you can start right
-                away. An account also lets you submit games to the various game
-                jams hosted on <strong>w3itch.io</strong>.
+                Great! <strong>w3itch.io</strong> is designed for creative types of all kinds to quickly distribute
+                their work easily as possible. If you’re selling your content you can start right away. An account also
+                lets you submit games to the various game jams hosted on <strong>w3itch.io</strong>.
               </p>
             </FormColumn>
           </RegisterForm>

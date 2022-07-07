@@ -2,29 +2,11 @@ import GameForm from 'components/Game/Form'
 import { useSetFormCache } from 'hooks'
 import { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
-import {
-  Dispatch,
-  FC,
-  MutableRefObject,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { Dispatch, FC, MutableRefObject, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { DefaultValues, useForm } from 'react-hook-form'
-import {
-  FormProvider as GameFormProvider,
-  useFormContext,
-} from 'react-hook-form'
+import { FormProvider as GameFormProvider, useFormContext } from 'react-hook-form'
 import { gameProjectByID } from 'services'
-import {
-  Community,
-  EditorMode,
-  GameEngine,
-  GameFileCharset,
-  Genre,
-  PaymentMode,
-} from 'types/enum'
+import { Community, EditorMode, GameEngine, GameFileCharset, Genre, PaymentMode } from 'types/enum'
 import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
@@ -39,11 +21,7 @@ interface GameContentProps {
   setDescription: Dispatch<SetStateAction<string>>
 }
 
-const GameContent: FC<GameContentProps> = ({
-  children,
-  setGameProject,
-  setDescription,
-}) => {
+const GameContent: FC<GameContentProps> = ({ children, setGameProject, setDescription }) => {
   const router = useRouter()
   const id = router.query.id as string
   const { setFlag, setFormEditValues } = useSetFormCache(id)
@@ -68,9 +46,7 @@ const GameContent: FC<GameContentProps> = ({
           })
 
           // Handle description
-          setDescription(
-            cacheValue?.description || gameProjectResult.data.description
-          )
+          setDescription(cacheValue?.description || gameProjectResult.data.description)
         }
       } catch (e) {
         console.log(e)
@@ -121,10 +97,7 @@ const GameEdit: NextPage = () => {
 
   return (
     <GameFormProvider {...methods}>
-      <GameContent
-        setGameProject={setGameProject}
-        setDescription={setDescription}
-      >
+      <GameContent setGameProject={setGameProject} setDescription={setDescription}>
         <GameForm
           gameProject={gameProject}
           editorMode={EditorMode.EDIT}

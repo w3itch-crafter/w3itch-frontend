@@ -12,12 +12,7 @@ import { useSnackbar } from 'notistack'
 import { FC, useCallback, useContext } from 'react'
 import styles from 'styles/game/id.module.scss'
 import { TokenDetail } from 'types'
-import {
-  balanceDecimal,
-  ExplorerDataType,
-  getChainInfoFromId,
-  getExplorerLink,
-} from 'utils'
+import { balanceDecimal, ExplorerDataType, getChainInfoFromId, getExplorerLink } from 'utils'
 
 const ExplorerLink = styled.a`
   font-size: 120%;
@@ -103,20 +98,10 @@ const Purchase: FC<PurchaseProps> = ({ pricesTokens, refresh }) => {
               >
                 <Link
                   passHref
-                  href={getExplorerLink(
-                    pricesToken.chainId,
-                    getAddress(pricesToken.address),
-                    ExplorerDataType.TOKEN
-                  )}
+                  href={getExplorerLink(pricesToken.chainId, getAddress(pricesToken.address), ExplorerDataType.TOKEN)}
                 >
                   <ExplorerLink target="_blank" rel="noopener noreferrer">
-                    {balanceDecimal(
-                      utils.formatUnits(
-                        pricesToken.amount,
-                        pricesToken.decimals
-                      )
-                    )}{' '}
-                    {pricesToken.symbol}
+                    {balanceDecimal(utils.formatUnits(pricesToken.amount, pricesToken.decimals))} {pricesToken.symbol}
                   </ExplorerLink>
                 </Link>
                 <Typography
@@ -157,12 +142,7 @@ const Purchase: FC<PurchaseProps> = ({ pricesTokens, refresh }) => {
                   Balance:{' '}
                   {isEmpty(pricesToken) || !pricesToken?.balanceOf
                     ? '0'
-                    : balanceDecimal(
-                        utils.formatUnits(
-                          pricesToken.balanceOf,
-                          pricesToken.decimals
-                        )
-                      )}{' '}
+                    : balanceDecimal(utils.formatUnits(pricesToken.balanceOf, pricesToken.decimals))}{' '}
                   {pricesToken.symbol}
                 </Typography>
                 <Typography
@@ -185,8 +165,7 @@ const Purchase: FC<PurchaseProps> = ({ pricesTokens, refresh }) => {
                   color: 'var(--w3itch-text4)',
                 }}
               >
-                To play this game, you must hold at least{' '}
-                {utils.formatUnits(pricesToken.amount, pricesToken.decimals)}{' '}
+                To play this game, you must hold at least {utils.formatUnits(pricesToken.amount, pricesToken.decimals)}{' '}
                 {pricesToken.symbol}.
               </Typography>
             </>

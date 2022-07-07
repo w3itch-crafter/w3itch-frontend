@@ -25,14 +25,10 @@ const FormGameCover: React.FC<Props> = ({ editorMode, onCoverFileSelect }) => {
       render={({ field }) => (
         <FormControl fullWidth error={Boolean(errors.cover)}>
           <div className={styles.game_edit_cover_uploader_widget}>
-            <UploadGameCover
-              editorMode={editorMode}
-              onCoverFileSelect={onCoverFileSelect}
-            />
+            <UploadGameCover editorMode={editorMode} onCoverFileSelect={onCoverFileSelect} />
             <p className={`${styles.sub} instructions`}>
-              The cover image is used whenever w3itch.io wants to link to your
-              project from another part of the site. Required (Minimum: 315x250,
-              Recommended: 630x500)
+              The cover image is used whenever w3itch.io wants to link to your project from another part of the site.
+              Required (Minimum: 315x250, Recommended: 630x500)
             </p>
           </div>
           <TextField
@@ -43,9 +39,7 @@ const FormGameCover: React.FC<Props> = ({ editorMode, onCoverFileSelect }) => {
             }}
             {...field}
           />
-          <FormHelperText error={Boolean(errors.cover)}>
-            {errors?.cover?.message}
-          </FormHelperText>
+          <FormHelperText error={Boolean(errors.cover)}>{errors?.cover?.message}</FormHelperText>
         </FormControl>
       )}
     />

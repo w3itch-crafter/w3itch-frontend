@@ -16,10 +16,7 @@ import {
 export declare type PerPageLayout = {
   getLayout(page: React.ReactElement): React.ReactNode
 }
-export declare type NextPageWithLayout<
-  P = Record<string, unknown>,
-  IP = P
-> = NextPage<P, IP> & PerPageLayout
+export declare type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<P, IP> & PerPageLayout
 
 export declare type RegisterData = {
   address: string
@@ -34,11 +31,7 @@ export declare type InvalidData = {
   }
 }
 
-type Join<K, P> = K extends string
-  ? P extends string
-    ? `${K}${'' extends P ? '' : '.'}${P}`
-    : never
-  : never
+type Join<K, P> = K extends string ? (P extends string ? `${K}${'' extends P ? '' : '.'}${P}` : never) : never
 type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, ...0[]]
 export type Column<T, D extends number = 2> = [D] extends [never]
   ? never
@@ -85,11 +78,7 @@ export declare type BackendErrorResponse = {
   statusCode: number
 }
 export function isBackendError(obj: unknown): obj is BackendErrorResponse {
-  if (
-    (obj as BackendErrorResponse).message &&
-    (obj as BackendErrorResponse).statusCode
-  )
-    return true
+  if ((obj as BackendErrorResponse).message && (obj as BackendErrorResponse).statusCode) return true
   return false
 }
 
@@ -191,17 +180,9 @@ export declare type NavLinks = NavLink[]
 
 export declare type LoginMethod = 'metamask' | 'github' | 'discord'
 
-export declare type SocialPlatform =
-  | 'metamask'
-  | 'github'
-  | 'discord'
-  | 'twitter'
+export declare type SocialPlatform = 'metamask' | 'github' | 'discord' | 'twitter'
 
-export declare type AccountServiceAction =
-  | 'login'
-  | 'signup'
-  | 'bind'
-  | 'unbind'
+export declare type AccountServiceAction = 'login' | 'signup' | 'bind' | 'unbind'
 
 interface Keyboard {
   lock(keyCodes?: Iterable<string>): Promise<void>

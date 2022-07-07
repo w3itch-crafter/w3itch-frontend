@@ -17,10 +17,7 @@ class Request {
       withCredentials: true,
     })
     this.isRetryRequest = false
-    this.client.interceptors.response.use(
-      this.onResponseFulfilled.bind(this),
-      this.onResponseRejected.bind(this)
-    )
+    this.client.interceptors.response.use(this.onResponseFulfilled.bind(this), this.onResponseRejected.bind(this))
   }
 
   private async refreshToken(): Promise<AxiosResponse<UserEntity>> {
@@ -31,9 +28,7 @@ class Request {
     return response
   }
 
-  private async onResponseRejected(
-    error: AxiosError<BackendErrorResponse>
-  ): Promise<AxiosResponse> {
+  private async onResponseRejected(error: AxiosError<BackendErrorResponse>): Promise<AxiosResponse> {
     const { response } = error
     if (!response) {
       throw error

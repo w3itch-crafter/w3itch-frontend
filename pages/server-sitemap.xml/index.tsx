@@ -10,20 +10,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const list = await fetchAllGames()
 
     const gameAndUsernameUrls: string[] = []
-    const locales =
-      ctx?.locales?.filter((locale) => locale !== ctx?.defaultLocale) || []
+    const locales = ctx?.locales?.filter((locale) => locale !== ctx?.defaultLocale) || []
 
     list.forEach((game) => {
-      gameAndUsernameUrls.push(
-        `${process.env.NEXT_PUBLIC_URL + urlGame(game.id)}`
-      )
+      gameAndUsernameUrls.push(`${process.env.NEXT_PUBLIC_URL + urlGame(game.id)}`)
       gameAndUsernameUrls.push(userHostUrl(game?.username.toLowerCase()))
 
       // i18n route
       locales.forEach((locale) => {
-        gameAndUsernameUrls.push(
-          `${process.env.NEXT_PUBLIC_URL}/${locale + urlGame(game.id)}`
-        )
+        gameAndUsernameUrls.push(`${process.env.NEXT_PUBLIC_URL}/${locale + urlGame(game.id)}`)
       })
     })
 

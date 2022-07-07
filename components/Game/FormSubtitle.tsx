@@ -16,13 +16,8 @@ const FormSubtitle: React.FC = () => {
       name="subtitle"
       render={({ field }) => (
         <FormControl fullWidth error={Boolean(errors.kind)}>
-          <FormLabel id="form-shortDescriptionOrTagline">
-            Short description or tagline
-          </FormLabel>
-          <p className={styles.sub}>
-            Shown when we link to your project. Avoid duplicating your
-            project&apos;s title
-          </p>
+          <FormLabel id="form-shortDescriptionOrTagline">Short description or tagline</FormLabel>
+          <p className={styles.sub}>Shown when we link to your project. Avoid duplicating your project&apos;s title</p>
           <TextField
             id="form-shortDescriptionOrTagline"
             error={!!errors.subtitle}

@@ -113,24 +113,16 @@ export default function Layout({ children }: LayoutProps) {
                 <TabButton href="/user/settings">Profile</TabButton>
                 {/* <TabHeader>Payment</TabHeader> */}
                 <TabHeader>Publisher</TabHeader>
-                <TabButton href="/user/settings/analytics">
-                  Third-party analytics
-                </TabButton>
+                <TabButton href="/user/settings/analytics">Third-party analytics</TabButton>
                 {/* <TabHeader>Contact</TabHeader> */}
                 <TabHeader>Misc</TabHeader>
-                <TabButton href="/user/settings/connected-accounts">
-                  Connected accounts
-                </TabButton>
+                <TabButton href="/user/settings/connected-accounts">Connected accounts</TabButton>
                 <TabButton href="/user/settings/press">Press access</TabButton>
                 <TabButton href="/user/settings/privacy">Privacy</TabButton>
-                <TabButton href="/user/settings/data-export">
-                  Data Export
-                </TabButton>
+                <TabButton href="/user/settings/data-export">Data Export</TabButton>
                 <TabHeader>Developer</TabHeader>
                 <TabButton href="/user/settings/api-keys">API keys</TabButton>
-                <TabButton href="/user/settings/oauth-apps">
-                  OAuth applications
-                </TabButton>
+                <TabButton href="/user/settings/oauth-apps">OAuth applications</TabButton>
               </TabColumn>
               <ContentColumn>{children}</ContentColumn>
             </TabColumns>

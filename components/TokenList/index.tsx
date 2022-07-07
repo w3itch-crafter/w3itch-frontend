@@ -82,11 +82,7 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
  * @param {*} { tokens, selectToken }
  * @return {*}
  */
-const SearchResult: FC<SearchResultProps> = ({
-  tokens,
-  loading,
-  selectToken,
-}) => {
+const SearchResult: FC<SearchResultProps> = ({ tokens, loading, selectToken }) => {
   return (
     <List
       sx={{
@@ -116,10 +112,7 @@ const SearchResult: FC<SearchResultProps> = ({
  * @param {*} { tokens, selectToken }
  * @return {*}
  */
-const TokenVirtualList: FC<TokenVirtualListProps> = ({
-  tokens,
-  selectToken,
-}) => {
+const TokenVirtualList: FC<TokenVirtualListProps> = ({ tokens, selectToken }) => {
   // Viirtual render item
   function renderRow(props: ListChildComponentProps) {
     const { index, style, data } = props
@@ -132,32 +125,19 @@ const TokenVirtualList: FC<TokenVirtualListProps> = ({
   }
 
   return (
-    <FixedSizeList
-      height={500}
-      width={420}
-      itemSize={56}
-      itemData={tokens}
-      itemCount={tokens.length}
-      overscanCount={5}
-    >
+    <FixedSizeList height={500} width={420} itemSize={56} itemData={tokens} itemCount={tokens.length} overscanCount={5}>
       {renderRow}
     </FixedSizeList>
   )
 }
 
-export const TokenList: FC<GameRatingProps> = ({
-  setOpen,
-  open,
-  chainId,
-  selectToken,
-}) => {
+export const TokenList: FC<GameRatingProps> = ({ setOpen, open, chainId, selectToken }) => {
   const [search, setSearch] = useState('')
   const tokenList = useTokens(chainId)
   const { fetchTokensAddress } = useERC20Multicall()
   // console.log('tokenList', tokenList)
   const [searchAddressToken, setSearchAddressToken] = useState<TokenInfo>()
-  const [searchAddressTokenLoading, setSearchAddressTokenLoading] =
-    useState<boolean>(false)
+  const [searchAddressTokenLoading, setSearchAddressTokenLoading] = useState<boolean>(false)
 
   // Fetch token by address
   const fetchTokenByAddress = useCallback(
@@ -234,12 +214,7 @@ export const TokenList: FC<GameRatingProps> = ({
 
   // Search token result list
   const searchResultList = useMemo(
-    () =>
-      !isEmpty(searchTokens)
-        ? searchTokens
-        : searchAddressToken
-        ? [searchAddressToken]
-        : [],
+    () => (!isEmpty(searchTokens) ? searchTokens : searchAddressToken ? [searchAddressToken] : []),
     [searchTokens, searchAddressToken]
   )
 
@@ -254,10 +229,7 @@ export const TokenList: FC<GameRatingProps> = ({
 
   return (
     <Dialog onClose={() => setOpen(false)} open={open}>
-      <BootstrapDialogTitle
-        onClose={() => setOpen(false)}
-        id="tokenList-dialog-title"
-      >
+      <BootstrapDialogTitle onClose={() => setOpen(false)} id="tokenList-dialog-title">
         Select Token
       </BootstrapDialogTitle>
       <DialogContent dividers sx={{ padding: 0, width: '420px' }}>
@@ -269,11 +241,7 @@ export const TokenList: FC<GameRatingProps> = ({
           />
         </Box>
         {search ? (
-          <SearchResult
-            tokens={searchResultList}
-            loading={searchAddressTokenLoading}
-            selectToken={selectToken}
-          />
+          <SearchResult tokens={searchResultList} loading={searchAddressTokenLoading} selectToken={selectToken} />
         ) : (
           <TokenVirtualList tokens={list} selectToken={selectToken} />
         )}

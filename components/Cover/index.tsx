@@ -23,18 +23,10 @@ interface CoverProps {
   defaultText?: string
 }
 
-const Cover: FC<CoverProps> = ({
-  src,
-  defaultAlt = 'cover',
-  defaultText = 'No Cover',
-}) => {
+const Cover: FC<CoverProps> = ({ src, defaultAlt = 'cover', defaultText = 'No Cover' }) => {
   return (
     <CoverWrapper>
-      {src ? (
-        <CoverImg src={src} alt={defaultAlt} />
-      ) : (
-        <Typography variant="caption">{defaultText}</Typography>
-      )}
+      {src ? <CoverImg src={src} alt={defaultAlt} /> : <Typography variant="caption">{defaultText}</Typography>}
     </CoverWrapper>
   )
 }

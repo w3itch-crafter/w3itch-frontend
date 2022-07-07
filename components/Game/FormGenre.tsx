@@ -1,10 +1,4 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  MenuItem,
-  Select,
-} from '@mui/material'
+import { FormControl, FormHelperText, FormLabel, MenuItem, Select } from '@mui/material'
 import { genres } from 'data'
 import { FC } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
@@ -25,8 +19,7 @@ const FormGenre: FC = () => {
         <FormControl fullWidth error={Boolean(errors.genre)}>
           <FormLabel id="form-genre">Genre</FormLabel>
           <p className={styles.sub}>
-            Select the category that best describes your game. You can pick
-            additional genres with tags below
+            Select the category that best describes your game. You can pick additional genres with tags below
           </p>
           <Select id="form-genre" {...field}>
             {genres.map((genre) => (

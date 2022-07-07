@@ -180,11 +180,7 @@ function DropMenu({ open = false, children }: DropMenuProps) {
 
   return (
     <DropMenuWrap>
-      <DropMenuToggle
-        aria-label="Account Menu"
-        open={isOpen}
-        onClick={handleToggleOpen}
-      >
+      <DropMenuToggle aria-label="Account Menu" open={isOpen} onClick={handleToggleOpen}>
         <svg
           strokeLinecap="round"
           stroke="currentColor"

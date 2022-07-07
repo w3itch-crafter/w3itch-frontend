@@ -89,13 +89,7 @@ const SwitchLanguage = () => {
                   color: 'inherit',
                   textDecoration: 'none',
                 }}
-                onClick={() =>
-                  setCookie(
-                    COOKIE_NEXT_LOCALE,
-                    locale.key,
-                    COOKIE_NEXT_LOCALE_EXPIRES
-                  )
-                }
+                onClick={() => setCookie(COOKIE_NEXT_LOCALE, locale.key, COOKIE_NEXT_LOCALE_EXPIRES)}
               >
                 {t(locale.value)}
               </a>

@@ -20,9 +20,7 @@ Index.getLayout = function getLayout(page: React.ReactElement) {
   return <Fragment>{page}</Fragment>
 }
 
-export const getServerSideProps: GetServerSideProps<IndexProps> = async (
-  context
-) => {
+export const getServerSideProps: GetServerSideProps<IndexProps> = async (context) => {
   const { host } = context.req.headers
   const wildcard = parseUsernameFromHost(host)
   if (wildcard === null) {

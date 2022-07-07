@@ -1,10 +1,4 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  MenuItem,
-  Select,
-} from '@mui/material'
+import { FormControl, FormHelperText, FormLabel, MenuItem, Select } from '@mui/material'
 import { kinds } from 'data'
 import { FC } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
@@ -26,11 +20,7 @@ const FormKind: FC<{ editorMode: EditorMode }> = ({ editorMode }) => {
         <>
           <FormControl fullWidth error={Boolean(errors.kind)}>
             <FormLabel id="form-kind">Kind of project</FormLabel>
-            <Select
-              id="form-kind"
-              {...field}
-              disabled={editorMode === EditorMode.EDIT}
-            >
+            <Select id="form-kind" {...field} disabled={editorMode === EditorMode.EDIT}>
               {kinds.map((kind) => (
                 <MenuItem value={kind.value} key={kind.value}>
                   {kind.label}

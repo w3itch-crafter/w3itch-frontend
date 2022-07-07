@@ -1,6 +1,6 @@
 import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUrl, Length, Matches } from 'class-validator'
 import { Api } from 'types/Api'
-import { Community, GameEngine, GameFileCharset, Genre, PaymentMode } from 'types/enum'
+import { AccessType, Community, GameEngine, GameFileCharset, Genre, PaymentMode } from 'types/enum'
 
 export class Game implements Omit<Api.GameProjectDto, 'classification' | 'prices' | 'releaseStatus'> {
   @Length(1, 50)
@@ -75,4 +75,8 @@ export class Game implements Omit<Api.GameProjectDto, 'classification' | 'prices
 
   @IsEnum(GameFileCharset)
   charset: GameFileCharset
+
+  @IsEnum(AccessType)
+  @IsOptional()
+  accessType: AccessType
 }

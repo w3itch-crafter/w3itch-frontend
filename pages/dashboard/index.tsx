@@ -77,9 +77,7 @@ const HasGameProject: FC<HasGameProjectProps> = ({
 
   const handleDeleteGame = useCallback(
     async (id: number) => {
-      const confirm = window.confirm(
-        'Are you sure you want to delete this game?'
-      )
+      const confirm = window.confirm('Are you sure you want to delete this game?')
       if (!confirm) return
       loadingDisableCallback(true)
       setPendingdeleteID((list) => list.concat(id))
@@ -130,9 +128,7 @@ const HasGameProject: FC<HasGameProjectProps> = ({
                       <Link href={`game/edit/${item.id}`}>
                         <a>Edit</a>
                       </Link>
-                      <DeleteGame onClick={() => handleDeleteGame(item.id)}>
-                        Delete
-                      </DeleteGame>
+                      <DeleteGame onClick={() => handleDeleteGame(item.id)}>Delete</DeleteGame>
                     </Stack>
                     <Stack direction="row" spacing={1}>
                       <div className={styles.publish_status}>
@@ -143,9 +139,7 @@ const HasGameProject: FC<HasGameProjectProps> = ({
                         </span>
                       </div>
                       <div className={styles.publish_status}>
-                        <span
-                          className={`${styles.tag_bubble} ${styles.green}`}
-                        >
+                        <span className={`${styles.tag_bubble} ${styles.green}`}>
                           <Link href={urlGame(item.id)}>
                             <a>Published</a>
                           </Link>
@@ -311,14 +305,11 @@ const Dashboard: NextPage = () => {
                       setPage={setPage}
                       meta={data.meta}
                       items={data.data}
-                      refreshCallback={() =>
-                        mutate().then(() => setLoadingDisable(false))
-                      }
+                      refreshCallback={() => mutate().then(() => setLoadingDisable(false))}
                       refreshing={isValidating}
                     />
                   )
-                if (error || data?.data.length === 0)
-                  return <EmptyGameProject />
+                if (error || data?.data.length === 0) return <EmptyGameProject />
               })()}
             </div>
           </div>
