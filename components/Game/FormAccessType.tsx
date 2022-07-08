@@ -4,7 +4,7 @@ import { Controller, useFormContext } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
 import { Game } from 'utils/validator'
 
-const FormAccessType: FC<void> = () => {
+const FormAccessType: FC<unknown> = () => {
   const {
     control,
     formState: { errors },

@@ -3,7 +3,7 @@ import EmbedWidgetMinetest from 'components/Game/EmbedWidgetMinetest'
 import GameLayout from 'components/Game/GameLayout'
 import { GetServerSideProps, NextPage } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { fetchGameRatingsCount, gameProjectByID } from 'services'
 import useSWR from 'swr'
 import { GameEntity, TokenDetail } from 'types'
@@ -21,13 +21,17 @@ const GameID: NextPage<GameProps> = ({
   gameRatingsCountData,
   gameProjectId,
 }) => {
-  const [_gameProject, setGameProject] = useState<GameEntity | null>(
+  const [gameProject, setGameProject] = useState<GameEntity | null>(
     gameProjectData
   )
   const {data} = useSWR(
-    () => _gameProject? null: gameProjectId, gameProjectByID);
-  const clientData = data?.data;
-  const gameProject= _gameProject || clientData;
+    () => gameProject? null: gameProjectId, gameProjectByID);
+
+  useEffect(() => {
+    if(!gameProject && data?.data){
+      setGameProject(data.data);
+    }
+  }, [data?.data,gameProjectId,gameProject]);
 
   // hold unlock token
   const [pricesTokens, setPricesTokens] = useState<TokenDetail[]>([])
