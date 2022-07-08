@@ -2,6 +2,7 @@ import { FormControl, FormHelperText, FormLabel, MenuItem, Select } from '@mui/m
 import { FC } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import styles from 'styles/game/new.module.scss'
+import { AccessType } from 'types/enum'
 import { Game } from 'utils/validator'
 
 const FormAccessType: FC<unknown> = () => {
@@ -16,10 +17,10 @@ const FormAccessType: FC<unknown> = () => {
       render={({ field }) => (
         <>
           <FormControl fullWidth error={Boolean(errors.kind)}>
-            <FormLabel>Accessible to</FormLabel>
-            <Select {...field}>
-              <MenuItem value="PUBLIC">Public</MenuItem>
-              <MenuItem value="PRIVATE">Private</MenuItem>
+            <FormLabel id="form-accessType">Accessible to</FormLabel>
+            <Select id="form-accessType" {...field}>
+              <MenuItem value={AccessType.PUBLIC}>Public</MenuItem>
+              <MenuItem value={AccessType.PRIVATE}>Private</MenuItem>
             </Select>
             <FormHelperText>{errors?.kind?.message}</FormHelperText>
           </FormControl>

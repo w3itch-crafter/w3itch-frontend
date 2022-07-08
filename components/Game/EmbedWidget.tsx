@@ -63,7 +63,7 @@ const EmbedWidget: FC<Props> = ({ gameProject, pricesToken }) => {
         kind: gameProject.kind,
       })
     } else if (gameProject.kind === GameEngine.HTML) {
-      return gameProjectPlayerHtml()
+      return gameProjectPlayerHtml(gameProject.gameName)
     }
   }, [gameProject])
 
