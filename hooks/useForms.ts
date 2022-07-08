@@ -43,6 +43,7 @@ export function useSetFormCache(gameId?: string | number) {
     setValue('kind', cacheValue?.kind || gameProject.kind)
     setValue('tags', cacheValue?.tags || gameProject.tags?.map((i) => i.name))
     setValue('projectURL', cacheValue?.projectURL || gameProject.projectURL)
+    setValue('accessType', cacheValue?.accessType || gameProject.accessType)
   }, [])
 
   /**
@@ -63,6 +64,7 @@ export function useSetFormCache(gameId?: string | number) {
       setValue('kind', cacheValue?.kind)
       setValue('tags', cacheValue?.tags)
       setValue('projectURL', cacheValue?.projectURL)
+      setValue('accessType', cacheValue?.accessType)
     }
   }, [])
 

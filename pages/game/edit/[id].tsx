@@ -6,7 +6,7 @@ import { Dispatch, FC, MutableRefObject, SetStateAction, useCallback, useEffect,
 import { DefaultValues, useForm } from 'react-hook-form'
 import { FormProvider as GameFormProvider, useFormContext } from 'react-hook-form'
 import { gameProjectByID } from 'services'
-import { Community, EditorMode, GameEngine, GameFileCharset, Genre, PaymentMode } from 'types/enum'
+import { AccessType, Community, EditorMode, GameEngine, GameFileCharset, Genre, PaymentMode } from 'types/enum'
 import { Game } from 'utils/validator'
 const resolverGame = classValidatorResolver(Game)
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
@@ -82,6 +82,7 @@ const GameEdit: NextPage = () => {
     appStoreLinks: [],
     screenshots: [],
     cover: '',
+    accessType: AccessType.PUBLIC
   })
 
   const methods = useForm<Game>({

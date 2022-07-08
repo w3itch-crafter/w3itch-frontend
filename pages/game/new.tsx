@@ -8,7 +8,7 @@ import { Dispatch, FC, MutableRefObject, SetStateAction, useCallback, useEffect,
 import { DefaultValues, useForm, useFormContext } from 'react-hook-form'
 import { FormProvider as GameFormProvider } from 'react-hook-form'
 import { GameEntity } from 'types'
-import { Community, EditorMode, GameEngine, GameFileCharset, Genre, PaymentMode } from 'types/enum'
+import { AccessType, Community, EditorMode, GameEngine, GameFileCharset, Genre, PaymentMode } from 'types/enum'
 import { getFormDataCache } from 'utils'
 import { Game } from 'utils/validator'
 
@@ -62,6 +62,7 @@ const GameCreate: NextPage = () => {
     appStoreLinks: [],
     screenshots: [],
     cover: '',
+    accessType: AccessType.PUBLIC
   })
 
   const methods = useForm<Game>({

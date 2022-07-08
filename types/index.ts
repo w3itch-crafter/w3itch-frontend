@@ -4,6 +4,7 @@ import { NextPage } from 'next'
 import React from 'react'
 
 import {
+  AccessType,
   Community,
   GameEngine,
   GameFileCharset,
@@ -136,6 +137,8 @@ export declare type GameEntity = BaseEntity & {
   genre: Genre
   /** Game charset */
   charset: GameFileCharset
+  /** Accessible to */
+  accessType: AccessType
 }
 export declare type PriceEntity = BaseEntity & {
   chainId: number
