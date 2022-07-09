@@ -141,14 +141,7 @@ const HasGameProject: FC<HasGameProjectProps> = ({
                       <div className={styles.publish_status}>
                         <span className={`${styles.tag_bubble} ${styles.green}`}>
                           <Link href={urlGame(item.id)}>
-                            <a>Published</a>
-                          </Link>
-                        </span>
-                      </div>
-                      <div className={styles.publish_status}>
-                        <span className={`${styles.tag_bubble} ${styles.blue}`}>
-                          <Link href={urlGame(item.id)}>
-                            <a>{item.accessType}</a>
+                          <a>{item.accessType}</a>
                           </Link>
                         </span>
                       </div>
