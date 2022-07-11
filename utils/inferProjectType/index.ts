@@ -17,6 +17,9 @@ export async function inferProjectType(gameFile: File): Promise<GameEngine> {
     if (ent.name === 'RPG_RT.ini') {
       return GameEngine.RM2K3E
     }
+    if (ent.name === 'index.html'|| ent.name === 'index.htm') {
+      return GameEngine.HTML
+    }
   }
   return GameEngine.DOWNLOADABLE
 }
