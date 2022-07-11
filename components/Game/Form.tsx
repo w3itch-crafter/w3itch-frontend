@@ -54,14 +54,14 @@ interface GameFormProps {
 let MESSAGE_SUBMIT_KEY: string | number
 
 export const defaultCoverLinks = new Map([
-  [GameEngine.DEFAULT, 'http://n.sinaimg.cn/auto/transform/20170521/Z87u-fyfkzhs7969292.jpg'],
+  [GameEngine.DEFAULT, 'https://user-images.githubusercontent.com/2507027/178090990-c77b5127-14b7-40a6-a32a-134d63073177.png'],
   [
     GameEngine.RM2K3E,
-    'https://image.w3itch.io/w3itch-test/attachment/30/world-overview.crystal2.8dde7d50-ec9a-11ec-956c-03700aa82971.png',
+    'https://user-images.githubusercontent.com/2507027/178090990-c77b5127-14b7-40a6-a32a-134d63073177.png',
   ],
   [
     GameEngine.DOWNLOADABLE,
-    'https://dotnet.microsoft.com/static/images/redesign/download/dotnet-framework-runtime.svg?v=22xvQuHVYJL7LD0xeWgHfLKUNROSdPrvv0q3aBlVvsY',
+    'https://user-images.githubusercontent.com/2507027/178090990-c77b5127-14b7-40a6-a32a-134d63073177.png',
   ],
 ])
 
